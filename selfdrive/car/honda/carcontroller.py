@@ -168,6 +168,9 @@ class CarController(object):
         can_sends.append(hondacan.spam_buttons_command(self.packer, CruiseButtons.RES_ACCEL, idx))
 
     else:
+      if CS.car_gas > 0 and dragonconf.conf["allowGasOnOP"]:
+        apply_brake = 0
+        apply_gas = 0.
       # Send gas and brake commands.
       if (frame % 2) == 0:
         idx = frame // 2

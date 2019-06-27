@@ -48,6 +48,14 @@ class dragonconf():
     if has_new_def:
       self.write(config)
 
+    # Allow Gas with OP, default False
+    if "allowGasOnOP" not in config:
+      config["allowGasOnOP"] = False
+      has_new_def = True
+    if has_new_def:
+      self.write(config)
+
+
     return config
 
   def write(self, config):
