@@ -7,6 +7,8 @@ from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.car.toyota.carstate import CarState, get_can_parser, get_cam_can_parser
 from selfdrive.car.toyota.values import ECU, check_ecu_msgs, CAR, NO_STOP_TIMER_CAR
 from selfdrive.swaglog import cloudlog
+from selfdrive.dragonpilot.dragonconf.dragonconf import dragonconf
+dragonconf = dragonconf()
 
 
 class CarInterface(object):
@@ -373,10 +375,10 @@ class CarInterface(object):
         # while in standstill, send a user alert
         events.append(create_event('manualRestart', [ET.WARNING]))
 
-    # enable request in prius is simple, as we activate when Toyota is active (rising edge)
-    if ret.cruiseState.enabled and not self.cruise_enabled_prev:
-      events.append(create_event('pcmEnable', [ET.ENABLE]))
-    elif not ret.cruiseState.enabled:
+    if ret.gasPressed and not self.gas_pressed_prev and not dragonconf.conf["allowGasOnOP"]:
+      events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
+
+    if ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001):
       events.append(create_event('pcmDisable', [ET.USER_DISABLE]))
 
     # disable on pedals rising edge or when brake is pressed and speed isn't zero
@@ -384,7 +386,7 @@ class CarInterface(object):
        (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001)):
       events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
-    if ret.gasPressed:
+    if ret.gasPressed and not dragonconf.conf["allowGasOnOP"]:
       events.append(create_event('pedalPressed', [ET.PRE_ENABLE]))
 
     ret.events = events
