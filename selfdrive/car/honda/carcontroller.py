@@ -6,6 +6,8 @@ from selfdrive.car import create_gas_command
 from selfdrive.car.honda import hondacan
 from selfdrive.car.honda.values import AH, CruiseButtons, CAR
 from selfdrive.can.packer import CANPacker
+from selfdrive.dragonpilot.dragonconf.dragonconf import dragonconf
+dragonconf = dragonconf()
 
 def actuator_hystereses(brake, braking, brake_steady, v_ego, car_fingerprint):
   # hyst params
@@ -146,6 +148,8 @@ class CarController(object):
     # Send CAN commands.
     can_sends = []
 
+    if (CS.left_blinker_on or CS.right_blinker_on) and dragonconf.conf["tempDisableSteerOnSignal"]:
+      apply_steer = 0.
     # Send steering command.
     idx = frame % 4
     can_sends.append(hondacan.create_steering_control(self.packer, apply_steer,
