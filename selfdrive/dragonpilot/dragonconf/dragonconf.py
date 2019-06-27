@@ -19,7 +19,9 @@ class dragonconf():
       config = json.load(f)
 
     # add config here
-
+    if "enableDashCam" not in config:
+      config["enableDashCam"] = True
+      has_new_def = True
     if has_new_def:
       self.write(config)
 
