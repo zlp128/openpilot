@@ -34,6 +34,13 @@ class dragonconf():
     if has_new_def:
       self.write(config)
 
+    # Auto shutdown, default 0 (disable)
+    if "autoShutdownAt" not in config:
+      config["autoShutdownAt"] = 0
+      has_new_def = True
+    if has_new_def:
+      self.write(config)
+
     return config
 
   def write(self, config):
