@@ -2,6 +2,8 @@ import numpy as np
 from common.realtime import sec_since_boot
 from selfdrive.controls.lib.drive_helpers import create_event, EventTypes as ET
 from common.filter_simple import FirstOrderFilter
+from selfdrive.dragonpilot.dragonconf.dragonconf import dragonconf
+dragonconf = dragonconf()
 
 _DT = 0.01                  # update runs at 100Hz
 _DTM = 0.1                   # DM runs at 10Hz
@@ -145,18 +147,19 @@ class DriverStatus():
        not (standstill and self.awareness - self.step_change <= self.threshold_prompt):
       self.awareness = max(self.awareness - self.step_change, -0.1)
 
-    alert = None
-    if self.awareness <= 0.:
-      # terminal red alert: disengagement required
-      alert = 'driverDistracted' if self.monitor_on else 'driverUnresponsive'
-    elif self.awareness <= self.threshold_prompt:
-      # prompt orange alert
-      alert = 'promptDriverDistracted' if self.monitor_on else 'promptDriverUnresponsive'
-    elif self.awareness <= self.threshold_pre:
-      # pre green alert
-      alert = 'preDriverDistracted' if self.monitor_on else 'preDriverUnresponsive'
-    if alert is not None:
-      events.append(create_event(alert, [ET.WARNING]))
+    if dragonconf.conf["enableDriverMonitor"]:
+      alert = None
+      if self.awareness <= 0.:
+        # terminal red alert: disengagement required
+        alert = 'driverDistracted' if self.monitor_on else 'driverUnresponsive'
+      elif self.awareness <= self.threshold_prompt:
+        # prompt orange alert
+        alert = 'promptDriverDistracted' if self.monitor_on else 'promptDriverUnresponsive'
+      elif self.awareness <= self.threshold_pre:
+        # pre green alert
+        alert = 'preDriverDistracted' if self.monitor_on else 'preDriverUnresponsive'
+      if alert is not None:
+        events.append(create_event(alert, [ET.WARNING]))
 
     return events
 
