@@ -41,6 +41,13 @@ class dragonconf():
     if has_new_def:
       self.write(config)
 
+    # Temporary disable OP lat control when on turning singal, default False
+    if "tempDisableSteerOnSignal" not in config:
+      config["tempDisableSteerOnSignal"] = False
+      has_new_def = True
+    if has_new_def:
+      self.write(config)
+
     return config
 
   def write(self, config):
