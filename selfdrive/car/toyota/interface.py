@@ -7,9 +7,8 @@ from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.car.toyota.carstate import CarState, get_can_parser, get_cam_can_parser
 from selfdrive.car.toyota.values import ECU, check_ecu_msgs, CAR, NO_STOP_TIMER_CAR
 from selfdrive.swaglog import cloudlog
-from selfdrive.dragonpilot.dragonconf.dragonconf import dragonconf
-dragonconf = dragonconf()
-
+from common.params import Params
+params = Params()
 
 class CarInterface(object):
   def __init__(self, CP, CarController):
@@ -375,7 +374,7 @@ class CarInterface(object):
         # while in standstill, send a user alert
         events.append(create_event('manualRestart', [ET.WARNING]))
 
-    if ret.gasPressed and not self.gas_pressed_prev and not dragonconf.conf["allowGasOnOP"]:
+    if ret.gasPressed and not self.gas_pressed_prev and params.get("d_allowGasOnOP") == "0":
       events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
     if ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001):
@@ -386,7 +385,7 @@ class CarInterface(object):
        (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001)):
       events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
-    if ret.gasPressed and not dragonconf.conf["allowGasOnOP"]:
+    if ret.gasPressed and params.get("d_allowGasOnOP") == "0":
       events.append(create_event('pedalPressed', [ET.PRE_ENABLE]))
 
     ret.events = events

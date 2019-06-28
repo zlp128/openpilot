@@ -8,8 +8,8 @@ from selfdrive.car.toyota.toyotacan import make_can_msg, create_video_target,\
                                            create_fcw_command
 from selfdrive.car.toyota.values import ECU, STATIC_MSGS, TSSP2_CAR
 from selfdrive.can.packer import CANPacker
-from selfdrive.dragonpilot.dragonconf.dragonconf import dragonconf
-dragonconf = dragonconf()
+from common.params import Params
+params = Params()
 
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
@@ -200,8 +200,9 @@ class CarController(object):
 
     can_sends = []
 
-    if (CS.left_blinker_on or CS.right_blinker_on) and dragonconf.conf["tempDisableSteerOnSignal"]:
-      apply_steer = 0.
+    if (CS.left_blinker_on or CS.right_blinker_on) and params.get("d_tempDisableSteerOnSignal") == "1":
+      apply_steer = 0
+      apply_steer_req = 0
     #*** control msgs ***
     #print("steer {0} {1} {2} {3}".format(apply_steer, min_lim, max_lim, CS.steer_torque_motor)
 
@@ -220,7 +221,7 @@ class CarController(object):
     elif ECU.APGS in self.fake_ecus:
       can_sends.append(create_ipas_steer_command(self.packer, 0, 0, True))
 
-    if CS.gas_pressed and dragonconf.conf["allowGasOnOP"]:
+    if CS.gas_pressed and params.get("d_allowGasOnOP") == "1":
       apply_accel = 0
       apply_gas = 0
     # accel cmd comes from DSU, but we can spam can to cancel the system even if we are using lat only control

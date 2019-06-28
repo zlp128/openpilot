@@ -10,6 +10,8 @@ from common.basedir import BASEDIR
 sys.path.append(os.path.join(BASEDIR, "pyextra"))
 os.environ['BASEDIR'] = BASEDIR
 
+from selfdrive.dragonpilot.dragonconf import dragonpilot_set_params
+
 def unblock_stdout():
   # get a non-blocking stdout
   child_pid, child_pty = os.forkpty()
@@ -497,6 +499,8 @@ def main():
     params.put("LongitudinalControl", "0")
   if params.get("LimitSetSpeed") is None:
     params.put("LimitSetSpeed", "0")
+
+  dragonpilot_set_params(params)
 
   # is this chffrplus?
   if os.getenv("PASSIVE") is not None:

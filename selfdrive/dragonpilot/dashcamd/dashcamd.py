@@ -13,8 +13,8 @@ import datetime
 import zmq
 import selfdrive.messaging as messaging
 from selfdrive.services import service_list
-from selfdrive.dragonpilot.dragonconf.dragonconf import dragonconf
-dragonconf = dragonconf()
+from common.params import Params
+params = Params()
 
 dashcam_videos = '/sdcard/dashcam/'
 duration = 60 # max is 180
@@ -31,7 +31,7 @@ def main(gctx=None):
   thermal_sock = messaging.sub_sock(context, service_list['thermal'].port)
 
   while 1:
-    if dragonconf.conf["enableDashcam"]:
+    if params.get("d_enableDashcam") == "1":
       # get health of board, log this in "thermal"
       msg = messaging.recv_sock(thermal_sock, wait=True)
 

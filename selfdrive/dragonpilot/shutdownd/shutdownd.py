@@ -2,12 +2,13 @@
 
 import os
 import time
-from selfdrive.dragonpilot.dragonconf.dragonconf import dragonconf
-dragonconf = dragonconf()
+from common.params import Params
+params = Params()
 
 def main(gctx=None):
 
   shutdown_count = 0
+  autoShutdownAt = get_shutdown_val()
 
   while 1:
     with open("/sys/class/power_supply/usb/present") as f:
@@ -18,10 +19,21 @@ def main(gctx=None):
     else:
       shutdown_count = 0
 
-    if shutdown_count >= dragonconf.conf["autoShutdownAt"] > 0:
-      os.system('LD_LIBRARY_PATH="" svc power shutdown')
+    if autoShutdownAt is None:
+      autoShutdownAt = get_shutdown_val()
+    else:
+      if shutdown_count >= autoShutdownAt > 0:
+        os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
     time.sleep(1)
+
+def get_shutdown_val():
+  val = params.get("d_autoShutdownAt")
+  if val is None:
+    return None
+  else:
+    return int(val)
+
 
 if __name__ == "__main__":
   main()
