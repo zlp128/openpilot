@@ -2,8 +2,8 @@ import numpy as np
 from common.realtime import sec_since_boot
 from selfdrive.controls.lib.drive_helpers import create_event, EventTypes as ET
 from common.filter_simple import FirstOrderFilter
-from selfdrive.dragonpilot.dragonconf.dragonconf import dragonconf
-dragonconf = dragonconf()
+from common.params import Params
+params = Params()
 
 _DT = 0.01                  # update runs at 100Hz
 _DTM = 0.1                   # DM runs at 10Hz
@@ -147,7 +147,7 @@ class DriverStatus():
        not (standstill and self.awareness - self.step_change <= self.threshold_prompt):
       self.awareness = max(self.awareness - self.step_change, -0.1)
 
-    if dragonconf.conf["enableDriverMonitor"]:
+    if params.get("d_enableDriverMonitor") == "1":
       alert = None
       if self.awareness <= 0.:
         # terminal red alert: disengagement required

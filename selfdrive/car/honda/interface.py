@@ -11,8 +11,8 @@ from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.car.honda.carstate import CarState, get_can_parser, get_cam_can_parser
 from selfdrive.car.honda.values import CruiseButtons, CAR, HONDA_BOSCH, AUDIO_HUD, VISUAL_HUD
 from selfdrive.controls.lib.planner import _A_CRUISE_MAX_V_FOLLOWING
-from selfdrive.dragonpilot.dragonconf.dragonconf import dragonconf
-dragonconf = dragonconf()
+from common.params import Params
+params = Params()
 
 # msgs sent for steering controller by camera module on can 0.
 # those messages are mutually exclusive on CRV and non-CRV cars
@@ -540,13 +540,13 @@ class CarInterface(object):
       events.append(create_event('speedTooLow', [ET.NO_ENTRY]))
 
     # disable on pedals rising edge or when brake is pressed and speed isn't zero
-    if ret.gasPressed and not self.gas_pressed_prev and not dragonconf.conf["allowGasOnOP"]:
+    if ret.gasPressed and not self.gas_pressed_prev and params.get("d_allowGasOnOP") == "0":
       events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
     if ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001):
       events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
-    if ret.gasPressed and not dragonconf.conf["allowGasOnOP"]:
+    if ret.gasPressed and params.get("d_allowGasOnOP") == "0":
       events.append(create_event('pedalPressed', [ET.PRE_ENABLE]))
 
     # it can happen that car cruise disables while comma system is enabled: need to
