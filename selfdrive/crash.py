@@ -2,6 +2,7 @@
 import os
 import sys
 import threading
+import capnp
 from selfdrive.version import version, dirty
 
 from selfdrive.swaglog import cloudlog
@@ -45,7 +46,9 @@ else:
     client.captureMessage(info_string, level='info')
 
   def capture_exception(*args, **kwargs):
-    client.captureException(*args, **kwargs)
+    exc_info = sys.exc_info()
+    if not exc_info[0] is capnp.lib.capnp.KjException:
+      client.captureException(*args, **kwargs)
     cloudlog.error("crash", exc_info=kwargs.get('exc_info', 1))
 
   def bind_user(**kwargs):
