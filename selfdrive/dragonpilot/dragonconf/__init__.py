@@ -7,7 +7,7 @@
 
 default_conf = {
   'DragonEnableDashcam': '1',
-  'DragonDisableDriverSafetyCheck': '1',
+  'DragonDisableDriverSafetyCheck': '0',
   'DragonAutoShutdownAt': '30', # in minute
   'DragonTempDisableSteerOnSignal': '0',
 }
