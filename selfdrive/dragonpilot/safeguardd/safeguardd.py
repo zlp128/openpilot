@@ -15,9 +15,9 @@ mediaplayer = '/data/openpilot/selfdrive/dragonpilot/mediaplayer/'
 
 def main(gctx=None):
 
-  context = zmq.Context()
   poller = zmq.Poller()
-  controls_state_sock = messaging.sub_sock(context, service_list['controlsState'].port, conflate=True, poller=poller)
+  sock = messaging.sub_sock(service_list['controlsState'].port, poller)
+  poller.poll(timeout=0)
 
   last_v_ego = 0.
   last_active = False
@@ -31,9 +31,7 @@ def main(gctx=None):
     v_ego = 0
     active = False
 
-    for socket, event in poller.poll(100):
-      if socket is controls_state_sock:
-        controls_state = messaging.recv_one(socket)
+    controls_state = messaging.recv_sock(sock, wait=True)
 
     if controls_state is not None:
       v_ego = controls_state.controlsState.vEgo
