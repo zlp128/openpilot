@@ -200,7 +200,7 @@ class CarController(object):
 
     can_sends = []
 
-    if (CS.left_blinker_on or CS.right_blinker_on) and params.get("d_tempDisableSteerOnSignal") == "1":
+    if (CS.left_blinker_on or CS.right_blinker_on) and params.get("DragonTempDisableSteerOnSignal") == "1":
       apply_steer = 0
       apply_steer_req = 0
     #*** control msgs ***
