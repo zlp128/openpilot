@@ -7,8 +7,8 @@ file = '/data/dragonpilot.json'
 
 default_conf = {
   'DragonEnableDashcam': '1',
-  'DragonEnableDriverMonitor': '1',
-  'DragonAutoShutdownAt': '1800', # shutdown after 30 mins
+  'DragonDisableDriverSafetyCheck': '1',
+  'DragonAutoShutdownAt': '30', # in minute
   'DragonTempDisableSteerOnSignal': '0',
 }
 
@@ -40,10 +40,11 @@ def dragonpilot_set_params(params):
         json_update_needed = True
         config.pop(key, None)
 
-    # write to json if it's been updated
+    # write to json if update needed
     if json_update_needed:
       write_json_config(config)
 
   # set params
   for key, val in config.items():
-    params.put(key, str(val))
+    if params.get(key) is None:
+      params.put(key, str(val))
