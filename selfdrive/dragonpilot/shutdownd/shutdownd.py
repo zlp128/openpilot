@@ -32,7 +32,7 @@ def get_shutdown_val():
   if val is None:
     return None
   else:
-    return int(val)
+    return int(val)*60 # convert to seconds
 
 
 if __name__ == "__main__":
