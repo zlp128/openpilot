@@ -9,6 +9,7 @@ from selfdrive.car.toyota.values import ECU, check_ecu_msgs, CAR, NO_STOP_TIMER_
 from selfdrive.car import STD_CARGO_KG
 from selfdrive.swaglog import cloudlog
 
+
 class CarInterface(object):
   def __init__(self, CP, CarController):
     self.CP = CP
