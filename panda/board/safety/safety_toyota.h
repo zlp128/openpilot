@@ -66,26 +66,26 @@ static void toyota_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
     toyota_cruise_engaged_last = cruise_engaged;
   }
 
-//  // exit controls on rising edge of interceptor gas press
-//  if (addr == 0x201) {
-//    gas_interceptor_detected = 1;
-//    int gas_interceptor = ((to_push->RDLR & 0xFF) << 8) | ((to_push->RDLR & 0xFF00) >> 8);
-//    if ((gas_interceptor > TOYOTA_GAS_INTERCEPTOR_THRESHOLD) &&
-//        (gas_interceptor_prev <= TOYOTA_GAS_INTERCEPTOR_THRESHOLD) &&
-//        long_controls_allowed) {
-//      controls_allowed = 0;
-//    }
-//    gas_interceptor_prev = gas_interceptor;
-//  }
-//
-//  // exit controls on rising edge of gas press
-//  if (addr == 0x2C1) {
-//    int gas = (to_push->RDHR >> 16) & 0xFF;
-//    if ((gas > 0) && (toyota_gas_prev == 0) && !gas_interceptor_detected && long_controls_allowed) {
-//      controls_allowed = 0;
-//    }
-//    toyota_gas_prev = gas;
-//  }
+  // exit controls on rising edge of interceptor gas press
+  if (addr == 0x201) {
+    gas_interceptor_detected = 1;
+    int gas_interceptor = ((to_push->RDLR & 0xFF) << 8) | ((to_push->RDLR & 0xFF00) >> 8);
+    if ((gas_interceptor > TOYOTA_GAS_INTERCEPTOR_THRESHOLD) &&
+        (gas_interceptor_prev <= TOYOTA_GAS_INTERCEPTOR_THRESHOLD) &&
+        long_controls_allowed) {
+      controls_allowed = 0;
+    }
+    gas_interceptor_prev = gas_interceptor;
+  }
+
+  // exit controls on rising edge of gas press
+  if (addr == 0x2C1) {
+    int gas = (to_push->RDHR >> 16) & 0xFF;
+    if ((gas > 0) && (toyota_gas_prev == 0) && !gas_interceptor_detected && long_controls_allowed) {
+      controls_allowed = 0;
+    }
+    toyota_gas_prev = gas;
+  }
 
   // msgs are only on bus 2 if panda is connected to frc
   if (bus == 2) {
