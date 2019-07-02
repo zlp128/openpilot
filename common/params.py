@@ -82,7 +82,6 @@ keys = {
   "d_enableDriverMonitor": [TxType.PERSISTENT],
   "d_autoShutdownAt": [TxType.PERSISTENT],
   "d_tempDisableSteerOnSignal": [TxType.PERSISTENT],
-  "d_allowGasOnOP": [TxType.PERSISTENT],
 }
 
 

@@ -13,9 +13,6 @@ from selfdrive.car.honda.values import CruiseButtons, CAR, HONDA_BOSCH, AUDIO_HU
 from selfdrive.car import STD_CARGO_KG
 from selfdrive.controls.lib.planner import _A_CRUISE_MAX_V_FOLLOWING
 
-from common.params import Params
-params = Params()
-
 A_ACC_MAX = max(_A_CRUISE_MAX_V_FOLLOWING)
 
 
