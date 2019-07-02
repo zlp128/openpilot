@@ -10,7 +10,6 @@ default_conf = {
   'd_enableDriverMonitor': '1',
   'd_autoShutdownAt': '1800', # shutdown after 30 mins
   'd_tempDisableSteerOnSignal': '0',
-  'd_allowGasOnOP': '0',
 }
 
 def write_json_config(config):
