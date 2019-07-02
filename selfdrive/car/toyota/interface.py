@@ -8,8 +8,6 @@ from selfdrive.car.toyota.carstate import CarState, get_can_parser, get_cam_can_
 from selfdrive.car.toyota.values import ECU, check_ecu_msgs, CAR, NO_STOP_TIMER_CAR
 from selfdrive.car import STD_CARGO_KG
 from selfdrive.swaglog import cloudlog
-from common.params import Params
-params = Params()
 
 class CarInterface(object):
   def __init__(self, CP, CarController):
