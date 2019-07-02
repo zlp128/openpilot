@@ -78,10 +78,10 @@ keys = {
   "TrainingVersion": [TxType.PERSISTENT],
   "Version": [TxType.PERSISTENT],
   #dragonpilot config
-  "d_enableDashcam": [TxType.PERSISTENT],
-  "d_enableDriverMonitor": [TxType.PERSISTENT],
-  "d_autoShutdownAt": [TxType.PERSISTENT],
-  "d_tempDisableSteerOnSignal": [TxType.PERSISTENT],
+  "DragonEnableDashcam": [TxType.PERSISTENT],
+  "DragonEnableDriverMonitor": [TxType.PERSISTENT],
+  "DragonAutoShutdownAt": [TxType.PERSISTENT],
+  "DragonTempDisableSteerOnSignal": [TxType.PERSISTENT],
 }
 
 

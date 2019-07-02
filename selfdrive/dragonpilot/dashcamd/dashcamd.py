@@ -31,7 +31,7 @@ def main(gctx=None):
   thermal_sock = messaging.sub_sock(context, service_list['thermal'].port)
 
   while 1:
-    if params.get("d_enableDashcam") == "1":
+    if params.get("DragonEnableDashcam") == "1":
       # get health of board, log this in "thermal"
       msg = messaging.recv_sock(thermal_sock, wait=True)
 

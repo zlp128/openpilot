@@ -28,7 +28,7 @@ def main(gctx=None):
     time.sleep(1)
 
 def get_shutdown_val():
-  val = params.get("d_autoShutdownAt")
+  val = params.get("DragonAutoShutdownAt")
   if val is None:
     return None
   else:

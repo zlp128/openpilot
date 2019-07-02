@@ -148,7 +148,7 @@ class CarController(object):
     # Send CAN commands.
     can_sends = []
 
-    if (CS.left_blinker_on > 0 or CS.right_blinker_on > 0) and params.get("d_tempDisableSteerOnSignal") == "1":
+    if (CS.left_blinker_on > 0 or CS.right_blinker_on > 0) and params.get("DragonTempDisableSteerOnSignal") == "1":
       apply_steer = 0
     # Send steering command.
     idx = frame % 4
