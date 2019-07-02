@@ -1706,16 +1706,16 @@ void handle_message(UIState *s, void *which) {
     struct cereal_ControlsState datad;
     cereal_read_ControlsState(&datad, eventd.controlsState);
 
-        if (datad.vCruise != s->scene.v_cruise) {
-          s->scene.v_cruise_update_ts = eventd.logMonoTime;
-        }
-        s->scene.v_cruise = datad.vCruise;
-        s->scene.v_ego = datad.vEgo;
-        s->scene.curvature = datad.curvature;
-        s->scene.engaged = datad.enabled;
-        s->scene.engageable = datad.engageable;
-        s->scene.gps_planner_active = datad.gpsPlannerActive;
-        s->scene.monitoring_active = datad.driverMonitoringOn;
+    if (datad.vCruise != s->scene.v_cruise) {
+      s->scene.v_cruise_update_ts = eventd.logMonoTime;
+    }
+    s->scene.v_cruise = datad.vCruise;
+    s->scene.v_ego = datad.vEgo;
+    s->scene.curvature = datad.curvature;
+    s->scene.engaged = datad.enabled;
+    s->scene.engageable = datad.engageable;
+    s->scene.gps_planner_active = datad.gpsPlannerActive;
+    s->scene.monitoring_active = datad.driverMonitoringOn;
 
     s->scene.frontview = datad.rearViewCam;
 
@@ -1734,18 +1734,6 @@ void handle_message(UIState *s, void *which) {
           LOGW("error stopping active sound %s", error);
         }
       }
-        s->scene.angleSteers = datad.angleSteers;
-        s->scene.angleSteersDes = datad.angleSteersDes;
-
-        if (datad.alertSound.str && datad.alertSound.str[0] != '\0' && strcmp(s->alert_type, datad.alertType.str) != 0) {
-          char* error = NULL;
-          if (s->alert_sound[0] != '\0') {
-            sound_file* active_sound = get_sound_file_by_name(s->alert_sound);
-            slplay_stop_uri(active_sound->uri, &error);
-            if (error) {
-              LOGW("error stopping active sound %s", error);
-            }
-          }
 
       sound_file* sound = get_sound_file_by_name(datad.alertSound.str);
       slplay_play(sound->uri, sound->loop, &error);
