@@ -145,7 +145,7 @@ class DriverStatus():
        not (standstill and self.awareness - self.step_change <= self.threshold_prompt):
       self.awareness = max(self.awareness - self.step_change, -0.1)
 
-    if params.get("DragonDisableDriverSafetyCheck") == "1":
+    if params.get("DragonDisableDriverSafetyCheck") == "0":
       alert = None
       if self.awareness <= 0.:
         # terminal red alert: disengagement required
