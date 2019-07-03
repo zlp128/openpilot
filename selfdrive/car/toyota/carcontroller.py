@@ -8,6 +8,9 @@ from selfdrive.car.toyota.toyotacan import make_can_msg, create_video_target,\
                                            create_fcw_command
 from selfdrive.car.toyota.values import ECU, STATIC_MSGS, TSS2_CAR
 from selfdrive.can.packer import CANPacker
+from common.params import Params
+params = Params()
+
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 AudibleAlert = car.CarControl.HUDControl.AudibleAlert
@@ -123,6 +126,9 @@ class CarController(object):
 
     self.packer = CANPacker(dbc_name)
 
+    # dragonpilot
+    self.turning_signal_timer = 0
+
   def update(self, enabled, CS, frame, actuators,
              pcm_cancel_cmd, hud_alert, audible_alert, forwarding_camera,
              left_line, right_line, lead, left_lane_depart, right_lane_depart):
@@ -196,6 +202,14 @@ class CarController(object):
     self.last_standstill = CS.standstill
 
     can_sends = []
+
+    # dragonpilot
+    if enabled and (CS.left_blinker_on or CS.right_blinker_on) and params.get("DragonTempDisableSteerOnSignal") == "1":
+      self.turning_signal_timer = 100
+
+    if self.turning_signal_timer > 0:
+      self.turning_signal_timer -= 1
+      apply_steer = 0
 
     #*** control msgs ***
     #print("steer {0} {1} {2} {3}".format(apply_steer, min_lim, max_lim, CS.steer_torque_motor)
