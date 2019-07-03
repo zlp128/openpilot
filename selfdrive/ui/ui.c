@@ -1452,7 +1452,7 @@ static void ui_draw_infobar(UIState *s) {
   if (s->scene.engaged) {
     snprintf(des_steer, sizeof(des_steer), "%s%05.1f°", s->scene.angleSteersDes < 0? "-" : "+", fabs(s->scene.angleSteersDes));
   } else {
-    snprintf(des_steer, sizeof(des_steer), "%6s", "N/A");
+    snprintf(des_steer, sizeof(des_steer), "%7s", "N/A");
   }
 
 
@@ -1460,7 +1460,7 @@ static void ui_draw_infobar(UIState *s) {
   if (s->scene.lead_status) {
     snprintf(lead_dist, sizeof(lead_dist), "%06.2fm", s->scene.lead_d_rel);
   } else {
-    snprintf(lead_dist, sizeof(lead_dist), "%6s", "N/A");
+    snprintf(lead_dist, sizeof(lead_dist), "%7s", "N/A");
   }
 
 
