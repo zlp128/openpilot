@@ -126,6 +126,9 @@ class CarController(object):
 
     self.packer = CANPacker(dbc_name)
 
+    # dragonpilot
+    self.turning_signal_timer = 0
+
   def update(self, enabled, CS, frame, actuators,
              pcm_cancel_cmd, hud_alert, audible_alert, forwarding_camera,
              left_line, right_line, lead, left_lane_depart, right_lane_depart):
@@ -200,9 +203,14 @@ class CarController(object):
 
     can_sends = []
 
-    if (CS.left_blinker_on or CS.right_blinker_on) and params.get("DragonTempDisableSteerOnSignal") == "1":
+    # dragonpilot
+    if enabled and (CS.left_blinker_on or CS.right_blinker_on) and params.get("DragonTempDisableSteerOnSignal") == "1":
+      self.turning_signal_timer = 100
+
+    if self.turning_signal_timer > 0:
+      self.turning_signal_timer -= 1
       apply_steer = 0
-      apply_steer_req = 0
+
     #*** control msgs ***
     #print("steer {0} {1} {2} {3}".format(apply_steer, min_lim, max_lim, CS.steer_torque_motor)
 
