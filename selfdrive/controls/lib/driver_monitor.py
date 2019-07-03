@@ -2,6 +2,8 @@ import numpy as np
 from common.realtime import sec_since_boot, DT_CTRL, DT_DMON
 from selfdrive.controls.lib.drive_helpers import create_event, EventTypes as ET
 from common.filter_simple import FirstOrderFilter
+from common.params import Params
+params = Params()
 
 _AWARENESS_TIME = 180        # 3 minutes limit without user touching steering wheels make the car enter a terminal status
 _AWARENESS_PRE_TIME = 20.    # a first alert is issued 20s before expiration
@@ -143,18 +145,19 @@ class DriverStatus():
        not (standstill and self.awareness - self.step_change <= self.threshold_prompt):
       self.awareness = max(self.awareness - self.step_change, -0.1)
 
-    alert = None
-    if self.awareness <= 0.:
-      # terminal red alert: disengagement required
-      alert = 'driverDistracted' if self.monitor_on else 'driverUnresponsive'
-    elif self.awareness <= self.threshold_prompt:
-      # prompt orange alert
-      alert = 'promptDriverDistracted' if self.monitor_on else 'promptDriverUnresponsive'
-    elif self.awareness <= self.threshold_pre:
-      # pre green alert
-      alert = 'preDriverDistracted' if self.monitor_on else 'preDriverUnresponsive'
-    if alert is not None:
-      events.append(create_event(alert, [ET.WARNING]))
+    if params.get("DragonDisableDriverSafetyCheck") == "0":
+      alert = None
+      if self.awareness <= 0.:
+        # terminal red alert: disengagement required
+        alert = 'driverDistracted' if self.monitor_on else 'driverUnresponsive'
+      elif self.awareness <= self.threshold_prompt:
+        # prompt orange alert
+        alert = 'promptDriverDistracted' if self.monitor_on else 'promptDriverUnresponsive'
+      elif self.awareness <= self.threshold_pre:
+        # pre green alert
+        alert = 'preDriverDistracted' if self.monitor_on else 'preDriverUnresponsive'
+      if alert is not None:
+        events.append(create_event(alert, [ET.WARNING]))
 
     return events
 
