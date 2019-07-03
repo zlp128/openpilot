@@ -10,6 +10,8 @@ from common.basedir import BASEDIR
 sys.path.append(os.path.join(BASEDIR, "pyextra"))
 os.environ['BASEDIR'] = BASEDIR
 
+from selfdrive.dragonpilot.dragonconf import dragonpilot_set_params
+
 def unblock_stdout():
   # get a non-blocking stdout
   child_pid, child_pty = os.forkpty()
@@ -115,6 +117,9 @@ managed_processes = {
   "gpsd": ("selfdrive/sensord", ["./start_gpsd.py"]),
   "updated": "selfdrive.updated",
   "athena": "selfdrive.athena.athenad",
+  "dashcamd": "selfdrive.dragonpilot.dashcamd.dashcamd",
+  "safeguardd": "selfdrive.dragonpilot.safeguardd.safeguardd",
+  "shutdownd": "selfdrive.dragonpilot.shutdownd.shutdownd",
 }
 android_packages = ("ai.comma.plus.offroad", "ai.comma.plus.frame")
 
@@ -137,6 +142,8 @@ persistent_processes = [
   'ui',
   'updated',
   'athena',
+  'safeguardd',
+  'shutdownd',
 ]
 
 car_started_processes = [
@@ -152,6 +159,7 @@ car_started_processes = [
   'ubloxd',
   'gpsd',
   'deleter',
+  'dashcamd',
 ]
 
 def register_managed_process(name, desc, car_started=False):
@@ -499,6 +507,8 @@ def main():
   if params.get("LimitSetSpeed") is None:
     params.put("LimitSetSpeed", "0")
 
+  dragonpilot_set_params(params)
+
   # is this chffrplus?
   if os.getenv("PASSIVE") is not None:
     params.put("Passive", str(int(os.getenv("PASSIVE"))))
@@ -510,7 +520,7 @@ def main():
   if os.getenv("PREPAREONLY") is not None:
     spinner_proc = None
   else:
-    spinner_text = "chffrplus" if params.get("Passive")=="1" else "openpilot"
+    spinner_text = "chffrplus" if params.get("Passive")=="1" else "dragonpilot"
     spinner_proc = subprocess.Popen(["./spinner", "loading %s"%spinner_text],
       cwd=os.path.join(BASEDIR, "selfdrive", "ui", "spinner"),
       close_fds=True)
