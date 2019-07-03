@@ -77,6 +77,11 @@ keys = {
   "SubscriberInfo": [TxType.PERSISTENT],
   "TrainingVersion": [TxType.PERSISTENT],
   "Version": [TxType.PERSISTENT],
+  #dragonpilot config
+  "DragonEnableDashcam": [TxType.PERSISTENT],
+  "DragonDisableDriverSafetyCheck": [TxType.PERSISTENT],
+  "DragonAutoShutdownAt": [TxType.PERSISTENT],
+  "DragonTempDisableSteerOnSignal": [TxType.PERSISTENT],
 }
 
 
