@@ -85,6 +85,9 @@ class CarController(object):
     self.packer = CANPacker(dbc_name)
     self.new_radar_config = False
 
+    # dragonpilot
+    self.turning_signal_timer = 0
+
   def update(self, enabled, CS, frame, actuators, \
              pcm_speed, pcm_override, pcm_cancel_cmd, pcm_accel, \
              hud_v_cruise, hud_show_lanes, hud_show_car, \
@@ -148,8 +151,14 @@ class CarController(object):
     # Send CAN commands.
     can_sends = []
 
-    if (CS.left_blinker_on > 0 or CS.right_blinker_on > 0) and params.get("DragonTempDisableSteerOnSignal") == "1":
+    # dragonpilot
+    if enabled and (CS.left_blinker_on > 0 or CS.right_blinker_on > 0) and params.get("DragonTempDisableSteerOnSignal") == "1":
+      self.turning_signal_timer = 100
+
+    if self.turning_signal_timer > 0:
+      self.turning_signal_timer -= 1
       apply_steer = 0
+
     # Send steering command.
     idx = frame % 4
     can_sends.append(hondacan.create_steering_control(self.packer, apply_steer,
