@@ -27,14 +27,12 @@ def main(gctx=None):
   if not os.path.exists(dashcam_videos):
     os.makedirs(dashcam_videos)
 
-  context = zmq.Context()
-  thermal_sock = messaging.sub_sock(context, service_list['thermal'].port)
+  poller = zmq.Poller()
+  sock = messaging.sub_sock(service_list['thermal'].port, poller)
+  poller.poll(timeout=1000)
 
   while 1:
     if params.get("DragonEnableDashcam") == "1":
-      # get health of board, log this in "thermal"
-      msg = messaging.recv_sock(thermal_sock, wait=True)
-
       now = datetime.datetime.now()
       file_name = now.strftime("%Y-%m-%d_%H-%M-%S")
       os.system("screenrecord --bit-rate %s --time-limit %s %s%s.mp4 &" % (bit_rates, duration, dashcam_videos, file_name))
@@ -45,13 +43,14 @@ def main(gctx=None):
       # we should clean up files here if use too much spaces
       # when used spaces greater than max available storage
       # or when free space is less than 10%
-      print(used_spaces)
-      print(max_storage)
-      if used_spaces >= max_storage or msg.thermal.freeSpace < freespace_limit:
+
+      # get health of board, log this in "thermal"
+      msg = messaging.recv_sock(sock, wait=True)
+      if used_spaces >= max_storage or (msg is not None and msg.thermal.freeSpace < freespace_limit):
         # get all the files in the dashcam_videos path
         files = [f for f in sorted(os.listdir(dashcam_videos)) if os.path.isfile(dashcam_videos + f)]
         for file in files:
-          msg = messaging.recv_sock(thermal_sock, wait=True)
+          msg = messaging.recv_sock(sock, wait=True)
           # delete file one by one and once it has enough space for 1 video, we stop deleting
           if used_spaces - last_used_spaces < max_size_per_file or msg.thermal.freeSpace < freespace_limit:
             os.system("rm -fr %s" % (dashcam_videos + file))
