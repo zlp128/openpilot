@@ -174,6 +174,20 @@ ALERTS = [
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
 
   Alert(
+      "startupNoControl",
+      "行車記錄模式",
+      "請您將手放在方向盤上並持續注意路況",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
+
+  Alert(
+      "startupNoCar",
+      "行車記錄模式 (尚未支援車種)",
+      "請您將手放在方向盤上並持續注意路況",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
+
+  Alert(
       "ethicalDilemma",
       "即刻接管控制",
       "Ethical Dilemma Detected",
@@ -276,6 +290,13 @@ ALERTS = [
       "lowBatteryNoEntry",
       "無法使用 dragonpilot",
       "電池電量過低",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
+
+  Alert(
+      "sensorDataInvalidNoEntry",
+      "無法使用 dragonpilot",
+      "沒有收到任何來自 EON 傳感器的資料",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
@@ -624,6 +645,13 @@ ALERTS = [
       "invalidGiraffeHondaPermanent",
       "Giraffe 開關錯誤",
       "dragonpilot 模式為 0111，原廠模式為 1011",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+
+  Alert(
+      "sensorDataInvalidPermanent",
+      "沒有收到任何來自 EON 傳感器的資料",
+      "請重啟您的 EON",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
