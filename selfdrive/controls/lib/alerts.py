@@ -606,11 +606,11 @@ ALERTS = [
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
 
   Alert(
-    "commIssueNoEntry",
-    "無法使用 dragonpilot",
-    "程序間出現通訊問題",
-    AlertStatus.normal, AlertSize.mid,
-    Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
+      "commIssueNoEntry",
+      "無法使用 dragonpilot",
+      "程序間出現通訊問題",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
 
   # permanent alerts
   Alert(
