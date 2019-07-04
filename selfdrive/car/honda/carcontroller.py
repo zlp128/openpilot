@@ -6,6 +6,8 @@ from selfdrive.car import create_gas_command
 from selfdrive.car.honda import hondacan
 from selfdrive.car.honda.values import AH, CruiseButtons, CAR
 from selfdrive.can.packer import CANPacker
+from common.params import Params
+params = Params()
 
 
 def actuator_hystereses(brake, braking, brake_steady, v_ego, car_fingerprint):
@@ -83,6 +85,9 @@ class CarController(object):
     self.packer = CANPacker(dbc_name)
     self.new_radar_config = False
 
+    # dragonpilot
+    self.turning_signal_timer = 0
+
   def update(self, enabled, CS, frame, actuators, \
              pcm_speed, pcm_override, pcm_cancel_cmd, pcm_accel, \
              hud_v_cruise, hud_show_lanes, hud_show_car, \
@@ -145,6 +150,14 @@ class CarController(object):
 
     # Send CAN commands.
     can_sends = []
+
+    # dragonpilot
+    if enabled and (CS.left_blinker_on > 0 or CS.right_blinker_on > 0) and params.get("DragonTempDisableSteerOnSignal") == "1":
+      self.turning_signal_timer = 100
+
+    if self.turning_signal_timer > 0:
+      self.turning_signal_timer -= 1
+      apply_steer = 0
 
     # Send steering command.
     idx = frame % 4
