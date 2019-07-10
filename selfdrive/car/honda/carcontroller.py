@@ -157,7 +157,7 @@ class CarController(object):
 
     if self.turning_signal_timer > 0:
       self.turning_signal_timer -= 1
-      apply_steer = 0
+      lkas_active = False
 
     # Send steering command.
     idx = frame % 4
