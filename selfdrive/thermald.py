@@ -82,6 +82,9 @@ _TEMP_THRS_L = [42.5, 57.5, 72.5, 10000]
 _FAN_SPEEDS = [0, 16384, 32768, 65535]
 # max fan speed only allowed if battery is hot
 _BAT_TEMP_THERSHOLD = 45.
+if Params.get('DragonNoctuaMode') == "1":
+  _FAN_SPEEDS = [65535, 65535, 65535, 65535]
+  _BAT_TEMP_THERSHOLD = 20.
 
 
 def handle_fan(max_cpu_temp, bat_temp, fan_speed):

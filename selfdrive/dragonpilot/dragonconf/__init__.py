@@ -11,6 +11,7 @@ default_conf = {
   'DragonAutoShutdownAt': '30', # in minute
   'DragonTempDisableSteerOnSignal': '0',
   'DragonDisableLogger': '0',
+  'DragonNoctuaMode': '0',
 }
 
 def dragonpilot_set_params(params):
