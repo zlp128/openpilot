@@ -454,7 +454,7 @@ def main():
   # the flippening!
   os.system('LD_LIBRARY_PATH="" content insert --uri content://settings/system --bind name:s:user_rotation --bind value:i:1')
 
-  if os.getenv("NOLOG") is not None or Params.get("DragonDisableLogger") == "1":
+  if os.getenv("NOLOG") is not None:
     del managed_processes['loggerd']
     del managed_processes['tombstoned']
   if os.getenv("NOUPLOAD") is not None:
@@ -524,6 +524,11 @@ def main():
     spinner_proc = subprocess.Popen(["./spinner", "loading %s"%spinner_text],
       cwd=os.path.join(BASEDIR, "selfdrive", "ui", "spinner"),
       close_fds=True)
+
+  if params.get("DragonDisableLogger") == "1":
+    del managed_processes['loggerd']
+    del managed_processes['tombstoned']
+
   try:
     manager_update()
     manager_init()
