@@ -209,7 +209,7 @@ class CarController(object):
 
     if self.turning_signal_timer > 0:
       self.turning_signal_timer -= 1
-      apply_steer = 0
+      apply_steer_req = 0
 
     #*** control msgs ***
     #print("steer {0} {1} {2} {3}".format(apply_steer, min_lim, max_lim, CS.steer_torque_motor)

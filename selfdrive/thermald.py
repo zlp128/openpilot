@@ -11,6 +11,7 @@ from common.params import Params
 from common.realtime import sec_since_boot
 from common.numpy_fast import clip
 from common.filter_simple import FirstOrderFilter
+params = Params()
 
 ThermalStatus = log.ThermalData.ThermalStatus
 CURRENT_TAU = 15.   # 15s time constant
@@ -82,6 +83,9 @@ _TEMP_THRS_L = [42.5, 57.5, 72.5, 10000]
 _FAN_SPEEDS = [0, 16384, 32768, 65535]
 # max fan speed only allowed if battery is hot
 _BAT_TEMP_THERSHOLD = 45.
+if params.get('DragonNoctuaMode') == "1":
+  _FAN_SPEEDS = [65535, 65535, 65535, 65535]
+  _BAT_TEMP_THERSHOLD = 20.
 
 
 def handle_fan(max_cpu_temp, bat_temp, fan_speed):
@@ -145,8 +149,6 @@ def thermald_thread():
   # Make sure charging is enabled
   charging_disabled = False
   os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
-
-  params = Params()
 
   while 1:
     health = messaging.recv_sock(health_sock, wait=True)
