@@ -127,6 +127,7 @@ class CarController(object):
 
     hud = HUDData(int(pcm_accel), int(round(hud_v_cruise)), 1, hud_car,
                   0xc1, hud_lanes, int(snd_beep), snd_chime, fcw_display, acc_alert, steer_required, CS.lkMode)
+
     # **** process the car messages ****
 
     # *** compute control surfaces ***
