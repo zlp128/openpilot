@@ -5,6 +5,9 @@ from common.fingerprints import eliminate_incompatible_cars, all_known_cars
 from selfdrive.boardd.boardd import can_list_to_can_capnp
 from selfdrive.swaglog import cloudlog
 import selfdrive.messaging as messaging
+import ast
+from common.params import Params
+params = Params()
 
 
 def get_startup_alert(car_recognized, controller_available):
@@ -79,58 +82,64 @@ def fingerprint(logcan, sendcan):
   vin = ""
 
   frame = 0
-  while True:
-    a = messaging.recv_one(logcan)
 
-    for can in a.can:
-      can_seen = True
+  if params.get("DragonUseCachedCar") == "1" and params.get("DragonCachedCar") is not None:
+    candidate_cars, finger, vin = ast.literal_eval(params.get("DragonCachedCar"))
+  else:
+    while True:
+      a = messaging.recv_one(logcan)
 
-      # have we got a VIN query response?
-      if can.src == 0 and can.address == 0x7e8:
-        vin_never_responded = False
-        # basic sanity checks on ISO-TP response
-        if is_vin_response_valid(can.dat, vin_step, vin_cnt):
-          vin_dat += can.dat[2:] if vin_step == 0 else can.dat[1:]
-          vin_cnt += 1
-          if vin_cnt == vin_cnts[vin_step]:
-            vin_responded = True
-            vin_step += 1
+      for can in a.can:
+        can_seen = True
 
-      # ignore everything not on bus 0 and with more than 11 bits,
-      # which are ussually sporadic and hard to include in fingerprints.
-      # also exclude VIN query response on 0x7e8
-      if can.src == 0 and can.address < 0x800 and can.address != 0x7e8:
-        finger[can.address] = len(can.dat)
-        candidate_cars = eliminate_incompatible_cars(can, candidate_cars)
+        # have we got a VIN query response?
+        if can.src == 0 and can.address == 0x7e8:
+          vin_never_responded = False
+          # basic sanity checks on ISO-TP response
+          if is_vin_response_valid(can.dat, vin_step, vin_cnt):
+            vin_dat += can.dat[2:] if vin_step == 0 else can.dat[1:]
+            vin_cnt += 1
+            if vin_cnt == vin_cnts[vin_step]:
+              vin_responded = True
+              vin_step += 1
 
-    if can_seen_frame is None and can_seen:
-      can_seen_frame = frame
+        # ignore everything not on bus 0 and with more than 11 bits,
+        # which are ussually sporadic and hard to include in fingerprints.
+        # also exclude VIN query response on 0x7e8
+        if can.src == 0 and can.address < 0x800 and can.address != 0x7e8:
+          finger[can.address] = len(can.dat)
+          candidate_cars = eliminate_incompatible_cars(can, candidate_cars)
 
-    # if we only have one car choice and the time_fingerprint since we got our first
-    # message has elapsed, exit. Toyota needs higher time_fingerprint, since DSU does not
-    # broadcast immediately
-    if len(candidate_cars) == 1 and can_seen_frame is not None:
-      time_fingerprint = 1.0 if ("TOYOTA" in candidate_cars[0] or "LEXUS" in candidate_cars[0]) else 0.1
-      if (frame - can_seen_frame) > (time_fingerprint * 100):
-        break
+      if can_seen_frame is None and can_seen:
+        can_seen_frame = frame
 
-    # bail if no cars left or we've been waiting for more than 2s since can_seen
-    elif len(candidate_cars) == 0 or (can_seen_frame is not None and (frame - can_seen_frame) > 200):
-      return None, finger, ""
+      # if we only have one car choice and the time_fingerprint since we got our first
+      # message has elapsed, exit. Toyota needs higher time_fingerprint, since DSU does not
+      # broadcast immediately
+      if len(candidate_cars) == 1 and can_seen_frame is not None:
+        time_fingerprint = 1.0 if ("TOYOTA" in candidate_cars[0] or "LEXUS" in candidate_cars[0]) else 0.1
+        if (frame - can_seen_frame) > (time_fingerprint * 100):
+          break
 
-    # keep sending VIN qury if ECU isn't responsing.
-    # sendcan is probably not ready due to the zmq slow joiner syndrome
-    # TODO: VIN query temporarily disabled until we have the harness
-    if False and can_seen and (vin_never_responded or (vin_responded and vin_step < len(vin_cnts))):
-      sendcan.send(can_list_to_can_capnp([vin_query_msg[vin_step]], msgtype='sendcan'))
-      vin_responded = False
-      vin_cnt = 0
+      # bail if no cars left or we've been waiting for more than 2s since can_seen
+      elif len(candidate_cars) == 0 or (can_seen_frame is not None and (frame - can_seen_frame) > 200):
+        return None, finger, ""
 
-    frame += 1
+      # keep sending VIN qury if ECU isn't responsing.
+      # sendcan is probably not ready due to the zmq slow joiner syndrome
+      # TODO: VIN query temporarily disabled until we have the harness
+      if False and can_seen and (vin_never_responded or (vin_responded and vin_step < len(vin_cnts))):
+        sendcan.send(can_list_to_can_capnp([vin_query_msg[vin_step]], msgtype='sendcan'))
+        vin_responded = False
+        vin_cnt = 0
 
-  # only report vin if procedure is finished
-  if vin_step == len(vin_cnts) and vin_cnt == vin_cnts[-1]:
-    vin = "".join(vin_dat[3:])
+      frame += 1
+
+    # only report vin if procedure is finished
+    if vin_step == len(vin_cnts) and vin_cnt == vin_cnts[-1]:
+      vin = "".join(vin_dat[3:])
+
+  params.put("DragonCachedCar", repr([candidate_cars, finger, vin]))
 
   cloudlog.warning("fingerprinted %s", candidate_cars[0])
   cloudlog.warning("VIN %s", vin)

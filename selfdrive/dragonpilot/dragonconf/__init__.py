@@ -10,6 +10,8 @@ default_conf = {
   'DragonDisableDriverSafetyCheck': '0',
   'DragonAutoShutdownAt': '30', # in minute
   'DragonTempDisableSteerOnSignal': '0',
+  'DragonUseCachedCar': '1',
+  'DragonCachedCar': '',
 }
 
 # def write_json_config(config):
