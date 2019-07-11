@@ -13,7 +13,9 @@ default_conf = {
   'DragonDisableLogger': '0',
   'DragonNoctuaMode': '0',
   'DragonUseCachedCar': '1',
-  'DragonCachedCar': '',
+  'DragonCachedModel': '', # for cache car
+  'DragonCachedFP': '', # for cache car
+  'DragonCachedVIN': '', # for cache car
 }
 
 def dragonpilot_set_params(params):
