@@ -524,6 +524,11 @@ def main():
     spinner_proc = subprocess.Popen(["./spinner", "loading %s"%spinner_text],
       cwd=os.path.join(BASEDIR, "selfdrive", "ui", "spinner"),
       close_fds=True)
+
+  if params.get("DragonDisableLogger") == "1":
+    del managed_processes['loggerd']
+    del managed_processes['tombstoned']
+
   try:
     manager_update()
     manager_init()

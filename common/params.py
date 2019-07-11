@@ -82,6 +82,8 @@ keys = {
   "DragonDisableDriverSafetyCheck": [TxType.PERSISTENT],
   "DragonAutoShutdownAt": [TxType.PERSISTENT],
   "DragonTempDisableSteerOnSignal": [TxType.PERSISTENT],
+  "DragonDisableLogger": [TxType.PERSISTENT],
+  "DragonNoctuaMode": [TxType.PERSISTENT],
 }
 
 
