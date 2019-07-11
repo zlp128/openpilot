@@ -5,7 +5,7 @@ from common.fingerprints import eliminate_incompatible_cars, all_known_cars
 from selfdrive.boardd.boardd import can_list_to_can_capnp
 from selfdrive.swaglog import cloudlog
 import selfdrive.messaging as messaging
-import ast
+import pickle
 from common.params import Params
 params = Params()
 
@@ -84,7 +84,7 @@ def fingerprint(logcan, sendcan):
   frame = 0
 
   if params.get("DragonUseCachedCar") == "1" and params.get("DragonCachedCar") is not None:
-    candidate_cars, finger, vin = ast.literal_eval(params.get("DragonCachedCar"))
+    candidate_cars, finger, vin = pickle.loads(params.get("DragonCachedCar"))
   else:
     while True:
       a = messaging.recv_one(logcan)
@@ -139,7 +139,7 @@ def fingerprint(logcan, sendcan):
     if vin_step == len(vin_cnts) and vin_cnt == vin_cnts[-1]:
       vin = "".join(vin_dat[3:])
 
-  params.put("DragonCachedCar", repr([candidate_cars, finger, vin]))
+  params.put("DragonCachedCar", pickle.dumps([candidate_cars, finger, vin]))
 
   cloudlog.warning("fingerprinted %s", candidate_cars[0])
   cloudlog.warning("VIN %s", vin)
