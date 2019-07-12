@@ -12,6 +12,10 @@ default_conf = {
   'DragonTempDisableSteerOnSignal': '0',
   'DragonDisableLogger': '0',
   'DragonNoctuaMode': '0',
+  'DragonCacheCar': '1',
+  'DragonCachedModel': '', # for cache car
+  'DragonCachedFP': '', # for cache car
+  'DragonCachedVIN': '', # for cache car
 }
 
 def dragonpilot_set_params(params):
