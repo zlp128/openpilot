@@ -664,14 +664,14 @@ ALERTS = [
 
   Alert(
     "manualSteeringRequired",
-    "STEERING REQUIRED: Lane Keeping OFF",
+    "請接管方向盤: 車道維持關閉",
     "",
     AlertStatus.normal, AlertSize.small,
     Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.25),
 
   Alert(
     "manualSteeringRequiredBlinkersOn",
-    "STEERING REQUIRED: Blinkers ON",
+    "請接管方向盤: 方向燈開啟",
     "",
     AlertStatus.normal, AlertSize.small,
     Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.25),
