@@ -37,7 +37,7 @@ cd /data
 mv openpilot openpilot_bak
 
 # 下載 dragonpilot 並命名為 openpilot
-git clone https://github.com/dragonpilot-community/dragonpilot-release.git openpilot
+git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot
 
 # 切換到 openpilot 的資料夾
 cd openpilot
@@ -46,8 +46,13 @@ cd openpilot
 git pull
 
 #################################
-## 切換想使用的語系，以下二選一
+## 切換想使用的語系，以下三選一
 #################################
+
+# (英文)
+git checkout release-en
+
+# 或是
 
 # (简体中文)
 git checkout release-zhs
@@ -58,7 +63,7 @@ git checkout release-zhs
 git checkout release-zht
 
 #################################
-## 二選一結束
+## 三選一結束
 #################################
 
 # 確認沒有錯誤
@@ -67,3 +72,15 @@ make
 # 重開機
 reboot
 ```
+
+分支介紹
+---
+* docs: 說明
+* devel-en: 開發版 - (英文, 基於官方原版 + 客制化功能)
+* devel-zhs: 開發版 - (简体中文, 基於 devel-en + 简体中文化)
+* devel-zht: 開發版 - (繁體中文, 基於 devel-en + 繁體中文化)
+* release-en: 穩定版 - (英文, 測試過的 devel-en)
+* release-zhs: 穩定版 - (简体中文, 測試過的 devel-zhs)
+* release-zht: 穩定版 - (繁體中文, 測試過的 devel-zht)
+
+其它沒有說明的分支為測試功能版
