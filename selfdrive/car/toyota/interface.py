@@ -8,7 +8,8 @@ from selfdrive.car.toyota.carstate import CarState, get_can_parser, get_cam_can_
 from selfdrive.car.toyota.values import ECU, check_ecu_msgs, CAR, NO_STOP_TIMER_CAR
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness
 from selfdrive.swaglog import cloudlog
-
+from common.params import Params
+params = Params()
 
 class CarInterface(object):
   def __init__(self, CP, CarController):
@@ -340,7 +341,9 @@ class CarInterface(object):
       events.append(create_event('wrongCarMode', [ET.NO_ENTRY, ET.USER_DISABLE]))
     if ret.gearShifter == 'reverse' and self.CP.enableDsu:
       events.append(create_event('reverseGear', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
-    if self.CS.steer_error:
+    if (self.CS.left_blinker_on or self.CS.right_blinker_on) and params.get("DragonTempDisableSteerOnSignal") == "1":
+      events.append(create_event('manualSteeringRequiredBlinkersOn', [ET.WARNING]))
+    elif self.CS.steer_error:
       events.append(create_event('steerTempUnavailable', [ET.NO_ENTRY, ET.WARNING]))
     if self.CS.low_speed_lockout and self.CP.enableDsu:
       events.append(create_event('lowSpeedLockout', [ET.NO_ENTRY, ET.PERMANENT]))
