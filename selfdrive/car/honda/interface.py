@@ -12,6 +12,8 @@ from selfdrive.car.honda.carstate import CarState, get_can_parser, get_cam_can_p
 from selfdrive.car.honda.values import CruiseButtons, CAR, HONDA_BOSCH, AUDIO_HUD, VISUAL_HUD, CAMERA_MSGS
 from selfdrive.car import STD_CARGO_KG, CivicParams, scale_rot_inertia, scale_tire_stiffness
 from selfdrive.controls.lib.planner import _A_CRUISE_MAX_V_FOLLOWING
+from common.params import Params
+params = Params()
 
 A_ACC_MAX = max(_A_CRUISE_MAX_V_FOLLOWING)
 
@@ -475,7 +477,7 @@ class CarInterface(object):
       events.append(create_event('invalidGiraffeHonda', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE, ET.PERMANENT]))
     if not self.CS.lkMode:
       events.append(create_event('manualSteeringRequired', [ET.WARNING]))
-    elif self.CS.lkMode and (self.CS.left_blinker_on or self.CS.right_blinker_on):
+    elif self.CS.lkMode and (self.CS.left_blinker_on or self.CS.right_blinker_on) and params.get("DragonTempDisableSteerOnSignal") == "1":
       events.append(create_event('manualSteeringRequiredBlinkersOn', [ET.WARNING]))
     elif self.CS.steer_error:
       events.append(create_event('steerUnavailable', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE, ET.PERMANENT]))
