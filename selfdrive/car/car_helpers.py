@@ -84,9 +84,9 @@ def fingerprint(logcan, sendcan):
   frame = 0
 
   if params.get("DragonCacheCar") == "1" and params.get("DragonCachedFP") != "" and params.get("DragonCachedModel") != "":
-    candidate_cars = params.get("DragonCachedModel")
-    finger = params.get("DragonCachedFP")
-    vin = params.get("DragonCachedVIN")
+    candidate_cars = pickle.loads(params.get("DragonCachedModel"))
+    finger = pickle.loads(params.get("DragonCachedFP"))
+    vin = pickle.loads(params.get("DragonCachedVIN"))
   else:
     while True:
       a = messaging.recv_one(logcan)
