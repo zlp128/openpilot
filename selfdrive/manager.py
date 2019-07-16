@@ -118,7 +118,6 @@ managed_processes = {
   "updated": "selfdrive.updated",
   "athena": "selfdrive.athena.athenad",
   "dashcamd": "selfdrive.dragonpilot.dashcamd.dashcamd",
-  "safeguardd": "selfdrive.dragonpilot.safeguardd.safeguardd",
   "shutdownd": "selfdrive.dragonpilot.shutdownd.shutdownd",
 }
 android_packages = ("ai.comma.plus.offroad", "ai.comma.plus.frame")
@@ -142,7 +141,6 @@ persistent_processes = [
   'ui',
   'updated',
   'athena',
-  'safeguardd',
   'shutdownd',
 ]
 
