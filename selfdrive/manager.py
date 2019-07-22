@@ -527,6 +527,9 @@ def main():
     del managed_processes['loggerd']
     del managed_processes['tombstoned']
 
+  if params.get("DragonDisableUploader") == "1":
+    del managed_processes['uploader']
+
   try:
     manager_update()
     manager_init()
