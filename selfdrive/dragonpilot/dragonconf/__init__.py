@@ -11,6 +11,7 @@ default_conf = {
   'DragonAutoShutdownAt': '30', # in minute
   'DragonTempDisableSteerOnSignal': '0',
   'DragonDisableLogger': '0',
+  'DragonDisableUploader': '0',
   'DragonNoctuaMode': '0',
   'DragonCacheCar': '1',
   'DragonCachedModel': '', # for cache car
