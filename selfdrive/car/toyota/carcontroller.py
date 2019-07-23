@@ -229,6 +229,19 @@ class CarController(object):
     elif ECU.APGS in self.fake_ecus:
       can_sends.append(create_ipas_steer_command(self.packer, 0, 0, True))
 
+    # DragonAllowGas
+    # if we detect gas pedal pressed, we do not want OP to apply gas or brake
+    # gasPressed code from interface.py
+    if CS.CP.enableGasInterceptor:
+      # use interceptor values to disengage on pedal press
+      gasPressed = CS.pedal_gas > 15
+    else:
+      gasPressed = CS.pedal_gas > 0
+
+    if params.get("DragonAllowGas") == "1" and gasPressed:
+      apply_accel = 0
+      apply_gas = 0
+
     # accel cmd comes from DSU, but we can spam can to cancel the system even if we are using lat only control
     if (frame % 3 == 0 and ECU.DSU in self.fake_ecus) or (pcm_cancel_cmd and ECU.CAM in self.fake_ecus):
       lead = lead or CS.v_ego < 12.    # at low speed we always assume the lead is present do ACC can be engaged
