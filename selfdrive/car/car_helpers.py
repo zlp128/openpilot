@@ -147,9 +147,9 @@ def fingerprint(logcan, sendcan):
     if vin_step == len(vin_cnts) and vin_cnt == vin_cnts[-1]:
       vin = "".join(vin_dat[3:])
 
-    params.put("DragonCachedModel", pickle.dumps(candidate_cars))
-    params.put("DragonCachedFP", pickle.dumps(finger))
-    params.put("DragonCachedVIN", pickle.dumps(vin))
+  params.put("DragonCachedModel", pickle.dumps(candidate_cars))
+  params.put("DragonCachedFP", pickle.dumps(finger))
+  params.put("DragonCachedVIN", pickle.dumps(vin))
 
   cloudlog.warning("fingerprinted %s", candidate_cars[0])
   cloudlog.warning("VIN %s", vin)
