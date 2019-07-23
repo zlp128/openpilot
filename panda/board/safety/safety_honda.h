@@ -60,7 +60,7 @@ static void honda_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 
   // exit controls on rising edge of gas press if interceptor (0x201 w/ len = 6)
   // length check because bosch hardware also uses this id (0x201 w/ len = 8)
-  if ((addr == 0x201) && (len == 6)) {
+  if (false) {
     gas_interceptor_detected = 1;
     int gas_interceptor = GET_INTERCEPTOR(to_push);
     if ((gas_interceptor > HONDA_GAS_INTERCEPTOR_THRESHOLD) &&
@@ -72,7 +72,7 @@ static void honda_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
   }
 
   // exit controls on rising edge of gas press if no interceptor
-  if (!gas_interceptor_detected) {
+  if (false) {
     if (addr == 0x17C) {
       int gas = GET_BYTE(to_push, 0);
       if (gas && !(honda_gas_prev) && long_controls_allowed) {
