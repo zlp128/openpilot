@@ -182,6 +182,16 @@ class CarController(object):
         idx = frame // 2
         ts = frame * DT_CTRL
         pump_on, self.last_pump_ts = brake_pump_hysteresis(apply_brake, self.apply_brake_last, self.last_pump_ts, ts)
+        # DragonAllowGas
+        # if we detect gas pedal pressed, we do not want OP to apply gas or brake
+        # gasPressed code from interface.py
+        if not CS.CP.enableGasInterceptor:
+          gasPressed = CS.pedal_gas > 0
+        else:
+          gasPressed = CS.user_gas_pressed
+        if params.get("DragonAllowGas") == "1" and gasPressed:
+          apply_brake = 0
+          apply_gas = 0
         can_sends.append(hondacan.create_brake_command(self.packer, apply_brake, pump_on,
           pcm_override, pcm_cancel_cmd, hud.chime, hud.fcw, idx))
         self.apply_brake_last = apply_brake
