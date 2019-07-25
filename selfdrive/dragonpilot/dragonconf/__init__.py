@@ -18,6 +18,7 @@ default_conf = {
   'DragonCachedFP': '', # for cache car
   'DragonCachedVIN': '', # for cache car
   'DragonAllowGas': '0',
+  'DragonBBUI': '0',
 }
 
 def dragonpilot_set_params(params):
