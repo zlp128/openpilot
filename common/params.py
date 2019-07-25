@@ -88,6 +88,7 @@ keys = {
   "DragonCachedModel": [TxType.PERSISTENT],
   "DragonCachedFP": [TxType.PERSISTENT],
   "DragonCachedVIN": [TxType.PERSISTENT],
+  "DragonBBUI": [TxType.PERSISTENT],
 }
 
 
