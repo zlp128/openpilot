@@ -53,6 +53,8 @@ def _get_interface_names():
 # imports from directory selfdrive/car/<name>/
 interfaces = load_interfaces(_get_interface_names())
 
+def only_toyota_left(candidate_cars):
+  return all(("TOYOTA" in c or "LEXUS" in c) for c in candidate_cars)
 
 # BOUNTY: every added fingerprint in selfdrive/car/*/values.py is a $100 coupon code on shop.comma.ai
 # **** for use live only ****
@@ -62,7 +64,7 @@ def fingerprint(logcan, sendcan):
   elif os.getenv("SIMULATOR") is not None:
     return ("simulator", None, "")
 
-  finger = {}
+  finger = {0: {}, 2:{}}  # collect on bus 0 or 2
   cloudlog.warning("waiting for fingerprint...")
   candidate_cars = all_known_cars()
   can_seen_frame = None
@@ -82,6 +84,7 @@ def fingerprint(logcan, sendcan):
   vin = ""
 
   frame = 0
+
 
   if params.get("DragonCacheCar") == "1" and params.get("DragonCachedFP") != "" and params.get("DragonCachedModel") != "":
     candidate_cars = pickle.loads(params.get("DragonCachedModel"))
@@ -107,9 +110,12 @@ def fingerprint(logcan, sendcan):
 
         # ignore everything not on bus 0 and with more than 11 bits,
         # which are ussually sporadic and hard to include in fingerprints.
-        # also exclude VIN query response on 0x7e8
-        if can.src == 0 and can.address < 0x800 and can.address != 0x7e8:
-          finger[can.address] = len(can.dat)
+        # also exclude VIN query response on 0x7e8.
+        # Include bus 2 for toyotas to disambiguate cars using camera messages
+        # (ideally should be done for all cars but we can't for Honda Bosch)
+        if (can.src == 0 or (only_toyota_left(candidate_cars) and can.src == 2)) and \
+           can.address < 0x800 and can.address != 0x7e8:
+          finger[can.src][can.address] = len(can.dat)
           candidate_cars = eliminate_incompatible_cars(can, candidate_cars)
 
       if can_seen_frame is None and can_seen:
@@ -119,7 +125,7 @@ def fingerprint(logcan, sendcan):
       # message has elapsed, exit. Toyota needs higher time_fingerprint, since DSU does not
       # broadcast immediately
       if len(candidate_cars) == 1 and can_seen_frame is not None:
-        time_fingerprint = 1.0 if ("TOYOTA" in candidate_cars[0] or "LEXUS" in candidate_cars[0]) else 0.1
+        time_fingerprint = 1.0 if only_toyota_left(candidate_cars) else 0.1
         if (frame - can_seen_frame) > (time_fingerprint * 100):
           break
 
@@ -141,9 +147,9 @@ def fingerprint(logcan, sendcan):
     if vin_step == len(vin_cnts) and vin_cnt == vin_cnts[-1]:
       vin = "".join(vin_dat[3:])
 
-    params.put("DragonCachedModel", pickle.dumps(candidate_cars))
-    params.put("DragonCachedFP", pickle.dumps(finger))
-    params.put("DragonCachedVIN", pickle.dumps(vin))
+  params.put("DragonCachedModel", pickle.dumps(candidate_cars))
+  params.put("DragonCachedFP", pickle.dumps(finger))
+  params.put("DragonCachedVIN", pickle.dumps(vin))
 
   cloudlog.warning("fingerprinted %s", candidate_cars[0])
   cloudlog.warning("VIN %s", vin)
@@ -159,6 +165,6 @@ def get_car(logcan, sendcan):
     candidate = "mock"
 
   CarInterface, CarController = interfaces[candidate]
-  params = CarInterface.get_params(candidate, fingerprints, vin)
+  params = CarInterface.get_params(candidate, fingerprints[0], vin)
 
   return CarInterface(params, CarController), params
