@@ -360,18 +360,17 @@ class CarInterface(object):
     return ret
 
   # returns a car.CarState
-  def update(self, c):
+  def update(self, c, can_strings):
     # ******************* do can recv *******************
-    canMonoTimes = []
-    can_rcv_valid, _ = self.cp.update(int(sec_since_boot() * 1e9), True)
-    cam_rcv_valid, _ = self.cp_cam.update(int(sec_since_boot() * 1e9), False)
+    self.cp.update_strings(int(sec_since_boot() * 1e9), can_strings)
+    self.cp_cam.update_strings(int(sec_since_boot() * 1e9), can_strings)
 
     self.CS.update(self.cp, self.cp_cam)
 
     # create message
     ret = car.CarState.new_message()
 
-    ret.canValid = can_rcv_valid and cam_rcv_valid and self.cp.can_valid
+    ret.canValid = self.cp.can_valid
 
     # speeds
     ret.vEgo = self.CS.v_ego
@@ -505,13 +504,18 @@ class CarInterface(object):
     if self.CP.enableCruise and ret.vEgo < self.CP.minEnableSpeed:
       events.append(create_event('speedTooLow', [ET.NO_ENTRY]))
 
-    # disable on pedals rising edge or when brake is pressed and speed isn't zero
-    if (ret.gasPressed and not self.gas_pressed_prev) or \
-       (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001)):
-      events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
+    # DragonAllowGas
+    if params.get("DragonAllowGas") == "0":
+      # disable on pedals rising edge or when brake is pressed and speed isn't zero
+      if (ret.gasPressed and not self.gas_pressed_prev) or \
+         (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001)):
+        events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
-    if ret.gasPressed:
-      events.append(create_event('pedalPressed', [ET.PRE_ENABLE]))
+      if ret.gasPressed:
+        events.append(create_event('pedalPressed', [ET.PRE_ENABLE]))
+    else:
+      if ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001):
+        events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
     # it can happen that car cruise disables while comma system is enabled: need to
     # keep braking if needed or if the speed is very low
@@ -553,7 +557,6 @@ class CarInterface(object):
       events.append(create_event('buttonEnable', [ET.ENABLE]))
 
     ret.events = events
-    ret.canMonoTimes = canMonoTimes
 
     # update previous brake/gas pressed
     self.gas_pressed_prev = ret.gasPressed
