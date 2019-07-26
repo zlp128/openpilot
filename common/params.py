@@ -82,11 +82,15 @@ keys = {
   "Version": [TxType.PERSISTENT],
   #dragonpilot config
   "DragonEnableDashcam": [TxType.PERSISTENT],
-  "DragonDisableDriverSafetyCheck": [TxType.PERSISTENT],
+  "DragonDisableDriverSafetyCheck": [TxType.PERSISTENT], # deprecated
+  "DragonEnableDriverSafetyCheck": [TxType.PERSISTENT],
   "DragonAutoShutdownAt": [TxType.PERSISTENT],
-  "DragonTempDisableSteerOnSignal": [TxType.PERSISTENT],
-  "DragonDisableLogger": [TxType.PERSISTENT],
-  "DragonDisableUploader": [TxType.PERSISTENT],
+  "DragonTempDisableSteerOnSignal": [TxType.PERSISTENT], # deprecated
+  "DragonEnableSteeringOnSignal": [TxType.PERSISTENT],
+  "DragonDisableLogger": [TxType.PERSISTENT], # deprecated
+  "DragonEnableLogger": [TxType.PERSISTENT],
+  "DragonDisableUploader": [TxType.PERSISTENT], # deprecated
+  "DragonEnableUploader": [TxType.PERSISTENT],
   "DragonNoctuaMode": [TxType.PERSISTENT],
   "DragonCacheCar": [TxType.PERSISTENT],
   "DragonCachedModel": [TxType.PERSISTENT],
