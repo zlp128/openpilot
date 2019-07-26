@@ -93,6 +93,7 @@ keys = {
   "DragonCachedFP": [TxType.PERSISTENT],
   "DragonCachedVIN": [TxType.PERSISTENT],
   "DragonAllowGas": [TxType.PERSISTENT],
+  "DragonBBUI": [TxType.PERSISTENT],
 }
 
 
