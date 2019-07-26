@@ -204,7 +204,7 @@ class CarController(object):
     can_sends = []
 
     # dragonpilot
-    if enabled and (CS.left_blinker_on or CS.right_blinker_on) and params.get("DragonTempDisableSteerOnSignal") == "1":
+    if enabled and (CS.left_blinker_on or CS.right_blinker_on) and params.get("DragonEnableSteeringOnSignal") == "1":
       self.turning_signal_timer = 100
 
     if self.turning_signal_timer > 0:
