@@ -349,7 +349,7 @@ class CarInterface(object):
       events.append(create_event('wrongCarMode', [ET.NO_ENTRY, ET.USER_DISABLE]))
     if ret.gearShifter == 'reverse' and self.CP.enableDsu:
       events.append(create_event('reverseGear', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
-    if (self.CS.left_blinker_on or self.CS.right_blinker_on) and params.get("DragonTempDisableSteerOnSignal") == "1":
+    if (self.CS.left_blinker_on or self.CS.right_blinker_on) and params.get("DragonEnableSteeringOnSignal") == "1":
       events.append(create_event('manualSteeringRequiredBlinkersOn', [ET.WARNING]))
     elif self.CS.steer_error:
       events.append(create_event('steerTempUnavailable', [ET.NO_ENTRY, ET.WARNING]))
