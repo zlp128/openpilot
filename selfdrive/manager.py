@@ -591,11 +591,11 @@ def main():
       cwd=os.path.join(BASEDIR, "selfdrive", "ui", "spinner"),
       close_fds=True)
 
-  if params.get("DragonDisableLogger") == "1":
+  if params.get("DragonEnableLogger") == "0":
     del managed_processes['loggerd']
     del managed_processes['tombstoned']
 
-  if params.get("DragonDisableUploader") == "1":
+  if params.get("DragonEnableUploader") == "0":
     del managed_processes['uploader']
 
   try:
