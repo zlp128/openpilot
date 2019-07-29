@@ -33,7 +33,11 @@ class CarInterface(object):
     if CarController is not None:
       self.CC = CarController(self.cp.dbc_name, CP.carFingerprint, CP.enableCamera, CP.enableDsu, CP.enableApgs)
 
-    self.dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
+    # dragonpilot
+    self.dragon_toyota_stock_dsu = False
+    self.dragon_enable_steering_on_signal = False
+    self.dragon_allow_gas = False
+    self.ts_last_check = 0.
 
   @staticmethod
   def compute_gb(accel, speed):
@@ -250,6 +254,14 @@ class CarInterface(object):
 
   # returns a car.CarState
   def update(self, c, can_strings):
+    # dragonpilot, don't check for param too often as it's a kernel call
+    ts = sec_since_boot()
+    if ts - self.ts_last_check > 1.:
+      self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
+      self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
+      self.dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
+      self.ts_last_check = ts
+
     # ******************* do can recv *******************
     self.cp.update_strings(int(sec_since_boot() * 1e9), can_strings)
 
@@ -351,7 +363,7 @@ class CarInterface(object):
       events.append(create_event('wrongCarMode', [ET.NO_ENTRY, ET.USER_DISABLE]))
     if ret.gearShifter == 'reverse' and self.CP.enableDsu:
       events.append(create_event('reverseGear', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
-    if (self.CS.left_blinker_on or self.CS.right_blinker_on) and params.get("DragonEnableSteeringOnSignal") == "1":
+    if (self.CS.left_blinker_on or self.CS.right_blinker_on) and self.dragon_enable_steering_on_signal:
       events.append(create_event('manualSteeringRequiredBlinkersOn', [ET.WARNING]))
     elif self.CS.steer_error:
       events.append(create_event('steerTempUnavailable', [ET.NO_ENTRY, ET.WARNING]))
@@ -374,7 +386,7 @@ class CarInterface(object):
 
     if not self.dragon_toyota_stock_dsu:
       # DragonAllowGas
-      if params.get("DragonAllowGas") == "0":
+      if not self.dragon_allow_gas:
         # disable on pedals rising edge or when brake is pressed and speed isn't zero
         if (ret.gasPressed and not self.gas_pressed_prev) or \
            (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001)):
