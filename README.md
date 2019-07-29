@@ -9,6 +9,14 @@ dragonpilot (龍芯駕駛輔助系統)
 * 簡潔的行車介面
 * 優化路線預測
 * 斷電自動關機
+* 轉向燈/方向燈暫時取消控制
+* 停止 AI 訓練記錄
+* 取消 AI 訓練記錄上傳
+* 允許油門，dp 控制時可踩油門
+* Noctua 風扇模式
+* 完全取消駕駛監控 (人臉+方向盤)
+* [HONDA] ACC 模式，讓 dp 只操控油門/剎車
+
 
 
 硬體需求
@@ -79,8 +87,8 @@ reboot
 * devel-en: 開發版 - (英文, 基於官方原版 + 客制化功能)
 * devel-zhs: 開發版 - (简体中文, 基於 devel-en + 简体中文化)
 * devel-zht: 開發版 - (繁體中文, 基於 devel-en + 繁體中文化)
-* release-en: 穩定版 - (英文, 測試過的 devel-en)
-* release-zhs: 穩定版 - (简体中文, 測試過的 devel-zhs)
-* release-zht: 穩定版 - (繁體中文, 測試過的 devel-zht)
+* v?.?.?-en: 穩定版 - (英文, 測試過的 devel-en)
+* v?.?.?-zhs: 穩定版 - (简体中文, 測試過的 devel-zhs)
+* v?.?.?-zht: 穩定版 - (繁體中文, 測試過的 devel-zht)
 
 其它沒有說明的分支為測試功能版
