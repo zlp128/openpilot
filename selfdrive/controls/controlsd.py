@@ -479,6 +479,8 @@ def controlsd_thread(gctx=None):
 
   prof = Profiler(False)  # off by default
 
+  dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
+
   while True:
     start_time = sec_since_boot()
     prof.checkpoint("Ratekeeper", ignore=True)
@@ -505,9 +507,10 @@ def controlsd_thread(gctx=None):
     if not CS.canValid:
       events.append(create_event('canError', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
 
-    # Only allow engagement with brake pressed when stopped behind another stopped car
-    if CS.brakePressed and sm['plan'].vTargetFuture >= STARTING_TARGET_SPEED and not CP.radarOffCan and CS.vEgo < 0.3:
-      events.append(create_event('noTarget', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
+    if dragon_toyota_stock_dsu:
+      # Only allow engagement with brake pressed when stopped behind another stopped car
+      if CS.brakePressed and sm['plan'].vTargetFuture >= STARTING_TARGET_SPEED and not CP.radarOffCan and CS.vEgo < 0.3:
+        events.append(create_event('noTarget', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
 
     if not read_only:
       # update control state
