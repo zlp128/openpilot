@@ -55,20 +55,21 @@ git pull
 
 #################################
 ## 切換想使用的語系，以下三選一
+## 0.6.1 可換成不同的版本
 #################################
 
 # (英文)
-git checkout release-en
+git checkout 0.6.1-en
 
 # 或是
 
 # (简体中文)
-git checkout release-zhs
+git checkout 0.6.1-zhs
 
 # 或是
 
 # (繁體中文）
-git checkout release-zht
+git checkout 0.6.1-zht
 
 #################################
 ## 三選一結束
@@ -87,8 +88,8 @@ reboot
 * devel-en: 開發版 - (英文, 基於官方原版 + 客制化功能)
 * devel-zhs: 開發版 - (简体中文, 基於 devel-en + 简体中文化)
 * devel-zht: 開發版 - (繁體中文, 基於 devel-en + 繁體中文化)
-* v?.?.?-en: 穩定版 - (英文, 測試過的 devel-en)
-* v?.?.?-zhs: 穩定版 - (简体中文, 測試過的 devel-zhs)
-* v?.?.?-zht: 穩定版 - (繁體中文, 測試過的 devel-zht)
+* ?.?.?-en: 穩定版 - (英文, 測試過的 devel-en)
+* ?.?.?-zhs: 穩定版 - (简体中文, 測試過的 devel-zhs)
+* ?.?.?-zht: 穩定版 - (繁體中文, 測試過的 devel-zht)
 
 其它沒有說明的分支為測試功能版
