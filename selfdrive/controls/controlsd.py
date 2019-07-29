@@ -479,9 +479,17 @@ def controlsd_thread(gctx=None):
 
   prof = Profiler(False)  # off by default
 
-  dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
+  # dragonpilot
+  ts_last_check = 0.
+  dragon_toyota_stock_dsu = False
 
   while True:
+    # dragonpilot, don't check for param too often as it's a kernel call
+    ts = sec_since_boot()
+    if ts - ts_last_check > 1.:
+      dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
+      ts_last_check = ts
+
     start_time = sec_since_boot()
     prof.checkpoint("Ratekeeper", ignore=True)
 
