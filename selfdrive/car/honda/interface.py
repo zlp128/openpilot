@@ -98,6 +98,11 @@ class CarInterface(object):
     else:
       self.compute_gb = compute_gb_honda
 
+    # dragonpilot
+    self.dragon_enable_steering_on_signal = False
+    self.dragon_allow_gas = False
+    self.ts_last_check = 0.
+
   @staticmethod
   def calc_accel_override(a_ego, a_target, v_ego, v_target):
 
@@ -361,6 +366,13 @@ class CarInterface(object):
 
   # returns a car.CarState
   def update(self, c, can_strings):
+    # dragonpilot, don't check for param too often as it's a kernel call
+    ts = sec_since_boot()
+    if ts - self.ts_last_check > 1.:
+      self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
+      self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
+      self.ts_last_check = ts
+
     # ******************* do can recv *******************
     self.cp.update_strings(int(sec_since_boot() * 1e9), can_strings)
     self.cp_cam.update_strings(int(sec_since_boot() * 1e9), can_strings)
@@ -476,7 +488,7 @@ class CarInterface(object):
       events.append(create_event('invalidGiraffeHonda', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE, ET.PERMANENT]))
     if not self.CS.lkMode:
       events.append(create_event('manualSteeringRequired', [ET.WARNING]))
-    elif self.CS.lkMode and (self.CS.left_blinker_on or self.CS.right_blinker_on) and params.get("DragonEnableSteeringOnSignal") == "1":
+    elif self.CS.lkMode and (self.CS.left_blinker_on or self.CS.right_blinker_on) and self.dragon_enable_steering_on_signal:
       events.append(create_event('manualSteeringRequiredBlinkersOn', [ET.WARNING]))
     elif self.CS.steer_error:
       events.append(create_event('steerUnavailable', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE, ET.PERMANENT]))
@@ -505,7 +517,7 @@ class CarInterface(object):
       events.append(create_event('speedTooLow', [ET.NO_ENTRY]))
 
     # DragonAllowGas
-    if params.get("DragonAllowGas") == "0":
+    if not self.dragon_allow_gas:
       # disable on pedals rising edge or when brake is pressed and speed isn't zero
       if (ret.gasPressed and not self.gas_pressed_prev) or \
          (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001)):
