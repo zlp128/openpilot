@@ -5,6 +5,9 @@ from selfdrive.can.parser import CANParser
 from selfdrive.config import Conversions as CV
 from selfdrive.car.toyota.values import CAR, DBC, STEER_THRESHOLD, TSS2_CAR
 
+from common.params import Params
+params = Params()
+
 def parse_gear_shifter(gear, vals):
 
   val_to_capnp = {'P': 'park', 'R': 'reverse', 'N': 'neutral',
@@ -108,6 +111,8 @@ class CarState(object):
                          K=[[0.12287673], [0.29666309]])
     self.v_ego = 0.0
 
+    self.dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
+
   def update(self, cp):
     # update prevs, update must run once per loop
     self.prev_left_blinker_on = self.left_blinker_on
@@ -173,3 +178,10 @@ class CarState(object):
       self.generic_toggle = cp.vl["AUTOPARK_STATUS"]['STATE'] != 0
     else:
       self.generic_toggle = bool(cp.vl["LIGHT_STALK"]['AUTO_HIGH_BEAM'])
+
+    if self.dragon_toyota_stock_dsu and self.generic_toggle and self.main_on:
+      self.pcm_acc_active = True
+      if self.standstill:
+        self.pcm_acc_status = 7
+      else:
+        self.pcm_acc_status = 1
