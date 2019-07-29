@@ -5,6 +5,7 @@ from selfdrive.can.parser import CANParser
 from selfdrive.config import Conversions as CV
 from selfdrive.car.toyota.values import CAR, DBC, STEER_THRESHOLD, TSS2_CAR
 
+from common.realtime import sec_since_boot
 from common.params import Params
 params = Params()
 
@@ -111,9 +112,16 @@ class CarState(object):
                          K=[[0.12287673], [0.29666309]])
     self.v_ego = 0.0
 
-    self.dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
+    self.dragon_toyota_stock_dsu = False
+    self.ts_last_check = 0.
 
   def update(self, cp):
+    # dragonpilot, don't check for param too often as it's a kernel call
+    ts = sec_since_boot()
+    if ts - self.ts_last_check > 1.:
+      self.dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
+      self.ts_last_check = ts
+
     # update prevs, update must run once per loop
     self.prev_left_blinker_on = self.left_blinker_on
     self.prev_right_blinker_on = self.right_blinker_on

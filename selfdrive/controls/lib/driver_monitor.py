@@ -74,6 +74,10 @@ class DriverStatus():
     self.terminal_alert_cnt = 0
     self._set_timers()
 
+    # dragonpilot
+    self.dp_last_check = 0.
+    self.dragon_enable_driver_safety_check = True
+
   def _reset_filters(self):
     self.driver_distraction_filter.x = 0.
     self.variance_filter.x = 0.
@@ -135,6 +139,11 @@ class DriverStatus():
 
 
   def update(self, events, driver_engaged, ctrl_active, standstill):
+    # don't check for param too often as it's a kernel call
+    ts = sec_since_boot()
+    if ts - self.dp_last_check > 1.:
+      self.dragon_enable_driver_safety_check = False if params.get("DragonEnableDriverSafetyCheck") == "0" else True
+      self.dp_last_check = ts
 
     driver_engaged |= (self.driver_distraction_filter.x < 0.37 and self.monitor_on)
     awareness_prev = self.awareness
@@ -160,7 +169,7 @@ class DriverStatus():
     elif self.awareness <= self.threshold_pre:
       # pre green alert
       alert = 'preDriverDistracted' if self.monitor_on else 'preDriverUnresponsive'
-    if alert is not None and params.get("DragonEnableDriverSafetyCheck") == "1":
+    if alert is not None and self.dragon_enable_driver_safety_check:
       events.append(create_event(alert, [ET.WARNING]))
 
     return events
