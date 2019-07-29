@@ -372,7 +372,7 @@ class CarInterface(object):
     elif not ret.cruiseState.enabled:
       events.append(create_event('pcmDisable', [ET.USER_DISABLE]))
 
-    if self.dragon_toyota_stock_dsu:
+    if not self.dragon_toyota_stock_dsu:
       # DragonAllowGas
       if params.get("DragonAllowGas") == "0":
         # disable on pedals rising edge or when brake is pressed and speed isn't zero
