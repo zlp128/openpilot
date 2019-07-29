@@ -18,6 +18,9 @@ dragonpilot (龍芯駕駛輔助系統)
 * [HONDA] ACC 模式，讓 dp 只操控油門/剎車
 
 
+畫面截圖
+---
+![](dp_1.png) ![](dp_2.png) ![](dp_3.png) ![](dp_4.png) ![](dp_5.png)
 
 硬體需求
 ---
