@@ -128,10 +128,16 @@ class CarController(object):
 
     # dragonpilot
     self.turning_signal_timer = 0
+    self.dragon_enable_steering_on_signal = False
+    self.dragon_allow_gas = False
 
   def update(self, enabled, CS, frame, actuators,
              pcm_cancel_cmd, hud_alert, audible_alert, forwarding_camera,
              left_line, right_line, lead, left_lane_depart, right_lane_depart):
+    # dragonpilot, don't check for param too often as it's a kernel call
+    if frame % 100 == 0:
+      self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
+      self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
 
     # *** compute control surfaces ***
 
@@ -204,7 +210,7 @@ class CarController(object):
     can_sends = []
 
     # dragonpilot
-    if enabled and (CS.left_blinker_on or CS.right_blinker_on) and params.get("DragonEnableSteeringOnSignal") == "1":
+    if enabled and (CS.left_blinker_on or CS.right_blinker_on) and self.dragon_enable_steering_on_signal:
       self.turning_signal_timer = 100
 
     if self.turning_signal_timer > 0:
@@ -238,7 +244,7 @@ class CarController(object):
     else:
       gasPressed = CS.pedal_gas > 0
 
-    if params.get("DragonAllowGas") == "1" and gasPressed:
+    if self.dragon_allow_gas and gasPressed:
       apply_accel = 0
       apply_gas = 0
 

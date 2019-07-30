@@ -24,6 +24,7 @@ default_conf = {
   'DragonCachedVIN': '', # for cache car
   'DragonAllowGas': '0',
   'DragonBBUI': '0',
+  'DragonToyotaStockDSU': '0',
 }
 
 deprecated_conf = {
