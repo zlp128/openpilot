@@ -6,6 +6,7 @@ from common.basedir import BASEDIR
 from common.fingerprints import eliminate_incompatible_cars, all_known_cars
 from selfdrive.swaglog import cloudlog
 import selfdrive.messaging as messaging
+import pickle
 
 
 def get_startup_alert(car_recognized, controller_available):
@@ -65,58 +66,67 @@ def fingerprint(logcan, sendcan, is_panda_black):
   params = Params()
   car_params = params.get("CarParams")
 
-  if car_params is not None:
-    # use already stored VIN: a new VIN query cannot be done, since panda isn't in ELM327 mode
-    car_params = car.CarParams.from_bytes(car_params)
-    vin = VIN_UNKNOWN if car_params.carVin == "" else car_params.carVin
-  elif is_panda_black:
-    # Vin query only reliably works thorugh OBDII
-    vin = get_vin(logcan, sendcan, 1)
+  if params.get("DragonCacheCar") == "1" and params.get("DragonCachedFP") != "" and params.get("DragonCachedModel") != "":
+    car_fingerprint = pickle.loads(params.get("DragonCachedModel"))
+    finger = pickle.loads(params.get("DragonCachedFP"))
+    vin = pickle.loads(params.get("DragonCachedVIN"))
   else:
-    vin = VIN_UNKNOWN
+    if car_params is not None:
+      # use already stored VIN: a new VIN query cannot be done, since panda isn't in ELM327 mode
+      car_params = car.CarParams.from_bytes(car_params)
+      vin = VIN_UNKNOWN if car_params.carVin == "" else car_params.carVin
+    elif is_panda_black:
+      # Vin query only reliably works thorugh OBDII
+      vin = get_vin(logcan, sendcan, 1)
+    else:
+      vin = VIN_UNKNOWN
 
-  cloudlog.warning("VIN %s", vin)
-  Params().put("CarVin", vin)
+    cloudlog.warning("VIN %s", vin)
+    Params().put("CarVin", vin)
 
-  finger = {i: {} for i in range(0, 4)}  # collect on all buses
-  candidate_cars = {i: all_known_cars() for i in [0, 1]}  # attempt fingerprint on both bus 0 and 1
-  frame = 0
-  frame_fingerprint = 10  # 0.1s
-  car_fingerprint = None
-  done = False
+    finger = {i: {} for i in range(0, 4)}  # collect on all buses
+    candidate_cars = {i: all_known_cars() for i in [0, 1]}  # attempt fingerprint on both bus 0 and 1
+    frame = 0
+    frame_fingerprint = 10  # 0.1s
+    car_fingerprint = None
+    done = False
 
-  while not done:
-    a = messaging.recv_one(logcan)
+    while not done:
+      a = messaging.recv_one(logcan)
 
-    for can in a.can:
-      # need to independently try to fingerprint both bus 0 and 1 to work
-      # for the combo black_panda and honda_bosch. Ignore extended messages
-      # and VIN query response.
-      # Include bus 2 for toyotas to disambiguate cars using camera messages
-      # (ideally should be done for all cars but we can't for Honda Bosch)
+      for can in a.can:
+        # need to independently try to fingerprint both bus 0 and 1 to work
+        # for the combo black_panda and honda_bosch. Ignore extended messages
+        # and VIN query response.
+        # Include bus 2 for toyotas to disambiguate cars using camera messages
+        # (ideally should be done for all cars but we can't for Honda Bosch)
+        for b in candidate_cars:
+          if (can.src == b or (only_toyota_left(candidate_cars[b]) and can.src == 2)) and \
+             can.address < 0x800 and can.address not in [0x7df, 0x7e0, 0x7e8]:
+            finger[can.src][can.address] = len(can.dat)
+            candidate_cars[b] = eliminate_incompatible_cars(can, candidate_cars[b])
+
+      # if we only have one car choice and the time since we got our first
+      # message has elapsed, exit
       for b in candidate_cars:
-        if (can.src == b or (only_toyota_left(candidate_cars[b]) and can.src == 2)) and \
-           can.address < 0x800 and can.address not in [0x7df, 0x7e0, 0x7e8]:
-          finger[can.src][can.address] = len(can.dat)
-          candidate_cars[b] = eliminate_incompatible_cars(can, candidate_cars[b])
+        # Toyota needs higher time to fingerprint, since DSU does not broadcast immediately
+        if only_toyota_left(candidate_cars[b]):
+          frame_fingerprint = 100  # 1s
+        if len(candidate_cars[b]) == 1:
+          if frame > frame_fingerprint:
+            # fingerprint done
+            car_fingerprint = candidate_cars[b][0]
 
-    # if we only have one car choice and the time since we got our first
-    # message has elapsed, exit
-    for b in candidate_cars:
-      # Toyota needs higher time to fingerprint, since DSU does not broadcast immediately
-      if only_toyota_left(candidate_cars[b]):
-        frame_fingerprint = 100  # 1s
-      if len(candidate_cars[b]) == 1:
-        if frame > frame_fingerprint:
-          # fingerprint done
-          car_fingerprint = candidate_cars[b][0]
+      # bail if no cars left or we've been waiting for more than 2s
+      failed = all(len(cc) == 0 for cc in candidate_cars.itervalues()) or frame > 200
+      succeeded = car_fingerprint is not None
+      done = failed or succeeded
 
-    # bail if no cars left or we've been waiting for more than 2s
-    failed = all(len(cc) == 0 for cc in candidate_cars.itervalues()) or frame > 200
-    succeeded = car_fingerprint is not None
-    done = failed or succeeded
+      frame += 1
 
-    frame += 1
+    params.put("DragonCachedModel", pickle.dumps(car_fingerprint))
+    params.put("DragonCachedFP", pickle.dumps(finger))
+    params.put("DragonCachedVIN", pickle.dumps(vin))
 
   cloudlog.warning("fingerprinted %s", car_fingerprint)
   return car_fingerprint, finger, vin

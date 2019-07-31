@@ -18,7 +18,7 @@ default_conf = {
   'DragonDisableUploader': '0', # deprecated
   'DragonEnableUploader': '1',
   'DragonNoctuaMode': '0',
-  'DragonCacheCar': '1',
+  'DragonCacheCar': '0',
   'DragonCachedModel': '', # for cache car
   'DragonCachedFP': '', # for cache car
   'DragonCachedVIN': '', # for cache car
