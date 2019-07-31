@@ -222,7 +222,7 @@ class CarController(object):
     if not self.dragon_lat_ctrl:
       apply_steer_req = 0
 
-    if CS.v_ego > 12.5 and (not self.dragon_lat_ctrl or not enabled):
+    if CS.v_ego > 12.5 and not enabled:
       if right_lane_depart and not CS.right_blinker_on:
         apply_steer = self.last_steer + 3
         apply_steer = min(apply_steer , 800)
