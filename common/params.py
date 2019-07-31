@@ -94,10 +94,10 @@ keys = {
   "DragonDisableUploader": [TxType.PERSISTENT], # deprecated
   "DragonEnableUploader": [TxType.PERSISTENT],
   "DragonNoctuaMode": [TxType.PERSISTENT],
-  "DragonCacheCar": [TxType.PERSISTENT],
-  "DragonCachedModel": [TxType.PERSISTENT],
-  "DragonCachedFP": [TxType.PERSISTENT],
-  "DragonCachedVIN": [TxType.PERSISTENT],
+  "DragonCacheCar": [TxType.PERSISTENT], # deprecated
+  "DragonCachedModel": [TxType.PERSISTENT], # deprecated
+  "DragonCachedFP": [TxType.PERSISTENT], # deprecated
+  "DragonCachedVIN": [TxType.PERSISTENT], # deprecated
   "DragonAllowGas": [TxType.PERSISTENT],
   "DragonBBUI": [TxType.PERSISTENT],
   "DragonToyotaStockDSU": [TxType.PERSISTENT],
