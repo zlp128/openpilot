@@ -197,7 +197,10 @@ class CarState(object):
       self.generic_toggle = bool(cp.vl["LIGHT_STALK"]['AUTO_HIGH_BEAM'])
 
     if self.dragon_toyota_stock_dsu and self.generic_toggle and self.main_on:
-      self.pcm_acc_active = True
+      enable_acc = True
+      if not self.gear_shifter == 'drive' or not self.seatbelt or not self.door_all_closed:
+        enable_acc = False
+      self.pcm_acc_active = enable_acc
       if self.standstill:
         self.pcm_acc_status = 7
       else:
