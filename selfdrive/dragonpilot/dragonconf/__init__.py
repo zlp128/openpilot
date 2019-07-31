@@ -18,10 +18,10 @@ default_conf = {
   'DragonDisableUploader': '0', # deprecated
   'DragonEnableUploader': '1',
   'DragonNoctuaMode': '0',
-  'DragonCacheCar': '1', # deprecated
-  'DragonCachedModel': '', # for cache car # deprecated
-  'DragonCachedFP': '', # for cache car # deprecated
-  'DragonCachedVIN': '', # for cache car # deprecated
+  'DragonCacheCar': '1',
+  'DragonCachedModel': '', # for cache car
+  'DragonCachedFP': '', # for cache car
+  'DragonCachedVIN': '', # for cache car
   'DragonAllowGas': '0',
   'DragonBBUI': '0',
   'DragonToyotaStockDSU': '0',
@@ -33,10 +33,6 @@ deprecated_conf = {
   'DragonTempDisableSteerOnSignal': 'DragonEnableSteeringOnSignal',
   'DragonDisableLogger': 'DragonEnableLogger',
   'DragonDisableUploader': 'DragonEnableUploader',
-  'DragonCacheCar': None,
-  'DragonCachedModel': None,
-  'DragonCachedFP': None,
-  'DragonCachedVIN': None,
 }
 
 deprecated_conf_invert = {
