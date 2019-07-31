@@ -89,6 +89,7 @@ class CarController(object):
     self.turning_signal_timer = 0
     self.dragon_enable_steering_on_signal = False
     self.dragon_allow_gas = False
+    self.dragon_lat_ctrl = True
 
   def update(self, enabled, CS, frame, actuators, \
              pcm_speed, pcm_override, pcm_cancel_cmd, pcm_accel, \
@@ -98,6 +99,7 @@ class CarController(object):
     if frame % 100 == 0:
       self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
       self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
+      self.dragon_lat_ctrl = False if params.get("DragonLatCtrl") == "0" else True
 
     # *** apply brake hysteresis ***
     brake, self.braking, self.brake_steady = actuator_hystereses(actuators.brake, self.braking, self.brake_steady, CS.v_ego, CS.CP.carFingerprint)
@@ -163,6 +165,9 @@ class CarController(object):
 
     if self.turning_signal_timer > 0:
       self.turning_signal_timer -= 1
+      lkas_active = False
+
+    if not self.dragon_lat_ctrl:
       lkas_active = False
 
     # Send steering command.

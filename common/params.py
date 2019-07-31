@@ -101,6 +101,7 @@ keys = {
   "DragonAllowGas": [TxType.PERSISTENT],
   "DragonBBUI": [TxType.PERSISTENT],
   "DragonToyotaStockDSU": [TxType.PERSISTENT],
+  "DragonLatCtrl": [TxType.PERSISTENT],
 }
 
 
