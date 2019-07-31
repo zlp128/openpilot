@@ -385,6 +385,13 @@ ALERTS = [
       AlertStatus.critical, AlertSize.full,
       Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .1, 2., 2.),
 
+  Alert(
+      "posenetInvalid",
+      "TAKE CONTROL IMMEDIATELY",
+      "Vision Failure: Check Camera View",
+      AlertStatus.critical, AlertSize.full,
+      Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .1, 2., 2.),
+
   # Cancellation alerts causing immediate disabling
   Alert(
       "controlsFailed",
@@ -539,6 +546,13 @@ ALERTS = [
       "radarFaultNoEntry",
       "無法使用 dragonpilot",
       "雷達訊號錯誤: 請重新發動車輛",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
+
+  Alert(
+      "posenetInvalidNoEntry",
+      "openpilot Unavailable",
+      "Vision Failure: Check Camera View",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
