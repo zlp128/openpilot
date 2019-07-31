@@ -53,6 +53,7 @@ keys = {
   "AthenadPid": [TxType.PERSISTENT],
   "CalibrationParams": [TxType.PERSISTENT],
   "CarParams": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
+  "CarVin": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
   "CompletedTrainingVersion": [TxType.PERSISTENT],
   "ControlsParams": [TxType.PERSISTENT],
   "DoUninstall": [TxType.CLEAR_ON_MANAGER_START],
@@ -70,6 +71,7 @@ keys = {
   "IsUploadRawEnabled": [TxType.PERSISTENT],
   "IsUploadVideoOverCellularEnabled": [TxType.PERSISTENT],
   "LimitSetSpeed": [TxType.PERSISTENT],
+  "LimitSetSpeedNeural": [TxType.PERSISTENT],
   "LiveParameters": [TxType.PERSISTENT],
   "LongitudinalControl": [TxType.PERSISTENT],
   "Passive": [TxType.PERSISTENT],
@@ -92,10 +94,10 @@ keys = {
   "DragonDisableUploader": [TxType.PERSISTENT], # deprecated
   "DragonEnableUploader": [TxType.PERSISTENT],
   "DragonNoctuaMode": [TxType.PERSISTENT],
-  "DragonCacheCar": [TxType.PERSISTENT],
-  "DragonCachedModel": [TxType.PERSISTENT],
-  "DragonCachedFP": [TxType.PERSISTENT],
-  "DragonCachedVIN": [TxType.PERSISTENT],
+  "DragonCacheCar": [TxType.PERSISTENT], # deprecated
+  "DragonCachedModel": [TxType.PERSISTENT], # deprecated
+  "DragonCachedFP": [TxType.PERSISTENT], # deprecated
+  "DragonCachedVIN": [TxType.PERSISTENT], # deprecated
   "DragonAllowGas": [TxType.PERSISTENT],
   "DragonBBUI": [TxType.PERSISTENT],
   "DragonToyotaStockDSU": [TxType.PERSISTENT],
