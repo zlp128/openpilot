@@ -25,6 +25,7 @@ default_conf = {
   'DragonAllowGas': '0',
   'DragonBBUI': '0',
   'DragonToyotaStockDSU': '0',
+  'DragonLatCtrl': '1',
 }
 
 deprecated_conf = {
