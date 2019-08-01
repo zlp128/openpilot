@@ -7,6 +7,7 @@ from common.fingerprints import eliminate_incompatible_cars, all_known_cars
 from selfdrive.swaglog import cloudlog
 import selfdrive.messaging as messaging
 import pickle
+import selfdrive.crash as crash
 
 
 def get_startup_alert(car_recognized, controller_available):
@@ -124,9 +125,10 @@ def fingerprint(logcan, sendcan, is_panda_black):
 
       frame += 1
 
-    params.put("DragonCachedModel", pickle.dumps(car_fingerprint))
-    params.put("DragonCachedFP", pickle.dumps(finger))
-    params.put("DragonCachedVIN", pickle.dumps(vin))
+      if succeeded:
+        params.put("DragonCachedModel", pickle.dumps(car_fingerprint))
+        params.put("DragonCachedFP", pickle.dumps(finger))
+        params.put("DragonCachedVIN", pickle.dumps(vin))
 
   cloudlog.warning("fingerprinted %s", car_fingerprint)
   return car_fingerprint, finger, vin
@@ -139,6 +141,11 @@ def get_car(logcan, sendcan, is_panda_black=False):
   if candidate is None:
     cloudlog.warning("car doesn't match any fingerprints: %r", fingerprints)
     candidate = "mock"
+  else:
+    try:
+      crash.capture_warning("fingerprinted %s" % candidate)
+    except:  # fixes occasional travis errors
+      pass
 
   CarInterface, CarController = interfaces[candidate]
   car_params = CarInterface.get_params(candidate, fingerprints[0], vin, is_panda_black)
