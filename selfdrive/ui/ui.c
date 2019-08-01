@@ -266,13 +266,11 @@ typedef struct UIState {
   int is_metric_timeout;
   int longitudinal_control_timeout;
   int limit_set_speed_timeout;
-  int dragon_bbui_timeout;
 
   int status;
   bool is_metric;
   bool longitudinal_control;
   bool limit_set_speed;
-  bool dragon_bbui;
   float speed_lim_off;
   bool is_ego_over_limit;
   char alert_type[64];
@@ -295,6 +293,22 @@ typedef struct UIState {
   model_path_vertices_data model_path_vertices[MODEL_LANE_PATH_CNT * 2];
 
   track_vertices_data track_vertices[2];
+
+  // dragonpilot
+  int dragon_ui_event_timeout;
+  int dragon_ui_maxspeed_timeout;
+  int dragon_ui_face_timeout;
+  int dragon_ui_dev_timeout;
+  int dragon_ui_dev_mini_timeout;
+  int dragon_enable_dashcam_timeout;
+
+  bool dragon_ui_event;
+  bool dragon_ui_maxspeed;
+  bool dragon_ui_face;
+  bool dragon_ui_dev;
+  bool dragon_ui_dev_mini;
+  bool dragon_enable_dashcam;
+
 } UIState;
 
 static int last_brightness = -1;
@@ -664,14 +678,27 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   read_param_bool(&s->is_metric, "IsMetric");
   read_param_bool(&s->longitudinal_control, "LongitudinalControl");
   read_param_bool(&s->limit_set_speed, "LimitSetSpeed");
-  read_param_bool(&s->dragon_bbui, "DragonBBUI");
+  // dragonpilot
+  read_param_bool(&s->dragon_ui_event, "DragonUIEvent");
+  read_param_bool(&s->dragon_ui_maxspeed, "DragonUIMaxSpeed");
+  read_param_bool(&s->dragon_ui_face, "DragonUIFace");
+  read_param_bool(&s->dragon_ui_dev, "DragonUIDev");
+  read_param_bool(&s->dragon_ui_dev_mini, "DragonUIDevMini");
+  read_param_bool(&s->dragon_enable_dashcam, "DragonEnableDashcam");
 
 
   // Set offsets so params don't get read at the same time
   s->longitudinal_control_timeout = UI_FREQ / 3;
   s->is_metric_timeout = UI_FREQ / 2;
   s->limit_set_speed_timeout = UI_FREQ;
-  s->dragon_bbui_timeout = UI_FREQ / 4;
+
+  // dragonpilot, 1 sec
+  s->dragon_ui_event_timeout = 100;
+  s->dragon_ui_maxspeed_timeout = 100;
+  s->dragon_ui_face_timeout = 100;
+  s->dragon_ui_dev_timeout = 100;
+  s->dragon_ui_dev_mini_timeout = 100;
+  s->dragon_enable_dashcam_timeout = 100;
 }
 
 static void ui_draw_transformed_box(UIState *s, uint32_t color) {
@@ -1412,13 +1439,17 @@ static void ui_draw_vision_header(UIState *s) {
   nvgRect(s->vg, ui_viz_rx, box_y, ui_viz_rw, header_h);
   nvgFill(s->vg);
 
-  //ui_draw_vision_maxspeed(s);
+  if (s->dragon_ui_maxspeed) {
+    ui_draw_vision_maxspeed(s);
+  }
 
 #ifdef SHOW_SPEEDLIMIT
   ui_draw_vision_speedlimit(s);
 #endif
   ui_draw_vision_speed(s);
-  //ui_draw_vision_event(s);
+  if (s->dragon_ui_event) {
+    ui_draw_vision_event(s);
+  }
 }
 
 static void ui_draw_infobar(UIState *s) {
@@ -1439,39 +1470,53 @@ static void ui_draw_infobar(UIState *s) {
   time_t t = time(NULL);
   struct tm tm = *localtime(&t);
 
-  char rel_steer[9];
-  snprintf(rel_steer, sizeof(rel_steer), "%s%05.1f°", s->scene.angleSteers < 0? "-" : "+", fabs(s->scene.angleSteers));
+  if (s->dragon_ui_dev_mini) {
+      char rel_steer[9];
+      snprintf(rel_steer, sizeof(rel_steer), "%s%05.1f°", s->scene.angleSteers < 0? "-" : "+", fabs(s->scene.angleSteers));
 
-  char des_steer[9];
-  if (s->scene.engaged) {
-    snprintf(des_steer, sizeof(des_steer), "%s%05.1f°", s->scene.angleSteersDes < 0? "-" : "+", fabs(s->scene.angleSteersDes));
+      char des_steer[9];
+      if (s->scene.engaged) {
+        snprintf(des_steer, sizeof(des_steer), "%s%05.1f°", s->scene.angleSteersDes < 0? "-" : "+", fabs(s->scene.angleSteersDes));
+      } else {
+        snprintf(des_steer, sizeof(des_steer), "%7s", "N/A");
+      }
+
+
+      char lead_dist[8];
+      if (s->scene.lead_status) {
+        snprintf(lead_dist, sizeof(lead_dist), "%06.2fm", s->scene.lead_d_rel);
+      } else {
+        snprintf(lead_dist, sizeof(lead_dist), "%7s", "N/A");
+      }
+
+
+      snprintf(
+        infobar,
+        sizeof(infobar),
+        "%04d/%02d/%02d %02d:%02d:%02d | REL: %s | DES: %s | DIST: %s",
+        tm.tm_year + 1900,
+        tm.tm_mon + 1,
+        tm.tm_mday,
+        tm.tm_hour,
+        tm.tm_min,
+        tm.tm_sec,
+        rel_steer,
+        des_steer,
+        lead_dist
+      );
   } else {
-    snprintf(des_steer, sizeof(des_steer), "%7s", "N/A");
+      snprintf(
+        infobar,
+        sizeof(infobar),
+        "%04d/%02d/%02d %02d:%02d:%02d",
+        tm.tm_year + 1900,
+        tm.tm_mon + 1,
+        tm.tm_mday,
+        tm.tm_hour,
+        tm.tm_min,
+        tm.tm_sec
+      );
   }
-
-
-  char lead_dist[8];
-  if (s->scene.lead_status) {
-    snprintf(lead_dist, sizeof(lead_dist), "%06.2fm", s->scene.lead_d_rel);
-  } else {
-    snprintf(lead_dist, sizeof(lead_dist), "%7s", "N/A");
-  }
-
-
-  snprintf(
-    infobar,
-    sizeof(infobar),
-    "%04d/%02d/%02d %02d:%02d:%02d | REL: %s | DES: %s | DIST: %s",
-    tm.tm_year + 1900,
-    tm.tm_mon + 1,
-    tm.tm_mday,
-    tm.tm_hour,
-    tm.tm_min,
-    tm.tm_sec,
-    rel_steer,
-    des_steer,
-    lead_dist
-  );
 
   nvgBeginPath(s->vg);
   nvgRoundedRect(s->vg, rect_x + sidebar_offset, rect_y, rect_w, rect_h, 15);
@@ -1695,15 +1740,19 @@ static void ui_draw_vision_footer(UIState *s) {
   nvgBeginPath(s->vg);
   nvgRect(s->vg, ui_viz_rx, footer_y, ui_viz_rw, footer_h);
 
-  //ui_draw_vision_face(s);
+  if (s->dragon_ui_face) {
+    ui_draw_vision_face(s);
+  }
 
 #ifdef SHOW_SPEEDLIMIT
   ui_draw_vision_map(s);
 #endif
-  if (s->dragon_bbui) {
+  if (s->dragon_ui_dev) {
     ui_draw_bbui(s);
   }
-  ui_draw_infobar(s);
+  if (s->dragon_ui_dev_mini || s->dragon_enable_dashcam) {
+    ui_draw_infobar(s);
+  }
 }
 
 static void ui_draw_vision_alert(UIState *s, int va_size, int va_color,
@@ -2603,7 +2652,13 @@ int main(int argc, char* argv[]) {
     read_param_bool_timeout(&s->longitudinal_control, "LongitudinalControl", &s->longitudinal_control_timeout);
     read_param_bool_timeout(&s->limit_set_speed, "LimitSetSpeed", &s->limit_set_speed_timeout);
     read_param_float_timeout(&s->speed_lim_off, "SpeedLimitOffset", &s->limit_set_speed_timeout);
-    read_param_bool_timeout(&s->dragon_bbui, "DragonBBUI", &s->dragon_bbui_timeout);
+    // dragonpilot
+    read_param_bool_timeout(&s->dragon_ui_event, "DragonUIEvent", &s->dragon_ui_event_timeout);
+    read_param_bool_timeout(&s->dragon_ui_maxspeed, "DragonUIMaxSpeed", &s->dragon_ui_maxspeed_timeout);
+    read_param_bool_timeout(&s->dragon_ui_face, "DragonUIFace", &s->dragon_ui_face_timeout);
+    read_param_bool_timeout(&s->dragon_ui_dev, "DragonUIDev", &s->dragon_ui_dev_timeout);
+    read_param_bool_timeout(&s->dragon_ui_dev_mini, "DragonUIDevMini", &s->dragon_ui_dev_mini_timeout);
+    read_param_bool_timeout(&s->dragon_enable_dashcam, "DragonEnableDashcam", &s->dragon_enable_dashcam_timeout);
 
     pthread_mutex_unlock(&s->lock);
 
