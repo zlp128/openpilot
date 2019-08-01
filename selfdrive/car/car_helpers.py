@@ -66,24 +66,24 @@ def fingerprint(logcan, sendcan, is_panda_black):
   params = Params()
   car_params = params.get("CarParams")
 
+  if car_params is not None:
+    # use already stored VIN: a new VIN query cannot be done, since panda isn't in ELM327 mode
+    car_params = car.CarParams.from_bytes(car_params)
+    vin = VIN_UNKNOWN if car_params.carVin == "" else car_params.carVin
+  elif is_panda_black:
+    # Vin query only reliably works thorugh OBDII
+    vin = get_vin(logcan, sendcan, 1)
+  else:
+    vin = VIN_UNKNOWN
+
+  cloudlog.warning("VIN %s", vin)
+  Params().put("CarVin", vin)
+
   if params.get("DragonCacheCar") == "1" and params.get("DragonCachedFP") != "" and params.get("DragonCachedModel") != "":
     car_fingerprint = pickle.loads(params.get("DragonCachedModel"))
     finger = pickle.loads(params.get("DragonCachedFP"))
     vin = pickle.loads(params.get("DragonCachedVIN"))
   else:
-    if car_params is not None:
-      # use already stored VIN: a new VIN query cannot be done, since panda isn't in ELM327 mode
-      car_params = car.CarParams.from_bytes(car_params)
-      vin = VIN_UNKNOWN if car_params.carVin == "" else car_params.carVin
-    elif is_panda_black:
-      # Vin query only reliably works thorugh OBDII
-      vin = get_vin(logcan, sendcan, 1)
-    else:
-      vin = VIN_UNKNOWN
-
-    cloudlog.warning("VIN %s", vin)
-    Params().put("CarVin", vin)
-
     finger = {i: {} for i in range(0, 4)}  # collect on all buses
     candidate_cars = {i: all_known_cars() for i in [0, 1]}  # attempt fingerprint on both bus 0 and 1
     frame = 0
