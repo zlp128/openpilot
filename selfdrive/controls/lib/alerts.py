@@ -105,7 +105,7 @@ ALERTS = [
 
   Alert(
       "preDriverDistracted",
-      "注意路況: 駕駛分心",
+      "注意路況：駕駛分心",
       "",
       AlertStatus.normal, AlertSize.small,
       Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
@@ -126,7 +126,7 @@ ALERTS = [
 
   Alert(
       "preDriverUnresponsive",
-      "請觸碰方向盤: 無駕駛監控",
+      "請觸碰方向盤：無駕駛監控",
       "",
       AlertStatus.normal, AlertSize.small,
       Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
@@ -148,14 +148,14 @@ ALERTS = [
   Alert(
       "driverMonitorOff",
       "駕駛監控暫時停用",
-      "監控準確率: 低",
+      "監控準確率：低",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .4, 0., 4.),
 
   Alert(
       "driverMonitorOn",
       "駕駛監控已啟用",
-      "監控準確率: 高",
+      "監控準確率：高",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .4, 0., 4.),
 
@@ -282,7 +282,7 @@ ALERTS = [
   Alert(
       "lowSpeedLockoutNoEntry",
       "無法使用 dragonpilot",
-      "巡航系統錯誤: 請重新發動車輛",
+      "巡航系統錯誤：請重新發動車子",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
@@ -302,8 +302,8 @@ ALERTS = [
 
   Alert(
       "tooDistractedNoEntry",
-      "openpilot Unavailable",
-      "Distraction Level Too High",
+      "無法使用 dragonpilot",
+      "駕駛分心次數過高",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
@@ -325,7 +325,7 @@ ALERTS = [
   Alert(
       "calibrationInvalid",
       "即刻接管控制",
-      "校準無效: 請將 EON 放於新的位置並重新校準",
+      "校準無效：請將 EON 放於新的位置並重新校準",
       AlertStatus.critical, AlertSize.full,
       Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .1, 2., 2.),
 
@@ -367,28 +367,28 @@ ALERTS = [
   Alert(
       "commIssue",
       "即刻接管控制",
-      "雷達訊號錯誤: 請重新發動車輛",
+      "雷達訊號錯誤：請重新發動車子",
       AlertStatus.critical, AlertSize.full,
       Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .1, 2., 2.),
 
   Alert(
       "radarCanError",
       "即刻接管控制",
-      "雷達訊號錯誤: 請重新發動車輛",
+      "雷達訊號錯誤：請重新發動車子",
       AlertStatus.critical, AlertSize.full,
       Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .1, 2., 2.),
 
   Alert(
       "radarFault",
       "即刻接管控制",
-      "AI 模型錯誤: 請檢查網路連線",
+      "AI 模型錯誤：請檢查網路連線",
       AlertStatus.critical, AlertSize.full,
       Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .1, 2., 2.),
 
   Alert(
       "posenetInvalid",
-      "TAKE CONTROL IMMEDIATELY",
-      "Vision Failure: Check Camera View",
+      "即刻接管控制",
+      "視覺出現錯誤：請檢查相機",
       AlertStatus.critical, AlertSize.full,
       Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .1, 2., 2.),
 
@@ -410,28 +410,28 @@ ALERTS = [
   Alert(
       "canError",
       "即刻接管控制",
-      "CAN 訊號錯誤: 請檢查接線",
+      "CAN 訊號錯誤：請檢查接線",
       AlertStatus.critical, AlertSize.full,
       Priority.HIGHEST, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, 1., 3., 4.),
 
   Alert(
       "steerUnavailable",
       "即刻接管控制",
-      "LKAS 錯誤: 請重新發動車輛",
+      "LKAS 錯誤：請重新發動車子",
       AlertStatus.critical, AlertSize.full,
       Priority.HIGHEST, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, 1., 3., 4.),
 
   Alert(
       "brakeUnavailable",
       "即刻接管控制",
-      "巡航系統錯誤: 請重新發動車輛",
+      "巡航系統錯誤：請重新發動車子",
       AlertStatus.critical, AlertSize.full,
       Priority.HIGHEST, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, 1., 3., 4.),
 
   Alert(
       "gasUnavailable",
       "即刻接管控制",
-      "油門錯誤: 請重新發動車輛",
+      "油門錯誤：請重新發動車子",
       AlertStatus.critical, AlertSize.full,
       Priority.HIGHEST, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, 1., 3., 4.),
 
@@ -489,14 +489,14 @@ ALERTS = [
   Alert(
       "wrongGearNoEntry",
       "無法使用 dragonpilot",
-      "車輛不在 D 檔",
+      "車子不在 D 檔",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "calibrationInvalidNoEntry",
       "無法使用 dragonpilot",
-      "校準無效: 請將 EON 放於新的位置並重新校準",
+      "校準無效：請將 EON 放於新的位置並重新校準",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
@@ -538,21 +538,21 @@ ALERTS = [
   Alert(
       "radarCanErrorNoEntry",
       "無法使用 dragonpilot",
-      "雷達訊號錯誤: 請重新發動車輛",
+      "雷達訊號錯誤：請重新發動車子",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "radarFaultNoEntry",
       "無法使用 dragonpilot",
-      "雷達訊號錯誤: 請重新發動車輛",
+      "雷達訊號錯誤：請重新發動車子",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "posenetInvalidNoEntry",
-      "openpilot Unavailable",
-      "Vision Failure: Check Camera View",
+      "無法使用 dragonpilot",
+      "視覺錯誤：請檢查相機",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
@@ -566,28 +566,28 @@ ALERTS = [
   Alert(
       "canErrorNoEntry",
       "無法使用 dragonpilot",
-      "CAN 訊號錯誤: 請檢查接線",
+      "CAN 訊號錯誤：請檢查接線",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "steerUnavailableNoEntry",
       "無法使用 dragonpilot",
-      "LKAS 錯誤: 請重新發動車輛",
+      "LKAS 錯誤：請重新發動車子",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "brakeUnavailableNoEntry",
       "無法使用 dragonpilot",
-      "巡航系統錯誤: 請重新發動車輛",
+      "巡航系統錯誤：請重新發動車子",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "gasUnavailableNoEntry",
       "無法使用 dragonpilot",
-      "油門錯誤: 請重新發動車輛",
+      "油門錯誤：請重新發動車子",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
@@ -615,7 +615,7 @@ ALERTS = [
   Alert(
       "plannerErrorNoEntry",
       "無法使用 dragonpilot",
-      "Planner Solution Error",
+      "Planner Solution 錯誤",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
@@ -636,28 +636,28 @@ ALERTS = [
   # permanent alerts
   Alert(
       "steerUnavailablePermanent",
-      "LKAS 錯誤: 請重新發動車輛",
+      "LKAS 錯誤：請重新發動車子",
       "",
       AlertStatus.normal, AlertSize.small,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "brakeUnavailablePermanent",
-      "巡航系統錯誤: 請重新發動車輛",
+      "巡航系統錯誤：請重新發動車子",
       "",
       AlertStatus.normal, AlertSize.small,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "lowSpeedLockoutPermanent",
-      "巡航系統錯誤: 請重新發動車輛",
+      "巡航系統錯誤：請重新發動車子",
       "",
       AlertStatus.normal, AlertSize.small,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "calibrationIncompletePermanent",
-      "正在校準相機中: ",
+      "正在校準相機中：",
       "車速請高於 ",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
@@ -678,21 +678,21 @@ ALERTS = [
 
   Alert(
       "vehicleModelInvalid",
-      "車輛參數識別失敗",
+      "車子參數識別失敗",
       "",
       AlertStatus.normal, AlertSize.small,
       Priority.LOWEST, VisualAlert.steerRequired, AudibleAlert.none, .0, .0, .1),
 
   Alert(
     "manualSteeringRequired",
-    "請接管方向盤: 車道維持關閉",
+    "請接管方向盤：車道維持關閉",
     "",
     AlertStatus.normal, AlertSize.small,
     Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.25),
 
   Alert(
     "manualSteeringRequiredBlinkersOn",
-    "請接管方向盤: 方向燈開啟",
+    "請接管方向盤：方向燈開啟",
     "",
     AlertStatus.normal, AlertSize.small,
     Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.25),
