@@ -1,10 +1,5 @@
 #!/usr/bin/env python2.7
-import os
 from common.params import Params
-# import json
-
-# file = '/data/dragonpilot.json'
-
 
 default_conf = {
   'DragonEnableDashcam': '1',
@@ -23,9 +18,14 @@ default_conf = {
   'DragonCachedFP': '', # for cache car
   'DragonCachedVIN': '', # for cache car
   'DragonAllowGas': '0',
-  'DragonBBUI': '0',
+  'DragonBBUI': '0', # deprecated
   'DragonToyotaStockDSU': '0',
   'DragonLatCtrl': '1',
+  'DragonUIEvent': '0',
+  'DragonUIMaxSpeed': '0',
+  'DragonUIFace': '0',
+  'DragonUIDev': '0',
+  'DragonUIDevMini': '1',
 }
 
 deprecated_conf = {
@@ -33,6 +33,7 @@ deprecated_conf = {
   'DragonTempDisableSteerOnSignal': 'DragonEnableSteeringOnSignal',
   'DragonDisableLogger': 'DragonEnableLogger',
   'DragonDisableUploader': 'DragonEnableUploader',
+  'DragonBBUI': 'DragonUIDev',
 }
 
 deprecated_conf_invert = {
@@ -40,6 +41,7 @@ deprecated_conf_invert = {
   'DragonTempDisableSteerOnSignal': False,
   'DragonDisableLogger': True,
   'DragonDisableUploader': True,
+  'DragonBBUI': False
 }
 
 def dragonpilot_set_params(params):
