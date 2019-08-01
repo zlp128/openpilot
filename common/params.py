@@ -99,9 +99,14 @@ keys = {
   "DragonCachedFP": [TxType.PERSISTENT],
   "DragonCachedVIN": [TxType.PERSISTENT],
   "DragonAllowGas": [TxType.PERSISTENT],
-  "DragonBBUI": [TxType.PERSISTENT],
+  "DragonBBUI": [TxType.PERSISTENT], # deprecated
   "DragonToyotaStockDSU": [TxType.PERSISTENT],
   "DragonLatCtrl": [TxType.PERSISTENT],
+  "DragonUIEvent": [TxType.PERSISTENT],
+  "DragonUIMaxSpeed": [TxType.PERSISTENT],
+  "DragonUIFace": [TxType.PERSISTENT],
+  "DragonUIDev": [TxType.PERSISTENT],
+  "DragonUIDevMini": [TxType.PERSISTENT],
 }
 
 
