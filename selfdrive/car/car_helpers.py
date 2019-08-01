@@ -124,9 +124,10 @@ def fingerprint(logcan, sendcan, is_panda_black):
 
       frame += 1
 
-    params.put("DragonCachedModel", pickle.dumps(car_fingerprint))
-    params.put("DragonCachedFP", pickle.dumps(finger))
-    params.put("DragonCachedVIN", pickle.dumps(vin))
+      if succeeded:
+        params.put("DragonCachedModel", pickle.dumps(car_fingerprint))
+        params.put("DragonCachedFP", pickle.dumps(finger))
+        params.put("DragonCachedVIN", pickle.dumps(vin))
 
   cloudlog.warning("fingerprinted %s", car_fingerprint)
   return car_fingerprint, finger, vin
