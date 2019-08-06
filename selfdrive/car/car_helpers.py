@@ -142,6 +142,7 @@ def get_car(logcan, sendcan, is_panda_black=False):
     cloudlog.warning("car doesn't match any fingerprints: %r", fingerprints)
     candidate = "mock"
   else:
+    cloudlog.warning("car does match fingerprint: %r", fingerprints)
     try:
       crash.capture_warning("fingerprinted %s" % candidate)
     except:  # fixes occasional travis errors
