@@ -87,11 +87,19 @@ class CarController(object):
 
     # dragonpilot
     self.turning_signal_timer = 0
+    self.dragon_enable_steering_on_signal = False
+    self.dragon_allow_gas = False
+    self.dragon_lat_ctrl = True
 
   def update(self, enabled, CS, frame, actuators, \
              pcm_speed, pcm_override, pcm_cancel_cmd, pcm_accel, \
              hud_v_cruise, hud_show_lanes, hud_show_car, \
              hud_alert, snd_beep, snd_chime):
+    # dragonpilot, don't check for param too often as it's a kernel call
+    if frame % 100 == 0:
+      self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
+      self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
+      self.dragon_lat_ctrl = False if params.get("DragonLatCtrl") == "0" else True
 
     # *** apply brake hysteresis ***
     brake, self.braking, self.brake_steady = actuator_hystereses(actuators.brake, self.braking, self.brake_steady, CS.v_ego, CS.CP.carFingerprint)
@@ -152,29 +160,32 @@ class CarController(object):
     can_sends = []
 
     # dragonpilot
-    if enabled and (CS.left_blinker_on > 0 or CS.right_blinker_on > 0) and params.get("DragonTempDisableSteerOnSignal") == "1":
+    if enabled and (CS.left_blinker_on > 0 or CS.right_blinker_on > 0) and self.dragon_enable_steering_on_signal:
       self.turning_signal_timer = 100
 
     if self.turning_signal_timer > 0:
       self.turning_signal_timer -= 1
       lkas_active = False
 
+    if not self.dragon_lat_ctrl:
+      lkas_active = False
+
     # Send steering command.
     idx = frame % 4
     can_sends.append(hondacan.create_steering_control(self.packer, apply_steer,
-      lkas_active, CS.CP.carFingerprint, idx))
+      lkas_active, CS.CP.carFingerprint, idx, CS.CP.isPandaBlack))
 
     # Send dashboard UI commands.
     if (frame % 10) == 0:
       idx = (frame//10) % 4
-      can_sends.extend(hondacan.create_ui_commands(self.packer, pcm_speed, hud, CS.CP.carFingerprint, CS.is_metric, idx))
+      can_sends.extend(hondacan.create_ui_commands(self.packer, pcm_speed, hud, CS.CP.carFingerprint, CS.is_metric, idx, CS.CP.isPandaBlack))
 
     if CS.CP.radarOffCan:
       # If using stock ACC, spam cancel command to kill gas when OP disengages.
       if pcm_cancel_cmd:
-        can_sends.append(hondacan.spam_buttons_command(self.packer, CruiseButtons.CANCEL, idx))
+        can_sends.append(hondacan.spam_buttons_command(self.packer, CruiseButtons.CANCEL, idx, CS.CP.carFingerprint, CS.CP.isPandaBlack))
       elif CS.stopped:
-        can_sends.append(hondacan.spam_buttons_command(self.packer, CruiseButtons.RES_ACCEL, idx))
+        can_sends.append(hondacan.spam_buttons_command(self.packer, CruiseButtons.RES_ACCEL, idx, CS.CP.carFingerprint, CS.CP.isPandaBlack))
 
     else:
       # Send gas and brake commands.
@@ -182,8 +193,18 @@ class CarController(object):
         idx = frame // 2
         ts = frame * DT_CTRL
         pump_on, self.last_pump_ts = brake_pump_hysteresis(apply_brake, self.apply_brake_last, self.last_pump_ts, ts)
+        # DragonAllowGas
+        # if we detect gas pedal pressed, we do not want OP to apply gas or brake
+        # gasPressed code from interface.py
+        if not CS.CP.enableGasInterceptor:
+          gasPressed = CS.pedal_gas > 0
+        else:
+          gasPressed = CS.user_gas_pressed
+        if self.dragon_allow_gas and gasPressed:
+          apply_brake = 0
+          apply_gas = 0
         can_sends.append(hondacan.create_brake_command(self.packer, apply_brake, pump_on,
-          pcm_override, pcm_cancel_cmd, hud.chime, hud.fcw, idx))
+          pcm_override, pcm_cancel_cmd, hud.chime, hud.fcw, idx, CS.CP.carFingerprint, CS.CP.isPandaBlack))
         self.apply_brake_last = apply_brake
 
         if CS.CP.enableGasInterceptor:
