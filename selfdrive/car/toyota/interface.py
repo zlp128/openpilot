@@ -33,6 +33,12 @@ class CarInterface(object):
     if CarController is not None:
       self.CC = CarController(self.cp.dbc_name, CP.carFingerprint, CP.enableCamera, CP.enableDsu, CP.enableApgs)
 
+    # dragonpilot
+    self.dragon_toyota_stock_dsu = False
+    self.dragon_enable_steering_on_signal = False
+    self.dragon_allow_gas = False
+    self.ts_last_check = 0.
+
   @staticmethod
   def compute_gb(accel, speed):
     return float(accel) / 3.0
@@ -42,13 +48,14 @@ class CarInterface(object):
     return 1.0
 
   @staticmethod
-  def get_params(candidate, fingerprint, vin=""):
+  def get_params(candidate, fingerprint, vin="", is_panda_black=False):
 
     ret = car.CarParams.new_message()
 
     ret.carName = "toyota"
     ret.carFingerprint = candidate
     ret.carVin = vin
+    ret.isPandaBlack = is_panda_black
 
     ret.safetyModel = car.CarParams.SafetyModel.toyota
 
@@ -64,7 +71,7 @@ class CarInterface(object):
       stop_and_go = True
       ret.safetyParam = 66  # see conversion factor for STEER_TORQUE_EPS in dbc file
       ret.wheelbase = 2.70
-      ret.steerRatio = 15.00   # unknown end-to-end spec
+      ret.steerRatio = 15.74   # unknown end-to-end spec
       tire_stiffness_factor = 0.6371   # hand-tune
       ret.mass = 3045. * CV.LB_TO_KG + STD_CARGO_KG
 
@@ -80,7 +87,7 @@ class CarInterface(object):
       stop_and_go = True if (candidate in CAR.RAV4H) else False
       ret.safetyParam = 73
       ret.wheelbase = 2.65
-      ret.steerRatio = 16.30   # 14.5 is spec end-to-end
+      ret.steerRatio = 16.88   # 14.5 is spec end-to-end
       tire_stiffness_factor = 0.5533
       ret.mass = 3650. * CV.LB_TO_KG + STD_CARGO_KG  # mean between normal and hybrid
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.05]]
@@ -90,7 +97,7 @@ class CarInterface(object):
       stop_and_go = False
       ret.safetyParam = 100
       ret.wheelbase = 2.70
-      ret.steerRatio = 17.8
+      ret.steerRatio = 18.27
       tire_stiffness_factor = 0.444  # not optimized yet
       ret.mass = 2860. * CV.LB_TO_KG + STD_CARGO_KG  # mean between normal and hybrid
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.2], [0.05]]
@@ -215,7 +222,7 @@ class CarInterface(object):
     ret.brakeMaxBP = [0.]
     ret.brakeMaxV = [1.]
 
-    ret.enableCamera = not check_ecu_msgs(fingerprint, ECU.CAM)
+    ret.enableCamera = not check_ecu_msgs(fingerprint, ECU.CAM) or is_panda_black
     ret.enableDsu = not check_ecu_msgs(fingerprint, ECU.DSU)
     ret.enableApgs = False #not check_ecu_msgs(fingerprint, ECU.APGS)
     ret.openpilotLongitudinalControl = ret.enableCamera and ret.enableDsu
@@ -248,6 +255,14 @@ class CarInterface(object):
 
   # returns a car.CarState
   def update(self, c, can_strings):
+    # dragonpilot, don't check for param too often as it's a kernel call
+    ts = sec_since_boot()
+    if ts - self.ts_last_check > 1.:
+      self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
+      self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
+      self.dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
+      self.ts_last_check = ts
+
     # ******************* do can recv *******************
     self.cp.update_strings(int(sec_since_boot() * 1e9), can_strings)
 
@@ -349,7 +364,7 @@ class CarInterface(object):
       events.append(create_event('wrongCarMode', [ET.NO_ENTRY, ET.USER_DISABLE]))
     if ret.gearShifter == 'reverse' and self.CP.enableDsu:
       events.append(create_event('reverseGear', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
-    if (self.CS.left_blinker_on or self.CS.right_blinker_on) and params.get("DragonTempDisableSteerOnSignal") == "1":
+    if (self.CS.left_blinker_on or self.CS.right_blinker_on) and self.dragon_enable_steering_on_signal:
       events.append(create_event('manualSteeringRequiredBlinkersOn', [ET.WARNING]))
     elif self.CS.steer_error:
       events.append(create_event('steerTempUnavailable', [ET.NO_ENTRY, ET.WARNING]))
@@ -370,13 +385,19 @@ class CarInterface(object):
     elif not ret.cruiseState.enabled:
       events.append(create_event('pcmDisable', [ET.USER_DISABLE]))
 
-    # disable on pedals rising edge or when brake is pressed and speed isn't zero
-    if (ret.gasPressed and not self.gas_pressed_prev) or \
-       (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001)):
-      events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
+    if not self.dragon_toyota_stock_dsu:
+      # DragonAllowGas
+      if not self.dragon_allow_gas:
+        # disable on pedals rising edge or when brake is pressed and speed isn't zero
+        if (ret.gasPressed and not self.gas_pressed_prev) or \
+           (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001)):
+          events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
-    if ret.gasPressed:
-      events.append(create_event('pedalPressed', [ET.PRE_ENABLE]))
+        if ret.gasPressed:
+          events.append(create_event('pedalPressed', [ET.PRE_ENABLE]))
+      else:
+        if ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001):
+          events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
     ret.events = events
 

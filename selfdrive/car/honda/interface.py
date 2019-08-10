@@ -98,6 +98,11 @@ class CarInterface(object):
     else:
       self.compute_gb = compute_gb_honda
 
+    # dragonpilot
+    self.dragon_enable_steering_on_signal = False
+    self.dragon_allow_gas = False
+    self.ts_last_check = 0.
+
   @staticmethod
   def calc_accel_override(a_ego, a_target, v_ego, v_target):
 
@@ -131,12 +136,13 @@ class CarInterface(object):
     return float(max(max_accel, a_target / A_ACC_MAX)) * min(speedLimiter, accelLimiter)
 
   @staticmethod
-  def get_params(candidate, fingerprint, vin=""):
+  def get_params(candidate, fingerprint, vin="", is_panda_black=False):
 
     ret = car.CarParams.new_message()
     ret.carName = "honda"
     ret.carFingerprint = candidate
     ret.carVin = vin
+    ret.isPandaBlack = is_panda_black
 
     if candidate in HONDA_BOSCH:
       ret.safetyModel = car.CarParams.SafetyModel.hondaBosch
@@ -145,7 +151,7 @@ class CarInterface(object):
       ret.openpilotLongitudinalControl = False
     else:
       ret.safetyModel = car.CarParams.SafetyModel.honda
-      ret.enableCamera = not any(x for x in CAMERA_MSGS if x in fingerprint)
+      ret.enableCamera = not any(x for x in CAMERA_MSGS if x in fingerprint) or is_panda_black
       ret.enableGasInterceptor = 0x201 in fingerprint
       ret.openpilotLongitudinalControl = ret.enableCamera
 
@@ -169,7 +175,7 @@ class CarInterface(object):
       ret.mass = CivicParams.MASS
       ret.wheelbase = CivicParams.WHEELBASE
       ret.centerToFront = CivicParams.CENTER_TO_FRONT
-      ret.steerRatio = 14.63  # 10.93 is end-to-end spec
+      ret.steerRatio = 15.38  # 10.93 is end-to-end spec
       tire_stiffness_factor = 1.
       # Civic at comma has modified steering FW, so different tuning for the Neo in that car
       is_fw_modified = os.getenv("DONGLE_ID") in ['99c94dc769b5d96e']
@@ -189,7 +195,7 @@ class CarInterface(object):
       ret.mass = 3279. * CV.LB_TO_KG + STD_CARGO_KG
       ret.wheelbase = 2.83
       ret.centerToFront = ret.wheelbase * 0.39
-      ret.steerRatio = 15.96  # 11.82 is spec end-to-end
+      ret.steerRatio = 16.33  # 11.82 is spec end-to-end
       tire_stiffness_factor = 0.8467
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.18]]
       ret.longitudinalTuning.kpBP = [0., 5., 35.]
@@ -215,7 +221,7 @@ class CarInterface(object):
       ret.mass = 3572. * CV.LB_TO_KG + STD_CARGO_KG
       ret.wheelbase = 2.62
       ret.centerToFront = ret.wheelbase * 0.41
-      ret.steerRatio = 15.3         # as spec
+      ret.steerRatio = 16.89         # as spec
       tire_stiffness_factor = 0.444 # not optimized yet
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.8], [0.24]]
       ret.longitudinalTuning.kpBP = [0., 5., 35.]
@@ -295,7 +301,7 @@ class CarInterface(object):
       ret.mass = 4204. * CV.LB_TO_KG + STD_CARGO_KG # average weight
       ret.wheelbase = 2.82
       ret.centerToFront = ret.wheelbase * 0.428 # average weight distribution
-      ret.steerRatio = 16.0         # as spec
+      ret.steerRatio = 17.25         # as spec
       tire_stiffness_factor = 0.444 # not optimized yet
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.38], [0.11]]
       ret.longitudinalTuning.kpBP = [0., 5., 35.]
@@ -361,6 +367,13 @@ class CarInterface(object):
 
   # returns a car.CarState
   def update(self, c, can_strings):
+    # dragonpilot, don't check for param too often as it's a kernel call
+    ts = sec_since_boot()
+    if ts - self.ts_last_check > 1.:
+      self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
+      self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
+      self.ts_last_check = ts
+
     # ******************* do can recv *******************
     self.cp.update_strings(int(sec_since_boot() * 1e9), can_strings)
     self.cp_cam.update_strings(int(sec_since_boot() * 1e9), can_strings)
@@ -476,7 +489,7 @@ class CarInterface(object):
       events.append(create_event('invalidGiraffeHonda', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE, ET.PERMANENT]))
     if not self.CS.lkMode:
       events.append(create_event('manualSteeringRequired', [ET.WARNING]))
-    elif self.CS.lkMode and (self.CS.left_blinker_on or self.CS.right_blinker_on) and params.get("DragonTempDisableSteerOnSignal") == "1":
+    elif self.CS.lkMode and (self.CS.left_blinker_on or self.CS.right_blinker_on) and self.dragon_enable_steering_on_signal:
       events.append(create_event('manualSteeringRequiredBlinkersOn', [ET.WARNING]))
     elif self.CS.steer_error:
       events.append(create_event('steerUnavailable', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE, ET.PERMANENT]))
@@ -504,13 +517,18 @@ class CarInterface(object):
     if self.CP.enableCruise and ret.vEgo < self.CP.minEnableSpeed:
       events.append(create_event('speedTooLow', [ET.NO_ENTRY]))
 
-    # disable on pedals rising edge or when brake is pressed and speed isn't zero
-    if (ret.gasPressed and not self.gas_pressed_prev) or \
-       (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001)):
-      events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
+    # DragonAllowGas
+    if not self.dragon_allow_gas:
+      # disable on pedals rising edge or when brake is pressed and speed isn't zero
+      if (ret.gasPressed and not self.gas_pressed_prev) or \
+         (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001)):
+        events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
-    if ret.gasPressed:
-      events.append(create_event('pedalPressed', [ET.PRE_ENABLE]))
+      if ret.gasPressed:
+        events.append(create_event('pedalPressed', [ET.PRE_ENABLE]))
+    else:
+      if ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001):
+        events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
     # it can happen that car cruise disables while comma system is enabled: need to
     # keep braking if needed or if the speed is very low

@@ -17,7 +17,7 @@ bool honda_alt_brake_msg = false;
 static void honda_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 
   int addr = GET_ADDR(to_push);
-  int len = GET_LEN(to_push);
+  //int len = GET_LEN(to_push);
 
   // sample speed
   if (addr == 0x158) {
@@ -60,7 +60,7 @@ static void honda_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 
   // exit controls on rising edge of gas press if interceptor (0x201 w/ len = 6)
   // length check because bosch hardware also uses this id (0x201 w/ len = 8)
-  if ((addr == 0x201) && (len == 6)) {
+  if (false) {
     gas_interceptor_detected = 1;
     int gas_interceptor = GET_INTERCEPTOR(to_push);
     if ((gas_interceptor > HONDA_GAS_INTERCEPTOR_THRESHOLD) &&
@@ -72,7 +72,7 @@ static void honda_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
   }
 
   // exit controls on rising edge of gas press if no interceptor
-  if (!gas_interceptor_detected) {
+  if (false) {
     if (addr == 0x17C) {
       int gas = GET_BYTE(to_push, 0);
       if (gas && !(honda_gas_prev) && long_controls_allowed) {
@@ -136,8 +136,9 @@ static int honda_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
   // FORCE CANCEL: safety check only relevant when spamming the cancel button in Bosch HW
   // ensuring that only the cancel button press is sent (VAL 2) when controls are off.
   // This avoids unintended engagements while still allowing resume spam
+  int bus_pt = ((hw_type == HW_TYPE_BLACK_PANDA) && honda_bosch_hardware)? 1 : 0;
   if ((addr == 0x296) && honda_bosch_hardware &&
-      !current_controls_allowed && (bus == 0)) {
+      !current_controls_allowed && (bus == bus_pt)) {
     if (((GET_BYTE(to_send, 0) >> 5) & 0x7) != 2) {
       tx = 0;
     }
@@ -186,15 +187,17 @@ static int honda_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
 
 static int honda_bosch_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
   int bus_fwd = -1;
+  int bus_rdr_cam = (hw_type == HW_TYPE_BLACK_PANDA) ? 2 : 1;  // radar bus, camera side
+  int bus_rdr_car = (hw_type == HW_TYPE_BLACK_PANDA) ? 0 : 2;  // radar bus, car side
 
-  if (bus_num == 2) {
-    bus_fwd = 1;
+  if (bus_num == bus_rdr_car) {
+    bus_fwd = bus_rdr_cam;
   }
-  if (bus_num == 1)  {
+  if (bus_num == bus_rdr_cam)  {
     int addr = GET_ADDR(to_fwd);
     int is_lkas_msg = (addr == 0xE4) || (addr == 0x33D);
     if (!is_lkas_msg) {
-      bus_fwd = 2;
+      bus_fwd = bus_rdr_car;
     }
   }
   return bus_fwd;

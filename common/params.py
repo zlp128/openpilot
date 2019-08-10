@@ -53,6 +53,7 @@ keys = {
   "AthenadPid": [TxType.PERSISTENT],
   "CalibrationParams": [TxType.PERSISTENT],
   "CarParams": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
+  "CarVin": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
   "CompletedTrainingVersion": [TxType.PERSISTENT],
   "ControlsParams": [TxType.PERSISTENT],
   "DoUninstall": [TxType.CLEAR_ON_MANAGER_START],
@@ -70,6 +71,7 @@ keys = {
   "IsUploadRawEnabled": [TxType.PERSISTENT],
   "IsUploadVideoOverCellularEnabled": [TxType.PERSISTENT],
   "LimitSetSpeed": [TxType.PERSISTENT],
+  "LimitSetSpeedNeural": [TxType.PERSISTENT],
   "LiveParameters": [TxType.PERSISTENT],
   "LongitudinalControl": [TxType.PERSISTENT],
   "Passive": [TxType.PERSISTENT],
@@ -82,16 +84,29 @@ keys = {
   "Version": [TxType.PERSISTENT],
   #dragonpilot config
   "DragonEnableDashcam": [TxType.PERSISTENT],
-  "DragonDisableDriverSafetyCheck": [TxType.PERSISTENT],
+  "DragonDisableDriverSafetyCheck": [TxType.PERSISTENT], # deprecated
+  "DragonEnableDriverSafetyCheck": [TxType.PERSISTENT],
   "DragonAutoShutdownAt": [TxType.PERSISTENT],
-  "DragonTempDisableSteerOnSignal": [TxType.PERSISTENT],
-  "DragonDisableLogger": [TxType.PERSISTENT],
-  "DragonDisableUploader": [TxType.PERSISTENT],
+  "DragonTempDisableSteerOnSignal": [TxType.PERSISTENT], # deprecated
+  "DragonEnableSteeringOnSignal": [TxType.PERSISTENT],
+  "DragonDisableLogger": [TxType.PERSISTENT], # deprecated
+  "DragonEnableLogger": [TxType.PERSISTENT],
+  "DragonDisableUploader": [TxType.PERSISTENT], # deprecated
+  "DragonEnableUploader": [TxType.PERSISTENT],
   "DragonNoctuaMode": [TxType.PERSISTENT],
   "DragonCacheCar": [TxType.PERSISTENT],
   "DragonCachedModel": [TxType.PERSISTENT],
   "DragonCachedFP": [TxType.PERSISTENT],
   "DragonCachedVIN": [TxType.PERSISTENT],
+  "DragonAllowGas": [TxType.PERSISTENT],
+  "DragonBBUI": [TxType.PERSISTENT], # deprecated
+  "DragonToyotaStockDSU": [TxType.PERSISTENT],
+  "DragonLatCtrl": [TxType.PERSISTENT],
+  "DragonUIEvent": [TxType.PERSISTENT],
+  "DragonUIMaxSpeed": [TxType.PERSISTENT],
+  "DragonUIFace": [TxType.PERSISTENT],
+  "DragonUIDev": [TxType.PERSISTENT],
+  "DragonUIDevMini": [TxType.PERSISTENT],
 }
 
 

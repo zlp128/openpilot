@@ -3,7 +3,11 @@ from common.kalman.simple_kalman import KF1D
 from selfdrive.can.can_define import CANDefine
 from selfdrive.can.parser import CANParser
 from selfdrive.config import Conversions as CV
-from selfdrive.car.toyota.values import CAR, DBC, STEER_THRESHOLD, TSS2_CAR
+from selfdrive.car.toyota.values import CAR, DBC, STEER_THRESHOLD, TSS2_CAR, NO_DSU_CAR
+
+from common.realtime import sec_since_boot
+from common.params import Params
+params = Params()
 
 def parse_gear_shifter(gear, vals):
 
@@ -19,6 +23,7 @@ def get_can_parser(CP):
 
   signals = [
     # sig_name, sig_address, default
+    ("STEER_ANGLE", "STEER_ANGLE_SENSOR", 0),
     ("GEAR", "GEAR_PACKET", 0),
     ("BRAKE_PRESSED", "BRAKE_MODULE", 0),
     ("GAS_PEDAL", "GAS_PEDAL", 0),
@@ -59,10 +64,8 @@ def get_can_parser(CP):
     ("EPS_STATUS", 25),
   ]
 
-  if CP.carFingerprint in TSS2_CAR:
+  if CP.carFingerprint in NO_DSU_CAR:
     signals += [("STEER_ANGLE", "STEER_TORQUE_SENSOR", 0)]
-  else:
-    signals += [("STEER_ANGLE", "STEER_ANGLE_SENSOR", 0)]
 
   if CP.carFingerprint == CAR.PRIUS:
     signals += [("STATE", "AUTOPARK_STATUS", 0)]
@@ -94,6 +97,8 @@ class CarState(object):
     self.shifter_values = self.can_define.dv["GEAR_PACKET"]['GEAR']
     self.left_blinker_on = 0
     self.right_blinker_on = 0
+    self.angle_offset = 0.
+    self.init_angle_offset = False
 
     # initialize can parser
     self.car_fingerprint = CP.carFingerprint
@@ -108,7 +113,16 @@ class CarState(object):
                          K=[[0.12287673], [0.29666309]])
     self.v_ego = 0.0
 
+    self.dragon_toyota_stock_dsu = False
+    self.ts_last_check = 0.
+
   def update(self, cp):
+    # dragonpilot, don't check for param too often as it's a kernel call
+    ts = sec_since_boot()
+    if ts - self.ts_last_check > 1.:
+      self.dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
+      self.ts_last_check = ts
+
     # update prevs, update must run once per loop
     self.prev_left_blinker_on = self.left_blinker_on
     self.prev_right_blinker_on = self.right_blinker_on
@@ -144,6 +158,14 @@ class CarState(object):
 
     if self.CP.carFingerprint in TSS2_CAR:
       self.angle_steers = cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE']
+    elif self.CP.carFingerprint in NO_DSU_CAR:
+      # cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE'] is zeroed to where the steering angle is at start.
+      # need to apply an offset as soon as the steering angle measurements are both received
+      self.angle_steers = cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE'] - self.angle_offset
+      angle_wheel = cp.vl["STEER_ANGLE_SENSOR"]['STEER_ANGLE'] + cp.vl["STEER_ANGLE_SENSOR"]['STEER_FRACTION']
+      if abs(angle_wheel) > 1e-3 and abs(self.angle_steers) > 1e-3 and not self.init_angle_offset:
+        self.init_angle_offset = True
+        self.angle_offset = self.angle_steers - angle_wheel
     else:
       self.angle_steers = cp.vl["STEER_ANGLE_SENSOR"]['STEER_ANGLE'] + cp.vl["STEER_ANGLE_SENSOR"]['STEER_FRACTION']
     self.angle_steers_rate = cp.vl["STEER_ANGLE_SENSOR"]['STEER_RATE']
@@ -173,3 +195,13 @@ class CarState(object):
       self.generic_toggle = cp.vl["AUTOPARK_STATUS"]['STATE'] != 0
     else:
       self.generic_toggle = bool(cp.vl["LIGHT_STALK"]['AUTO_HIGH_BEAM'])
+
+    if self.dragon_toyota_stock_dsu and self.generic_toggle and self.main_on:
+      enable_acc = True
+      if not self.gear_shifter == 'drive' or not self.seatbelt or not self.door_all_closed:
+        enable_acc = False
+      self.pcm_acc_active = enable_acc
+      if self.standstill:
+        self.pcm_acc_status = 7
+      else:
+        self.pcm_acc_status = 1

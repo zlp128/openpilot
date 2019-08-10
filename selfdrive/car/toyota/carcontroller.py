@@ -128,10 +128,18 @@ class CarController(object):
 
     # dragonpilot
     self.turning_signal_timer = 0
+    self.dragon_enable_steering_on_signal = False
+    self.dragon_allow_gas = False
+    self.dragon_lat_ctrl = True
 
   def update(self, enabled, CS, frame, actuators,
              pcm_cancel_cmd, hud_alert, audible_alert, forwarding_camera,
              left_line, right_line, lead, left_lane_depart, right_lane_depart):
+    # dragonpilot, don't check for param too often as it's a kernel call
+    if frame % 100 == 0:
+      self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
+      self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
+      self.dragon_lat_ctrl = False if params.get("DragonLatCtrl") == "0" else True
 
     # *** compute control surfaces ***
 
@@ -204,12 +212,26 @@ class CarController(object):
     can_sends = []
 
     # dragonpilot
-    if enabled and (CS.left_blinker_on or CS.right_blinker_on) and params.get("DragonTempDisableSteerOnSignal") == "1":
+    if enabled and (CS.left_blinker_on or CS.right_blinker_on) and self.dragon_enable_steering_on_signal:
       self.turning_signal_timer = 100
 
     if self.turning_signal_timer > 0:
       self.turning_signal_timer -= 1
       apply_steer_req = 0
+
+    if not self.dragon_lat_ctrl:
+      apply_steer_req = 0
+
+    if CS.v_ego > 12.5 and not enabled:
+      if right_lane_depart and not CS.right_blinker_on:
+        apply_steer = self.last_steer + 3
+        apply_steer = min(apply_steer , 800)
+        apply_steer_req = 1
+
+      if left_lane_depart and not CS.left_blinker_on:
+        apply_steer = self.last_steer - 3
+        apply_steer = max(apply_steer , -800)
+        apply_steer_req = 1
 
     #*** control msgs ***
     #print("steer {0} {1} {2} {3}".format(apply_steer, min_lim, max_lim, CS.steer_torque_motor)
@@ -228,6 +250,19 @@ class CarController(object):
                                                  ECU.APGS in self.fake_ecus))
     elif ECU.APGS in self.fake_ecus:
       can_sends.append(create_ipas_steer_command(self.packer, 0, 0, True))
+
+    # DragonAllowGas
+    # if we detect gas pedal pressed, we do not want OP to apply gas or brake
+    # gasPressed code from interface.py
+    if CS.CP.enableGasInterceptor:
+      # use interceptor values to disengage on pedal press
+      gasPressed = CS.pedal_gas > 15
+    else:
+      gasPressed = CS.pedal_gas > 0
+
+    if self.dragon_allow_gas and gasPressed:
+      apply_accel = 0
+      apply_gas = 0
 
     # accel cmd comes from DSU, but we can spam can to cancel the system even if we are using lat only control
     if (frame % 3 == 0 and ECU.DSU in self.fake_ecus) or (pcm_cancel_cmd and ECU.CAM in self.fake_ecus):
