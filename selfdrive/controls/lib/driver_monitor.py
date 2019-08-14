@@ -173,6 +173,9 @@ class DriverStatus():
       self.dragon_enable_driver_safety_check = False if params.get("DragonEnableDriverSafetyCheck") == "0" else True
       self.dp_last_check = ts
 
+    if not self.dragon_enable_driver_safety_check:
+      return events
+
     driver_engaged |= (self.driver_distraction_filter.x < 0.37 and self.monitor_on)
     awareness_prev = self.awareness
 
@@ -197,7 +200,7 @@ class DriverStatus():
     elif self.awareness <= self.threshold_pre:
       # pre green alert
       alert = 'preDriverDistracted' if self.monitor_on else 'preDriverUnresponsive'
-    if alert is not None and self.dragon_enable_driver_safety_check:
+    if alert is not None:
       events.append(create_event(alert, [ET.WARNING]))
 
     return events
