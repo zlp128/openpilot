@@ -118,7 +118,7 @@ managed_processes = {
   "visiond": ("selfdrive/visiond", ["./visiond"]),
   "sensord": ("selfdrive/sensord", ["./start_sensord.py"]),
   "gpsd": ("selfdrive/sensord", ["./start_gpsd.py"]),
-  "updated": "selfdrive.updated",
+  #"updated": "selfdrive.updated",
   "dashcamd": "selfdrive.dragonpilot.dashcamd.dashcamd",
   "shutdownd": "selfdrive.dragonpilot.shutdownd.shutdownd",
 }
@@ -147,7 +147,7 @@ persistent_processes = [
   'tombstoned',
   'uploader',
   'ui',
-  'updated',
+  #'updated',
   'shutdownd',
 ]
 
