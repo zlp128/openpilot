@@ -26,6 +26,8 @@ default_conf = {
   'DragonUIFace': '0',
   'DragonUIDev': '0',
   'DragonUIDevMini': '1',
+  'DragonBootTomTom': '0',
+  'DragonBootAutonavi': '0',
 }
 
 deprecated_conf = {

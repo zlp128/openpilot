@@ -107,6 +107,8 @@ keys = {
   "DragonUIFace": [TxType.PERSISTENT],
   "DragonUIDev": [TxType.PERSISTENT],
   "DragonUIDevMini": [TxType.PERSISTENT],
+  "DragonBootTomTom": [TxType.PERSISTENT],
+  "DragonBootAutonavi": [TxType.PERSISTENT],
 }
 
 
