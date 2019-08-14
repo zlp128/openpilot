@@ -381,7 +381,7 @@ def manager_thread():
   if params.get("DragonBootTomTom") == "1":
     system("am start -n com.tomtom.speedcams.android.map/com.tomtom.speedcams.android.activities.SpeedCamActivity")
   if params.get("DragonBootAutonavi") == "1":
-    system("start -n com.autonavi.amapauto/.MainMapActivity")
+    system("am start -n com.autonavi.amapauto/.MainMapActivity")
 
   while 1:
     msg = messaging.recv_sock(thermal_sock, wait=True)
