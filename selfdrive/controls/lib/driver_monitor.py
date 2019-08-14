@@ -152,7 +152,7 @@ class DriverStatus():
 
     # don't check for param too often as it's a kernel call
     ts = sec_since_boot()
-    if ts - self.ts_last_check > 1.:
+    if ts - self.ts_last_check > 3.:
       self.monitor_param_on = params.get("IsDriverMonitoringEnabled") == "1"
       self.ts_last_check = ts
 
@@ -169,7 +169,7 @@ class DriverStatus():
 
     # don't check for param too often as it's a kernel call
     ts = sec_since_boot()
-    if ts - self.dp_last_check > 1.:
+    if ts - self.dp_last_check > 3.:
       self.dragon_enable_driver_safety_check = False if params.get("DragonEnableDriverSafetyCheck") == "0" else True
       self.dp_last_check = ts
 
