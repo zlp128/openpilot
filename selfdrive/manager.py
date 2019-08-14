@@ -118,7 +118,7 @@ managed_processes = {
   "visiond": ("selfdrive/visiond", ["./visiond"]),
   "sensord": ("selfdrive/sensord", ["./start_sensord.py"]),
   "gpsd": ("selfdrive/sensord", ["./start_gpsd.py"]),
-  "updated": "selfdrive.updated",
+  #"updated": "selfdrive.updated",
   "dashcamd": "selfdrive.dragonpilot.dashcamd.dashcamd",
   "shutdownd": "selfdrive.dragonpilot.shutdownd.shutdownd",
 }
@@ -147,7 +147,7 @@ persistent_processes = [
   'tombstoned',
   'uploader',
   'ui',
-  'updated',
+  #'updated',
   'shutdownd',
 ]
 
@@ -371,6 +371,10 @@ def manager_thread():
 
   # start frame
   pm_apply_packages('enable')
+  if params.get("DragonBootTomTom") == "1":
+    system("am start -n com.tomtom.speedcams.android.map/com.tomtom.speedcams.android.activities.SpeedCamActivity")
+  if params.get("DragonBootAutonavi") == "1":
+    system("start -n com.autonavi.amapauto/.MainMapActivity")
   system("am start -n ai.comma.plus.frame/.MainActivity")
 
   if os.getenv("NOBOARD") is None:
