@@ -509,7 +509,7 @@ def controlsd_thread(gctx=None):
   while True:
     # dragonpilot, don't check for param too often as it's a kernel call
     ts = sec_since_boot()
-    if ts - ts_last_check > 1.:
+    if ts - ts_last_check > 3.:
       dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
       ts_last_check = ts
 
