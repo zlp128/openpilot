@@ -46,5 +46,5 @@ if [ $update_font_reg -eq "1" ] || [ $update_font_bold -eq "1" ] || [ $remove_ol
     fi
     mount -o remount,r /system
     # change system locale
-    setprop persist.sys.locale $lang
 fi
+setprop persist.sys.locale $lang
