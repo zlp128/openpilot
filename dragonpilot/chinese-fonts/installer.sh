@@ -23,8 +23,8 @@ if ls /system/fonts/DroidSansFallback*.ttf 1> /dev/null 2>&1; then
 fi
 
 if [ $update_font_reg -eq "1" ] || [ $update_font_bold -eq "1" ] || [ $remove_old_font -eq "1" ]; then
-    # sleep 5 secs in case, make sure the /system is remountable
-    sleep 5
+    # sleep 3 secs in case, make sure the /system is remountable
+    sleep 3
     mount -o remount,rw /system
     if [ $update_font_reg -eq "1" ] || [ $update_font_bold -eq "1" ]; then
         # download regular font
@@ -47,4 +47,6 @@ if [ $update_font_reg -eq "1" ] || [ $update_font_bold -eq "1" ] || [ $remove_ol
     mount -o remount,r /system
     # change system locale
 fi
+
 setprop persist.sys.locale $lang
+setprop persist.sys.local $lang
