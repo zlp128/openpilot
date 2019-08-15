@@ -48,6 +48,8 @@ cd /data
 mv openpilot openpilot_bak
 
 # 下載 dragonpilot 並命名為 openpilot
+# 若是 github 太慢，也可以使用我們的 gitee 鏡像: 
+# git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot
 git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot
 
 # 切換到 openpilot 的資料夾
