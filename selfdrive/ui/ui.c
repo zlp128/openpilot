@@ -1542,12 +1542,12 @@ static int bb_ui_draw_measure(UIState *s,  const char* bb_value, const char* bb_
     dx = (int)(bb_uomFontSize*2.5/2);
   }
   //print value
-  nvgFontFace(s->vg, "sans-semibold");
+  nvgFontFace(s->vg, "miui-bold");
   nvgFontSize(s->vg, bb_valueFontSize*2.5);
   nvgFillColor(s->vg, bb_valueColor);
   nvgText(s->vg, bb_x-dx/2, bb_y+ (int)(bb_valueFontSize*2.5)+5, bb_value, NULL);
   //print label
-  nvgFontFace(s->vg, "sans-regular");
+  nvgFontFace(s->vg, "miui-regular");
   nvgFontSize(s->vg, bb_labelFontSize*2.5);
   nvgFillColor(s->vg, bb_labelColor);
   nvgText(s->vg, bb_x, bb_y + (int)(bb_valueFontSize*2.5)+5 + (int)(bb_labelFontSize*2.5)+5, bb_label, NULL);
@@ -1599,7 +1599,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
        snprintf(val_str, sizeof(val_str), "-");
     }
     snprintf(uom_str, sizeof(uom_str), "m   ");
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "REL DIST",
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "相對距離",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
         value_fontSize, label_fontSize, uom_fontSize );
@@ -1634,7 +1634,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
     } else {
       snprintf(uom_str, sizeof(uom_str), "mph");
     }
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "REL SPEED",
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "相對速度",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
         value_fontSize, label_fontSize, uom_fontSize );
@@ -1679,7 +1679,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
       snprintf(val_str, sizeof(val_str), "%.0f°",(scene->angleSteers));
 
       snprintf(uom_str, sizeof(uom_str), "");
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "REAL STEER",
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "實際轉向",
       bb_rx, bb_ry, bb_uom_dx,
       val_color, lab_color, uom_color,
       value_fontSize, label_fontSize, uom_fontSize );
@@ -1703,7 +1703,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     snprintf(val_str, sizeof(val_str), "%.0f°",(scene->angleSteersDes));
 
     snprintf(uom_str, sizeof(uom_str), "");
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "DESIR STEER",
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "所需轉向",
       bb_rx, bb_ry, bb_uom_dx,
       val_color, lab_color, uom_color,
       value_fontSize, label_fontSize, uom_fontSize );
