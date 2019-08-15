@@ -536,9 +536,9 @@ static void ui_init(UIState *s) {
   assert(s->font_sans_semibold >= 0);
   s->font_sans_bold = nvgCreateFont(s->vg, "sans-bold", "../assets/fonts/opensans_bold.ttf");
   assert(s->font_sans_bold >= 0);
-  s->font_miui_regular = nvgCreateFont(s->vg, "miui-regular", "/system/fonts/Miui-Regular.ttf");
+  s->font_miui_regular = nvgCreateFont(s->vg, "miui-regular", "../assets/fonts/NotoSansCJKtc-Regular.otf");
   assert(s->font_miui_regular >= 0);
-  s->font_miui_bold = nvgCreateFont(s->vg, "miui-bold", "/system/fonts/Miui-Bold.ttf");
+  s->font_miui_bold = nvgCreateFont(s->vg, "miui-bold", "../assets/fonts/NotoSansCJKtc-Bold.otf");
   assert(s->font_miui_bold >= 0);
 
   assert(s->img_wheel >= 0);
@@ -1558,7 +1558,7 @@ static int bb_ui_draw_measure(UIState *s,  const char* bb_value, const char* bb_
     int ry = bb_y + (int)(bb_valueFontSize*2.5/2)+25;
     nvgTranslate(s->vg,rx,ry);
     nvgRotate(s->vg, -1.5708); //-90deg in radians
-    nvgFontFace(s->vg, "sans-regular");
+    nvgFontFace(s->vg, "miui-regular");
     nvgFontSize(s->vg, (int)(bb_uomFontSize*2.5));
     nvgFillColor(s->vg, bb_uomColor);
     nvgText(s->vg, 0, 0, bb_uom, NULL);
@@ -1676,7 +1676,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
         val_color = nvgRGBA(255, 0, 0, 200);
       }
       // steering is in degrees
-      snprintf(val_str, sizeof(val_str), "%.0f°",(scene->angleSteers));
+      snprintf(val_str, sizeof(val_str), "%.1f°",(scene->angleSteers));
 
       snprintf(uom_str, sizeof(uom_str), "");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "實際轉向",
@@ -1700,7 +1700,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
       val_color = nvgRGBA(255, 0, 0, 200);
     }
     // steering is in degrees
-    snprintf(val_str, sizeof(val_str), "%.0f°",(scene->angleSteersDes));
+    snprintf(val_str, sizeof(val_str), "%.1f°",(scene->angleSteersDes));
 
     snprintf(uom_str, sizeof(uom_str), "");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "所需轉向",
