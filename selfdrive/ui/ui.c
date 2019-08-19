@@ -530,7 +530,7 @@ static void ui_init(UIState *s) {
   assert(s->font_courbd >= 0);
   s->font_sans_regular = nvgCreateFont(s->vg, "sans-regular", "../assets/fonts/NotoSansCJKtc-Regular.otf");
   assert(s->font_sans_regular >= 0);
-  s->font_sans_semibold = nvgCreateFont(s->vg, "sans-semibold", "../assets/fonts/opensans_semibold.ttf");
+  s->font_sans_semibold = nvgCreateFont(s->vg, "sans-semibold", "../assets/fonts/NotoSansCJKtc-Medium.otf");
   assert(s->font_sans_semibold >= 0);
   s->font_sans_bold = nvgCreateFont(s->vg, "sans-bold", "../assets/fonts/NotoSansCJKtc-Bold.otf");
   assert(s->font_sans_bold >= 0);
@@ -1782,7 +1782,7 @@ static void ui_draw_vision_alert(UIState *s, int va_size, int va_color,
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
 
   if (va_size == ALERTSIZE_SMALL) {
-    nvgFontFace(s->vg, "sans-bold");
+    nvgFontFace(s->vg, "sans-semibold");
     nvgFontSize(s->vg, 40*2.5);
     nvgText(s->vg, alr_x+alr_w/2, alr_y+alr_h/2+15, va_text1, NULL);
   } else if (va_size== ALERTSIZE_MID) {
