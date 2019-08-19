@@ -601,7 +601,7 @@ def main():
     spinner_proc = None
   else:
     spinner_text = "chffrplus" if params.get("Passive")=="1" else "dragonpilot"
-    spinner_proc = subprocess.Popen(["./spinner", "loading %s"%spinner_text],
+    spinner_proc = subprocess.Popen(["./spinner", "http://dragonpilot.cn"],
       cwd=os.path.join(BASEDIR, "selfdrive", "ui", "spinner"),
       close_fds=True)
 
