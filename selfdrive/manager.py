@@ -382,15 +382,19 @@ def manager_thread():
   tomtom_started = False
   autonavi_started = False
   dp_last_check = 0.
+  dragon_boot_tomtom = False
+  dragon_boot_autonavi = False
 
   while 1:
     ts = sec_since_boot()
     if ts - dp_last_check > 3.:
+      dragon_boot_tomtom = False if params.get("DragonBootTomTom") == "0" else True
       try:
         tomtom_started = False if subprocess.check_output(['pidof', 'com.tomtom.speedcams.android.map']) == "" else True
       except subprocess.CalledProcessError as e:
         tomtom_started = False
 
+      dragon_boot_autonavi = False if params.get("DragonBootAutonavi") == "0" else True
       try:
         autonavi_started = False if subprocess.check_output(['pidof', 'com.autonavi.amapauto']) == "" else True
       except subprocess.CalledProcessError as e:
@@ -415,10 +419,17 @@ def manager_thread():
           start_managed_process(p)
 
       # dragonpilot, handle tomtom/autonavi
-      if params.get("DragonBootTomTom") == "1" and not tomtom_started:
-        system("am start -n com.tomtom.speedcams.android.map/com.tomtom.speedcams.android.activities.SpeedCamActivity")
-      if params.get("DragonBootAutonavi") == "1" and not autonavi_started:
-        system("am start -n com.autonavi.amapauto/.MainMapActivity")
+      # do not allow tomtom / autonavi when it's hot
+      if msg.thermal.thermalStatus < ThermalStatus.red:
+        if dragon_boot_tomtom and not tomtom_started:
+          system("am start -n com.tomtom.speedcams.android.map/com.tomtom.speedcams.android.activities.SpeedCamActivity")
+        if dragon_boot_autonavi and not autonavi_started:
+          system("am start -n com.autonavi.amapauto/.MainMapActivity")
+      else:
+        if dragon_boot_tomtom and tomtom_started:
+          system("pkill com.tomtom.speedcams.android.map")
+        if dragon_boot_autonavi and autonavi_started:
+          system("pkill com.autonavi.amapauto")
 
     else:
       logger_dead = False
@@ -426,9 +437,9 @@ def manager_thread():
         kill_managed_process(p)
 
       # dragonpilot, handle tomtom/autonavi
-      if params.get("DragonBootTomTom") == "1" and tomtom_started:
+      if dragon_boot_tomtom and tomtom_started:
         system("pkill com.tomtom.speedcams.android.map")
-      if params.get("DragonBootAutonavi") == "1" and autonavi_started:
+      if dragon_boot_autonavi and autonavi_started:
         system("pkill com.autonavi.amapauto")
 
     # check the status of all processes, did any of them die?
