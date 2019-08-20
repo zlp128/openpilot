@@ -4,8 +4,8 @@ from selfdrive.controls.lib.drive_helpers import create_event, EventTypes as ET
 from common.filter_simple import FirstOrderFilter
 from common.params import Params
 params = Params()
-
-_AWARENESS_TIME = 90.        # 1.5 minutes limit without user touching steering wheels make the car enter a terminal status
+_Timer = int(params.get("DragonSteeringMonitorTimer")) * 60
+_AWARENESS_TIME = _Timer if _Timer > 0 else 86400
 _AWARENESS_PRE_TIME_TILL_TERMINAL = 20.    # a first alert is issued 20s before expiration
 _AWARENESS_PROMPT_TIME_TILL_TERMINAL = 5.  # a second alert is issued 5s before start decelerating the car
 _DISTRACTED_TIME = 10.
