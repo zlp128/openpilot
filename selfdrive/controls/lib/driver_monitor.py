@@ -98,6 +98,7 @@ class DriverStatus():
     # dragonpilot
     self.dp_last_check = 0.
     self.dragon_enable_driver_safety_check = True
+    self.dragon_steering_monitor_timer = 180
 
   def _reset_filters(self):
     self.driver_distraction_filter.x = 0.
@@ -107,15 +108,15 @@ class DriverStatus():
   def _set_timers(self, active_monitoring):
     if active_monitoring:
       # when falling back from passive mode to active mode, reset awareness to avoid false alert
-      if self.step_change == DT_CTRL / _AWARENESS_TIME:
+      if self.step_change == DT_CTRL / self.dragon_steering_monitor_timer:
         self.awareness = 1.
       self.threshold_pre = _DISTRACTED_PRE_TIME_TILL_TERMINAL / _DISTRACTED_TIME
       self.threshold_prompt = _DISTRACTED_PROMPT_TIME_TILL_TERMINAL / _DISTRACTED_TIME
       self.step_change = DT_CTRL / _DISTRACTED_TIME
     else:
-      self.threshold_pre = _AWARENESS_PRE_TIME_TILL_TERMINAL / _AWARENESS_TIME
-      self.threshold_prompt = _AWARENESS_PROMPT_TIME_TILL_TERMINAL / _AWARENESS_TIME
-      self.step_change = DT_CTRL / _AWARENESS_TIME
+      self.threshold_pre = _AWARENESS_PRE_TIME_TILL_TERMINAL / self.dragon_steering_monitor_timer
+      self.threshold_prompt = _AWARENESS_PROMPT_TIME_TILL_TERMINAL / self.dragon_steering_monitor_timer
+      self.step_change = DT_CTRL / self.dragon_steering_monitor_timer
 
   def _is_driver_distracted(self, pose, blink):
     # TODO: natural pose calib of each driver
@@ -171,6 +172,8 @@ class DriverStatus():
     ts = sec_since_boot()
     if ts - self.dp_last_check > 3.:
       self.dragon_enable_driver_safety_check = False if params.get("DragonEnableDriverSafetyCheck") == "0" else True
+      timer = params.get("DragonSteeringMonitorTimer")
+      self.dragon_steering_monitor_timer = 60 * 60 * 24 if timer == "0" else int(timer) * 60
       self.dp_last_check = ts
 
     if not self.dragon_enable_driver_safety_check:
