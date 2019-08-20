@@ -28,6 +28,7 @@ default_conf = {
   'DragonUIDevMini': '1',
   'DragonBootTomTom': '0',
   'DragonBootAutonavi': '0',
+  'DragonSteeringMonitorTimer': '3',
 }
 
 deprecated_conf = {
