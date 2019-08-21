@@ -15,12 +15,13 @@ dragonpilot (龍芯駕駛輔助系統)
 * Noctua 風扇模式
 * 完全取消駕駛監控 (人臉+方向盤)
 * ACC 模式：讓 dp 只操控油門/剎車
-* [0.6.3] TOM TOM 測速照相 / 高德地圖
+* [0.6.3] 新增 TOM TOM 測速照相 / 高德地圖
+* [0.6.3] 新增 MiXplorer 檔案管理器
 
 
 畫面截圖
 ---
-![](dp_1.png) ![](dp_2.png) ![](dp_3.png) ![](dp_4.png) ![](dp_5.png)
+![](dp_1.png) ![](dp_2.png) ![](dp_3.png) ![](dp_4.png) ![](dp_5.png) ![](dp_6.png)
 
 硬體需求
 ---
