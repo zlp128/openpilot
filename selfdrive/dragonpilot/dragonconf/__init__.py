@@ -26,8 +26,15 @@ default_conf = {
   'DragonUIFace': '0',
   'DragonUIDev': '0',
   'DragonUIDevMini': '1',
+  # 3rd party app
+  'DragonEnableTomTom': '0',
   'DragonBootTomTom': '0',
+  'DragonRunTomTom': '0',
+  'DragonEnableAutonavi': '0',
   'DragonBootAutonavi': '0',
+  'DragonRunAutonavi': '0',
+  'DragonEnableMixplorer': '0',
+  'DragonRunMixplorer': '0',
   'DragonSteeringMonitorTimer': '3',
 }
 
