@@ -381,13 +381,14 @@ def manager_thread():
 
   tomtom_started = False
   autonavi_started = False
+  mixplorer_started = False
   dp_last_check = 0.
   dragon_boot_tomtom = False
   dragon_boot_autonavi = False
 
   while 1:
     ts = sec_since_boot()
-    if ts - dp_last_check > 3.:
+    if ts - dp_last_check > 5.:
       dragon_boot_tomtom = False if params.get("DragonBootTomTom") == "0" else True
       try:
         tomtom_started = False if subprocess.check_output(['pidof', 'com.tomtom.speedcams.android.map']) == "" else True
@@ -399,6 +400,11 @@ def manager_thread():
         autonavi_started = False if subprocess.check_output(['pidof', 'com.autonavi.amapauto']) == "" else True
       except subprocess.CalledProcessError as e:
         autonavi_started = False
+
+      try:
+        mixplorer_started = False if subprocess.check_output(['pidof', 'com.mixplorer']) == "" else True
+      except subprocess.CalledProcessError as e:
+        mixplorer_started = False
 
     msg = messaging.recv_sock(thermal_sock, wait=True)
 
@@ -430,6 +436,8 @@ def manager_thread():
           system("pkill com.tomtom.speedcams.android.map")
         if dragon_boot_autonavi and autonavi_started:
           system("pkill com.autonavi.amapauto")
+      if mixplorer_started:
+        system("pkill com.mixplorer")
 
     else:
       logger_dead = False
