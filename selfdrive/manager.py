@@ -126,7 +126,7 @@ managed_processes = {
 daemon_processes = {
   "athenad": "selfdrive.athena.athenad",
 }
-android_packages = ("ai.comma.plus.offroad", "ai.comma.plus.frame")
+android_packages = ("com.autonavi.amapauto", "com.mixplorer", "com.tomtom.speedcams.android.map", "ai.comma.plus.offroad", "ai.comma.plus.frame")
 
 running = {}
 def get_running():
