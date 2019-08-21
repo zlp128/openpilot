@@ -107,8 +107,14 @@ keys = {
   "DragonUIFace": [TxType.PERSISTENT],
   "DragonUIDev": [TxType.PERSISTENT],
   "DragonUIDevMini": [TxType.PERSISTENT],
+  "DragonEnableTomTom": [TxType.PERSISTENT],
   "DragonBootTomTom": [TxType.PERSISTENT],
+  "DragonRunTomTom": [TxType.PERSISTENT],
+  "DragonEnableAutonavi": [TxType.PERSISTENT],
   "DragonBootAutonavi": [TxType.PERSISTENT],
+  "DragonRunAutonavi": [TxType.PERSISTENT],
+  "DragonEnableMixplorer": [TxType.PERSISTENT],
+  "DragonRunMixplorer": [TxType.PERSISTENT],
   "DragonSteeringMonitorTimer": [TxType.PERSISTENT],
 }
 
