@@ -1,10 +1,11 @@
 from common.numpy_fast import interp
 import numpy as np
 from selfdrive.controls.lib.latcontrol_helpers import model_polyfit, compute_path_pinv
+from common.realtime import sec_since_boot
 from common.params import Params
 params = Params()
 
-CAMERA_OFFSET = int(params.get("DragonCameraOffset"))
+CAMERA_OFFSET = 0.06  # m from center car to camera
 
 
 def calc_d_poly(l_poly, r_poly, p_poly, l_prob, r_prob, lane_width):
@@ -42,6 +43,9 @@ class LanePlanner(object):
     self._path_pinv = compute_path_pinv()
     self.x_points = np.arange(50)
 
+    self.ts_last_check = 0.
+    self.camera_offset = 0.06
+
   def parse_model(self, md):
     if len(md.leftLane.poly):
       self.l_poly = np.array(md.leftLane.poly)
@@ -55,9 +59,13 @@ class LanePlanner(object):
     self.r_prob = md.rightLane.prob  # right line prob
 
   def update_lane(self, v_ego):
+    ts = sec_since_boot()
+    if ts - self.ts_last_check > 3.:
+      self.camera_offset = int(params.get("DragonCameraOffset")) * 0.01
+      self.ts_last_check = ts
     # only offset left and right lane lines; offsetting p_poly does not make sense
-    self.l_poly[3] += CAMERA_OFFSET
-    self.r_poly[3] += CAMERA_OFFSET
+    self.l_poly[3] += self.camera_offset
+    self.r_poly[3] += self.camera_offset
 
     self.lr_prob = self.l_prob + self.r_prob - self.l_prob * self.r_prob
 
