@@ -549,10 +549,6 @@ def main():
     del managed_processes['plannerd']
     del managed_processes['radard']
 
-  # we don't need appd if none of the 3rd party apps is enabled
-  if not params.get("DragonEnableTomTom") == "1" and not params.get("DragonEnableAutonavi") == "1" and not params.get("DragonEnableMixplorer") == "1":
-    del managed_processes['appd']
-
   # support additional internal only extensions
   try:
     import selfdrive.manager_extensions
@@ -613,6 +609,10 @@ def main():
 
   if params.get("DragonEnableUploader") == "0":
     del managed_processes['uploader']
+
+  # we don't need appd if none of the 3rd party apps is enabled
+  if not params.get("DragonEnableTomTom") == "1" and not params.get("DragonEnableAutonavi") == "1" and not params.get("DragonEnableMixplorer") == "1":
+    del managed_processes['appd']
 
   try:
     manager_update()
