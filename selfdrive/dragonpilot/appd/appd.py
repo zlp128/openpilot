@@ -50,7 +50,7 @@ def main(gctx=None):
 
   thermal_sock = messaging.sub_sock(service_list['thermal'].port)
 
-  while 1:
+  while dragon_enable_tomtom or dragon_enable_autonavi or dragon_enable_mixplorer:
     msg = messaging.recv_sock(thermal_sock, wait=True)
 
     # allow user to manually start/stop app
