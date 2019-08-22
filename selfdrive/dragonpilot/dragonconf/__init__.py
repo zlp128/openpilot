@@ -36,6 +36,7 @@ default_conf = {
   'DragonEnableMixplorer': '0',
   'DragonRunMixplorer': '0',
   'DragonSteeringMonitorTimer': '3',
+  'DragonCameraOffset': '6',
 }
 
 deprecated_conf = {
