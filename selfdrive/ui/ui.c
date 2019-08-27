@@ -691,13 +691,13 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   s->limit_set_speed_timeout = UI_FREQ;
 
   // dragonpilot, 1hz
-  s->dragon_ui_event_timeout = UI_FREQ * 3;
-  s->dragon_ui_maxspeed_timeout = UI_FREQ * 3;
-  s->dragon_ui_face_timeout = UI_FREQ * 3;
-  s->dragon_ui_dev_timeout = UI_FREQ * 3;
-  s->dragon_ui_dev_mini_timeout = UI_FREQ * 3;
-  s->dragon_enable_dashcam_timeout = UI_FREQ * 3;
-  s->dragon_ui_volume_boost_timeout = UI_FREQ * 3;
+  s->dragon_ui_event_timeout = 100;
+  s->dragon_ui_maxspeed_timeout = 100;
+  s->dragon_ui_face_timeout = 100;
+  s->dragon_ui_dev_timeout = 100;
+  s->dragon_ui_dev_mini_timeout = 100;
+  s->dragon_enable_dashcam_timeout = 100;
+  s->dragon_ui_volume_boost_timeout = 100;
 }
 
 static void ui_draw_transformed_box(UIState *s, uint32_t color) {
@@ -2649,6 +2649,7 @@ int main(int argc, char* argv[]) {
       int volume = min(MAX_VOLUME, MIN_VOLUME + s->scene.v_ego / 5);  // up one notch every 5 m/s
       if (s->dragon_ui_volume_boost > 0 || s->dragon_ui_volume_boost < 0) {
         volume = volume * (1 + s->dragon_ui_volume_boost /100);
+        volume = volume > MAX_VOLUME? MAX_VOLUME : volume;
       }
       set_volume(s, volume);
     }
@@ -2678,6 +2679,7 @@ int main(int argc, char* argv[]) {
     read_param_bool_timeout(&s->dragon_ui_dev, "DragonUIDev", &s->dragon_ui_dev_timeout);
     read_param_bool_timeout(&s->dragon_ui_dev_mini, "DragonUIDevMini", &s->dragon_ui_dev_mini_timeout);
     read_param_bool_timeout(&s->dragon_enable_dashcam, "DragonEnableDashcam", &s->dragon_enable_dashcam_timeout);
+    read_param_float_timeout(&s->dragon_ui_volume_boost, "DragonUIVolumeBoost", &s->dragon_ui_volume_boost_timeout);
 
     pthread_mutex_unlock(&s->lock);
 
