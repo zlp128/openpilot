@@ -2648,7 +2648,7 @@ int main(int argc, char* argv[]) {
     } else {
       int volume = min(MAX_VOLUME, MIN_VOLUME + s->scene.v_ego / 5);  // up one notch every 5 m/s
       if (s->dragon_ui_volume_boost > 0 || s->dragon_ui_volume_boost < 0) {
-        volume = volume * (1 + s->dragon_ui_volume_boost /100)
+        volume = volume * (1 + s->dragon_ui_volume_boost /100);
       }
       set_volume(s, volume);
     }
