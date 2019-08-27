@@ -300,6 +300,7 @@ typedef struct UIState {
   int dragon_ui_dev_timeout;
   int dragon_ui_dev_mini_timeout;
   int dragon_enable_dashcam_timeout;
+  int dragon_ui_volume_boost_timeout;
 
   bool dragon_ui_event;
   bool dragon_ui_maxspeed;
@@ -307,6 +308,7 @@ typedef struct UIState {
   bool dragon_ui_dev;
   bool dragon_ui_dev_mini;
   bool dragon_enable_dashcam;
+  float dragon_ui_volume_boost;
 
 } UIState;
 
@@ -680,6 +682,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   read_param_bool(&s->dragon_ui_dev, "DragonUIDev");
   read_param_bool(&s->dragon_ui_dev_mini, "DragonUIDevMini");
   read_param_bool(&s->dragon_enable_dashcam, "DragonEnableDashcam");
+  read_param_float(&s->dragon_ui_volume_boost, "DragonUIVolumeBoost");
 
 
   // Set offsets so params don't get read at the same time
@@ -687,13 +690,14 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   s->is_metric_timeout = UI_FREQ / 2;
   s->limit_set_speed_timeout = UI_FREQ;
 
-  // dragonpilot, 1 sec
-  s->dragon_ui_event_timeout = 100;
-  s->dragon_ui_maxspeed_timeout = 100;
-  s->dragon_ui_face_timeout = 100;
-  s->dragon_ui_dev_timeout = 100;
-  s->dragon_ui_dev_mini_timeout = 100;
-  s->dragon_enable_dashcam_timeout = 100;
+  // dragonpilot, 1hz
+  s->dragon_ui_event_timeout = UI_FREQ * 3;
+  s->dragon_ui_maxspeed_timeout = UI_FREQ * 3;
+  s->dragon_ui_face_timeout = UI_FREQ * 3;
+  s->dragon_ui_dev_timeout = UI_FREQ * 3;
+  s->dragon_ui_dev_mini_timeout = UI_FREQ * 3;
+  s->dragon_enable_dashcam_timeout = UI_FREQ * 3;
+  s->dragon_ui_volume_boost_timeout = UI_FREQ * 3;
 }
 
 static void ui_draw_transformed_box(UIState *s, uint32_t color) {
@@ -2643,6 +2647,9 @@ int main(int argc, char* argv[]) {
       s->volume_timeout--;
     } else {
       int volume = min(MAX_VOLUME, MIN_VOLUME + s->scene.v_ego / 5);  // up one notch every 5 m/s
+      if (s->dragon_ui_volume_boost > 0 || s->dragon_ui_volume_boost < 0) {
+        volume = volume * (1+dragon_ui_volume_boost/100)
+      }
       set_volume(s, volume);
     }
 
