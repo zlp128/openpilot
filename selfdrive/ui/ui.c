@@ -348,9 +348,6 @@ static void set_awake(UIState *s, bool awake) {
 
 static void set_volume(UIState *s, int volume) {
   char volume_change_cmd[64];
-  if (s->dragon_ui_volume_boost > 0 || s->dragon_ui_volume_boost < 0) {
-    volume = volume * (1 + s->dragon_ui_volume_boost /100);
-  }
   sprintf(volume_change_cmd, "service call audio 3 i32 3 i32 %d i32 1", volume);
 
   // 5 second timeout at 60fps
