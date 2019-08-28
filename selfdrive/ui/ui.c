@@ -300,6 +300,7 @@ typedef struct UIState {
   int dragon_ui_dev_timeout;
   int dragon_ui_dev_mini_timeout;
   int dragon_enable_dashcam_timeout;
+  int dragon_ui_volume_boost_timeout;
 
   bool dragon_ui_event;
   bool dragon_ui_maxspeed;
@@ -307,6 +308,7 @@ typedef struct UIState {
   bool dragon_ui_dev;
   bool dragon_ui_dev_mini;
   bool dragon_enable_dashcam;
+  float dragon_ui_volume_boost;
 
 } UIState;
 
@@ -346,6 +348,10 @@ static void set_awake(UIState *s, bool awake) {
 
 static void set_volume(UIState *s, int volume) {
   char volume_change_cmd[64];
+  if (s->dragon_ui_volume_boost > 0 || s->dragon_ui_volume_boost < 0) {
+    volume = volume * (1 + s->dragon_ui_volume_boost /100);
+    volume = volume > MAX_VOLUME? MAX_VOLUME : volume;
+  }
   sprintf(volume_change_cmd, "service call audio 3 i32 3 i32 %d i32 1", volume);
 
   // 5 second timeout at 60fps
@@ -680,6 +686,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   read_param_bool(&s->dragon_ui_dev, "DragonUIDev");
   read_param_bool(&s->dragon_ui_dev_mini, "DragonUIDevMini");
   read_param_bool(&s->dragon_enable_dashcam, "DragonEnableDashcam");
+  read_param_float(&s->dragon_ui_volume_boost, "DragonUIVolumeBoost");
 
 
   // Set offsets so params don't get read at the same time
@@ -687,13 +694,14 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   s->is_metric_timeout = UI_FREQ / 2;
   s->limit_set_speed_timeout = UI_FREQ;
 
-  // dragonpilot, 1 sec
+  // dragonpilot, 1hz
   s->dragon_ui_event_timeout = 100;
   s->dragon_ui_maxspeed_timeout = 100;
   s->dragon_ui_face_timeout = 100;
   s->dragon_ui_dev_timeout = 100;
   s->dragon_ui_dev_mini_timeout = 100;
   s->dragon_enable_dashcam_timeout = 100;
+  s->dragon_ui_volume_boost_timeout = 100;
 }
 
 static void ui_draw_transformed_box(UIState *s, uint32_t color) {
@@ -2643,6 +2651,10 @@ int main(int argc, char* argv[]) {
       s->volume_timeout--;
     } else {
       int volume = min(MAX_VOLUME, MIN_VOLUME + s->scene.v_ego / 5);  // up one notch every 5 m/s
+      if (s->dragon_ui_volume_boost > 0 || s->dragon_ui_volume_boost < 0) {
+        volume = volume * (1 + s->dragon_ui_volume_boost /100);
+        volume = volume > MAX_VOLUME? MAX_VOLUME : volume;
+      }
       set_volume(s, volume);
     }
 
@@ -2671,6 +2683,7 @@ int main(int argc, char* argv[]) {
     read_param_bool_timeout(&s->dragon_ui_dev, "DragonUIDev", &s->dragon_ui_dev_timeout);
     read_param_bool_timeout(&s->dragon_ui_dev_mini, "DragonUIDevMini", &s->dragon_ui_dev_mini_timeout);
     read_param_bool_timeout(&s->dragon_enable_dashcam, "DragonEnableDashcam", &s->dragon_enable_dashcam_timeout);
+    read_param_float_timeout(&s->dragon_ui_volume_boost, "DragonUIVolumeBoost", &s->dragon_ui_volume_boost_timeout);
 
     pthread_mutex_unlock(&s->lock);
 

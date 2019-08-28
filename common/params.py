@@ -117,6 +117,7 @@ keys = {
   "DragonRunMixplorer": [TxType.PERSISTENT],
   "DragonSteeringMonitorTimer": [TxType.PERSISTENT],
   "DragonCameraOffset": [TxType.PERSISTENT],
+  "DragonUIVolumeBoost": [TxType.PERSISTENT],
 }
 
 
