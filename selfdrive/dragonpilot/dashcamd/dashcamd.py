@@ -13,6 +13,8 @@ import datetime
 import zmq
 import selfdrive.messaging as messaging
 from selfdrive.services import service_list
+import subprocess
+from selfdrive.swaglog import cloudlog
 from common.params import Params
 params = Params()
 
@@ -30,7 +32,6 @@ def main(gctx=None):
   poller = zmq.Poller()
   sock = messaging.sub_sock(service_list['thermal'].port, poller)
   poller.poll(timeout=1000)
-
   while 1:
     if params.get("DragonEnableDashcam") == "1":
       now = datetime.datetime.now()
@@ -45,6 +46,7 @@ def main(gctx=None):
       # or when free space is less than 10%
 
       # get health of board, log this in "thermal"
+      start_time = time.time()
       msg = messaging.recv_sock(sock, wait=True)
       if used_spaces >= max_storage or (msg is not None and msg.thermal.freeSpace < freespace_limit):
         # get all the files in the dashcam_videos path
@@ -53,18 +55,29 @@ def main(gctx=None):
           msg = messaging.recv_sock(sock, wait=True)
           # delete file one by one and once it has enough space for 1 video, we stop deleting
           if used_spaces - last_used_spaces < max_size_per_file or msg.thermal.freeSpace < freespace_limit:
-            os.system("rm -fr %s" % (dashcam_videos + file))
+            system("rm -fr %s" % (dashcam_videos + file))
             last_used_spaces = get_used_spaces()
           else:
             break
+      time_diff = int(time.time()-start_time)
       # we start the process 1 second before screenrecord ended
       # to make sure there are no missing footage
-      time.sleep(duration-1)
+      time.sleep(duration-1-time_diff)
     else:
       time.sleep(1)
 
 def get_used_spaces():
   return sum(os.path.getsize(dashcam_videos + f) for f in os.listdir(dashcam_videos) if os.path.isfile(dashcam_videos + f))
+
+def system(cmd):
+  try:
+    # cloudlog.info("running %s" % cmd)
+    subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+  except subprocess.CalledProcessError as e:
+    cloudlog.event("running failed",
+                   cmd=e.cmd,
+                   output=e.output[-1024:],
+                   returncode=e.returncode)
 
 if __name__ == "__main__":
   main()

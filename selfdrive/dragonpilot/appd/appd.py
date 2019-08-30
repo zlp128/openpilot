@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.7
 
-import os
 import time
+import zmq
 import selfdrive.messaging as messaging
 from selfdrive.services import service_list
 import subprocess
@@ -37,21 +37,20 @@ def main(gctx=None):
   manual_tomtom = False
   manual_autonavi = False
   last_started = False
-  started = False
 
   params.put('DragonRunTomTom', '0')
   params.put('DragonRunAutonavi', '0')
   params.put('DragonRunMixplorer', '0')
 
   # we want to disable all app when boot
-  system("pm disable %s" % tomtom)
-  system("pm disable %s" % autonavi)
-  system("pm disable %s" % mixplorer)
+  system("pm disable %s ; pm disable %s ; pm disable %s" % (tomtom, autonavi, mixplorer))
 
-  thermal_sock = messaging.sub_sock(service_list['thermal'].port)
+  poller = zmq.Poller()
+  sock = messaging.sub_sock(service_list['thermal'].port, poller)
+  poller.poll(timeout=1000)
+
 
   while dragon_enable_tomtom or dragon_enable_autonavi or dragon_enable_mixplorer:
-    msg = messaging.recv_sock(thermal_sock, wait=True)
 
     # allow user to manually start/stop app
     if dragon_enable_tomtom:
@@ -78,6 +77,7 @@ def main(gctx=None):
     auto_tomtom = not manual_tomtom and dragon_enable_tomtom and dragon_boot_tomtom
     auto_autonavi = not manual_autonavi and dragon_enable_autonavi and dragon_boot_autonavi
 
+    msg = messaging.recv_sock(sock, wait=True)
     started = msg.thermal.started
     # car on
     if started:
@@ -87,11 +87,12 @@ def main(gctx=None):
       # once the temp drop below yellow, we then re-enable them
       #
       # set allow_auto_boot back to True once the thermal status is < yellow
-      if not allow_auto_boot and msg.thermal.thermalStatus < ThermalStatus.yellow:
+      thermal_status = msg.thermal.thermalStatus
+      if not allow_auto_boot and thermal_status < ThermalStatus.yellow:
         allow_auto_boot = True
       if allow_auto_boot:
         # only allow auto boot when thermal status is < red
-        if msg.thermal.thermalStatus < ThermalStatus.red:
+        if thermal_status < ThermalStatus.red:
           if auto_tomtom and not tomtom_is_running:
             tomtom_is_running = execApp('1', tomtom, tomtom_main)
           if auto_autonavi and not autonavi_is_running:
@@ -115,7 +116,7 @@ def main(gctx=None):
       if auto_autonavi and autonavi_is_running:
         autonavi_is_running = execApp('-1', autonavi, autonavi_main)
 
-    # if car stats changed, we remove manual control state
+    # if car state changed, we remove manual control state
     if not last_started == started:
       manual_tomtom = False
       manual_autonavi = False
@@ -126,8 +127,7 @@ def main(gctx=None):
 
 def execApp(status, app, app_main):
   if status == "1":
-    system("pm enable %s" % app)
-    system("am start -n %s/%s" % (app, app_main))
+    system("pm enable %s && am start -n %s/%s" % (app, app, app_main))
     return True
   if status == "-1":
     system("pm disable %s" % app)
@@ -136,7 +136,7 @@ def execApp(status, app, app_main):
 
 def system(cmd):
   try:
-    cloudlog.info("running %s" % cmd)
+    # cloudlog.info("running %s" % cmd)
     subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
   except subprocess.CalledProcessError as e:
     cloudlog.event("running failed",
