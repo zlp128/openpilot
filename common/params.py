@@ -118,6 +118,7 @@ keys = {
   "DragonSteeringMonitorTimer": [TxType.PERSISTENT],
   "DragonCameraOffset": [TxType.PERSISTENT],
   "DragonUIVolumeBoost": [TxType.PERSISTENT],
+  "DragonChargingCtrl": [TxType.PERSISTENT],
 }
 
 
