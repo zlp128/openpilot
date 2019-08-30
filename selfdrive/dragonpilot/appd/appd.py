@@ -1,7 +1,6 @@
 #!/usr/bin/env python2.7
 
 import time
-import zmq
 import selfdrive.messaging as messaging
 from selfdrive.services import service_list
 import subprocess
@@ -45,10 +44,7 @@ def main(gctx=None):
   # we want to disable all app when boot
   system("pm disable %s ; pm disable %s ; pm disable %s" % (tomtom, autonavi, mixplorer))
 
-  poller = zmq.Poller()
-  sock = messaging.sub_sock(service_list['thermal'].port, poller)
-  poller.poll(timeout=1000)
-
+  thermal_sock = messaging.sub_sock(service_list['thermal'].port)
 
   while dragon_enable_tomtom or dragon_enable_autonavi or dragon_enable_mixplorer:
 
@@ -77,7 +73,7 @@ def main(gctx=None):
     auto_tomtom = not manual_tomtom and dragon_enable_tomtom and dragon_boot_tomtom
     auto_autonavi = not manual_autonavi and dragon_enable_autonavi and dragon_boot_autonavi
 
-    msg = messaging.recv_sock(sock, wait=True)
+    msg = messaging.recv_sock(thermal_sock, wait=True)
     started = msg.thermal.started
     # car on
     if started:
