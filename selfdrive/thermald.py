@@ -145,9 +145,6 @@ def thermald_thread():
   health_sock.RCVTIMEO = int(1000 * 2 * DT_TRML)  # 2x the expected health frequency
   current_filter = FirstOrderFilter(0., CURRENT_TAU, DT_TRML)
   health_prev = None
-  last_charging_disabled = False
-  last_charging_ctrl = False
-  charging_ctrl = False
 
   # Make sure charging is enabled
   charging_disabled = False
@@ -260,11 +257,10 @@ def thermald_thread():
         os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
     #charging_disabled = check_car_battery_voltage(should_start, health, charging_disabled)
-    if count % 3 == 0:
-      charging_ctrl = params.get('DragonChargingCtrl') == "1"
-      charging_disabled = charging_ctrl(msg.thermal.batteryPercent, charging_disabled, last_charging_disabled, charging_ctrl, last_charging_ctrl)
-    last_charging_disabled = charging_disabled
-    last_charging_ctrl = charging_ctrl
+    print("before logic: %s" % charging_disabled)
+    if count % 3 == 0 and params.get('DragonChargingCtrl') == "1":
+      charging_disabled = charging_ctrl(msg.thermal.batteryPercent, charging_disabled)
+      print("in logic: %s" % charging_disabled)
 
     msg.thermal.chargingDisabled = charging_disabled
     msg.thermal.chargingError = current_filter.x > 0. and msg.thermal.batteryPercent < 90  # if current is positive, then battery is being discharged
@@ -285,24 +281,13 @@ def thermald_thread():
 
     count += 1
 
-def charging_ctrl(battery_percent, charging_disabled, last_charging_disabled, charging_ctrl, last_charging_ctrl):
-  if charging_ctrl:
-    if not charging_disabled and battery_percent >= 80:
-      os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
-      charging_disabled = True
-    elif charging_disabled and battery_percent <= 60:
-      os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
-      charging_disabled = False
-  else:
-    if not last_charging_ctrl == charging_ctrl:
-      os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
-      charging_disabled = False
-    elif not last_charging_disabled == charging_disabled:
-      if charging_disabled:
-        os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
-      else:
-        os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
-
+def charging_ctrl(battery_percent, charging_disabled):
+  if not charging_disabled and battery_percent >= 80:
+    os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
+    charging_disabled = True
+  elif charging_disabled and battery_percent <= 60:
+    os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
+    charging_disabled = False
   return charging_disabled
 
 
