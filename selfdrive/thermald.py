@@ -257,10 +257,8 @@ def thermald_thread():
         os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
     #charging_disabled = check_car_battery_voltage(should_start, health, charging_disabled)
-    print("before logic: %s" % charging_disabled)
     if count % 3 == 0 and params.get('DragonChargingCtrl') == "1":
       charging_disabled = charging_ctrl(msg.thermal.batteryPercent, charging_disabled)
-      print("in logic: %s" % charging_disabled)
 
     msg.thermal.chargingDisabled = charging_disabled
     msg.thermal.chargingError = current_filter.x > 0. and msg.thermal.batteryPercent < 90  # if current is positive, then battery is being discharged
@@ -284,11 +282,10 @@ def thermald_thread():
 def charging_ctrl(battery_percent, charging_disabled):
   if not charging_disabled and battery_percent >= 80:
     os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
-    charging_disabled = True
+    return True
   elif charging_disabled and battery_percent <= 60:
     os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
-    charging_disabled = False
-  return charging_disabled
+    return False
 
 
 def main(gctx=None):
