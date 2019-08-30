@@ -38,7 +38,6 @@ default_conf = {
   'DragonSteeringMonitorTimer': '3',
   'DragonCameraOffset': '6',
   'DragonUIVolumeBoost': '0',
-  'DragonChargingCtrl': '0',
 }
 
 deprecated_conf = {
