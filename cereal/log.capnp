@@ -284,6 +284,7 @@ struct ThermalData {
   thermalStatus @14 :ThermalStatus;
   chargingError @17 :Bool;
   chargingDisabled @18 :Bool;
+  ipAddr @19 :Text;
 
   enum ThermalStatus {
     green @0;   # all processes run
