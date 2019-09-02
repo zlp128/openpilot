@@ -36,6 +36,9 @@ def main(gctx=None):
   manual_tomtom = False
   manual_autonavi = False
   last_started = False
+  frame = 0
+  start_delay = None
+  stop_delay = None
 
   params.put('DragonRunTomTom', '0')
   params.put('DragonRunAutonavi', '0')
@@ -77,6 +80,9 @@ def main(gctx=None):
     started = msg.thermal.started
     # car on
     if started:
+      stop_delay = None
+      if start_delay is None:
+        start_delay = frame + 5
       #
       # Logic:
       # if temp reach red, we disable all 3rd party apps.
@@ -89,9 +95,9 @@ def main(gctx=None):
       if allow_auto_boot:
         # only allow auto boot when thermal status is < red
         if thermal_status < ThermalStatus.red:
-          if auto_tomtom and not tomtom_is_running:
+          if auto_tomtom and not tomtom_is_running and frame > start_delay:
             tomtom_is_running = execApp('1', tomtom, tomtom_main)
-          if auto_autonavi and not autonavi_is_running:
+          if auto_autonavi and not autonavi_is_running and frame > start_delay:
             autonavi_is_running = execApp('1', autonavi, autonavi_main)
         else:
           if auto_tomtom and tomtom_is_running:
@@ -107,9 +113,12 @@ def main(gctx=None):
 
     # car off
     else:
-      if auto_tomtom and tomtom_is_running:
+      start_delay = None
+      if stop_delay is None:
+        stop_delay = frame + 30
+      if auto_tomtom and tomtom_is_running and frame > stop_delay:
         tomtom_is_running = execApp('-1', tomtom, tomtom_main)
-      if auto_autonavi and autonavi_is_running:
+      if auto_autonavi and autonavi_is_running and frame > stop_delay:
         autonavi_is_running = execApp('-1', autonavi, autonavi_main)
 
     # if car state changed, we remove manual control state
@@ -118,6 +127,7 @@ def main(gctx=None):
       manual_autonavi = False
 
     last_started = started
+    frame += 3
     # every 3 seconds, we re-check status
     time.sleep(3)
 
