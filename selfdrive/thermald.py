@@ -13,6 +13,9 @@ from common.numpy_fast import clip
 from common.filter_simple import FirstOrderFilter
 params = Params()
 
+import subprocess
+import re
+
 ThermalStatus = log.ThermalData.ThermalStatus
 CURRENT_TAU = 15.   # 15s time constant
 
@@ -149,6 +152,9 @@ def thermald_thread():
   # Make sure charging is enabled
   charging_disabled = False
   os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
+  ts_last_ip = 0.
+  last_ip_addr = '255.255.255.255'
+  ip_addr = '255.255.255.255'
 
   while 1:
     health = messaging.recv_sock(health_sock, wait=True)
@@ -176,6 +182,26 @@ def thermald_thread():
       msg.thermal.batteryVoltage = int(f.read())
     with open("/sys/class/power_supply/usb/present") as f:
       msg.thermal.usbOnline = bool(int(f.read()))
+    # update ip every 5 seconds
+    ts = sec_since_boot()
+    if ts - ts_last_ip > 5.:
+      try:
+        result = subprocess.check_output(["service", "call", "connectivity", "2"]).strip().split("\n")
+      except subprocess.CalledProcessError:
+        return False
+
+      data = ''.join(''.join(w.decode("hex")[::-1] for w in l[14:49].split()) for l in result[1:])
+
+      if "\x00".join("WIFI") in data:
+        result = subprocess.check_output(["ifconfig", "wlan0"])
+        ip_addr = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
+        ts_last_ip = ts
+      else:
+        ip_addr = ''
+    else:
+      ip_addr = last_ip_addr
+    msg.thermal.ipAddr = ip_addr
+    last_ip_addr = ip_addr
 
     current_filter.update(msg.thermal.batteryCurrent / 1e6)
 
