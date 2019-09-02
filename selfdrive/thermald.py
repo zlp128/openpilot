@@ -195,9 +195,9 @@ def thermald_thread():
       if "\x00".join("WIFI") in data:
         result = subprocess.check_output(["ifconfig", "wlan0"])
         ip_addr = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
-        ts_last_ip = ts
       else:
-        ip_addr = ''
+        ip_addr = ' '
+      ts_last_ip = ts
     else:
       ip_addr = last_ip_addr
     msg.thermal.ipAddr = ip_addr
