@@ -10,7 +10,6 @@
 import os
 import time
 import datetime
-import zmq
 import selfdrive.messaging as messaging
 from selfdrive.services import service_list
 import subprocess
@@ -29,9 +28,7 @@ def main(gctx=None):
   if not os.path.exists(dashcam_videos):
     os.makedirs(dashcam_videos)
 
-  poller = zmq.Poller()
-  sock = messaging.sub_sock(service_list['thermal'].port, poller)
-  poller.poll(timeout=1000)
+  thermal_sock = messaging.sub_sock(service_list['thermal'].port)
   while 1:
     if params.get("DragonEnableDashcam") == "1":
       now = datetime.datetime.now()
@@ -47,12 +44,12 @@ def main(gctx=None):
 
       # get health of board, log this in "thermal"
       start_time = time.time()
-      msg = messaging.recv_sock(sock, wait=True)
+      msg = messaging.recv_sock(thermal_sock, wait=True)
       if used_spaces >= max_storage or (msg is not None and msg.thermal.freeSpace < freespace_limit):
         # get all the files in the dashcam_videos path
         files = [f for f in sorted(os.listdir(dashcam_videos)) if os.path.isfile(dashcam_videos + f)]
         for file in files:
-          msg = messaging.recv_sock(sock, wait=True)
+          msg = messaging.recv_sock(thermal_sock, wait=True)
           # delete file one by one and once it has enough space for 1 video, we stop deleting
           if used_spaces - last_used_spaces < max_size_per_file or msg.thermal.freeSpace < freespace_limit:
             system("rm -fr %s" % (dashcam_videos + file))
