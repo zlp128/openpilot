@@ -39,6 +39,7 @@ def main(gctx=None):
   frame = 0
   start_delay = None
   stop_delay = None
+  high_accuracy_mode_enabled = False
 
   params.put('DragonRunTomTom', '0')
   params.put('DragonRunAutonavi', '0')
@@ -50,6 +51,9 @@ def main(gctx=None):
   thermal_sock = messaging.sub_sock(service_list['thermal'].port)
 
   while dragon_enable_tomtom or dragon_enable_autonavi or dragon_enable_mixplorer:
+    if (dragon_enable_tomtom or dragon_enable_autonavi) and not high_accuracy_mode_enabled:
+      system("settings put secure location_providers_allowed +gps,network,wifi")
+      high_accuracy_mode_enabled = True
 
     # allow user to manually start/stop app
     if dragon_enable_tomtom:
