@@ -24,11 +24,12 @@ mixplorer_main = "com.mixplorer.activities.BrowseActivity"
 
 def main(gctx=None):
 
-  dragon_enable_tomtom = False if params.get('DragonEnableTomTom') == "0" else True
-  dragon_enable_autonavi = False if params.get('DragonEnableAutonavi') == "0" else True
-  dragon_enable_mixplorer = False if params.get('DragonEnableMixplorer') == "0" else True
-  dragon_boot_tomtom = False if params.get("DragonBootTomTom") == "0" else True
-  dragon_boot_autonavi = False if params.get("DragonBootAutonavi") == "0" else True
+  dragon_enable_tomtom = True if params.get('DragonEnableTomTom') == "1" else False
+  dragon_enable_autonavi = True if params.get('DragonEnableAutonavi') == "1" else False
+  dragon_enable_mixplorer = True if params.get('DragonEnableMixplorer') == "1" else False
+  dragon_boot_tomtom = True if params.get("DragonBootTomTom") == "1" else False
+  dragon_boot_autonavi = True if params.get("DragonBootAutonavi") == "1" else False
+  dragon_greypanda_mode = True if params.get('DragonGreyPandaMode') == "1" else False
   tomtom_is_running = False
   autonavi_is_running = False
   mixplorer_is_running = False
@@ -53,6 +54,9 @@ def main(gctx=None):
   while dragon_enable_tomtom or dragon_enable_autonavi or dragon_enable_mixplorer:
     if (dragon_enable_tomtom or dragon_enable_autonavi) and not high_accuracy_mode_enabled:
       system("settings put secure location_providers_allowed +gps,network,wifi")
+      if dragon_greypanda_mode:
+        system("settings put secure location_providers_allowed -gps,network,wifi")
+        system("settings put secure location_providers_allowed +gps")
       high_accuracy_mode_enabled = True
 
     # allow user to manually start/stop app
