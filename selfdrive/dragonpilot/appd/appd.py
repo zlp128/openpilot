@@ -53,10 +53,11 @@ def main(gctx=None):
 
   while dragon_enable_tomtom or dragon_enable_autonavi or dragon_enable_mixplorer:
     if (dragon_enable_tomtom or dragon_enable_autonavi) and not high_accuracy_mode_enabled:
-      system("settings put secure location_providers_allowed +gps,network,wifi")
       if dragon_greypanda_mode:
         system("settings put secure location_providers_allowed -gps,network,wifi")
         system("settings put secure location_providers_allowed +gps")
+      else:
+        system("settings put secure location_providers_allowed +gps,network,wifi")
       high_accuracy_mode_enabled = True
 
     # allow user to manually start/stop app
