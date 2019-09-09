@@ -27,7 +27,7 @@
     ```
 6. [SSH] 開啟 DragonGreyPandaMode 設定
     ```bash
-    echo 1 > /data/params/d/DragonGreyPandaMode
+    printf %s "1" > /data/params/d/DragonGreyPandaMode
     ```
 7. [SSH] 重新開機
     ```bash
@@ -38,7 +38,7 @@
 ---
 1. [SSH] 開閉 DragonGreyPandaMode 設定
     ```bash
-    echo 0 > /data/params/d/DragonGreyPandaMode
+    printf %s "0" > /data/params/d/DragonGreyPandaMode
     ```
 2. [SSH] 打開設定頁面: 
     ```bash
