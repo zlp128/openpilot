@@ -1,15 +1,18 @@
 #!/usr/bin/env python
-from common.realtime import sec_since_boot
 from cereal import car
 from selfdrive.config import Conversions as CV
 from selfdrive.controls.lib.drive_helpers import EventTypes as ET, create_event
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.car.toyota.carstate import CarState, get_can_parser, get_cam_can_parser
-from selfdrive.car.toyota.values import ECU, check_ecu_msgs, CAR, NO_STOP_TIMER_CAR
+from selfdrive.car.toyota.values import ECU, check_ecu_msgs, CAR, NO_STOP_TIMER_CAR, TSS2_CAR
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness
 from selfdrive.swaglog import cloudlog
+from common.realtime import sec_since_boot
 from common.params import Params
 params = Params()
+
+ButtonType = car.CarState.ButtonEvent.Type
+GearShifter = car.CarState.GearShifter
 
 class CarInterface(object):
   def __init__(self, CP, CarController):
@@ -215,15 +218,15 @@ class CarInterface(object):
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.3], [0.05]]
       ret.lateralTuning.pid.kf = 0.00007818594
 
-    elif candidate == CAR.LEXUS_ISH:
-      stop_and_go = True
-      ret.safetyParam = 100
-      ret.wheelbase = 2.80 # in spec
-      ret.steerRatio = 13.3 # in spec
-      tire_stiffness_factor = 0.444 # from camry
-      ret.mass = 3736.8 * CV.LB_TO_KG + STD_CARGO_KG # in spec, mean of is300 (1680 kg) / is300h (1720 kg) / is350 (1685 kg)
-      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.19], [0.04]]
-      ret.lateralTuning.pid.kf = 0.00006 # from camry
+    elif candidate == CAR.LEXUS_IS:
+      stop_and_go = False
+      ret.safetyParam = 66
+      ret.wheelbase = 2.79908
+      ret.steerRatio = 13.3
+      tire_stiffness_factor = 0.444
+      ret.mass = 3736.8 * CV.LB_TO_KG + STD_CARGO_KG
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.3], [0.05]]
+      ret.lateralTuning.pid.kf = 0.00006
 
     ret.steerRateCost = 1.
     ret.centerToFront = ret.wheelbase * 0.44
@@ -254,8 +257,8 @@ class CarInterface(object):
     ret.brakeMaxBP = [0.]
     ret.brakeMaxV = [1.]
 
-    ret.enableCamera = not check_ecu_msgs(fingerprint, ECU.CAM) or is_panda_black
-    ret.enableDsu = not check_ecu_msgs(fingerprint, ECU.DSU)
+    ret.enableCamera = not check_ecu_msgs(fingerprint, ECU.CAM, candidate) or is_panda_black
+    ret.enableDsu = not check_ecu_msgs(fingerprint, ECU.DSU, candidate) or (is_panda_black and candidate in TSS2_CAR)
     ret.enableApgs = False #not check_ecu_msgs(fingerprint, ECU.APGS)
     ret.openpilotLongitudinalControl = ret.enableCamera and ret.enableDsu
     cloudlog.warn("ECU Camera Simulated: %r", ret.enableCamera)
@@ -296,11 +299,11 @@ class CarInterface(object):
       self.ts_last_check = ts
 
     # ******************* do can recv *******************
-    self.cp.update_strings(int(sec_since_boot() * 1e9), can_strings)
+    self.cp.update_strings(can_strings)
 
     # run the cam can update for 10s as we just need to know if the camera is alive
     if self.frame < 1000:
-      self.cp_cam.update_strings(int(sec_since_boot() * 1e9), can_strings)
+      self.cp_cam.update_strings(can_strings)
 
     self.CS.update(self.cp)
 
@@ -361,13 +364,13 @@ class CarInterface(object):
     buttonEvents = []
     if self.CS.left_blinker_on != self.CS.prev_left_blinker_on:
       be = car.CarState.ButtonEvent.new_message()
-      be.type = 'leftBlinker'
+      be.type = ButtonType.leftBlinker
       be.pressed = self.CS.left_blinker_on != 0
       buttonEvents.append(be)
 
     if self.CS.right_blinker_on != self.CS.prev_right_blinker_on:
       be = car.CarState.ButtonEvent.new_message()
-      be.type = 'rightBlinker'
+      be.type = ButtonType.rightBlinker
       be.pressed = self.CS.right_blinker_on != 0
       buttonEvents.append(be)
 
@@ -385,7 +388,7 @@ class CarInterface(object):
     if self.cp_cam.can_valid:
       self.forwarding_camera = True
 
-    if not ret.gearShifter == 'drive' and self.CP.enableDsu:
+    if not ret.gearShifter == GearShifter.drive and self.CP.enableDsu:
       events.append(create_event('wrongGear', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
     if ret.doorOpen:
       events.append(create_event('doorOpen', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
@@ -395,7 +398,7 @@ class CarInterface(object):
       events.append(create_event('espDisabled', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
     if not self.CS.main_on and self.CP.enableDsu:
       events.append(create_event('wrongCarMode', [ET.NO_ENTRY, ET.USER_DISABLE]))
-    if ret.gearShifter == 'reverse' and self.CP.enableDsu:
+    if ret.gearShifter == GearShifter.reverse and self.CP.enableDsu:
       events.append(create_event('reverseGear', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
     if (self.CS.left_blinker_on or self.CS.right_blinker_on) and self.dragon_enable_steering_on_signal:
       events.append(create_event('manualSteeringRequiredBlinkersOn', [ET.WARNING]))
