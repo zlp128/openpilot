@@ -1,7 +1,7 @@
 import os
 import zmq
 from cereal import car
-from common.params import Params
+from common.params import Params, put_nonblocking
 from common.vin import get_vin, VIN_UNKNOWN
 from common.basedir import BASEDIR
 from common.fingerprints import eliminate_incompatible_cars, all_known_cars
@@ -138,9 +138,9 @@ def fingerprint(logcan, sendcan, is_panda_black):
     frame += 1
 
     if succeeded:
-      params.put("DragonCachedModel", pickle.dumps(car_fingerprint))
-      params.put("DragonCachedFP", pickle.dumps(finger))
-      params.put("DragonCachedVIN", pickle.dumps(vin))
+      put_nonblocking("DragonCachedModel", pickle.dumps(car_fingerprint))
+      put_nonblocking("DragonCachedFP", pickle.dumps(finger))
+      put_nonblocking("DragonCachedVIN", pickle.dumps(vin))
 
   cloudlog.warning("fingerprinted %s", car_fingerprint)
   return car_fingerprint, finger, vin
