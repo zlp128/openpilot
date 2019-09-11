@@ -301,6 +301,7 @@ typedef struct UIState {
   int dragon_ui_dev_mini_timeout;
   int dragon_enable_dashcam_timeout;
   int dragon_ui_volume_boost_timeout;
+  int dragon_driving_ui_timeout;
 
   bool dragon_ui_event;
   bool dragon_ui_maxspeed;
@@ -309,6 +310,7 @@ typedef struct UIState {
   bool dragon_ui_dev_mini;
   bool dragon_enable_dashcam;
   float dragon_ui_volume_boost;
+  bool dragon_driving_ui;
 
 } UIState;
 
@@ -683,6 +685,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   read_param_bool(&s->dragon_ui_dev_mini, "DragonUIDevMini");
   read_param_bool(&s->dragon_enable_dashcam, "DragonEnableDashcam");
   read_param_float(&s->dragon_ui_volume_boost, "DragonUIVolumeBoost");
+  read_param_bool(&s->dragon_driving_ui, "DragonDrivingUI");
 
 
   // Set offsets so params don't get read at the same time
@@ -698,6 +701,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   s->dragon_ui_dev_mini_timeout = 100;
   s->dragon_enable_dashcam_timeout = 100;
   s->dragon_ui_volume_boost_timeout = 100;
+  s->dragon_driving_ui_timeout = 100;
 }
 
 static void ui_draw_transformed_box(UIState *s, uint32_t color) {
@@ -1865,7 +1869,7 @@ static void ui_draw_blank(UIState *s) {
 }
 
 static void ui_draw(UIState *s) {
-  if (s->vision_connected && s->plus_state == 0) {
+  if (s->dragon_driving_ui && s->vision_connected && s->plus_state == 0) {
     ui_draw_vision(s);
   } else {
     ui_draw_blank(s);
@@ -2680,6 +2684,7 @@ int main(int argc, char* argv[]) {
     read_param_bool_timeout(&s->dragon_ui_dev_mini, "DragonUIDevMini", &s->dragon_ui_dev_mini_timeout);
     read_param_bool_timeout(&s->dragon_enable_dashcam, "DragonEnableDashcam", &s->dragon_enable_dashcam_timeout);
     read_param_float_timeout(&s->dragon_ui_volume_boost, "DragonUIVolumeBoost", &s->dragon_ui_volume_boost_timeout);
+    read_param_bool_timeout(&s->dragon_driving_ui, "DragonDrivingUI", &s->dragon_driving_ui_timeout);
 
     pthread_mutex_unlock(&s->lock);
 

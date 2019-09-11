@@ -119,6 +119,7 @@ keys = {
   "DragonCameraOffset": [TxType.PERSISTENT],
   "DragonUIVolumeBoost": [TxType.PERSISTENT],
   "DragonGreyPandaMode": [TxType.PERSISTENT],
+  "DragonDrivingUI": [TxType.PERSISTENT],
 }
 
 
