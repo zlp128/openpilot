@@ -7,7 +7,7 @@ import subprocess
 import cereal
 ThermalStatus = cereal.log.ThermalData.ThermalStatus
 from selfdrive.swaglog import cloudlog
-from common.params import Params
+from common.params import Params, put_nonblocking
 params = Params()
 
 # v1.16.2
@@ -42,9 +42,9 @@ def main(gctx=None):
   stop_delay = None
   high_accuracy_mode_enabled = False
 
-  params.put('DragonRunTomTom', '0')
-  params.put('DragonRunAutonavi', '0')
-  params.put('DragonRunMixplorer', '0')
+  put_nonblocking('DragonRunTomTom', '0')
+  put_nonblocking('DragonRunAutonavi', '0')
+  put_nonblocking('DragonRunMixplorer', '0')
 
   # we want to disable all app when boot
   system("pm disable %s ; pm disable %s ; pm disable %s" % (tomtom, autonavi, mixplorer))
@@ -65,21 +65,21 @@ def main(gctx=None):
       status = params.get('DragonRunTomTom')
       if not status == "0":
         tomtom_is_running = execApp(status, tomtom, tomtom_main)
-        params.put('DragonRunTomTom', '0')
+        put_nonblocking('DragonRunTomTom', '0')
         manual_tomtom = status != "0"
 
     if dragon_enable_autonavi:
       status = params.get('DragonRunAutonavi')
       if not status == "0":
         autonavi_is_running = execApp(status, autonavi, autonavi_main)
-        params.put('DragonRunAutonavi', '0')
+        put_nonblocking('DragonRunAutonavi', '0')
         manual_autonavi = status != "0"
 
     if dragon_enable_mixplorer:
       status = params.get('DragonRunMixplorer')
       if not status == "0":
         mixplorer_is_running = execApp(status, mixplorer, mixplorer_main)
-        params.put('DragonRunMixplorer', '0')
+        put_nonblocking('DragonRunMixplorer', '0')
 
     # if manual control is set, we do not allow any of the auto actions
     auto_tomtom = not manual_tomtom and dragon_enable_tomtom and dragon_boot_tomtom
