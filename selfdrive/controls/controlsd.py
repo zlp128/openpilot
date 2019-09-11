@@ -505,6 +505,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
   # dragonpilot
   ts_last_check = 0.
   dragon_toyota_stock_dsu = False
+  # dragon_lat_control = True
 
   while True:
     # dragonpilot, don't check for param too often as it's a kernel call
