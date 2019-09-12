@@ -96,11 +96,12 @@ class DriverStatus():
     self.is_rhd_region = False
     self.is_rhd_region_checked = False
 
-    self._set_timers(active_monitoring=True)
-
     # dragonpilot
-    self.dp_last_check = 0.
-    self.dragon_enable_driver_safety_check = True
+    self.awareness_time = float(params.get("DragonSteeringMonitorTimer"))
+    self.awareness_time = _AWARENESS_TIME if self.awareness_time <= 0. else self.awareness_time * 60.
+    self.dragon_enable_driver_safety_check = False if params.get("DragonEnableDriverSafetyCheck") == "0" else True
+
+    self._set_timers(active_monitoring=True)
 
   def _set_timers(self, active_monitoring):
     if self.active_monitoring_mode and self.awareness <= self.threshold_prompt:
@@ -127,11 +128,9 @@ class DriverStatus():
         self.awareness_active = self.awareness
         self.awareness = self.awareness_passive
 
-      awareness_time = float(params.get("DragonSteeringMonitorTimer")) * 60
-
-      self.threshold_pre = _AWARENESS_PRE_TIME_TILL_TERMINAL / awareness_time
-      self.threshold_prompt = _AWARENESS_PROMPT_TIME_TILL_TERMINAL / awareness_time
-      self.step_change = DT_CTRL / awareness_time
+      self.threshold_pre = _AWARENESS_PRE_TIME_TILL_TERMINAL / self.awareness_time
+      self.threshold_prompt = _AWARENESS_PROMPT_TIME_TILL_TERMINAL / self.awareness_time
+      self.step_change = DT_CTRL / self.awareness_time
       self.active_monitoring_mode = False
 
   def _is_driver_distracted(self, pose, blink):
@@ -181,7 +180,7 @@ class DriverStatus():
     self._set_timers(self.face_detected)
 
   def update(self, events, driver_engaged, ctrl_active, standstill):
-    if (driver_engaged and self.awareness > 0) or not ctrl_active:
+    if (driver_engaged and self.awareness > 0) or not ctrl_active or not self.dragon_enable_driver_safety_check:
       # reset only when on disengagement if red reached
       self.awareness = 1.
       self.awareness_active = 1.
@@ -204,19 +203,6 @@ class DriverStatus():
     if (not self.face_detected or (self.driver_distraction_filter.x > 0.63 and self.driver_distracted and self.face_detected)) and \
        not (standstill and self.awareness - self.step_change <= self.threshold_prompt):
       self.awareness = max(self.awareness - self.step_change, -0.1)
-
-    # dragonpilot
-    # don't check for param too often as it's a kernel call
-    ts = sec_since_boot()
-    if ts - self.dp_last_check > 3.:
-      self.dragon_enable_driver_safety_check = False if params.get("DragonEnableDriverSafetyCheck") == "0" else True
-      self.dp_last_check = ts
-
-    if not self.dragon_enable_driver_safety_check:
-      self.awareness = 1.
-      self.awareness_active = 1.
-      self.awareness_passive = 1.
-      return events
 
     alert = None
     if self.awareness <= 0.:
