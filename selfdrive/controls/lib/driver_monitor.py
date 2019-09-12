@@ -6,7 +6,7 @@ from common.stat_live import RunningStatFilter
 from common.params import Params
 params = Params()
 
-_AWARENESS_TIME = float(params.get("DragonSteeringMonitorTimer")) * 60  # 1.6 minutes limit without user touching steering wheels make the car enter a terminal status
+_AWARENESS_TIME = 100.  # 1.6 minutes limit without user touching steering wheels make the car enter a terminal status
 _AWARENESS_PRE_TIME_TILL_TERMINAL = 25.  # a first alert is issued 25s before expiration
 _AWARENESS_PROMPT_TIME_TILL_TERMINAL = 15.  # a second alert is issued 15s before start decelerating the car
 _DISTRACTED_TIME = 11.
@@ -127,9 +127,11 @@ class DriverStatus():
         self.awareness_active = self.awareness
         self.awareness = self.awareness_passive
 
-      self.threshold_pre = _AWARENESS_PRE_TIME_TILL_TERMINAL / _AWARENESS_TIME
-      self.threshold_prompt = _AWARENESS_PROMPT_TIME_TILL_TERMINAL / _AWARENESS_TIME
-      self.step_change = DT_CTRL / _AWARENESS_TIME
+      awareness_time = float(params.get("DragonSteeringMonitorTimer")) * 60
+
+      self.threshold_pre = _AWARENESS_PRE_TIME_TILL_TERMINAL / awareness_time
+      self.threshold_prompt = _AWARENESS_PROMPT_TIME_TILL_TERMINAL / awareness_time
+      self.step_change = DT_CTRL / awareness_time
       self.active_monitoring_mode = False
 
   def _is_driver_distracted(self, pose, blink):
@@ -186,15 +188,6 @@ class DriverStatus():
       self.awareness_passive = 1.
       return events
 
-    # don't check for param too often as it's a kernel call
-    ts = sec_since_boot()
-    if ts - self.dp_last_check > 3.:
-      self.dragon_enable_driver_safety_check = False if params.get("DragonEnableDriverSafetyCheck") == "0" else True
-      self.dp_last_check = ts
-
-    if not self.dragon_enable_driver_safety_check:
-      return events
-
     driver_attentive = self.driver_distraction_filter.x < 0.37
     awareness_prev = self.awareness
 
@@ -211,6 +204,19 @@ class DriverStatus():
     if (not self.face_detected or (self.driver_distraction_filter.x > 0.63 and self.driver_distracted and self.face_detected)) and \
        not (standstill and self.awareness - self.step_change <= self.threshold_prompt):
       self.awareness = max(self.awareness - self.step_change, -0.1)
+
+    # dragonpilot
+    # don't check for param too often as it's a kernel call
+    ts = sec_since_boot()
+    if ts - self.dp_last_check > 3.:
+      self.dragon_enable_driver_safety_check = False if params.get("DragonEnableDriverSafetyCheck") == "0" else True
+      self.dp_last_check = ts
+
+    if not self.dragon_enable_driver_safety_check:
+      self.awareness = 1.
+      self.awareness_active = 1.
+      self.awareness_passive = 1.
+      return events
 
     alert = None
     if self.awareness <= 0.:
