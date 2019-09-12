@@ -235,13 +235,15 @@ class CarState(object):
     self.brake_lights = bool(cp.vl["ESP_CONTROL"]['BRAKE_LIGHTS_ACC'] or self.brake_pressed)
     if self.CP.carFingerprint == CAR.PRIUS:
       self.generic_toggle = cp.vl["AUTOPARK_STATUS"]['STATE'] != 0
+    elif self.CP.carFingerprint == CAR.LEXUS_ISH:
+      self.generic_toggle = bool(cp.vl["LIGHT_STALK_ISH"]['AUTO_HIGH_BEAM'])
     else:
       self.generic_toggle = bool(cp.vl["LIGHT_STALK"]['AUTO_HIGH_BEAM'])
 
     if self.dragon_toyota_stock_dsu and self.generic_toggle and self.main_on:
       enable_acc = True
-      #if not self.gear_shifter == 'drive' or not self.seatbelt or not self.door_all_closed:
-      #  enable_acc = False
+      if not self.gear_shifter == GearShifter.drive or not self.seatbelt or not self.door_all_closed:
+       enable_acc = False
       self.pcm_acc_active = enable_acc
       if self.standstill:
         self.pcm_acc_status = 7
