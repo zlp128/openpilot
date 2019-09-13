@@ -1,5 +1,5 @@
 #!/usr/bin/env python2.7
-from common.params import Params
+from common.params import Params, put_nonblocking
 
 default_conf = {
   'DragonEnableDashcam': '1',
@@ -21,6 +21,7 @@ default_conf = {
   'DragonBBUI': '0', # deprecated
   'DragonToyotaStockDSU': '0',
   'DragonLatCtrl': '1',
+  'DragonUISpeed': '1',
   'DragonUIEvent': '0',
   'DragonUIMaxSpeed': '0',
   'DragonUIFace': '0',
@@ -39,6 +40,8 @@ default_conf = {
   'DragonCameraOffset': '6',
   'DragonUIVolumeBoost': '0',
   'DragonGreyPandaMode': '0',
+  'DragonDrivingUI': '1',
+  'DragonDisplaySteeringLimitAlert': '1',
 }
 
 deprecated_conf = {
@@ -67,13 +70,13 @@ def dragonpilot_set_params(params):
         # invert the value if true
         if old in deprecated_conf_invert and deprecated_conf_invert[old] is True:
           new_val = "1" if old_val == "0" else "0"
-        params.put(new, new_val)
+        put_nonblocking(new, new_val)
       params.delete(old)
 
   # set params
   for key, val in default_conf.items():
     if params.get(key) is None and key not in deprecated_conf:
-      params.put(key, str(val))
+      put_nonblocking(key, str(val))
 
 if __name__ == "__main__":
   params = Params()
