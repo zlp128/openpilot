@@ -49,7 +49,6 @@ def get_can_parser(CP):
     ("LKA_STATE", "EPS_STATUS", 0),
     ("IPAS_STATE", "EPS_STATUS", 1),
     ("BRAKE_LIGHTS_ACC", "ESP_CONTROL", 0),
-    ("AUTO_HIGH_BEAM", "LIGHT_STALK", 0),
   ]
 
   checks = [
@@ -64,6 +63,7 @@ def get_can_parser(CP):
     signals.append(("GAS_PEDAL", "GAS_PEDAL_ALT", 0))
     signals.append(("MAIN_ON", "PCM_CRUISE_ALT", 0))
     signals.append(("SET_SPEED", "PCM_CRUISE_ALT", 0))
+    signals.append(("AUTO_HIGH_BEAM", "LIGHT_STALK_ISH", 0))
     checks += [
       ("BRAKE_MODULE", 50),
       ("GAS_PEDAL_ALT", 50),
@@ -71,6 +71,7 @@ def get_can_parser(CP):
     ]
   else:
     signals += [
+      ("AUTO_HIGH_BEAM", "LIGHT_STALK_ISH", 0),
       ("GAS_PEDAL", "GAS_PEDAL", 0),
     ]
     checks += [
