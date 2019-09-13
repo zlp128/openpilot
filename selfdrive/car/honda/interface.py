@@ -384,7 +384,7 @@ class CarInterface(object):
   def update(self, c, can_strings):
     # dragonpilot, don't check for param too often as it's a kernel call
     ts = sec_since_boot()
-    if ts - self.ts_last_check > 3.:
+    if ts - self.ts_last_check > 5.:
       self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
       self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
       self.ts_last_check = ts

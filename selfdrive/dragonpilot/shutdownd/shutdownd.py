@@ -17,8 +17,8 @@ def main(gctx=None):
       usb_online = bool(int(f.read()))
 
     if not usb_online:
-      # we update the value every 3 seconds in case of user updates it
-      if frame % 3 == 0:
+      # we update the value every 5 seconds in case of user updates it
+      if frame % 5 == 0:
         auto_shutdown_at = get_shutdown_val()
       shutdown_count += 1
     else:
