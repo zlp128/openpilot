@@ -143,7 +143,7 @@ class CarState(object):
   def update(self, cp):
     # dragonpilot, don't check for param too often as it's a kernel call
     ts = sec_since_boot()
-    if ts - self.ts_last_check > 3.:
+    if ts - self.ts_last_check > 5.:
       self.dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
       self.ts_last_check = ts
 

@@ -153,7 +153,6 @@ def thermald_thread():
   charging_disabled = False
   os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
   ts_last_ip = 0.
-  last_ip_addr = '255.255.255.255'
   ip_addr = '255.255.255.255'
 
   while 1:
@@ -184,7 +183,7 @@ def thermald_thread():
       msg.thermal.usbOnline = bool(int(f.read()))
     # update ip every 5 seconds
     ts = sec_since_boot()
-    if ts - ts_last_ip > 5.:
+    if ts - ts_last_ip > 10.:
       try:
         result = subprocess.check_output(["service", "call", "connectivity", "2"]).strip().split("\n")
       except subprocess.CalledProcessError:
@@ -196,12 +195,9 @@ def thermald_thread():
         result = subprocess.check_output(["ifconfig", "wlan0"])
         ip_addr = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
       else:
-        ip_addr = ' '
+        ip_addr = '<N/A>'
       ts_last_ip = ts
-    else:
-      ip_addr = last_ip_addr
     msg.thermal.ipAddr = ip_addr
-    last_ip_addr = ip_addr
 
     current_filter.update(msg.thermal.batteryCurrent / 1e6)
 
