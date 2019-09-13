@@ -10,6 +10,7 @@ def main(gctx=None):
   shutdown_count = 0
   auto_shutdown_at = get_shutdown_val()
   frame = 0
+  last_shutdown_val = get_shutdown_val()
 
   while 1:
     with open("/sys/class/power_supply/usb/present") as f:
@@ -22,6 +23,10 @@ def main(gctx=None):
       shutdown_count += 1
     else:
       shutdown_count = 0
+
+    if not last_shutdown_val == auto_shutdown_at:
+      shutdown_count = 0
+      last_shutdown_val = auto_shutdown_at
 
     if auto_shutdown_at is None:
       auto_shutdown_at = get_shutdown_val()
