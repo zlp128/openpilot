@@ -98,7 +98,7 @@ class DriverStatus():
 
     # dragonpilot
     self.awareness_time = float(params.get("DragonSteeringMonitorTimer"))
-    self.awareness_time = _AWARENESS_TIME if self.awareness_time <= 0. else self.awareness_time * 60.
+    self.awareness_time = 86400 if self.awareness_time <= 0. else self.awareness_time * 60.
     self.dragon_enable_driver_safety_check = False if params.get("DragonEnableDriverSafetyCheck") == "0" else True
 
     self._set_timers(active_monitoring=True)
