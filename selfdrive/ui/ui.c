@@ -42,7 +42,6 @@
 #define STATUS_ENGAGED 2
 #define STATUS_WARNING 3
 #define STATUS_ALERT 4
-#define STATUS_MAX 5
 
 #define ALERTSIZE_NONE 0
 #define ALERTSIZE_SMALL 1
@@ -124,7 +123,6 @@ typedef struct UIScene {
   float mpc_y[50];
 
   bool world_objects_visible;
-  mat3 warp_matrix;           // transformed box -> frame.
   mat4 extrinsic_matrix;      // Last row is 0 so we can use mat4.
 
   float v_cruise;
@@ -260,11 +258,14 @@ typedef struct UIState {
   int awake_timeout;
 
   int volume_timeout;
+  int controls_timeout;
   int alert_sound_timeout;
   int speed_lim_off_timeout;
   int is_metric_timeout;
   int longitudinal_control_timeout;
   int limit_set_speed_timeout;
+
+  bool controls_seen;
 
   int status;
   bool is_metric;
@@ -294,6 +295,7 @@ typedef struct UIState {
   track_vertices_data track_vertices[2];
 
   // dragonpilot
+  int dragon_ui_speed_timeout;
   int dragon_ui_event_timeout;
   int dragon_ui_maxspeed_timeout;
   int dragon_ui_face_timeout;
@@ -301,7 +303,9 @@ typedef struct UIState {
   int dragon_ui_dev_mini_timeout;
   int dragon_enable_dashcam_timeout;
   int dragon_ui_volume_boost_timeout;
+  int dragon_driving_ui_timeout;
 
+  bool dragon_ui_speed;
   bool dragon_ui_event;
   bool dragon_ui_maxspeed;
   bool dragon_ui_face;
@@ -309,6 +313,7 @@ typedef struct UIState {
   bool dragon_ui_dev_mini;
   bool dragon_enable_dashcam;
   float dragon_ui_volume_boost;
+  bool dragon_driving_ui;
 
 } UIState;
 
@@ -483,6 +488,25 @@ sound_file* get_sound_file(AudibleAlert alert) {
   return NULL;
 }
 
+void play_alert_sound(AudibleAlert alert) {
+  sound_file* sound = get_sound_file(alert);
+  char* error = NULL;
+
+  slplay_play(sound->uri, sound->loop, &error);
+  if(error) {
+    LOGW("error playing sound: %s", error);
+  }
+}
+
+void stop_alert_sound(AudibleAlert alert) {
+  sound_file* sound = get_sound_file(alert);
+  char* error = NULL;
+
+  slplay_stop_uri(sound->uri, &error);
+  if(error) {
+    LOGW("error stopping sound: %s", error);
+  }
+}
 
 void ui_sound_init(char **error) {
   slplay_setup(error);
@@ -676,6 +700,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   read_param_bool(&s->longitudinal_control, "LongitudinalControl");
   read_param_bool(&s->limit_set_speed, "LimitSetSpeed");
   // dragonpilot
+  read_param_bool(&s->dragon_ui_speed, "DragonUISpeed");
   read_param_bool(&s->dragon_ui_event, "DragonUIEvent");
   read_param_bool(&s->dragon_ui_maxspeed, "DragonUIMaxSpeed");
   read_param_bool(&s->dragon_ui_face, "DragonUIFace");
@@ -683,6 +708,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   read_param_bool(&s->dragon_ui_dev_mini, "DragonUIDevMini");
   read_param_bool(&s->dragon_enable_dashcam, "DragonEnableDashcam");
   read_param_float(&s->dragon_ui_volume_boost, "DragonUIVolumeBoost");
+  read_param_bool(&s->dragon_driving_ui, "DragonDrivingUI");
 
 
   // Set offsets so params don't get read at the same time
@@ -691,6 +717,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   s->limit_set_speed_timeout = UI_FREQ;
 
   // dragonpilot, 1hz
+  s->dragon_ui_speed_timeout = 100;
   s->dragon_ui_event_timeout = 100;
   s->dragon_ui_maxspeed_timeout = 100;
   s->dragon_ui_face_timeout = 100;
@@ -698,43 +725,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   s->dragon_ui_dev_mini_timeout = 100;
   s->dragon_enable_dashcam_timeout = 100;
   s->dragon_ui_volume_boost_timeout = 100;
-}
-
-static void ui_draw_transformed_box(UIState *s, uint32_t color) {
-  const UIScene *scene = &s->scene;
-
-  const mat3 bbt = scene->warp_matrix;
-
-  struct {
-    vec3 pos;
-    uint32_t color;
-  } verts[] = {
-    {matvecmul3(bbt, (vec3){{0.0, 0.0, 1.0,}}), color},
-    {matvecmul3(bbt, (vec3){{scene->transformed_width, 0.0, 1.0,}}), color},
-    {matvecmul3(bbt, (vec3){{scene->transformed_width, scene->transformed_height, 1.0,}}), color},
-    {matvecmul3(bbt, (vec3){{0.0, scene->transformed_height, 1.0,}}), color},
-    {matvecmul3(bbt, (vec3){{0.0, 0.0, 1.0,}}), color},
-  };
-
-  for (int i=0; i<ARRAYSIZE(verts); i++) {
-    verts[i].pos.v[0] = verts[i].pos.v[0] / verts[i].pos.v[2];
-    verts[i].pos.v[1] = s->rgb_height - verts[i].pos.v[1] / verts[i].pos.v[2];
-  }
-
-  glUseProgram(s->line_program);
-
-  mat4 out_mat = matmul(device_transform,
-                        matmul(frame_transform, s->rgb_transform));
-  glUniformMatrix4fv(s->line_transform_loc, 1, GL_TRUE, out_mat.v);
-
-  glEnableVertexAttribArray(s->line_pos_loc);
-  glVertexAttribPointer(s->line_pos_loc, 2, GL_FLOAT, GL_FALSE, sizeof(verts[0]), &verts[0].pos.v[0]);
-
-  glEnableVertexAttribArray(s->line_color_loc);
-  glVertexAttribPointer(s->line_color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(verts[0]), &verts[0].color);
-
-  assert(glGetError() == GL_NO_ERROR);
-  glDrawArrays(GL_LINE_STRIP, 0, ARRAYSIZE(verts));
+  s->dragon_driving_ui_timeout = 100;
 }
 
 // Projects a point in car to space to the corresponding point in full frame
@@ -1428,16 +1419,16 @@ static void ui_draw_vision_header(UIState *s) {
   const UIScene *scene = &s->scene;
   int ui_viz_rx = scene->ui_viz_rx;
   int ui_viz_rw = scene->ui_viz_rw;
-
-  nvgBeginPath(s->vg);
-  NVGpaint gradient = nvgLinearGradient(s->vg, ui_viz_rx,
-                        (box_y+(header_h-(header_h/2.5))),
-                        ui_viz_rx, box_y+header_h,
-                        nvgRGBAf(0,0,0,0.45), nvgRGBAf(0,0,0,0));
-  nvgFillPaint(s->vg, gradient);
-  nvgRect(s->vg, ui_viz_rx, box_y, ui_viz_rw, header_h);
-  nvgFill(s->vg);
-
+  if (s->dragon_driving_ui) {
+    nvgBeginPath(s->vg);
+    NVGpaint gradient = nvgLinearGradient(s->vg, ui_viz_rx,
+                          (box_y+(header_h-(header_h/2.5))),
+                          ui_viz_rx, box_y+header_h,
+                          nvgRGBAf(0,0,0,0.45), nvgRGBAf(0,0,0,0));
+    nvgFillPaint(s->vg, gradient);
+    nvgRect(s->vg, ui_viz_rx, box_y, ui_viz_rw, header_h);
+    nvgFill(s->vg);
+  }
   if (s->dragon_ui_maxspeed) {
     ui_draw_vision_maxspeed(s);
   }
@@ -1445,24 +1436,40 @@ static void ui_draw_vision_header(UIState *s) {
 #ifdef SHOW_SPEEDLIMIT
   ui_draw_vision_speedlimit(s);
 #endif
-  ui_draw_vision_speed(s);
+  if (s->dragon_ui_speed) {
+    ui_draw_vision_speed(s);
+  }
   if (s->dragon_ui_event) {
     ui_draw_vision_event(s);
   }
 }
 
 static void ui_draw_infobar(UIState *s) {
-  // timestamp from pjlao307 dashcam (https://github.com/pjlao307)
-  int rect_w = 1440; // 1920 * 0.75
-  int rect_h = 50;
-  int rect_x = (1920-rect_w)/2;
-  int rect_y = (1080-rect_h-50);
-  int sidebar_offset = 0;
+  const UIScene *scene = &s->scene;
+  int ui_viz_rx = scene->ui_viz_rx;
   bool hasSidebar = !s->scene.uilayout_sidebarcollapsed;
-  if (hasSidebar) {
-    sidebar_offset = 100;
+  // rect_w = screen_width - sidebar width
+  int rect_w = vwp_w - (hasSidebar? sbr_w : 0);
+  if (s->dragon_driving_ui) {
+    // if driving ui is enabled, rect_w = rect_w - vision start x - small boarder
+    rect_w = rect_w - ui_viz_rx - bdr_s;
   }
+  int rect_h = 80;
+  // rect_x = 0 + sidebar width
+  int rect_x = 0;
+  if (s->dragon_driving_ui) {
+    // if driving ui is enabled, rect_x = rect_x + vision start x
+    rect_x = rect_x + (hasSidebar? sbr_w : 0) + ui_viz_rx;
+  }
+  // rect_y = screen height - board - background height
+  int rect_y = vwp_h - bdr_s - rect_h;
 
+//  int text_width;
+  int text_x = rect_w / 2;
+  if (s->dragon_driving_ui) {
+    text_x = text_x + (hasSidebar? sbr_w : 0) + ui_viz_rx;
+  }
+  int text_y = rect_y + 55;
 
   // Get local time to display
   char infobar[68];
@@ -1487,7 +1494,6 @@ static void ui_draw_infobar(UIState *s) {
       } else {
         snprintf(lead_dist, sizeof(lead_dist), "%7s", "N/A");
       }
-
 
       snprintf(
         infobar,
@@ -1518,14 +1524,15 @@ static void ui_draw_infobar(UIState *s) {
   }
 
   nvgBeginPath(s->vg);
-  nvgRoundedRect(s->vg, rect_x + sidebar_offset, rect_y, rect_w, rect_h, 15);
+  nvgRoundedRect(s->vg, rect_x, rect_y, rect_w, rect_h, 15);
   nvgFillColor(s->vg, nvgRGBA(0, 0, 0, 100));
   nvgFill(s->vg);
 
-  nvgFontSize(s->vg, 40);
+  nvgFontSize(s->vg, hasSidebar? 40:50);
   nvgFontFace(s->vg, "courbd");
   nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 175));
-  nvgText(s->vg, rect_x + 720 + sidebar_offset, rect_y + 35, infobar, NULL);
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER);
+  nvgText(s->vg, text_x, text_y, infobar, NULL);
 }
 
 //BB START: functions added for the display of various items
@@ -1823,7 +1830,9 @@ static void ui_draw_vision(UIState *s) {
   glScissor(ui_viz_rx, s->fb_h-(box_y+box_h), ui_viz_rw, box_h);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  draw_frame(s);
+  if (s->dragon_driving_ui) {
+    draw_frame(s);
+  }
   glViewport(0, 0, s->fb_w, s->fb_h);
   glDisable(GL_SCISSOR_TEST);
 
@@ -1831,14 +1840,15 @@ static void ui_draw_vision(UIState *s) {
 
   nvgBeginFrame(s->vg, s->fb_w, s->fb_h, 1.0f);
   nvgSave(s->vg);
-
-  // Draw augmented elements
-  const int inner_height = viz_w*9/16;
-  nvgScissor(s->vg, ui_viz_rx, box_y, ui_viz_rw, box_h);
-  nvgTranslate(s->vg, ui_viz_rx+ui_viz_ro, box_y + (box_h-inner_height)/2.0);
-  nvgScale(s->vg, (float)viz_w / s->fb_w, (float)inner_height / s->fb_h);
-  if (!scene->frontview && !scene->fullview) {
-    ui_draw_world(s);
+  if (s->dragon_driving_ui) {
+    // Draw augmented elements
+    const int inner_height = viz_w*9/16;
+    nvgScissor(s->vg, ui_viz_rx, box_y, ui_viz_rw, box_h);
+    nvgTranslate(s->vg, ui_viz_rx+ui_viz_ro, box_y + (box_h-inner_height)/2.0);
+    nvgScale(s->vg, (float)viz_w / s->fb_w, (float)inner_height / s->fb_h);
+    if (!scene->frontview && !scene->fullview) {
+      ui_draw_world(s);
+    }
   }
 
   nvgRestore(s->vg);
@@ -1954,6 +1964,9 @@ void handle_message(UIState *s, void *which) {
     struct cereal_ControlsState datad;
     cereal_read_ControlsState(&datad, eventd.controlsState);
 
+    s->controls_timeout = 1 * UI_FREQ;
+    s->controls_seen = true;
+
     if (datad.vCruise != s->scene.v_cruise) {
       s->scene.v_cruise_update_ts = eventd.logMonoTime;
     }
@@ -1969,38 +1982,21 @@ void handle_message(UIState *s, void *which) {
 
     s->scene.decel_for_model = datad.decelForModel;
 
-    s->alert_sound_timeout = 1 * UI_FREQ;
-
+    // dragonpilot
     s->scene.angleSteers = datad.angleSteers;
     s->scene.angleSteersDes = datad.angleSteersDes;
 
     if (datad.alertSound != cereal_CarControl_HUDControl_AudibleAlert_none && datad.alertSound != s->alert_sound) {
-      char* error = NULL;
       if (s->alert_sound != cereal_CarControl_HUDControl_AudibleAlert_none) {
-        sound_file* active_sound = get_sound_file(s->alert_sound);
-        slplay_stop_uri(active_sound->uri, &error);
-        if (error) {
-          LOGW("error stopping active sound %s", error);
-        }
+        stop_alert_sound(s->alert_sound);
       }
-
-      sound_file* sound = get_sound_file(datad.alertSound);
-      slplay_play(sound->uri, sound->loop, &error);
-      if(error) {
-        LOGW("error playing sound: %s", error);
-      }
+      play_alert_sound(datad.alertSound);
 
       s->alert_sound = datad.alertSound;
       snprintf(s->alert_type, sizeof(s->alert_type), "%s", datad.alertType.str);
-    } else if ((!datad.alertSound || datad.alertSound == cereal_CarControl_HUDControl_AudibleAlert_none) && s->alert_sound != cereal_CarControl_HUDControl_AudibleAlert_none) {
-      sound_file* sound = get_sound_file(s->alert_sound);
-
-      char* error = NULL;
-
-      slplay_stop_uri(sound->uri, &error);
-      if(error) {
-        LOGW("error stopping sound: %s", error);
-      }
+    } else if ((!datad.alertSound || datad.alertSound == cereal_CarControl_HUDControl_AudibleAlert_none)
+                  && s->alert_sound != cereal_CarControl_HUDControl_AudibleAlert_none) {
+      stop_alert_sound(s->alert_sound);
       s->alert_type[0] = '\0';
       s->alert_sound = cereal_CarControl_HUDControl_AudibleAlert_none;
     }
@@ -2071,13 +2067,6 @@ void handle_message(UIState *s, void *which) {
     s->scene.world_objects_visible = true;
     struct cereal_LiveCalibrationData datad;
     cereal_read_LiveCalibrationData(&datad, eventd.liveCalibration);
-
-    // should we still even have this?
-    capn_list32 warpl = datad.warpMatrix2;
-    capn_resolve(&warpl.p);  // is this a bug?
-    for (int i = 0; i < 3 * 3; i++) {
-      s->scene.warp_matrix.v[i] = capn_to_f32(capn_get32(warpl, i));
-    }
 
     capn_list32 extrinsicl = datad.extrinsicMatrix;
     capn_resolve(&extrinsicl.p);  // is this a bug?
@@ -2654,18 +2643,31 @@ int main(int argc, char* argv[]) {
       set_volume(s, volume);
     }
 
-    // stop playing alert sounds if no controlsState msg for 1 second
-    if (s->alert_sound_timeout > 0) {
-      s->alert_sound_timeout--;
-    } else if (s->alert_sound != cereal_CarControl_HUDControl_AudibleAlert_none){
-      sound_file* sound = get_sound_file(s->alert_sound);
-      char* error = NULL;
-
-      slplay_stop_uri(sound->uri, &error);
-      if(error) {
-        LOGW("error stopping sound: %s", error);
+    if (s->controls_timeout > 0) {
+      s->controls_timeout--;
+    } else {
+      // stop playing alert sound
+      if ((!s->vision_connected || (s->vision_connected && s->alert_sound_timeout == 0)) &&
+            s->alert_sound != cereal_CarControl_HUDControl_AudibleAlert_none) {
+        stop_alert_sound(s->alert_sound);
+        s->alert_sound = cereal_CarControl_HUDControl_AudibleAlert_none;
       }
-      s->alert_sound = cereal_CarControl_HUDControl_AudibleAlert_none;
+
+      // if visiond is still running and controlsState times out, display an alert
+      if (s->controls_seen && s->vision_connected && strcmp(s->scene.alert_text2, "Controls Unresponsive") != 0) {
+        s->scene.alert_size = ALERTSIZE_FULL;
+        update_status(s, STATUS_ALERT);
+        snprintf(s->scene.alert_text1, sizeof(s->scene.alert_text1), "%s", "TAKE CONTROL IMMEDIATELY");
+        snprintf(s->scene.alert_text2, sizeof(s->scene.alert_text2), "%s", "Controls Unresponsive");
+        ui_draw_vision_alert(s, s->scene.alert_size, s->status, s->scene.alert_text1, s->scene.alert_text2);
+
+        s->alert_sound_timeout = 2 * UI_FREQ;
+
+        s->alert_sound = cereal_CarControl_HUDControl_AudibleAlert_chimeWarningRepeat;
+        play_alert_sound(s->alert_sound);
+      }
+      s->alert_sound_timeout--;
+      s->controls_seen = false;
     }
 
     read_param_bool_timeout(&s->is_metric, "IsMetric", &s->is_metric_timeout);
@@ -2673,6 +2675,7 @@ int main(int argc, char* argv[]) {
     read_param_bool_timeout(&s->limit_set_speed, "LimitSetSpeed", &s->limit_set_speed_timeout);
     read_param_float_timeout(&s->speed_lim_off, "SpeedLimitOffset", &s->limit_set_speed_timeout);
     // dragonpilot
+    read_param_bool_timeout(&s->dragon_ui_speed, "DragonUISpeed", &s->dragon_ui_speed_timeout);
     read_param_bool_timeout(&s->dragon_ui_event, "DragonUIEvent", &s->dragon_ui_event_timeout);
     read_param_bool_timeout(&s->dragon_ui_maxspeed, "DragonUIMaxSpeed", &s->dragon_ui_maxspeed_timeout);
     read_param_bool_timeout(&s->dragon_ui_face, "DragonUIFace", &s->dragon_ui_face_timeout);
@@ -2680,6 +2683,7 @@ int main(int argc, char* argv[]) {
     read_param_bool_timeout(&s->dragon_ui_dev_mini, "DragonUIDevMini", &s->dragon_ui_dev_mini_timeout);
     read_param_bool_timeout(&s->dragon_enable_dashcam, "DragonEnableDashcam", &s->dragon_enable_dashcam_timeout);
     read_param_float_timeout(&s->dragon_ui_volume_boost, "DragonUIVolumeBoost", &s->dragon_ui_volume_boost_timeout);
+    read_param_bool_timeout(&s->dragon_driving_ui, "DragonDrivingUI", &s->dragon_driving_ui_timeout);
 
     pthread_mutex_unlock(&s->lock);
 
