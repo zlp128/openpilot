@@ -18,6 +18,7 @@ dragonpilot (龍芯駕駛輔助系統)
 * TOM TOM 測速照相 / 高德地圖
 * 新增 MiXplorer 檔案管理器
 * 側邊欄顯示無線網路 IP 位置
+* TOM TOM 測速照相 / 高德地圖使用 Grey Panda 數據 (請參閱 HOWTO_GreyPandaMode.md 說明檔)
 
 
 畫面截圖
