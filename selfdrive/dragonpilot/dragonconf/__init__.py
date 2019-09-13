@@ -40,6 +40,7 @@ default_conf = {
   'DragonUIVolumeBoost': '0',
   'DragonGreyPandaMode': '0',
   'DragonDrivingUI': '1',
+  'DragonDisplaySteeringLimitAlert': '1',
 }
 
 deprecated_conf = {

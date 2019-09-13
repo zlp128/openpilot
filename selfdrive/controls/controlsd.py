@@ -217,7 +217,7 @@ def state_transition(frame, CS, CP, state, events, soft_disable_timer, v_cruise_
 
 
 def state_control(frame, rcv_frame, plan, path_plan, CS, CP, state, events, v_cruise_kph, v_cruise_kph_last,
-                  AM, rk, driver_status, LaC, LoC, VM, read_only, is_metric, cal_perc, dragon_lat_control):
+                  AM, rk, driver_status, LaC, LoC, VM, read_only, is_metric, cal_perc, dragon_lat_control, dragon_display_steering_limit_alert):
   """Given the state, this function returns an actuators packet"""
 
   actuators = car.CarControl.Actuators.new_message()
@@ -267,8 +267,9 @@ def state_control(frame, rcv_frame, plan, path_plan, CS, CP, state, events, v_cr
   actuators.steer, actuators.steerAngle, lac_log = LaC.update(active, CS.vEgo, CS.steeringAngle, CS.steeringRate, CS.steeringTorqueEps, CS.steeringPressed, CP, VM, path_plan)
 
   # Send a "steering required alert" if saturation count has reached the limit
-  if dragon_lat_control and LaC.sat_flag and CP.steerLimitAlert:
-    AM.add(frame, "steerSaturated", enabled)
+  if dragon_display_steering_limit_alert:
+    if dragon_lat_control and LaC.sat_flag and CP.steerLimitAlert:
+      AM.add(frame, "steerSaturated", enabled)
 
   # Parse permanent warnings to display constantly
   for e in get_events(events, [ET.PERMANENT]):
@@ -506,6 +507,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
   ts_last_check = 0.
   dragon_toyota_stock_dsu = False
   dragon_lat_control = True
+  dragon_display_steering_limit_alert = True
 
   while True:
     # dragonpilot, don't check for param too often as it's a kernel call
@@ -513,6 +515,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
     if ts - ts_last_check > 3.:
       dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
       dragon_lat_control = False if params.get("DragonLatCtrl") == "0" else True
+      dragon_display_steering_limit_alert = False if params.get("DragonDisplaySteeringLimitAlert") == "0" else True
       ts_last_check = ts
 
     start_time = sec_since_boot()
@@ -558,7 +561,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
     # Compute actuators (runs PID loops and lateral MPC)
     actuators, v_cruise_kph, driver_status, v_acc, a_acc, lac_log = \
       state_control(sm.frame, sm.rcv_frame, sm['plan'], sm['pathPlan'], CS, CP, state, events, v_cruise_kph, v_cruise_kph_last, AM, rk,
-                    driver_status, LaC, LoC, VM, read_only, is_metric, cal_perc, dragon_lat_control)
+                    driver_status, LaC, LoC, VM, read_only, is_metric, cal_perc, dragon_lat_control, dragon_display_steering_limit_alert)
 
     prof.checkpoint("State Control")
 
