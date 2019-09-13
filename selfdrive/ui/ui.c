@@ -1445,17 +1445,31 @@ static void ui_draw_vision_header(UIState *s) {
 }
 
 static void ui_draw_infobar(UIState *s) {
-  // timestamp from pjlao307 dashcam (https://github.com/pjlao307)
-  int rect_w = 1440; // 1920 * 0.75
-  int rect_h = 50;
-  int rect_x = (1920-rect_w)/2;
-  int rect_y = (1080-rect_h-50);
-  int sidebar_offset = 0;
+  const UIScene *scene = &s->scene;
+  int ui_viz_rx = scene->ui_viz_rx;
   bool hasSidebar = !s->scene.uilayout_sidebarcollapsed;
-  if (hasSidebar) {
-    sidebar_offset = 100;
+  // rect_w = screen_width - sidebar width
+  int rect_w = vwp_w - (hasSidebar? sbr_w : 0);
+  if (s->dragon_driving_ui) {
+    // if driving ui is enabled, rect_w = rect_w - vision start x - small boarder
+    rect_w = rect_w - ui_viz_rx - bdr_s;
   }
+  int rect_h = 80;
+  // rect_x = 0 + sidebar width
+  int rect_x = 0;
+  if (s->dragon_driving_ui) {
+    // if driving ui is enabled, rect_x = rect_x + vision start x
+    rect_x = rect_x + (hasSidebar? sbr_w : 0) + ui_viz_rx;
+  }
+  // rect_y = screen height - board - background height
+  int rect_y = vwp_h - bdr_s - rect_h;
 
+//  int text_width;
+  int text_x = rect_w / 2;
+  if (s->dragon_driving_ui) {
+    text_x = text_x + (hasSidebar? sbr_w : 0) + ui_viz_rx;
+  }
+  int text_y = rect_y + 55;
 
   // Get local time to display
   char infobar[68];
@@ -1480,7 +1494,6 @@ static void ui_draw_infobar(UIState *s) {
       } else {
         snprintf(lead_dist, sizeof(lead_dist), "%7s", "N/A");
       }
-
 
       snprintf(
         infobar,
@@ -1511,14 +1524,15 @@ static void ui_draw_infobar(UIState *s) {
   }
 
   nvgBeginPath(s->vg);
-  nvgRoundedRect(s->vg, rect_x + sidebar_offset, rect_y, rect_w, rect_h, 15);
+  nvgRoundedRect(s->vg, rect_x, rect_y, rect_w, rect_h, 15);
   nvgFillColor(s->vg, nvgRGBA(0, 0, 0, 100));
   nvgFill(s->vg);
 
-  nvgFontSize(s->vg, 40);
+  nvgFontSize(s->vg, hasSidebar? 40:50);
   nvgFontFace(s->vg, "courbd");
   nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 175));
-  nvgText(s->vg, rect_x + 720 + sidebar_offset, rect_y + 35, infobar, NULL);
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER);
+  nvgText(s->vg, text_x, text_y, infobar, NULL);
 }
 
 //BB START: functions added for the display of various items
