@@ -8,7 +8,6 @@ from common.fingerprints import eliminate_incompatible_cars, all_known_cars
 from selfdrive.swaglog import cloudlog
 import selfdrive.messaging as messaging
 import pickle
-import selfdrive.crash as crash
 
 
 def get_one_can(logcan):

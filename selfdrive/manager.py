@@ -95,7 +95,6 @@ from selfdrive.version import version, dirty
 import selfdrive.crash as crash
 
 from selfdrive.loggerd.config import ROOT
-from common.realtime import sec_since_boot
 
 # comment out anything you don't want to run
 managed_processes = {

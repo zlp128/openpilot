@@ -64,21 +64,21 @@ def main(gctx=None):
     if dragon_enable_tomtom:
       status = params.get('DragonRunTomTom')
       if not status == "0":
-        tomtom_is_running = execApp(status, tomtom, tomtom_main)
+        tomtom_is_running = exec_app(status, tomtom, tomtom_main)
         put_nonblocking('DragonRunTomTom', '0')
         manual_tomtom = status != "0"
 
     if dragon_enable_autonavi:
       status = params.get('DragonRunAutonavi')
       if not status == "0":
-        autonavi_is_running = execApp(status, autonavi, autonavi_main)
+        autonavi_is_running = exec_app(status, autonavi, autonavi_main)
         put_nonblocking('DragonRunAutonavi', '0')
         manual_autonavi = status != "0"
 
     if dragon_enable_mixplorer:
       status = params.get('DragonRunMixplorer')
       if not status == "0":
-        mixplorer_is_running = execApp(status, mixplorer, mixplorer_main)
+        mixplorer_is_running = exec_app(status, mixplorer, mixplorer_main)
         put_nonblocking('DragonRunMixplorer', '0')
 
     # if manual control is set, we do not allow any of the auto actions
@@ -105,20 +105,20 @@ def main(gctx=None):
         # only allow auto boot when thermal status is < red
         if thermal_status < ThermalStatus.red:
           if auto_tomtom and not tomtom_is_running and frame > start_delay:
-            tomtom_is_running = execApp('1', tomtom, tomtom_main)
+            tomtom_is_running = exec_app('1', tomtom, tomtom_main)
           if auto_autonavi and not autonavi_is_running and frame > start_delay:
-            autonavi_is_running = execApp('1', autonavi, autonavi_main)
+            autonavi_is_running = exec_app('1', autonavi, autonavi_main)
         else:
           if auto_tomtom and tomtom_is_running:
-            tomtom_is_running = execApp('-1', tomtom, tomtom_main)
+            tomtom_is_running = exec_app('-1', tomtom, tomtom_main)
           if auto_autonavi and autonavi_is_running:
-            autonavi_is_running = execApp('-1', autonavi, autonavi_main)
+            autonavi_is_running = exec_app('-1', autonavi, autonavi_main)
           # set allow_auto_boot to False once the thermal status is >= red
           allow_auto_boot = False
 
       # kill mixplorer when car started
       if mixplorer_is_running:
-        mixplorer_is_running = execApp('-1', mixplorer, mixplorer_main)
+        mixplorer_is_running = exec_app('-1', mixplorer, mixplorer_main)
 
     # car off
     else:
@@ -126,9 +126,9 @@ def main(gctx=None):
       if stop_delay is None:
         stop_delay = frame + 30
       if auto_tomtom and tomtom_is_running and frame > stop_delay:
-        tomtom_is_running = execApp('-1', tomtom, tomtom_main)
+        tomtom_is_running = exec_app('-1', tomtom, tomtom_main)
       if auto_autonavi and autonavi_is_running and frame > stop_delay:
-        autonavi_is_running = execApp('-1', autonavi, autonavi_main)
+        autonavi_is_running = exec_app('-1', autonavi, autonavi_main)
 
     # if car state changed, we remove manual control state
     if not last_started == started:
@@ -140,7 +140,7 @@ def main(gctx=None):
     # every 3 seconds, we re-check status
     time.sleep(3)
 
-def execApp(status, app, app_main):
+def exec_app(status, app, app_main):
   if status == "1":
     system("pm enable %s && am start -n %s/%s" % (app, app, app_main))
     return True
