@@ -120,6 +120,7 @@ keys = {
   "DragonUIVolumeBoost": [TxType.PERSISTENT],
   "DragonGreyPandaMode": [TxType.PERSISTENT],
   "DragonDrivingUI": [TxType.PERSISTENT],
+  "DragonDisplaySteeringLimitAlert": [TxType.PERSISTENT],
 }
 
 
