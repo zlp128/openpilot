@@ -21,6 +21,7 @@ default_conf = {
   'DragonBBUI': '0', # deprecated
   'DragonToyotaStockDSU': '0',
   'DragonLatCtrl': '1',
+  'DragonUISpeed': '1',
   'DragonUIEvent': '0',
   'DragonUIMaxSpeed': '0',
   'DragonUIFace': '0',
