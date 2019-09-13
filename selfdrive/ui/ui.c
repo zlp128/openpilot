@@ -295,6 +295,7 @@ typedef struct UIState {
   track_vertices_data track_vertices[2];
 
   // dragonpilot
+  int dragon_ui_speed_timeout;
   int dragon_ui_event_timeout;
   int dragon_ui_maxspeed_timeout;
   int dragon_ui_face_timeout;
@@ -304,6 +305,7 @@ typedef struct UIState {
   int dragon_ui_volume_boost_timeout;
   int dragon_driving_ui_timeout;
 
+  bool dragon_ui_speed;
   bool dragon_ui_event;
   bool dragon_ui_maxspeed;
   bool dragon_ui_face;
@@ -698,6 +700,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   read_param_bool(&s->longitudinal_control, "LongitudinalControl");
   read_param_bool(&s->limit_set_speed, "LimitSetSpeed");
   // dragonpilot
+  read_param_bool(&s->dragon_ui_speed, "DragonUISpeed");
   read_param_bool(&s->dragon_ui_event, "DragonUIEvent");
   read_param_bool(&s->dragon_ui_maxspeed, "DragonUIMaxSpeed");
   read_param_bool(&s->dragon_ui_face, "DragonUIFace");
@@ -714,6 +717,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   s->limit_set_speed_timeout = UI_FREQ;
 
   // dragonpilot, 1hz
+  s->dragon_ui_speed_timeout = 100;
   s->dragon_ui_event_timeout = 100;
   s->dragon_ui_maxspeed_timeout = 100;
   s->dragon_ui_face_timeout = 100;
@@ -1432,7 +1436,9 @@ static void ui_draw_vision_header(UIState *s) {
 #ifdef SHOW_SPEEDLIMIT
   ui_draw_vision_speedlimit(s);
 #endif
-  ui_draw_vision_speed(s);
+  if (s->dragon_ui_speed) {
+    ui_draw_vision_speed(s);
+  }
   if (s->dragon_ui_event) {
     ui_draw_vision_event(s);
   }
@@ -2655,6 +2661,7 @@ int main(int argc, char* argv[]) {
     read_param_bool_timeout(&s->limit_set_speed, "LimitSetSpeed", &s->limit_set_speed_timeout);
     read_param_float_timeout(&s->speed_lim_off, "SpeedLimitOffset", &s->limit_set_speed_timeout);
     // dragonpilot
+    read_param_bool_timeout(&s->dragon_ui_speed, "DragonUISpeed", &s->dragon_ui_speed_timeout);
     read_param_bool_timeout(&s->dragon_ui_event, "DragonUIEvent", &s->dragon_ui_event_timeout);
     read_param_bool_timeout(&s->dragon_ui_maxspeed, "DragonUIMaxSpeed", &s->dragon_ui_maxspeed_timeout);
     read_param_bool_timeout(&s->dragon_ui_face, "DragonUIFace", &s->dragon_ui_face_timeout);
