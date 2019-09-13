@@ -102,6 +102,7 @@ keys = {
   "DragonBBUI": [TxType.PERSISTENT], # deprecated
   "DragonToyotaStockDSU": [TxType.PERSISTENT],
   "DragonLatCtrl": [TxType.PERSISTENT],
+  "DragonUISpeed": [TxType.PERSISTENT],
   "DragonUIEvent": [TxType.PERSISTENT],
   "DragonUIMaxSpeed": [TxType.PERSISTENT],
   "DragonUIFace": [TxType.PERSISTENT],
