@@ -1415,16 +1415,16 @@ static void ui_draw_vision_header(UIState *s) {
   const UIScene *scene = &s->scene;
   int ui_viz_rx = scene->ui_viz_rx;
   int ui_viz_rw = scene->ui_viz_rw;
-
-  nvgBeginPath(s->vg);
-  NVGpaint gradient = nvgLinearGradient(s->vg, ui_viz_rx,
-                        (box_y+(header_h-(header_h/2.5))),
-                        ui_viz_rx, box_y+header_h,
-                        nvgRGBAf(0,0,0,0.45), nvgRGBAf(0,0,0,0));
-  nvgFillPaint(s->vg, gradient);
-  nvgRect(s->vg, ui_viz_rx, box_y, ui_viz_rw, header_h);
-  nvgFill(s->vg);
-
+  if (s->dragon_driving_ui) {
+    nvgBeginPath(s->vg);
+    NVGpaint gradient = nvgLinearGradient(s->vg, ui_viz_rx,
+                          (box_y+(header_h-(header_h/2.5))),
+                          ui_viz_rx, box_y+header_h,
+                          nvgRGBAf(0,0,0,0.45), nvgRGBAf(0,0,0,0));
+    nvgFillPaint(s->vg, gradient);
+    nvgRect(s->vg, ui_viz_rx, box_y, ui_viz_rw, header_h);
+    nvgFill(s->vg);
+  }
   if (s->dragon_ui_maxspeed) {
     ui_draw_vision_maxspeed(s);
   }
@@ -1832,10 +1832,10 @@ static void ui_draw_vision(UIState *s) {
   }
 
   nvgRestore(s->vg);
-  if (s->dragon_driving_ui) {
-    // Set Speed, Current Speed, Status/Events
-    ui_draw_vision_header(s);
-  }
+
+  // Set Speed, Current Speed, Status/Events
+  ui_draw_vision_header(s);
+
   if (s->scene.alert_size != ALERTSIZE_NONE) {
     // Controls Alerts
     ui_draw_vision_alert(s, s->scene.alert_size, s->status,
