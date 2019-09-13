@@ -3,7 +3,7 @@ import os
 import numpy as np
 from cereal import car
 from common.numpy_fast import clip, interp
-from common.realtime import DT_CTRL
+from common.realtime import DT_CTRL, sec_since_boot
 from selfdrive.swaglog import cloudlog
 from selfdrive.config import Conversions as CV
 from selfdrive.controls.lib.drive_helpers import create_event, EventTypes as ET, get_events
