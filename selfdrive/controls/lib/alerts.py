@@ -685,8 +685,8 @@ ALERTS = [
 
   Alert(
       "soundsUnavailablePermanent",
-      "Speaker not found",
-      "Reboot your EON",
+      "找不到音效裝置",
+      "請重啟您的 EON",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
