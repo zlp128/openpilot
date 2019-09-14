@@ -24,9 +24,9 @@ dragonpilot (龍芯駕駛輔助系統)
 ---
 除了官方支援的車款外，dp 還支援以下車款：
 * 大陸版東風本田 Inspire 混動
-* 大陸版本田雅閣混動
-* 台灣版 2019 Toyota Corolla Altis (含油電版)
-* 澳洲版 2017 Lexus IS300h
+* 大陸版本田雅閣混動 
+* 台灣版 2019 Toyota Corolla Altis (含油電版) by wlee72
+* 澳洲版 2017 Lexus IS300h by eFiniLan
 
 
 畫面截圖
