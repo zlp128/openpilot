@@ -71,7 +71,7 @@ def get_can_parser(CP):
     ]
   else:
     signals += [
-      ("AUTO_HIGH_BEAM", "LIGHT_STALK_ISH", 0),
+      ("AUTO_HIGH_BEAM", "LIGHT_STALK", 0),
       ("GAS_PEDAL", "GAS_PEDAL", 0),
     ]
     checks += [
