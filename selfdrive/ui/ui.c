@@ -1525,7 +1525,7 @@ static void ui_draw_infobar(UIState *s) {
 
   nvgBeginPath(s->vg);
   nvgRoundedRect(s->vg, rect_x, rect_y, rect_w, rect_h, 15);
-  nvgFillColor(s->vg, nvgRGBA(0, 0, 0, 100));
+  nvgFillColor(s->vg, nvgRGBA(0, 0, 0, 150));
   nvgFill(s->vg);
 
   nvgFontSize(s->vg, hasSidebar? 40:50);
