@@ -42,6 +42,9 @@ default_conf = {
   'DragonGreyPandaMode': '0',
   'DragonDrivingUI': '1',
   'DragonDisplaySteeringLimitAlert': '1',
+  'DragonChargingCtrl': '0',
+  'DragonCharging': 70,
+  'DragonDisCharging': 60,
 }
 
 deprecated_conf = {
