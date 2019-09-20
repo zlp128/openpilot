@@ -60,7 +60,7 @@ FAQ
 ---
 ```
 Q. 一定只能在 dragonpilot 下用嗎？ 
-A. 不用，您只要把 cn.dragonpilot.gpsservice 複制到您的 /data/openpilot/apk 然後照著上面的安裝方法即可。
+A. 不用，您只要把 cn.dragonpilot.gpsservice 複制到您的 /data/openpilot/apk 然後照著上面的安裝方法即可，您可能需要手動啟動該服務。
 ```
 ```
 Q. 它支援 XXXXXXXX 應用嗎？ 
