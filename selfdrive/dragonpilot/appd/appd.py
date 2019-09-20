@@ -22,6 +22,9 @@ autonavi_main = "com.autonavi.amapauto.MainMapActivity"
 mixplorer = "com.mixplorer"
 mixplorer_main = "com.mixplorer.activities.BrowseActivity"
 
+gpsservice = "cn.dragonpilot.gpsservice"
+gpsservice_main = "cn.dragonpilot.gpsservice.MainService"
+
 def main(gctx=None):
 
   dragon_enable_tomtom = True if params.get('DragonEnableTomTom') == "1" else False
@@ -29,6 +32,8 @@ def main(gctx=None):
   dragon_enable_mixplorer = True if params.get('DragonEnableMixplorer') == "1" else False
   dragon_boot_tomtom = True if params.get("DragonBootTomTom") == "1" else False
   dragon_boot_autonavi = True if params.get("DragonBootAutonavi") == "1" else False
+  dragon_greypanda_mode = True if params.get("DragonGreyPandaMode") == "1" else False
+  dragon_grepanda_mode_started = False
   tomtom_is_running = False
   autonavi_is_running = False
   mixplorer_is_running = False
@@ -48,10 +53,11 @@ def main(gctx=None):
   system("pm disable %s" % tomtom)
   system("pm disable %s" % autonavi)
   system("pm disable %s" % mixplorer)
+  system("pm disable %s" % gpsservice)
 
   thermal_sock = messaging.sub_sock(service_list['thermal'].port)
 
-  while dragon_enable_tomtom or dragon_enable_autonavi or dragon_enable_mixplorer:
+  while dragon_enable_tomtom or dragon_enable_autonavi or dragon_enable_mixplorer or dragon_greypanda_mode:
 
     # allow user to manually start/stop app
     if dragon_enable_tomtom:
@@ -82,6 +88,11 @@ def main(gctx=None):
     started = msg.thermal.started
     # car on
     if started:
+      if dragon_greypanda_mode and not dragon_grepanda_mode_started:
+        dragon_grepanda_mode_started = True
+        system("pm enable %s" % gpsservice)
+        system("am startservice %s/%s" % (gpsservice, gpsservice_main))
+
       stop_delay = None
       if start_delay is None:
         start_delay = frame + 5
@@ -115,6 +126,10 @@ def main(gctx=None):
 
     # car off
     else:
+      if dragon_greypanda_mode and dragon_grepanda_mode_started:
+        dragon_grepanda_mode_started = False
+        system("pm disable %s" % gpsservice)
+
       start_delay = None
       if stop_delay is None:
         stop_delay = frame + 30
