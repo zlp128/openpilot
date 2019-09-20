@@ -13,17 +13,18 @@
 
 安裝方法
 ---
-1. 請先確認您的 dragonpilot 在 0.6.3 以後的版本
+1. 請先確認您的 dragonpilot 在 0.6.4 以上或是 devel 的版本
 2. [SSH] 打開設定頁面: 
     ```bash
     am start -a android.settings.SETTINGS
     ```
-3. [ANDROID] 點選「開發人員選項」
-4. [ANDROID] 找到「選取模擬位置應用程式」
-5. [ANDROID] 選擇
+3. [ANDROID] 找到「開發人員選項」，如果沒有此選項，請點選「關於手機」 > 然後連續點選「版本號碼」直到提示出現開啟為止。
+4. [ANDROID] 點選「開發人員選項」
+5. [ANDROID] 找到「選取模擬位置應用程式」
+6. [ANDROID] 選擇
     ```bash
-    Black
-    ai.comma.plus.black
+    cn.dragonpilot.gpsservice
+    cn.dragonpilot.gpsservice
     ```
 6. [SSH] 開啟 DragonGreyPandaMode 設定
     ```bash
@@ -59,7 +60,7 @@ FAQ
 ---
 ```
 Q. 一定只能在 dragonpilot 下用嗎？ 
-A. 不用，您只要把 ai.comma.plus.black.apk 複制到您的 /data/openpilot/apk 然後照著上面的安裝方法即可。
+A. 不用，您只要把 cn.dragonpilot.gpsservice 複制到您的 /data/openpilot/apk 然後照著上面的安裝方法即可。
 ```
 ```
 Q. 它支援 XXXXXXXX 應用嗎？ 
