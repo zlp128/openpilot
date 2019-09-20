@@ -152,8 +152,13 @@ def thermald_thread():
   # Make sure charging is enabled
   charging_disabled = False
   os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
+
+  # dragonpilot
   ts_last_ip = 0.
   ip_addr = '255.255.255.255'
+  dragon_charging_ctrl = True if params.get('DragonChargingCtrl') == "1" else False
+  dragon_charging_max = params.get('DragonCharging')
+  dragon_discharging_min = params.get('DragonDisCharging')
 
   while 1:
     health = messaging.recv_sock(health_sock, wait=True)
@@ -296,6 +301,13 @@ def thermald_thread():
         health=(health.to_dict() if health else None),
         location=(location.to_dict() if location else None),
         thermal=msg.to_dict())
+
+      # we only update charging status once per min
+      if dragon_charging_ctrl:
+        if msg.thermal.batteryPercent >= dragon_charging_max:
+          os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
+        if msg.thermal.batteryPercent <= dragon_discharging_min:
+          os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
 
     count += 1
 
