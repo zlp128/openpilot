@@ -125,6 +125,7 @@ keys = {
   "DragonChargingCtrl": [TxType.PERSISTENT],
   "DragonCharging": [TxType.PERSISTENT],
   "DragonDisCharging": [TxType.PERSISTENT],
+  "DragonToyotaLaneDepartureWarning": [TxType.PERSISTENT],
 }
 
 
