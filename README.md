@@ -27,6 +27,7 @@ dragonpilot (龍芯駕駛輔助系統)
 * 大陸版本田雅閣混動 
 * 台灣版 2019 Toyota Corolla Altis (含油電版) by wlee72
 * 台灣版 Lexus CT200h by CloudJ
+* 台灣版 Toyota Prius 4.5 代 by Lin Xin Hong
 * 美國版 2018 Lexus CT200h by thomaspich
 * 澳洲版 2017 Lexus IS300h by eFiniLan
 
