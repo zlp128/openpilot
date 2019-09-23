@@ -155,10 +155,13 @@ def thermald_thread():
 
   # dragonpilot
   ts_last_ip = 0.
+  ts_last_update_vars = 0.
+  ts_last_charging_ctrl = 0.
+
   ip_addr = '255.255.255.255'
   dragon_charging_ctrl = True if params.get('DragonChargingCtrl') == "1" else False
-  dragon_charging_max = params.get('DragonCharging')
-  dragon_discharging_min = params.get('DragonDisCharging')
+  dragon_charging_max = int(params.get('DragonCharging'))
+  dragon_discharging_min = int(params.get('DragonDisCharging'))
 
   while 1:
     health = messaging.recv_sock(health_sock, wait=True)
@@ -186,23 +189,6 @@ def thermald_thread():
       msg.thermal.batteryVoltage = int(f.read())
     with open("/sys/class/power_supply/usb/present") as f:
       msg.thermal.usbOnline = bool(int(f.read()))
-    # update ip every 5 seconds
-    ts = sec_since_boot()
-    if ts - ts_last_ip > 10.:
-      try:
-        result = subprocess.check_output(["service", "call", "connectivity", "2"]).strip().split("\n")
-      except subprocess.CalledProcessError:
-        return False
-
-      data = ''.join(''.join(w.decode("hex")[::-1] for w in l[14:49].split()) for l in result[1:])
-
-      if "\x00".join("WIFI") in data:
-        result = subprocess.check_output(["ifconfig", "wlan0"])
-        ip_addr = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
-      else:
-        ip_addr = '<N/A>'
-      ts_last_ip = ts
-    msg.thermal.ipAddr = ip_addr
 
     current_filter.update(msg.thermal.batteryCurrent / 1e6)
 
@@ -294,6 +280,40 @@ def thermald_thread():
     thermal_sock.send(msg.to_bytes())
     print(msg)
 
+    # dragonpilot
+    ts = sec_since_boot()
+    # update variable status every 10 secs
+    if ts - ts_last_update_vars > 10.:
+      dragon_charging_ctrl = True if params.get('DragonChargingCtrl') == "1" else False
+      dragon_charging_max = int(params.get('DragonCharging'))
+      dragon_discharging_min = int(params.get('DragonDisCharging'))
+      ts_last_charging_ctrl = ts
+
+    # update ip every 10 seconds
+    if ts - ts_last_ip > 10.:
+      try:
+        result = subprocess.check_output(["service", "call", "connectivity", "2"]).strip().split("\n")
+      except subprocess.CalledProcessError:
+        return False
+
+      data = ''.join(''.join(w.decode("hex")[::-1] for w in l[14:49].split()) for l in result[1:])
+
+      if "\x00".join("WIFI") in data:
+        result = subprocess.check_output(["ifconfig", "wlan0"])
+        ip_addr = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
+      else:
+        ip_addr = 'N/A'
+      ts_last_ip = ts
+    msg.thermal.ipAddr = "IP: %s" % ip_addr
+
+    # we only update charging status once per min
+    if dragon_charging_ctrl and ts - ts_last_charging_ctrl > 60.:
+      if msg.thermal.batteryPercent >= dragon_charging_max:
+        os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
+      if msg.thermal.batteryPercent <= dragon_discharging_min:
+        os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
+      ts_last_charging_ctrl = ts
+
     # report to server once per minute
     if (count % int(60. / DT_TRML)) == 0:
       cloudlog.event("STATUS_PACKET",
@@ -301,13 +321,6 @@ def thermald_thread():
         health=(health.to_dict() if health else None),
         location=(location.to_dict() if location else None),
         thermal=msg.to_dict())
-
-      # we only update charging status once per min
-      if dragon_charging_ctrl:
-        if msg.thermal.batteryPercent >= dragon_charging_max:
-          os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
-        if msg.thermal.batteryPercent <= dragon_discharging_min:
-          os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
 
     count += 1
 
