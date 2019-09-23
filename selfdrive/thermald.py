@@ -190,6 +190,25 @@ def thermald_thread():
     with open("/sys/class/power_supply/usb/present") as f:
       msg.thermal.usbOnline = bool(int(f.read()))
 
+    # dragonpilot ip Mod
+    # update ip every 10 seconds
+    ts = sec_since_boot()
+    if ts - ts_last_ip > 10.:
+      try:
+        result = subprocess.check_output(["service", "call", "connectivity", "2"]).strip().split("\n")
+      except subprocess.CalledProcessError:
+        return False
+
+      data = ''.join(''.join(w.decode("hex")[::-1] for w in l[14:49].split()) for l in result[1:])
+
+      if "\x00".join("WIFI") in data:
+        result = subprocess.check_output(["ifconfig", "wlan0"])
+        ip_addr = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
+      else:
+        ip_addr = 'N/A'
+      ts_last_ip = ts
+    msg.thermal.ipAddr = ip_addr
+
     current_filter.update(msg.thermal.batteryCurrent / 1e6)
 
     # TODO: add car battery voltage check
@@ -288,23 +307,6 @@ def thermald_thread():
       dragon_charging_max = int(params.get('DragonCharging'))
       dragon_discharging_min = int(params.get('DragonDisCharging'))
       ts_last_update_vars = ts
-
-    # update ip every 10 seconds
-    if ts - ts_last_ip > 10.:
-      try:
-        result = subprocess.check_output(["service", "call", "connectivity", "2"]).strip().split("\n")
-      except subprocess.CalledProcessError:
-        return False
-
-      data = ''.join(''.join(w.decode("hex")[::-1] for w in l[14:49].split()) for l in result[1:])
-
-      if "\x00".join("WIFI") in data:
-        result = subprocess.check_output(["ifconfig", "wlan0"])
-        ip_addr = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
-      else:
-        ip_addr = 'N/A'
-      ts_last_ip = ts
-    msg.thermal.ipAddr = "IP: %s" % ip_addr
 
     # we only update charging status once every min
     if ts - ts_last_charging_ctrl > 60.:
