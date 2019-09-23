@@ -45,6 +45,7 @@ default_conf = {
   'DragonChargingCtrl': '0',
   'DragonCharging': 70,
   'DragonDisCharging': 60,
+  'DragonToyotaLaneDepartureWarning': '1',
 }
 
 deprecated_conf = {
