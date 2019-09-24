@@ -49,6 +49,7 @@ default_conf = {
   'DragonUILane': '1',
   'DragonUILead': '1',
   'DragonUIPath': '1',
+  'DragonUIBlinker': '0',
 }
 
 deprecated_conf = {
