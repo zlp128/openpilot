@@ -304,6 +304,9 @@ typedef struct UIState {
   int dragon_enable_dashcam_timeout;
   int dragon_ui_volume_boost_timeout;
   int dragon_driving_ui_timeout;
+  int dragon_ui_lane_timeout;
+  int dragon_ui_lead_timeout;
+  int dragon_ui_path_timeout;
 
   bool dragon_ui_speed;
   bool dragon_ui_event;
@@ -314,6 +317,9 @@ typedef struct UIState {
   bool dragon_enable_dashcam;
   float dragon_ui_volume_boost;
   bool dragon_driving_ui;
+  bool dragon_ui_lane;
+  bool dragon_ui_lead;
+  bool dragon_ui_path;
 
 } UIState;
 
@@ -709,6 +715,9 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   read_param_bool(&s->dragon_enable_dashcam, "DragonEnableDashcam");
   read_param_float(&s->dragon_ui_volume_boost, "DragonUIVolumeBoost");
   read_param_bool(&s->dragon_driving_ui, "DragonDrivingUI");
+  read_param_bool(&s->dragon_ui_lane, "DragonUILane");
+  read_param_bool(&s->dragon_ui_lead, "DragonUILead");
+  read_param_bool(&s->dragon_ui_path, "DragonUIPath");
 
 
   // Set offsets so params don't get read at the same time
@@ -726,6 +735,9 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   s->dragon_enable_dashcam_timeout = 100;
   s->dragon_ui_volume_boost_timeout = 100;
   s->dragon_driving_ui_timeout = 100;
+  s->dragon_ui_lane_timeout = 100;
+  s->dragon_ui_lead_timeout = 100;
+  s->dragon_ui_path_timeout = 100;
 }
 
 // Projects a point in car to space to the corresponding point in full frame
@@ -1045,27 +1057,30 @@ static void ui_draw_vision_lanes(UIState *s) {
     update_all_lane_lines_data(s, scene->model.right_lane, pvd + MODEL_LANE_PATH_CNT);
     s->model_changed = false;
   }
-  // Draw left lane edge
-  ui_draw_lane(
+  if (s->dragon_ui_lane) {
+    // Draw left lane edge
+    ui_draw_lane(
       s, &scene->model.left_lane,
       pvd,
       nvgRGBAf(1.0, 1.0, 1.0, scene->model.left_lane.prob));
 
-  // Draw right lane edge
-  ui_draw_lane(
+    // Draw right lane edge
+    ui_draw_lane(
       s, &scene->model.right_lane,
       pvd + MODEL_LANE_PATH_CNT,
       nvgRGBAf(1.0, 1.0, 1.0, scene->model.right_lane.prob));
-
+  }
   if(s->livempc_or_radarstate_changed) {
     update_all_track_data(s);
     s->livempc_or_radarstate_changed = false;
   }
-  // Draw vision path
-  ui_draw_track(s, false, &s->track_vertices[0]);
-  if (scene->engaged) {
-    // Draw MPC path when engaged
-    ui_draw_track(s, true, &s->track_vertices[1]);
+  if (s->dragon_ui_path) {
+    // Draw vision path
+    ui_draw_track(s, false, &s->track_vertices[0]);
+    if (scene->engaged) {
+      // Draw MPC path when engaged
+      ui_draw_track(s, true, &s->track_vertices[1]);
+    }
   }
 }
 
@@ -1081,7 +1096,7 @@ static void ui_draw_world(UIState *s) {
     ui_draw_vision_lanes(s);
   }
 
-  if (scene->lead_status) {
+  if (s->dragon_ui_lead && scene->lead_status) {
     // Draw lead car indicator
     float fillAlpha = 0;
     float speedBuff = 10.;
@@ -2684,6 +2699,9 @@ int main(int argc, char* argv[]) {
     read_param_bool_timeout(&s->dragon_enable_dashcam, "DragonEnableDashcam", &s->dragon_enable_dashcam_timeout);
     read_param_float_timeout(&s->dragon_ui_volume_boost, "DragonUIVolumeBoost", &s->dragon_ui_volume_boost_timeout);
     read_param_bool_timeout(&s->dragon_driving_ui, "DragonDrivingUI", &s->dragon_driving_ui_timeout);
+    read_param_bool_timeout(&s->dragon_ui_lane, "DragonUILane", &s->dragon_ui_lane_timeout);
+    read_param_bool_timeout(&s->dragon_ui_lead, "DragonUILead", &s->dragon_ui_lead_timeout);
+    read_param_bool_timeout(&s->dragon_ui_path, "DragonUIPath", &s->dragon_ui_path_timeout);
 
     pthread_mutex_unlock(&s->lock);
 
