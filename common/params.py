@@ -129,6 +129,7 @@ keys = {
   "DragonUILane": [TxType.PERSISTENT],
   "DragonUILead": [TxType.PERSISTENT],
   "DragonUIPath": [TxType.PERSISTENT],
+  "DragonUIBlinker": [TxType.PERSISTENT],
 }
 
 

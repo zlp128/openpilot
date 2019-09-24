@@ -168,6 +168,11 @@ typedef struct UIScene {
   float angleSteersDes;
   float angleSteers;
 
+  // for blinker, from kegman
+  bool leftBlinker;
+  bool rightBlinker;
+  int blinker_blinkingrate;
+
 } UIScene;
 
 typedef struct {
@@ -215,6 +220,7 @@ typedef struct UIState {
   void *livempc_sock_raw;
   void *plus_sock_raw;
   void *map_data_sock_raw;
+  void *carstate_sock_raw;
 
   void *uilayout_sock_raw;
 
@@ -307,6 +313,7 @@ typedef struct UIState {
   int dragon_ui_lane_timeout;
   int dragon_ui_lead_timeout;
   int dragon_ui_path_timeout;
+  int dragon_ui_blinker_timeout;
 
   bool dragon_ui_speed;
   bool dragon_ui_event;
@@ -320,6 +327,7 @@ typedef struct UIState {
   bool dragon_ui_lane;
   bool dragon_ui_lead;
   bool dragon_ui_path;
+  bool dragon_ui_blinker;
 
 } UIState;
 
@@ -540,6 +548,7 @@ static void ui_init(UIState *s) {
   s->radarstate_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8012");
   s->livempc_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8035");
   s->plus_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8037");
+  s->carstate_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8021");
 
 #ifdef SHOW_SPEEDLIMIT
   s->map_data_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8065");
@@ -718,6 +727,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   read_param_bool(&s->dragon_ui_lane, "DragonUILane");
   read_param_bool(&s->dragon_ui_lead, "DragonUILead");
   read_param_bool(&s->dragon_ui_path, "DragonUIPath");
+  read_param_bool(&s->dragon_ui_blinker, "DragonUIBlinker");
 
 
   // Set offsets so params don't get read at the same time
@@ -738,6 +748,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   s->dragon_ui_lane_timeout = 100;
   s->dragon_ui_lead_timeout = 100;
   s->dragon_ui_path_timeout = 100;
+  s->dragon_ui_blinker_timeout = 100;
 }
 
 // Projects a point in car to space to the corresponding point in full frame
@@ -1299,28 +1310,57 @@ static void ui_draw_vision_speed(UIState *s) {
   const int viz_speed_x = ui_viz_rx+((ui_viz_rw/2)-(viz_speed_w/2));
   char speed_str[32];
 
-  nvgBeginPath(s->vg);
-  nvgRect(s->vg, viz_speed_x, box_y, viz_speed_w, header_h);
-  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
+  // blinker, from kegman
+  if (s->dragon_ui_blinker) {
+    if(s->scene.leftBlinker) {
+      nvgBeginPath(s->vg);
+      nvgMoveTo(s->vg, viz_speed_x, box_y + header_h/4);
+      nvgLineTo(s->vg, viz_speed_x - viz_speed_w/2, box_y + header_h/4 + header_h/4);
+      nvgLineTo(s->vg, viz_speed_x, box_y + header_h/2 + header_h/4);
+      nvgClosePath(s->vg);
+      nvgFillColor(s->vg, nvgRGBA(23,134,68,s->scene.blinker_blinkingrate>=50?210:60));
+      nvgFill(s->vg);
+    }
 
-  if (s->is_metric) {
-    snprintf(speed_str, sizeof(speed_str), "%d", (int)(speed * 3.6 + 0.5));
-  } else {
-    snprintf(speed_str, sizeof(speed_str), "%d", (int)(speed * 2.2369363 + 0.5));
+    if(s->scene.rightBlinker) {
+      nvgBeginPath(s->vg);
+      nvgMoveTo(s->vg, viz_speed_x+viz_speed_w, box_y + header_h/4);
+      nvgLineTo(s->vg, viz_speed_x+viz_speed_w + viz_speed_w/2, box_y + header_h/4 + header_h/4);
+      nvgLineTo(s->vg, viz_speed_x+viz_speed_w, box_y + header_h/2 + header_h/4);
+      nvgClosePath(s->vg);
+      nvgFillColor(s->vg, nvgRGBA(23,134,68,s->scene.blinker_blinkingrate>=50?210:60));
+      nvgFill(s->vg);
+    }
+
+    if(s->scene.leftBlinker || s->scene.rightBlinker) {
+      s->scene.blinker_blinkingrate -= 3;
+      if(s->scene.blinker_blinkingrate<0) s->scene.blinker_blinkingrate = 120;
+    }
   }
-  nvgFontFace(s->vg, "sans-bold");
-  nvgFontSize(s->vg, 96*2.5);
-  nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 255));
-  nvgText(s->vg, viz_speed_x+viz_speed_w/2, 240, speed_str, NULL);
+  if (s->dragon_ui_speed) {
+    nvgBeginPath(s->vg);
+    nvgRect(s->vg, viz_speed_x, box_y, viz_speed_w, header_h);
+    nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
 
-  nvgFontFace(s->vg, "sans-regular");
-  nvgFontSize(s->vg, 36*2.5);
-  nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 200));
+    if (s->is_metric) {
+      snprintf(speed_str, sizeof(speed_str), "%d", (int)(speed * 3.6 + 0.5));
+    } else {
+      snprintf(speed_str, sizeof(speed_str), "%d", (int)(speed * 2.2369363 + 0.5));
+    }
+    nvgFontFace(s->vg, "sans-bold");
+    nvgFontSize(s->vg, 96*2.5);
+    nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 255));
+    nvgText(s->vg, viz_speed_x+viz_speed_w/2, 240, speed_str, NULL);
 
-  if (s->is_metric) {
-    nvgText(s->vg, viz_speed_x+viz_speed_w/2, 320, "kph", NULL);
-  } else {
-    nvgText(s->vg, viz_speed_x+viz_speed_w/2, 320, "mph", NULL);
+    nvgFontFace(s->vg, "sans-regular");
+    nvgFontSize(s->vg, 36*2.5);
+    nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 200));
+
+    if (s->is_metric) {
+      nvgText(s->vg, viz_speed_x+viz_speed_w/2, 320, "kph", NULL);
+    } else {
+      nvgText(s->vg, viz_speed_x+viz_speed_w/2, 320, "mph", NULL);
+    }
   }
 }
 
@@ -1451,9 +1491,7 @@ static void ui_draw_vision_header(UIState *s) {
 #ifdef SHOW_SPEEDLIMIT
   ui_draw_vision_speedlimit(s);
 #endif
-  if (s->dragon_ui_speed) {
-    ui_draw_vision_speed(s);
-  }
+  ui_draw_vision_speed(s);
   if (s->dragon_ui_event) {
     ui_draw_vision_event(s);
   }
@@ -2144,6 +2182,15 @@ void handle_message(UIState *s, void *which) {
     struct cereal_LiveMapData datad;
     cereal_read_LiveMapData(&datad, eventd.liveMapData);
     s->scene.map_valid = datad.mapValid;
+  } else if (eventd.which == cereal_Event_carState) {
+    struct cereal_CarState datad;
+    cereal_read_CarState(&datad, eventd.carState);
+
+    if(s->scene.leftBlinker!=datad.leftBlinker || s->scene.rightBlinker!=datad.rightBlinker) {
+      s->scene.blinker_blinkingrate = 100;
+    }
+    s->scene.leftBlinker = datad.leftBlinker;
+    s->scene.rightBlinker = datad.rightBlinker;
   }
   capn_free(&ctx);
   zmq_msg_close(&msg);
@@ -2302,12 +2349,16 @@ static void ui_update(UIState *s) {
     polls[6].socket = s->uilayout_sock_raw;
     polls[6].events = ZMQ_POLLIN;
 
-#ifdef SHOW_SPEEDLIMIT
+//#ifdef SHOW_SPEEDLIMIT
+//    plus_sock_num++;
+//    num_polls++;
+//    polls[7].socket = s->map_data_sock_raw;
+//    polls[7].events = ZMQ_POLLIN;
+//#endif
     plus_sock_num++;
     num_polls++;
-    polls[7].socket = s->map_data_sock_raw;
+    polls[7].socket = s->carstate_sock_raw;
     polls[7].events = ZMQ_POLLIN;
-#endif
 
     polls[plus_sock_num].socket = s->plus_sock_raw; // plus_sock should be last
     polls[plus_sock_num].events = ZMQ_POLLIN;
@@ -2323,6 +2374,7 @@ static void ui_update(UIState *s) {
 
     if (polls[0].revents || polls[1].revents || polls[2].revents ||
         polls[3].revents || polls[4].revents || polls[6].revents ||
+        polls[7].revents ||
         polls[plus_sock_num].revents) {
       // awake on any (old) activity
       set_awake(s, true);
@@ -2702,6 +2754,7 @@ int main(int argc, char* argv[]) {
     read_param_bool_timeout(&s->dragon_ui_lane, "DragonUILane", &s->dragon_ui_lane_timeout);
     read_param_bool_timeout(&s->dragon_ui_lead, "DragonUILead", &s->dragon_ui_lead_timeout);
     read_param_bool_timeout(&s->dragon_ui_path, "DragonUIPath", &s->dragon_ui_path_timeout);
+    read_param_bool_timeout(&s->dragon_ui_blinker, "DragonUIBlinker", &s->dragon_ui_blinker_timeout);
 
     pthread_mutex_unlock(&s->lock);
 
