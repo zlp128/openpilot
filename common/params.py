@@ -126,6 +126,10 @@ keys = {
   "DragonCharging": [TxType.PERSISTENT],
   "DragonDisCharging": [TxType.PERSISTENT],
   "DragonToyotaLaneDepartureWarning": [TxType.PERSISTENT],
+  "DragonUILane": [TxType.PERSISTENT],
+  "DragonUILead": [TxType.PERSISTENT],
+  "DragonUIPath": [TxType.PERSISTENT],
+  "DragonUIBlinker": [TxType.PERSISTENT],
 }
 
 
