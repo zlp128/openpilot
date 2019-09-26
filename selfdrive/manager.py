@@ -359,9 +359,7 @@ def manager_thread():
   cloudlog.info({"environ": os.environ})
 
   # save boot log
-  params = Params()
-  if params.get("DragonEnableLogger") == "1":
-    subprocess.call(["./loggerd", "--bootlog"], cwd=os.path.join(BASEDIR, "selfdrive/loggerd"))
+  subprocess.call(["./loggerd", "--bootlog"], cwd=os.path.join(BASEDIR, "selfdrive/loggerd"))
 
   params = Params()
 
@@ -605,14 +603,6 @@ def main():
     spinner_proc = subprocess.Popen(["./spinner", "http://dragonpilot.cn"],
       cwd=os.path.join(BASEDIR, "selfdrive", "ui", "spinner"),
       close_fds=True)
-
-  if params.get("DragonEnableLogger") == "0":
-    del managed_processes['loggerd']
-    del managed_processes['tombstoned']
-
-  if params.get("DragonEnableUploader") == "0":
-    del managed_processes['uploader']
-
   try:
     manager_update()
     manager_init()
@@ -623,6 +613,13 @@ def main():
 
   if os.getenv("PREPAREONLY") is not None:
     return
+
+  if params.get("DragonEnableLogger") == "0":
+    del managed_processes['loggerd']
+    del managed_processes['tombstoned']
+
+  if params.get("DragonEnableUploader") == "0":
+    del managed_processes['uploader']
 
   # SystemExit on sigterm
   signal.signal(signal.SIGTERM, lambda signum, frame: sys.exit(1))
