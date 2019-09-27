@@ -50,6 +50,7 @@ default_conf = {
   'DragonUILead': '1',
   'DragonUIPath': '1',
   'DragonUIBlinker': '0',
+  'DragonEnableDriverMonitoring': '1',
 }
 
 deprecated_conf = {

@@ -130,6 +130,7 @@ keys = {
   "DragonUILead": [TxType.PERSISTENT],
   "DragonUIPath": [TxType.PERSISTENT],
   "DragonUIBlinker": [TxType.PERSISTENT],
+  "DragonEnableDriverMonitoring": [TxType.PERSISTENT],
 }
 
 
