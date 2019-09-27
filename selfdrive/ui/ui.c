@@ -1377,7 +1377,7 @@ static void ui_draw_vision_event(UIState *s) {
     const int img_turn_size = 160*1.5;
     const int img_turn_x = viz_event_x-(img_turn_size/4);
     const int img_turn_y = viz_event_y+bdr_s-25;
-    float img_turn_alpha = 1.0f;
+    float img_turn_alpha = 0.7f;
     nvgBeginPath(s->vg);
     NVGpaint imgPaint = nvgImagePattern(s->vg, img_turn_x, img_turn_y,
       img_turn_size, img_turn_size, 0, s->img_turn, img_turn_alpha);
@@ -1407,7 +1407,7 @@ static void ui_draw_vision_event(UIState *s) {
         nvgFillColor(s->vg, nvgRGBA(23, 51, 73, 180));
       }
       nvgFill(s->vg);
-      img_wheel_alpha = 1.0f;
+      img_wheel_alpha = 0.7f;
     }
     nvgBeginPath(s->vg);
     NVGpaint imgPaint = nvgImagePattern(s->vg, img_wheel_x, img_wheel_y,
@@ -1578,12 +1578,12 @@ static void ui_draw_infobar(UIState *s) {
 
   nvgBeginPath(s->vg);
   nvgRoundedRect(s->vg, rect_x, rect_y, rect_w, rect_h, 15);
-  nvgFillColor(s->vg, nvgRGBA(0, 0, 0, 150));
+  nvgFillColor(s->vg, nvgRGBA(0, 0, 0, 180));
   nvgFill(s->vg);
 
   nvgFontSize(s->vg, hasSidebar? 40:50);
   nvgFontFace(s->vg, "courbd");
-  nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 175));
+  nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 180));
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER);
   nvgText(s->vg, text_x, text_y, infobar, NULL);
 }
