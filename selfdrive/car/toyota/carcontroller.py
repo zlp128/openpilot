@@ -122,15 +122,17 @@ class CarController(object):
     self.dragon_enable_steering_on_signal = False
     self.dragon_allow_gas = False
     self.dragon_lat_ctrl = True
+    self.dragon_lane_departure_warning = True
 
   def update(self, enabled, CS, frame, actuators,
              pcm_cancel_cmd, hud_alert, forwarding_camera, left_line,
              right_line, lead, left_lane_depart, right_lane_depart):
     # dragonpilot, don't check for param too often as it's a kernel call
-    if frame % 100 == 0:
+    if frame % 500 == 0:
       self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
       self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
       self.dragon_lat_ctrl = False if params.get("DragonLatCtrl") == "0" else True
+      self.dragon_lane_departure_warning = False if params.get("DragonToyotaLaneDepartureWarning") == "0" else True
 
     # *** compute control surfaces ***
 
@@ -158,7 +160,7 @@ class CarController(object):
       self.last_fault_frame = frame
 
     # Cut steering for 2s after fault
-    if not enabled or (frame - self.last_fault_frame < 200):
+    if not enabled: # or (frame - self.last_fault_frame < 200):
       apply_steer = 0
       apply_steer_req = 0
     else:
@@ -293,8 +295,16 @@ class CarController(object):
     if pcm_cancel_cmd:
       send_ui = True
 
+    # dragonpilot, lane depart warning mod
+    if self.dragon_lane_departure_warning:
+      dragon_left_lane_depart = left_lane_depart
+      dragon_right_lane_depart = right_lane_depart
+    else:
+      dragon_left_lane_depart = False
+      dragon_right_lane_depart = False
+
     if (frame % 100 == 0 or send_ui) and ECU.CAM in self.fake_ecus:
-      can_sends.append(create_ui_command(self.packer, steer, pcm_cancel_cmd, left_line, right_line, left_lane_depart, right_lane_depart))
+      can_sends.append(create_ui_command(self.packer, steer, pcm_cancel_cmd, left_line, right_line, dragon_left_lane_depart, dragon_right_lane_depart))
 
     if frame % 100 == 0 and ECU.DSU in self.fake_ecus and self.car_fingerprint not in TSS2_CAR:
       can_sends.append(create_fcw_command(self.packer, fcw))

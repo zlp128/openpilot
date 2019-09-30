@@ -126,7 +126,7 @@ managed_processes = {
 daemon_processes = {
   "athenad": "selfdrive.athena.athenad",
 }
-android_packages = ("com.autonavi.amapauto", "com.mixplorer", "com.tomtom.speedcams.android.map", "ai.comma.plus.offroad", "ai.comma.plus.frame")
+android_packages = ("cn.dragonpilot.gpsservice", "com.autonavi.amapauto", "com.mixplorer", "com.tomtom.speedcams.android.map", "ai.comma.plus.offroad", "ai.comma.plus.frame")
 
 running = {}
 def get_running():
@@ -603,14 +603,6 @@ def main():
     spinner_proc = subprocess.Popen(["./spinner", "http://dragonpilot.cn"],
       cwd=os.path.join(BASEDIR, "selfdrive", "ui", "spinner"),
       close_fds=True)
-
-  if params.get("DragonEnableLogger") == "0":
-    del managed_processes['loggerd']
-    del managed_processes['tombstoned']
-
-  if params.get("DragonEnableUploader") == "0":
-    del managed_processes['uploader']
-
   try:
     manager_update()
     manager_init()
@@ -621,6 +613,13 @@ def main():
 
   if os.getenv("PREPAREONLY") is not None:
     return
+
+  if params.get("DragonEnableLogger") == "0":
+    del managed_processes['loggerd']
+    del managed_processes['tombstoned']
+
+  if params.get("DragonEnableUploader") == "0":
+    del managed_processes['uploader']
 
   # SystemExit on sigterm
   signal.signal(signal.SIGTERM, lambda signum, frame: sys.exit(1))

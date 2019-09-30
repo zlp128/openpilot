@@ -122,6 +122,15 @@ keys = {
   "DragonGreyPandaMode": [TxType.PERSISTENT],
   "DragonDrivingUI": [TxType.PERSISTENT],
   "DragonDisplaySteeringLimitAlert": [TxType.PERSISTENT],
+  "DragonChargingCtrl": [TxType.PERSISTENT],
+  "DragonCharging": [TxType.PERSISTENT],
+  "DragonDisCharging": [TxType.PERSISTENT],
+  "DragonToyotaLaneDepartureWarning": [TxType.PERSISTENT],
+  "DragonUILane": [TxType.PERSISTENT],
+  "DragonUILead": [TxType.PERSISTENT],
+  "DragonUIPath": [TxType.PERSISTENT],
+  "DragonUIBlinker": [TxType.PERSISTENT],
+  "DragonEnableDriverMonitoring": [TxType.PERSISTENT],
 }
 
 

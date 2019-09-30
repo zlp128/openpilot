@@ -22,6 +22,9 @@ autonavi_main = "com.autonavi.amapauto.MainMapActivity"
 mixplorer = "com.mixplorer"
 mixplorer_main = "com.mixplorer.activities.BrowseActivity"
 
+gpsservice = "cn.dragonpilot.gpsservice"
+gpsservice_main = "cn.dragonpilot.gpsservice.MainService"
+
 def main(gctx=None):
 
   dragon_enable_tomtom = True if params.get('DragonEnableTomTom') == "1" else False
@@ -29,7 +32,8 @@ def main(gctx=None):
   dragon_enable_mixplorer = True if params.get('DragonEnableMixplorer') == "1" else False
   dragon_boot_tomtom = True if params.get("DragonBootTomTom") == "1" else False
   dragon_boot_autonavi = True if params.get("DragonBootAutonavi") == "1" else False
-  dragon_greypanda_mode = True if params.get('DragonGreyPandaMode') == "1" else False
+  dragon_greypanda_mode = True if params.get("DragonGreyPandaMode") == "1" else False
+  dragon_grepanda_mode_started = False
   tomtom_is_running = False
   autonavi_is_running = False
   mixplorer_is_running = False
@@ -40,46 +44,41 @@ def main(gctx=None):
   frame = 0
   start_delay = None
   stop_delay = None
-  high_accuracy_mode_enabled = False
 
   put_nonblocking('DragonRunTomTom', '0')
   put_nonblocking('DragonRunAutonavi', '0')
   put_nonblocking('DragonRunMixplorer', '0')
 
   # we want to disable all app when boot
-  system("pm disable %s ; pm disable %s ; pm disable %s" % (tomtom, autonavi, mixplorer))
+  system("pm disable %s" % tomtom)
+  system("pm disable %s" % autonavi)
+  system("pm disable %s" % mixplorer)
+  system("pm disable %s" % gpsservice)
 
   thermal_sock = messaging.sub_sock(service_list['thermal'].port)
 
-  while dragon_enable_tomtom or dragon_enable_autonavi or dragon_enable_mixplorer:
-    if (dragon_enable_tomtom or dragon_enable_autonavi) and not high_accuracy_mode_enabled:
-      if dragon_greypanda_mode:
-        system("settings put secure location_providers_allowed -gps,network,wifi")
-        system("settings put secure location_providers_allowed +gps")
-      else:
-        system("settings put secure location_providers_allowed +gps,network,wifi")
-      high_accuracy_mode_enabled = True
+  while dragon_enable_tomtom or dragon_enable_autonavi or dragon_enable_mixplorer or dragon_greypanda_mode:
 
     # allow user to manually start/stop app
     if dragon_enable_tomtom:
       status = params.get('DragonRunTomTom')
       if not status == "0":
         tomtom_is_running = exec_app(status, tomtom, tomtom_main)
-        put_nonblocking('DragonRunTomTom', '0')
+        params.put('DragonRunTomTom', '0')
         manual_tomtom = status != "0"
 
     if dragon_enable_autonavi:
       status = params.get('DragonRunAutonavi')
       if not status == "0":
         autonavi_is_running = exec_app(status, autonavi, autonavi_main)
-        put_nonblocking('DragonRunAutonavi', '0')
+        params.put('DragonRunAutonavi', '0')
         manual_autonavi = status != "0"
 
     if dragon_enable_mixplorer:
       status = params.get('DragonRunMixplorer')
       if not status == "0":
         mixplorer_is_running = exec_app(status, mixplorer, mixplorer_main)
-        put_nonblocking('DragonRunMixplorer', '0')
+        params.put('DragonRunMixplorer', '0')
 
     # if manual control is set, we do not allow any of the auto actions
     auto_tomtom = not manual_tomtom and dragon_enable_tomtom and dragon_boot_tomtom
@@ -89,6 +88,11 @@ def main(gctx=None):
     started = msg.thermal.started
     # car on
     if started:
+      if dragon_greypanda_mode and not dragon_grepanda_mode_started:
+        dragon_grepanda_mode_started = True
+        system("pm enable %s" % gpsservice)
+        system("am startservice %s/%s" % (gpsservice, gpsservice_main))
+
       stop_delay = None
       if start_delay is None:
         start_delay = frame + 5
@@ -122,6 +126,10 @@ def main(gctx=None):
 
     # car off
     else:
+      if dragon_greypanda_mode and dragon_grepanda_mode_started:
+        dragon_grepanda_mode_started = False
+        system("pm disable %s" % gpsservice)
+
       start_delay = None
       if stop_delay is None:
         stop_delay = frame + 30
@@ -142,7 +150,8 @@ def main(gctx=None):
 
 def exec_app(status, app, app_main):
   if status == "1":
-    system("pm enable %s && am start -n %s/%s" % (app, app, app_main))
+    system("pm enable %s" % app)
+    system("am start -n %s/%s" % (app, app_main))
     return True
   if status == "-1":
     system("pm disable %s" % app)

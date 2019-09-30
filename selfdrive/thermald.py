@@ -152,8 +152,16 @@ def thermald_thread():
   # Make sure charging is enabled
   charging_disabled = False
   os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
+
+  # dragonpilot
   ts_last_ip = 0.
+  ts_last_update_vars = 0.
+  ts_last_charging_ctrl = 0.
+
   ip_addr = '255.255.255.255'
+  dragon_charging_ctrl = True if params.get('DragonChargingCtrl') == "1" else False
+  dragon_charging_max = int(params.get('DragonCharging'))
+  dragon_discharging_min = int(params.get('DragonDisCharging'))
 
   while 1:
     health = messaging.recv_sock(health_sock, wait=True)
@@ -181,7 +189,9 @@ def thermald_thread():
       msg.thermal.batteryVoltage = int(f.read())
     with open("/sys/class/power_supply/usb/present") as f:
       msg.thermal.usbOnline = bool(int(f.read()))
-    # update ip every 5 seconds
+
+    # dragonpilot ip Mod
+    # update ip every 10 seconds
     ts = sec_since_boot()
     if ts - ts_last_ip > 10.:
       try:
@@ -195,7 +205,7 @@ def thermald_thread():
         result = subprocess.check_output(["ifconfig", "wlan0"])
         ip_addr = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
       else:
-        ip_addr = '<N/A>'
+        ip_addr = 'N/A'
       ts_last_ip = ts
     msg.thermal.ipAddr = ip_addr
 
@@ -288,6 +298,30 @@ def thermald_thread():
     msg.thermal.thermalStatus = thermal_status
     thermal_sock.send(msg.to_bytes())
     print(msg)
+
+    # dragonpilot
+    ts = sec_since_boot()
+    # update variable status every 10 secs
+    if ts - ts_last_update_vars > 10.:
+      dragon_charging_ctrl = True if params.get('DragonChargingCtrl') == "1" else False
+      dragon_charging_max = int(params.get('DragonCharging'))
+      dragon_discharging_min = int(params.get('DragonDisCharging'))
+      ts_last_update_vars = ts
+
+    # we only update charging status once every min
+    if ts - ts_last_charging_ctrl > 60.:
+      if dragon_charging_ctrl:
+        if msg.thermal.batteryPercent >= dragon_charging_max and not charging_disabled:
+          os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
+          charging_disabled = True
+        if msg.thermal.batteryPercent <= dragon_discharging_min and charging_disabled:
+          os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
+          charging_disabled = False
+      else:
+        if charging_disabled:
+          os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
+          charging_disabled = False
+      ts_last_charging_ctrl = ts
 
     # report to server once per minute
     if (count % int(60. / DT_TRML)) == 0:
