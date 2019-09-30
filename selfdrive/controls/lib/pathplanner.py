@@ -66,7 +66,7 @@ class PathPlanner(object):
     else:
       curvfac = 0.
 
-    #curvature_factor = VM.curvature_factor(v_ego) + curvfac
+    curvature_factor = VM.curvature_factor(v_ego) + curvfac
 
     # TODO: Check for active, override, and saturation
     # if active:
