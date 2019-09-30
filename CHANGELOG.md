@@ -1,3 +1,9 @@
+2019-09-30
+========================
+* [DEVEL] 更新 curvature learner 版本至 v4。
+* [DEVEL] Lexus ISH 使用更精確的 EPS Steering Angle Sensor 
+* [0.6.4] 更新至 2019-09-30
+
 2019-09-27
 ========================
 * [DEVEL] 加入 Zorrobyte 的 curvature learner (https://github.com/zorrobyte/openpilot)
@@ -41,3 +47,11 @@
 2019-09-09
 ========================
 * [DEVEL] 加入 GreyPanda 模式。
+
+2019-08-28
+========================
+* [DEVEL] 加入可調警示音量。
+
+2019-08-27
+========================
+* [DEVEL] 自動關機改為可調時長。
