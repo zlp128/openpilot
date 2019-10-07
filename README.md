@@ -25,6 +25,7 @@ dragonpilot (龍芯駕駛輔助系統)
 除了官方支援的車款外，dp (0.6.4+) 還額外支援以下車款：
 * 大陸版東風本田 Inspire 混動
 * 大陸版本田雅閣混動 
+* 台灣版 2019 Toyota RAV4 Hybrid by MaxDuan
 * 台灣版 2019 Toyota Corolla Altis (含油電版) by wlee72
 * 台灣版 Lexus CT200h by CloudJ
 * 台灣版 Toyota Prius 4.5 代 by Lin Xin Hong

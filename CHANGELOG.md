@@ -1,7 +1,16 @@
+2019-10-07
+========================
+* [DEVEL] [TOYOTA] 加入台灣版 2019 RAV4 油電版指紋。(感謝 Max Duan 提供)
+
+2019-10-05
+========================
+* [DEVEL] 移除 curvature learner: 轉角明顯比原廠小。
+* [DEVEL] 更新至最新的 commaai:devel。 
+
 2019-09-30
 ========================
 * [DEVEL] 更新 curvature learner 版本至 v4。
-* [DEVEL] Lexus ISH 使用更精確的 EPS Steering Angle Sensor 
+* [DEVEL] [TOYOTA] Lexus ISH 使用更精確的 EPS Steering Angle Sensor 
 * [0.6.4] 更新至 2019-09-30
 
 2019-09-27
@@ -25,7 +34,7 @@
 * [DEVEL] 優化讀取 params 的次數。
 * [DEVEL] [TOYOTA] 加入可開關的車道偏移警示。
 * [DEVEL] 修正充電控制邏輯。
-* [DEVEL] 加入台灣 Prius 4.5 指紋。 (感謝 Lin Hsin Hung 提供)
+* [DEVEL] [TOYOTA] 加入台灣 Prius 4.5 指紋。 (感謝 Lin Hsin Hung 提供)
 
 2019-09-20
 ========================
@@ -37,8 +46,8 @@
 
 2019-09-16
 ========================
-* [DEVEL] 加入台灣 CT200h 指紋。 (感謝 CloudJ 提供)
-* [DEVEL] 加入美版 CT200h 移植。 (感謝 thomaspich 提供)
+* [DEVEL] [TOYOTA] 加入台灣 CT200h 指紋。 (感謝 CloudJ 提供)
+* [DEVEL] [TOYOTA] 加入美版 CT200h 移植。 (感謝 thomaspich 提供)
 
 2019-09-13
 ========================
