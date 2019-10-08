@@ -16,13 +16,15 @@ dragonpilot (龍芯駕駛輔助系統)
 * 完全取消駕駛監控 (人臉+方向盤)
 * ACC 模式：讓 dp 只操控油門/剎車
 * TOM TOM 測速照相 / 高德地圖
-* 新增 MiXplorer 檔案管理器
+* MiXplorer 檔案管理器
 * 側邊欄顯示無線網路 IP 位置
 * TOM TOM 測速照相 / 高德地圖使用 Grey Panda 數據 (請參閱 HOWTO_GreyPandaMode.md 說明檔)
 
+***更多客制化內容請參閱 CHANGELOG.md***
+
 支援車款
 ---
-除了官方支援的車款外，dp (0.6.4+) 還額外支援以下車款：
+除了官方支援的車款外，dp (0.6.4+) 還支援以下車款：
 * 大陸版東風本田 Inspire 混動 by KT
 * 大陸版本田雅閣混動 
 * 台灣版 2019 Toyota RAV4 Hybrid by MaxDuan
@@ -62,7 +64,7 @@ dragonpilot (龍芯駕駛輔助系統)
     ```bash
     mv openpilot openpilot_bak
     ```
-4. 下載 dragonpilot 英文開發版並存至 openpilot 資料夾
+4. 下載 dragonpilot 英文開發版並存至 openpilot 資料夾 (2 選 1):
     1. github 
     ```bash
     git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en
@@ -79,7 +81,7 @@ dragonpilot (龍芯駕駛輔助系統)
     ```bash
     git pull
     ```
-7. 切換想使用的版本/語系分支 (預設為英文開發版，可略過此步驟)
+7. 切換想使用的版本/語系分支 (預設為英文開發版，不想切換可省略此步驟)
     ```bash
     ./bs
     ```
@@ -95,6 +97,7 @@ dragonpilot (龍芯駕駛輔助系統)
 
 **如果重開機後中文字無法正確顯示，請再重開機一次。**
 
+
 更新 dragonpilot
 ---
 1. 切換至 /data/openpilot 資料夾 
@@ -105,11 +108,11 @@ dragonpilot (龍芯駕駛輔助系統)
     ```bash
     git reset --hard
     ```
-3. 下載更新
+3. 更新 git 資料庫
     ```bash
     git pull
     ```
-4. 切換到新的版本分支 (若您使用的是 devel 版，除非您想使用不同的版本/語系分支，不然您可略過此步驟)
+4. 切換到新的版本分支 (使用的是 devel 版可省略此步驟)
     ```bash
     ./bs
     ```
@@ -134,4 +137,4 @@ dragonpilot (龍芯駕駛輔助系統)
 * ?.?.?-zhs: 穩定版 - (简体中文，測試過的 devel-zhs)
 * ?.?.?-zht: 穩定版 - (繁體中文，測試過的 devel-zht)
 
-其它沒有說明的分支為測試功能版，非必要請勿使用
+***其它沒有說明的分支為測試功能版，非必要請勿使用***
