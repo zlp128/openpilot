@@ -53,60 +53,79 @@ dragonpilot (龍芯駕駛輔助系統)
 安裝 dragonpilot
 ---
  
-SSH 至手機後
- 
-```bash
-# 切換至 /data/ 資料夾
-cd /data
-
-# 備份舊版的 openpilot
-mv openpilot openpilot_bak
-
-# 下載 dragonpilot 英文開發版並存至 openpilot 資料夾
-# 若是 github 太慢，也可以使用我們的 gitee 鏡像: 
-# git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en
-git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en
-
-# 切換到 openpilot 的資料夾
-cd openpilot
-
-# 更新 git 資料庫
-git pull
-
-#################################
-## 切換想使用的語系，以下三選一
-## 0.6.4 可換成不同的版本
-#################################
-
-# (英文)
-git checkout 0.6.4-en
-
-# 或是
-
-# (简体中文)
-git checkout 0.6.4-zhs
-
-# 或是
-
-# (繁體中文）
-git checkout 0.6.4-zht
-
-#################################
-## 三選一結束
-#################################
-
-# 確認沒有錯誤
-make
-
-# 重開機
-reboot
-```
+1. SSH 至手機後
+2. 切換至 /data/ 資料夾 
+    ```bash
+    cd /data
+    ```
+3. 備份舊版的 openpilot
+    ```bash
+    mv openpilot openpilot_bak
+    ```
+4. 下載 dragonpilot 英文開發版並存至 openpilot 資料夾
+    1. github 
+    ```bash
+    git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en
+    ```
+    2. gitee
+    ```bash 
+    git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en
+    ```
+5. 切換到 openpilot 的資料夾
+    ```bash
+    cd openpilot
+    ```
+6. 更新 git 資料庫
+    ```bash
+    git pull
+    ```
+7. 切換想使用的版本/語系分支 (預設為英文開發版，可略過此步驟)
+    ```bash
+    ./bs
+    ```
+    用上下鍵選擇指定的分支，按 Enter 鍵切換，或是輸入 "-en", "-zhs", "-zht" 過濾，按 Ctrl + C 強制關閉程式。
+8. 確認沒有錯誤
+    ```bash
+    make
+    ```
+9.  重開機
+    ```bash
+    reboot
+    ```
 
 **如果重開機後中文字無法正確顯示，請再重開機一次。**
 
-分支介紹
+更新 dragonpilot
 ---
-* docs: 說明
+1. 切換至 /data/openpilot 資料夾 
+    ```bash
+    cd /data/openpilot
+    ```
+2. 撤消所有手動的變更
+    ```bash
+    git reset --hard
+    ```
+3. 下載更新
+    ```bash
+    git pull
+    ```
+4. 切換到新的版本分支 (若您使用的是 devel 版，除非您想使用不同的版本/語系分支，不然您可略過此步驟)
+    ```bash
+    ./bs
+    ```
+    用上下鍵選擇指定的分支，按 Enter 鍵切換，或是輸入 "-en", "-zhs", "-zht" 過濾，按 Ctrl + C 強制關閉程式。
+5. 確認沒有錯誤
+    ```bash
+    make
+    ```
+6.  重開機
+    ```bash
+    reboot
+    ```
+
+版本分支介紹
+---
+* docs: 說明檔
 * devel-unsupported-cars: 官方原版 + 方便移植新車款用的補丁。
 * devel-en: 開發版 - (英文，基於官方原版 + 客制化功能)
 * devel-zhs: 開發版 - (简体中文，基於 devel-en + 简体中文化)
