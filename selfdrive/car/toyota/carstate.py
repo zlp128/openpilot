@@ -96,6 +96,7 @@ def get_can_parser(CP):
     signals.append(("INTERCEPTOR_GAS2", "GAS_SENSOR", 0))
     checks.append(("GAS_SENSOR", 50))
 
+  checks = []
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, 0)
 
 
