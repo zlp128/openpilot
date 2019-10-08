@@ -23,7 +23,7 @@ dragonpilot (龍芯駕駛輔助系統)
 支援車款
 ---
 除了官方支援的車款外，dp (0.6.4+) 還額外支援以下車款：
-* 大陸版東風本田 Inspire 混動
+* 大陸版東風本田 Inspire 混動 by KT
 * 大陸版本田雅閣混動 
 * 台灣版 2019 Toyota RAV4 Hybrid by MaxDuan
 * 台灣版 2019 Toyota Corolla Altis (含油電版) by wlee72
@@ -62,10 +62,10 @@ cd /data
 # 備份舊版的 openpilot
 mv openpilot openpilot_bak
 
-# 下載 dragonpilot 並命名為 openpilot
+# 下載 dragonpilot 英文開發版並存至 openpilot 資料夾
 # 若是 github 太慢，也可以使用我們的 gitee 鏡像: 
-# git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot
-git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot
+# git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en
+git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en
 
 # 切換到 openpilot 的資料夾
 cd openpilot
@@ -75,21 +75,21 @@ git pull
 
 #################################
 ## 切換想使用的語系，以下三選一
-## 0.6.2 可換成不同的版本
+## 0.6.4 可換成不同的版本
 #################################
 
 # (英文)
-git checkout 0.6.2-en
+git checkout 0.6.4-en
 
 # 或是
 
 # (简体中文)
-git checkout 0.6.2-zhs
+git checkout 0.6.4-zhs
 
 # 或是
 
 # (繁體中文）
-git checkout 0.6.2-zht
+git checkout 0.6.4-zht
 
 #################################
 ## 三選一結束
@@ -107,11 +107,12 @@ reboot
 分支介紹
 ---
 * docs: 說明
-* devel-en: 開發版 - (英文, 基於官方原版 + 客制化功能)
-* devel-zhs: 開發版 - (简体中文, 基於 devel-en + 简体中文化)
-* devel-zht: 開發版 - (繁體中文, 基於 devel-en + 繁體中文化)
-* ?.?.?-en: 穩定版 - (英文, 測試過的 devel-en)
-* ?.?.?-zhs: 穩定版 - (简体中文, 測試過的 devel-zhs)
-* ?.?.?-zht: 穩定版 - (繁體中文, 測試過的 devel-zht)
+* devel-unsupported-cars: 官方原版 + 方便移植新車款用的補丁。
+* devel-en: 開發版 - (英文，基於官方原版 + 客制化功能)
+* devel-zhs: 開發版 - (简体中文，基於 devel-en + 简体中文化)
+* devel-zht: 開發版 - (繁體中文，基於 devel-en + 繁體中文化)
+* ?.?.?-en: 穩定版 - (英文，測試過的 devel-en)
+* ?.?.?-zhs: 穩定版 - (简体中文，測試過的 devel-zhs)
+* ?.?.?-zht: 穩定版 - (繁體中文，測試過的 devel-zht)
 
 其它沒有說明的分支為測試功能版，非必要請勿使用
