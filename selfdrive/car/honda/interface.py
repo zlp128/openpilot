@@ -104,6 +104,7 @@ class CarInterface(object):
     self.dragon_enable_steering_on_signal = False
     self.dragon_allow_gas = False
     self.ts_last_check = 0.
+    self.dragon_lat_ctrl = True
 
   @staticmethod
   def calc_accel_override(a_ego, a_target, v_ego, v_target):
@@ -387,6 +388,7 @@ class CarInterface(object):
     if ts - self.ts_last_check > 5.:
       self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
       self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
+      self.dragon_lat_ctrl = False if params.get("DragonLatCtrl") == "0" else True
       self.ts_last_check = ts
 
     # ******************* do can recv *******************
@@ -503,7 +505,7 @@ class CarInterface(object):
     # wait 1.0s before throwing the alert to avoid it popping when you turn off the car
     if self.cp_cam.can_invalid_cnt >= 100 and self.CS.CP.carFingerprint not in HONDA_BOSCH and self.CP.enableCamera:
       events.append(create_event('invalidGiraffeHonda', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE, ET.PERMANENT]))
-    if not self.CS.lkMode:
+    if not self.CS.lkMode or not self.dragon_lat_ctrl:
       events.append(create_event('manualSteeringRequired', [ET.WARNING]))
     elif self.CS.lkMode and (self.CS.left_blinker_on or self.CS.right_blinker_on) and self.dragon_enable_steering_on_signal:
       events.append(create_event('manualSteeringRequiredBlinkersOn', [ET.WARNING]))
