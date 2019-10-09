@@ -41,6 +41,7 @@ class CarInterface(object):
     self.dragon_enable_steering_on_signal = False
     self.dragon_allow_gas = False
     self.ts_last_check = 0.
+    self.dragon_lat_ctrl = True
 
   @staticmethod
   def compute_gb(accel, speed):
@@ -315,7 +316,8 @@ class CarInterface(object):
     if ts - self.ts_last_check > 5.:
       self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
       self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
-      self.dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
+      self.dragon_toyota_stock_dsu = True if params.get("DragonToyotaStockDSU") == "1" else False
+      self.dragon_lat_ctrl = False if params.get("DragonLatCtrl") == "0" else True
       self.ts_last_check = ts
 
     # ******************* do can recv *******************
@@ -420,7 +422,9 @@ class CarInterface(object):
       events.append(create_event('wrongCarMode', [ET.NO_ENTRY, ET.USER_DISABLE]))
     if ret.gearShifter == GearShifter.reverse and self.CP.enableDsu:
       events.append(create_event('reverseGear', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
-    if (self.CS.left_blinker_on or self.CS.right_blinker_on) and self.dragon_enable_steering_on_signal:
+    if not self.dragon_lat_ctrl:
+      events.append(create_event('manualSteeringRequired', [ET.WARNING]))
+    elif (self.CS.left_blinker_on or self.CS.right_blinker_on) and self.dragon_enable_steering_on_signal:
       events.append(create_event('manualSteeringRequiredBlinkersOn', [ET.WARNING]))
     elif self.CS.steer_error:
       events.append(create_event('steerTempUnavailable', [ET.NO_ENTRY, ET.WARNING]))
