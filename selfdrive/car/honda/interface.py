@@ -383,9 +383,9 @@ class CarInterface(CarInterfaceBase):
     # dragonpilot, don't check for param too often as it's a kernel call
     ts = sec_since_boot()
     if ts - self.ts_last_check > 5.:
-      self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
-      self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
-      self.dragon_lat_ctrl = False if params.get("DragonLatCtrl") == "0" else True
+      self.dragon_enable_steering_on_signal = True if params.get("DragonEnableSteeringOnSignal", encoding='utf8') == "1" else True
+      self.dragon_allow_gas = True if params.get("DragonAllowGas", encoding='utf8') == "1" else False
+      self.dragon_lat_ctrl = False if params.get("DragonLatCtrl", encoding='utf8') == "0" else True
       self.ts_last_check = ts
 
     # ******************* do can recv *******************
