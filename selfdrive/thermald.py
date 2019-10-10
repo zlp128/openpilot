@@ -156,6 +156,7 @@ def thermald_thread():
   dragon_charging_ctrl = True if params.get('DragonChargingCtrl') == "1" else False
   dragon_charging_max = int(params.get('DragonCharging'))
   dragon_discharging_min = int(params.get('DragonDisCharging'))
+  charging_disabled = False
 
   while 1:
     health = messaging.recv_sock(health_sock, wait=True)
