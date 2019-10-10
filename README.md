@@ -20,7 +20,7 @@ dragonpilot (龍芯駕駛輔助系統)
 * 側邊欄顯示無線網路 IP 位置
 * TOM TOM 測速照相 / 高德地圖使用 Grey Panda 數據 (請參閱 HOWTO_GreyPandaMode.md 說明檔)
 
-***更多客制化內容請參閱 CHANGELOG.md***
+**更多客制化內容請參閱 CHANGELOG.md**
 
 支援車款
 ---
@@ -67,11 +67,11 @@ dragonpilot (龍芯駕駛輔助系統)
 4. 下載 dragonpilot 英文開發版並存至 openpilot 資料夾 (2 選 1):
     1. github 
     ```bash
-    git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en --depth 1
+    git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en
     ```
     2. gitee
     ```bash 
-    git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en --depth 1
+    git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en
     ```
 5. 切換到 openpilot 的資料夾
     ```bash
@@ -137,4 +137,4 @@ dragonpilot (龍芯駕駛輔助系統)
 * ?.?.?-zhs: 穩定版 - (简体中文，測試過的 devel-zhs)
 * ?.?.?-zht: 穩定版 - (繁體中文，測試過的 devel-zht)
 
-***其它沒有說明的分支為測試功能版，非必要請勿使用***
+**其它沒有說明的分支為測試功能版，非必要請勿使用**
