@@ -134,9 +134,9 @@ def fingerprint(logcan, sendcan, has_relay):
     frame += 1
 
     if succeeded:
-      put_nonblocking("DragonCachedModel", pickle.dumps(car_fingerprint))
-      put_nonblocking("DragonCachedFP", pickle.dumps(finger))
-      put_nonblocking("DragonCachedVIN", pickle.dumps(vin))
+      put_nonblocking("DragonCachedModel", pickle.dumps(car_fingerprint.encode('utf8')))
+      put_nonblocking("DragonCachedFP", pickle.dumps(finger.encode('utf8')))
+      put_nonblocking("DragonCachedVIN", pickle.dumps(vin.encode('utf8')))
 
   cloudlog.warning("fingerprinted %s", car_fingerprint)
   return car_fingerprint, finger, vin
