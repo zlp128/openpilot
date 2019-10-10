@@ -526,9 +526,9 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
     # dragonpilot, don't check for param too often as it's a kernel call
     ts = sec_since_boot()
     if ts - ts_last_check > 5.:
-      dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
-      dragon_lat_control = False if params.get("DragonLatCtrl") == "0" else True
-      dragon_display_steering_limit_alert = False if params.get("DragonDisplaySteeringLimitAlert") == "0" else True
+      dragon_toyota_stock_dsu = True if params.get("DragonToyotaStockDSU", encoding='utf8') == "1" else False
+      dragon_lat_control = False if params.get("DragonLatCtrl", encoding='utf8') == "0" else True
+      dragon_display_steering_limit_alert = False if params.get("DragonDisplaySteeringLimitAlert", encoding='utf8') == "0" else True
       ts_last_check = ts
 
     start_time = sec_since_boot()
