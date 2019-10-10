@@ -27,12 +27,12 @@ gpsservice_main = "cn.dragonpilot.gpsservice.MainService"
 
 def main(gctx=None):
 
-  dragon_enable_tomtom = True if params.get('DragonEnableTomTom') == "1" else False
-  dragon_enable_autonavi = True if params.get('DragonEnableAutonavi') == "1" else False
-  dragon_enable_mixplorer = True if params.get('DragonEnableMixplorer') == "1" else False
-  dragon_boot_tomtom = True if params.get("DragonBootTomTom") == "1" else False
-  dragon_boot_autonavi = True if params.get("DragonBootAutonavi") == "1" else False
-  dragon_greypanda_mode = True if params.get("DragonGreyPandaMode") == "1" else False
+  dragon_enable_tomtom = True if params.get('DragonEnableTomTom', encoding='utf8') == "1" else False
+  dragon_enable_autonavi = True if params.get('DragonEnableAutonavi', encoding='utf8') == "1" else False
+  dragon_enable_mixplorer = True if params.get('DragonEnableMixplorer', encoding='utf8') == "1" else False
+  dragon_boot_tomtom = True if params.get("DragonBootTomTom", encoding='utf8') == "1" else False
+  dragon_boot_autonavi = True if params.get("DragonBootAutonavi", encoding='utf8') == "1" else False
+  dragon_greypanda_mode = True if params.get("DragonGreyPandaMode", encoding='utf8') == "1" else False
   dragon_grepanda_mode_started = False
   tomtom_is_running = False
   autonavi_is_running = False
