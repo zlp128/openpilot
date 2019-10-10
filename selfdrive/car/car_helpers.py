@@ -93,10 +93,10 @@ def fingerprint(logcan, sendcan, has_relay):
   car_fingerprint = None
   done = False
 
-  if params.get("DragonCacheCar") == "1" and params.get("DragonCachedFP") != "" and params.get("DragonCachedModel") != "":
-    car_fingerprint = pickle.loads(params.get("DragonCachedModel"))
-    finger = pickle.loads(params.get("DragonCachedFP"))
-    vin = pickle.loads(params.get("DragonCachedVIN"))
+  if params.get("DragonCacheCar", encoding='utf8') == "1" and params.get("DragonCachedFP", encoding='utf8') != "" and params.get("DragonCachedModel", encoding='utf8') != "":
+    car_fingerprint = pickle.loads(params.get("DragonCachedModel", encoding='utf8'))
+    finger = pickle.loads(params.get("DragonCachedFP", encoding='utf8'))
+    vin = pickle.loads(params.get("DragonCachedVIN", encoding='utf8'))
     done = True
 
   while not done:
@@ -134,9 +134,9 @@ def fingerprint(logcan, sendcan, has_relay):
     frame += 1
 
     if succeeded:
-      put_nonblocking("DragonCachedModel", pickle.dumps(car_fingerprint))
-      put_nonblocking("DragonCachedFP", pickle.dumps(finger))
-      put_nonblocking("DragonCachedVIN", pickle.dumps(vin))
+      put_nonblocking("DragonCachedModel", pickle.dumps(car_fingerprint.encode('utf8')))
+      put_nonblocking("DragonCachedFP", pickle.dumps(finger.encode('utf8')))
+      put_nonblocking("DragonCachedVIN", pickle.dumps(vin.encode('utf8')))
 
   cloudlog.warning("fingerprinted %s", car_fingerprint)
   return car_fingerprint, finger, vin

@@ -97,10 +97,10 @@ class DriverStatus():
     self.is_rhd_region_checked = False
 
     # dragonpilot
-    self.awareness_time = float(params.get("DragonSteeringMonitorTimer"))
+    self.awareness_time = float(params.get("DragonSteeringMonitorTimer", encoding='utf8'))
     self.awareness_time = 86400 if self.awareness_time <= 0. else self.awareness_time * 60.
-    self.dragon_enable_driver_safety_check = False if params.get("DragonEnableDriverSafetyCheck") == "0" else True
-    self.dragon_enable_driver_monitoring = False if params.get("DragonEnableDriverMonitoring") == "0" else True
+    self.dragon_enable_driver_safety_check = False if params.get("DragonEnableDriverSafetyCheck", encoding='utf8') == "0" else True
+    self.dragon_enable_driver_monitoring = False if params.get("DragonEnableDriverMonitoring", encoding='utf8') == "0" else True
 
     self._set_timers(active_monitoring=True)
 

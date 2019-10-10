@@ -96,7 +96,7 @@ _TEMP_THRS_L = [42.5, 57.5, 72.5, 10000]
 _FAN_SPEEDS = [0, 16384, 32768, 65535]
 # max fan speed only allowed if battery is hot
 _BAT_TEMP_THERSHOLD = 45.
-if params.get('DragonNoctuaMode') == "1":
+if params.get('DragonNoctuaMode', encoding='utf8') == "1":
   _FAN_SPEEDS = [65535, 65535, 65535, 65535]
   _BAT_TEMP_THERSHOLD = 20.
 
@@ -153,7 +153,7 @@ def thermald_thread():
   ts_last_charging_ctrl = 0.
 
   ip_addr = '255.255.255.255'
-  dragon_charging_ctrl = True if params.get('DragonChargingCtrl') == "1" else False
+  dragon_charging_ctrl = True if params.get('DragonChargingCtrl', encoding='utf8') == "1" else False
   dragon_charging_max = int(params.get('DragonCharging'))
   dragon_discharging_min = int(params.get('DragonDisCharging'))
   charging_disabled = False

@@ -96,9 +96,9 @@ class CarController():
              hud_v_cruise, hud_show_lanes, hud_show_car, hud_alert):
     # dragonpilot, don't check for param too often as it's a kernel call
     if frame % 500 == 0:
-      self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
-      self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
-      self.dragon_lat_ctrl = False if params.get("DragonLatCtrl") == "0" else True
+      self.dragon_enable_steering_on_signal = True if params.get("DragonEnableSteeringOnSignal", encoding='utf8') == "1" else False
+      self.dragon_allow_gas = True if params.get("DragonAllowGas", encoding='utf8') == "1" else False
+      self.dragon_lat_ctrl = False if params.get("DragonLatCtrl", encoding='utf8') == "0" else True
 
     # *** apply brake hysteresis ***
     brake, self.braking, self.brake_steady = actuator_hystereses(actuators.brake, self.braking, self.brake_steady, CS.v_ego, CS.CP.carFingerprint)
@@ -194,10 +194,11 @@ class CarController():
           gasPressed = CS.pedal_gas > 0
         else:
           gasPressed = CS.user_gas_pressed
+        dragon_apply_brake = apply_brake
         if self.dragon_allow_gas and gasPressed:
-          apply_brake = 0
+          dragon_apply_brake = 0
           apply_gas = 0
-        can_sends.append(hondacan.create_brake_command(self.packer, apply_brake, pump_on,
+        can_sends.append(hondacan.create_brake_command(self.packer, dragon_apply_brake, pump_on,
           pcm_override, pcm_cancel_cmd, hud.fcw, idx, CS.CP.carFingerprint, CS.CP.isPandaBlack))
         self.apply_brake_last = apply_brake
 

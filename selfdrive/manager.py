@@ -550,11 +550,11 @@ def main():
   if os.getenv("PREPAREONLY") is not None:
     return
 
-  if params.get("DragonEnableLogger") == "0":
+  if params.get("DragonEnableLogger", encoding='utf8') == "0":
     del managed_processes['loggerd']
     del managed_processes['tombstoned']
 
-  if params.get("DragonEnableUploader") == "0":
+  if params.get("DragonEnableUploader", encoding='utf8') == "0":
     del managed_processes['uploader']
 
   # SystemExit on sigterm
