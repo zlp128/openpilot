@@ -75,7 +75,7 @@ HUDData = namedtuple("HUDData",
                       "lanes", "fcw", "acc_alert", "steer_required", "dashed_lanes"])
 
 
-class CarController(object):
+class CarController():
   def __init__(self, dbc_name):
     self.braking = False
     self.brake_steady = 0.
