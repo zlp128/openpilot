@@ -1,5 +1,5 @@
-import numpy as np
 from cereal import car
+from common.numpy_fast import mean
 from common.kalman.simple_kalman import KF1D
 from selfdrive.can.can_define import CANDefine
 from selfdrive.can.parser import CANParser
@@ -19,7 +19,7 @@ def parse_gear_shifter(gear, vals):
   try:
     return val_to_capnp[vals[gear]]
   except KeyError:
-    return "unknown"
+    return GearShifter.unknown
 
 
 def get_can_parser(CP):
@@ -114,7 +114,7 @@ def get_cam_can_parser(CP):
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, 2)
 
 
-class CarState(object):
+class CarState():
   def __init__(self, CP):
 
     self.CP = CP
@@ -145,7 +145,7 @@ class CarState(object):
     # dragonpilot, don't check for param too often as it's a kernel call
     ts = sec_since_boot()
     if ts - self.ts_last_check > 5.:
-      self.dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
+      self.dragon_toyota_stock_dsu = True if params.get("DragonToyotaStockDSU", encoding='utf8') == "1" else False
       self.ts_last_check = ts
 
     # update prevs, update must run once per loop
@@ -171,7 +171,7 @@ class CarState(object):
     self.v_wheel_fr = cp.vl["WHEEL_SPEEDS"]['WHEEL_SPEED_FR'] * CV.KPH_TO_MS
     self.v_wheel_rl = cp.vl["WHEEL_SPEEDS"]['WHEEL_SPEED_RL'] * CV.KPH_TO_MS
     self.v_wheel_rr = cp.vl["WHEEL_SPEEDS"]['WHEEL_SPEED_RR'] * CV.KPH_TO_MS
-    v_wheel = float(np.mean([self.v_wheel_fl, self.v_wheel_fr, self.v_wheel_rl, self.v_wheel_rr]))
+    v_wheel = mean([self.v_wheel_fl, self.v_wheel_fr, self.v_wheel_rl, self.v_wheel_rr])
 
     # Kalman filter
     if abs(v_wheel - self.v_ego) > 2.0:  # Prevent large accelerations when car starts at non zero speed
