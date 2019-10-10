@@ -16,7 +16,7 @@ AlertStatus = log.ControlsState.AlertStatus
 AudibleAlert = car.CarControl.HUDControl.AudibleAlert
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
-class Alert(object):
+class Alert():
   def __init__(self,
                alert_type,
                alert_text_1,
@@ -220,7 +220,7 @@ ALERTS = [
       "接管控制",
       "转向控制暂时失效，车速低于",
       AlertStatus.userPrompt, AlertSize.mid,
-      Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, 0., 0., .1),
+      Priority.MID, VisualAlert.steerRequired, AudibleAlert.none, 0., 0.4, .3),
 
   Alert(
       "debugAlert",
@@ -640,6 +640,13 @@ ALERTS = [
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
 
+  Alert(
+      "internetConnectivityNeededNoEntry",
+      "无法使用openpilot",
+      "Internet Connectivity Needed",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
+
   # permanent alerts
   Alert(
       "steerUnavailablePermanent",
@@ -673,6 +680,20 @@ ALERTS = [
       "invalidGiraffeHondaPermanent",
       "Giraffe 开关错误",
       "openpilot模式为0111，原厂模式为1011",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+
+  Alert(
+      "invalidGiraffeToyotaPermanent",
+      "Unsupported Giraffe Configuration",
+      "Visit comma.ai/tg",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+
+  Alert(
+      "internetConnectivityNeededPermanent",
+      "Internet Connectivity Needed",
+      "Check for Updates to Be Able to Engage",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 

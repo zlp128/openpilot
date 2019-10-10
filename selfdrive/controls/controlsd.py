@@ -1,7 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import os
 import gc
+import json
 import capnp
+import zmq
 from cereal import car, log
 from common.numpy_fast import clip
 from common.realtime import sec_since_boot, set_realtime_priority, Ratekeeper, DT_CTRL
@@ -31,6 +33,7 @@ from selfdrive.locationd.calibration_helpers import Calibration, Filter
 
 ThermalStatus = log.ThermalData.ThermalStatus
 State = log.ControlsState.OpenpilotState
+HwType = log.HealthData.HwType
 
 
 def isActive(state):
@@ -52,12 +55,12 @@ def events_to_bytes(events):
   return ret
 
 
-def data_sample(CI, CC, sm, can_sock, cal_status, cal_perc, overtemp, free_space, low_battery,
+def data_sample(CI, CC, sm, can_poller, can_sock, cal_status, cal_perc, overtemp, free_space, low_battery,
                 driver_status, state, mismatch_counter, params):
   """Receive data from sockets and create events for battery, temperature and disk space"""
 
   # Update carstate from CAN and create events
-  can_strs = messaging.drain_sock_raw(can_sock, wait_for_one=True)
+  can_strs = messaging.drain_sock_raw_poller(can_poller, can_sock, wait_for_one=True)
   CS = CI.update(CC, can_strs)
 
   sm.update(0)
@@ -87,7 +90,7 @@ def data_sample(CI, CC, sm, can_sock, cal_status, cal_perc, overtemp, free_space
     is_rhd = is_rhd_region(sm['gpsLocation'].latitude, sm['gpsLocation'].longitude)
     driver_status.is_rhd_region = is_rhd
     driver_status.is_rhd_region_checked = True
-    put_nonblocking("IsRHD", str(int(is_rhd)))
+    put_nonblocking("IsRHD", "1" if is_rhd else "0")
 
   # Handle calibration
   if sm.updated['liveCalibration']:
@@ -217,7 +220,7 @@ def state_transition(frame, CS, CP, state, events, soft_disable_timer, v_cruise_
 
 
 def state_control(frame, rcv_frame, plan, path_plan, CS, CP, state, events, v_cruise_kph, v_cruise_kph_last,
-                  AM, rk, driver_status, LaC, LoC, VM, read_only, is_metric, cal_perc, dragon_lat_control, dragon_display_steering_limit_alert):
+                  AM, rk, driver_status, LaC, LoC, read_only, is_metric, cal_perc, dragon_lat_control, dragon_display_steering_limit_alert):
   """Given the state, this function returns an actuators packet"""
 
   actuators = car.CarControl.Actuators.new_message()
@@ -264,7 +267,7 @@ def state_control(frame, rcv_frame, plan, path_plan, CS, CP, state, events, v_cr
   actuators.gas, actuators.brake = LoC.update(active, CS.vEgo, CS.brakePressed, CS.standstill, CS.cruiseState.standstill,
                                               v_cruise_kph, v_acc_sol, plan.vTargetFuture, a_acc_sol, CP)
   # Steering PID loop and lateral MPC
-  actuators.steer, actuators.steerAngle, lac_log = LaC.update(active, CS.vEgo, CS.steeringAngle, CS.steeringRate, CS.steeringTorqueEps, CS.steeringPressed, CP, VM, path_plan)
+  actuators.steer, actuators.steerAngle, lac_log = LaC.update(active, CS.vEgo, CS.steeringAngle, CS.steeringRate, CS.steeringTorqueEps, CS.steeringPressed, CP, path_plan)
 
   # Send a "steering required alert" if saturation count has reached the limit
   if dragon_display_steering_limit_alert:
@@ -343,7 +346,7 @@ def data_send(sm, pm, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk
     "alertBlinkingRate": AM.alert_rate,
     "alertType": AM.alert_type,
     "alertSound": AM.audible_alert,
-    "awarenessStatus": max(driver_status.awareness, 0.0) if isEnabled(state) else 0.0,
+    "awarenessStatus": max(driver_status.awareness, -0.1) if isEnabled(state) else 1.0,
     "driverMonitoringOn": bool(driver_status.face_detected),
     "canMonoTimes": list(CS.canMonoTimes),
     "planMonoTime": sm.logMonoTime['plan'],
@@ -425,8 +428,11 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
 
   params = Params()
 
-  is_metric = params.get("IsMetric") == "1"
-  passive = params.get("Passive") != "0"
+  is_metric = params.get("IsMetric", encoding='utf8') == "1"
+  passive = params.get("Passive", encoding='utf8') == "1"
+  openpilot_enabled_toggle = params.get("OpenpilotEnabledToggle", encoding='utf8') == "1"
+
+  passive = passive or not openpilot_enabled_toggle
 
   # Pub/Sub Sockets
   if pm is None:
@@ -436,17 +442,20 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
     sm = messaging.SubMaster(['thermal', 'health', 'liveCalibration', 'driverMonitoring', 'plan', 'pathPlan', \
                               'gpsLocation'], ignore_alive=['gpsLocation'])
 
+  can_poller = zmq.Poller()
+
   if can_sock is None:
     can_timeout = None if os.environ.get('NO_CAN_TIMEOUT', False) else 100
     can_sock = messaging.sub_sock(service_list['can'].port, timeout=can_timeout)
+    can_poller.register(can_sock)
 
   # wait for health and CAN packets
   hw_type = messaging.recv_one(sm.sock['health']).health.hwType
-  is_panda_black = hw_type == log.HealthData.HwType.blackPanda
+  has_relay = hw_type in [HwType.blackPanda, HwType.uno]
   print("Waiting for CAN messages...")
   get_one_can(can_sock)
 
-  CI, CP = get_car(can_sock, pm.sock['sendcan'], is_panda_black)
+  CI, CP = get_car(can_sock, pm.sock['sendcan'], has_relay)
 
   car_recognized = CP.carName != 'mock'
   # If stock camera is disconnected, we loaded car controls and it's not chffrplus
@@ -501,6 +510,10 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
   # controlsd is driven by can recv, expected at 100Hz
   rk = Ratekeeper(100, print_delay_threshold=None)
 
+  # FIXME: offroad alerts should not be created with negative severity
+  connectivity_alert = params.get("Offroad_ConnectivityNeeded", encoding='utf8')
+  internet_needed = connectivity_alert is not None and json.loads(connectivity_alert.replace("'", "\""))["severity"] >= 0
+
   prof = Profiler(False)  # off by default
 
   # dragonpilot
@@ -513,9 +526,9 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
     # dragonpilot, don't check for param too often as it's a kernel call
     ts = sec_since_boot()
     if ts - ts_last_check > 5.:
-      dragon_toyota_stock_dsu = False if params.get("DragonToyotaStockDSU") == "0" else True
-      dragon_lat_control = False if params.get("DragonLatCtrl") == "0" else True
-      dragon_display_steering_limit_alert = False if params.get("DragonDisplaySteeringLimitAlert") == "0" else True
+      dragon_toyota_stock_dsu = True if params.get("DragonToyotaStockDSU", encoding='utf8') == "1" else False
+      dragon_lat_control = False if params.get("DragonLatCtrl", encoding='utf8') == "0" else True
+      dragon_display_steering_limit_alert = False if params.get("DragonDisplaySteeringLimitAlert", encoding='utf8') == "0" else True
       ts_last_check = ts
 
     start_time = sec_since_boot()
@@ -523,7 +536,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
 
     # Sample data and compute car events
     CS, events, cal_status, cal_perc, overtemp, free_space, low_battery, mismatch_counter =\
-      data_sample(CI, CC, sm, can_sock, cal_status, cal_perc, overtemp, free_space, low_battery,
+      data_sample(CI, CC, sm, can_poller, can_sock, cal_status, cal_perc, overtemp, free_space, low_battery,
                   driver_status, state, mismatch_counter, params)
     prof.checkpoint("Sample")
 
@@ -546,6 +559,8 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
       events.append(create_event('canError', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
     if not sounds_available:
       events.append(create_event('soundsUnavailable', [ET.NO_ENTRY, ET.PERMANENT]))
+    if internet_needed:
+      events.append(create_event('internetConnectivityNeeded', [ET.NO_ENTRY, ET.PERMANENT]))
 
     if not dragon_toyota_stock_dsu:
       # Only allow engagement with brake pressed when stopped behind another stopped car
@@ -561,7 +576,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
     # Compute actuators (runs PID loops and lateral MPC)
     actuators, v_cruise_kph, driver_status, v_acc, a_acc, lac_log = \
       state_control(sm.frame, sm.rcv_frame, sm['plan'], sm['pathPlan'], CS, CP, state, events, v_cruise_kph, v_cruise_kph_last, AM, rk,
-                    driver_status, LaC, LoC, VM, read_only, is_metric, cal_perc, dragon_lat_control, dragon_display_steering_limit_alert)
+                    driver_status, LaC, LoC, read_only, is_metric, cal_perc, dragon_lat_control, dragon_display_steering_limit_alert)
 
     prof.checkpoint("State Control")
 

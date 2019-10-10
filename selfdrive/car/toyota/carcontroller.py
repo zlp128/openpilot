@@ -92,7 +92,7 @@ def ipas_state_transition(steer_angle_enabled, enabled, ipas_active, ipas_reset_
     return False, 0
 
 
-class CarController(object):
+class CarController():
   def __init__(self, dbc_name, car_fingerprint, enable_camera, enable_dsu, enable_apg):
     self.braking = False
     # redundant safety check with the board
@@ -129,10 +129,10 @@ class CarController(object):
              right_line, lead, left_lane_depart, right_lane_depart):
     # dragonpilot, don't check for param too often as it's a kernel call
     if frame % 500 == 0:
-      self.dragon_enable_steering_on_signal = False if params.get("DragonEnableSteeringOnSignal") == "0" else True
-      self.dragon_allow_gas = False if params.get("DragonAllowGas") == "0" else True
-      self.dragon_lat_ctrl = False if params.get("DragonLatCtrl") == "0" else True
-      self.dragon_lane_departure_warning = False if params.get("DragonToyotaLaneDepartureWarning") == "0" else True
+      self.dragon_enable_steering_on_signal = True if params.get("DragonEnableSteeringOnSignal", encoding='utf8') == "1" else False
+      self.dragon_allow_gas = True if params.get("DragonAllowGas", encoding='utf8') == "1" else False
+      self.dragon_lat_ctrl = False if params.get("DragonLatCtrl", encoding='utf8') == "0" else True
+      self.dragon_lane_departure_warning = False if params.get("DragonToyotaLaneDepartureWarning", encoding='utf8') == "0" else True
 
     # *** compute control surfaces ***
 
@@ -316,14 +316,14 @@ class CarController(object):
         # special cases
         if fr_step == 5 and ecu == ECU.CAM and bus == 1:
           cnt = (((frame // 5) % 7) + 1) << 5
-          vl = chr(cnt) + vl
+          vl = bytes([cnt]) + vl
         elif addr in (0x489, 0x48a) and bus == 0:
           # add counter for those 2 messages (last 4 bits)
           cnt = ((frame // 100) % 0xf) + 1
           if addr == 0x48a:
             # 0x48a has a 8 preceding the counter
             cnt += 1 << 7
-          vl += chr(cnt)
+          vl += bytes([cnt])
 
         can_sends.append(make_can_msg(addr, vl, bus, False))
 
