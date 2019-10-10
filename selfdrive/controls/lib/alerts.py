@@ -302,8 +302,8 @@ ALERTS = [
 
   Alert(
       "soundsUnavailableNoEntry",
-      "openpilot Unavailable",
-      "Speaker not found",
+      "無法使用 dragonpilot",
+      "找不到音效裝置",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
@@ -642,8 +642,8 @@ ALERTS = [
 
   Alert(
       "internetConnectivityNeededNoEntry",
-      "openpilot Unavailable",
-      "Internet Connectivity Needed",
+      "無法使用 dragonpilot",
+      "需要網路連線",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
 
@@ -685,15 +685,15 @@ ALERTS = [
 
   Alert(
       "invalidGiraffeToyotaPermanent",
-      "Unsupported Giraffe Configuration",
-      "Visit comma.ai/tg",
+      "未支援的 Giraffe 設置",
+      "請查閱 comma.ai/tg",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "internetConnectivityNeededPermanent",
-      "Internet Connectivity Needed",
-      "Check for Updates to Be Able to Engage",
+      "需要網路連線",
+      "請先檢查更新才能啟用",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
