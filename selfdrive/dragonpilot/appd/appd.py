@@ -61,24 +61,24 @@ def main(gctx=None):
 
     # allow user to manually start/stop app
     if dragon_enable_tomtom:
-      status = params.get('DragonRunTomTom')
+      status = params.get('DragonRunTomTom', encoding='utf8')
       if not status == "0":
         tomtom_is_running = exec_app(status, tomtom, tomtom_main)
-        params.put('DragonRunTomTom', '0')
+        put_nonblocking('DragonRunTomTom', '0')
         manual_tomtom = status != "0"
 
     if dragon_enable_autonavi:
-      status = params.get('DragonRunAutonavi')
+      status = params.get('DragonRunAutonavi', encoding='utf8')
       if not status == "0":
         autonavi_is_running = exec_app(status, autonavi, autonavi_main)
-        params.put('DragonRunAutonavi', '0')
+        put_nonblocking('DragonRunAutonavi', '0')
         manual_autonavi = status != "0"
 
     if dragon_enable_mixplorer:
-      status = params.get('DragonRunMixplorer')
+      status = params.get('DragonRunMixplorer', encoding='utf8')
       if not status == "0":
         mixplorer_is_running = exec_app(status, mixplorer, mixplorer_main)
-        params.put('DragonRunMixplorer', '0')
+        put_nonblocking('DragonRunMixplorer', '0')
 
     # if manual control is set, we do not allow any of the auto actions
     auto_tomtom = not manual_tomtom and dragon_enable_tomtom and dragon_boot_tomtom
