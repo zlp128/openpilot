@@ -67,11 +67,11 @@ dragonpilot (龍芯駕駛輔助系統)
 4. 下載 dragonpilot 英文開發版並存至 openpilot 資料夾 (2 選 1):
     1. github 
     ```bash
-    git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en
+    git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en --depth 1
     ```
     2. gitee
     ```bash 
-    git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en
+    git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en --depth 1
     ```
 5. 切換到 openpilot 的資料夾
     ```bash
