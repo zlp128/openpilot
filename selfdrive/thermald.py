@@ -156,6 +156,7 @@ def thermald_thread():
   dragon_charging_ctrl = True if params.get('DragonChargingCtrl') == "1" else False
   dragon_charging_max = int(params.get('DragonCharging'))
   dragon_discharging_min = int(params.get('DragonDisCharging'))
+  charging_disabled = False
 
   while 1:
     health = messaging.recv_sock(health_sock, wait=True)
@@ -193,16 +194,9 @@ def thermald_thread():
     ts = sec_since_boot()
     if ts - ts_last_ip > 10.:
       try:
-        result = subprocess.check_output(["service", "call", "connectivity", "2"]).strip().split("\n")
-      except subprocess.CalledProcessError:
-        return False
-
-      data = ''.join(''.join(w.decode("hex")[::-1] for w in l[14:49].split()) for l in result[1:])
-
-      if "\x00".join("WIFI") in data:
-        result = subprocess.check_output(["ifconfig", "wlan0"])
+        result = subprocess.check_output(["ifconfig", "wlan0"], encoding='utf8')  # pylint: disable=unexpected-keyword-arg
         ip_addr = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
-      else:
+      except:
         ip_addr = 'N/A'
       ts_last_ip = ts
     msg.thermal.ipAddr = ip_addr
