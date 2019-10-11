@@ -194,10 +194,11 @@ class CarController():
           gasPressed = CS.pedal_gas > 0
         else:
           gasPressed = CS.user_gas_pressed
+        dragon_apply_brake = apply_brake
         if self.dragon_allow_gas and gasPressed:
-          apply_brake = 0
+          dragon_apply_brake = 0
           apply_gas = 0
-        can_sends.append(hondacan.create_brake_command(self.packer, apply_brake, pump_on,
+        can_sends.append(hondacan.create_brake_command(self.packer, dragon_apply_brake, pump_on,
           pcm_override, pcm_cancel_cmd, hud.fcw, idx, CS.CP.carFingerprint, CS.CP.isPandaBlack))
         self.apply_brake_last = apply_brake
 
