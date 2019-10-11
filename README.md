@@ -39,6 +39,8 @@ dragonpilot (龍芯駕駛輔助系統)
 ---
 ![](dp_1.png) ![](dp_2.png) ![](dp_3.png) ![](dp_4.png) ![](dp_5.png) ![](dp_6.png)
 
+**更多請看 screenshots/ 資料夾**
+
 硬體需求
 ---
 * 一加 oneplus 3t 或者 樂視 LeEco Le Pro3 (x727) 手機
