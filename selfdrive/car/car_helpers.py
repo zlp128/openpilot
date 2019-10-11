@@ -93,9 +93,13 @@ def fingerprint(logcan, sendcan, has_relay):
   car_fingerprint = None
   done = False
 
-  if params.get("DragonCacheCar", encoding='utf8') == "1" and params.get("DragonCachedFP", encoding='utf8') != "" and params.get("DragonCachedModel", encoding='utf8') != "":
-    car_fingerprint = pickle.loads(params.get("DragonCachedModel"))
-    finger = pickle.loads(params.get("DragonCachedFP"))
+  dragon_cache_car = params.get("DragonCacheCar", encoding='utf8')
+  dragon_cached_fp = params.get("DragonCachedFP")
+  dragon_cached_model = params.get("DragonCachedModel")
+
+  if dragon_cache_car == "1" and dragon_cached_fp != "" and dragon_cached_model != "":
+    car_fingerprint = pickle.loads(dragon_cached_model)
+    finger = pickle.loads(dragon_cached_fp)
     vin = pickle.loads(params.get("DragonCachedVIN"))
     done = True
 
