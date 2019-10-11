@@ -32,7 +32,9 @@ dragonpilot (龍芯駕駛輔助系統)
 * 台灣版 2019 Toyota Corolla Altis (含油電版) by wlee72
 * 台灣版 Lexus CT200h by CloudJ
 * 台灣版 Toyota Prius 4.5 代 by Lin Xin Hong
+
 ~~* 美國版 2018 Lexus CT200h by thomaspich (已入官方)~~
+
 ~~* 澳洲版 2017 Lexus IS300h by eFiniLan (已入官方)~~
 
 
@@ -97,6 +99,10 @@ dragonpilot (龍芯駕駛輔助系統)
     ```bash
     reboot
     ```
+10. 手動更新 Panda 韌體
+    ```bash
+    cd /data/openpilot/panda ; pkill -f boardd ; PYTHONPATH=..; python -c "from panda import Panda; Panda().flash()"
+    ```
 
 **如果重開機後中文字無法正確顯示，請再重開機一次。**
 
@@ -127,6 +133,10 @@ dragonpilot (龍芯駕駛輔助系統)
 6.  重開機
     ```bash
     reboot
+    ```
+7. 手動更新 Panda 韌體
+    ```bash
+    cd /data/openpilot/panda ; pkill -f boardd ; PYTHONPATH=..; python -c "from panda import Panda; Panda().flash()"
     ```
 
 版本分支介紹
