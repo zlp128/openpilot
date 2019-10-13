@@ -94,14 +94,10 @@ keys = {
   "Offroad_ConnectivityNeeded": [TxType.CLEAR_ON_MANAGER_START],
   #dragonpilot config
   "DragonEnableDashcam": [TxType.PERSISTENT],
-  "DragonDisableDriverSafetyCheck": [TxType.PERSISTENT], # deprecated
   "DragonEnableDriverSafetyCheck": [TxType.PERSISTENT],
   "DragonAutoShutdownAt": [TxType.PERSISTENT],
-  "DragonTempDisableSteerOnSignal": [TxType.PERSISTENT], # deprecated
   "DragonEnableSteeringOnSignal": [TxType.PERSISTENT],
-  "DragonDisableLogger": [TxType.PERSISTENT], # deprecated
   "DragonEnableLogger": [TxType.PERSISTENT],
-  "DragonDisableUploader": [TxType.PERSISTENT], # deprecated
   "DragonEnableUploader": [TxType.PERSISTENT],
   "DragonNoctuaMode": [TxType.PERSISTENT],
   "DragonCacheCar": [TxType.PERSISTENT],
@@ -109,7 +105,6 @@ keys = {
   "DragonCachedFP": [TxType.PERSISTENT],
   "DragonCachedVIN": [TxType.PERSISTENT],
   "DragonAllowGas": [TxType.PERSISTENT],
-  "DragonBBUI": [TxType.PERSISTENT], # deprecated
   "DragonToyotaStockDSU": [TxType.PERSISTENT],
   "DragonLatCtrl": [TxType.PERSISTENT],
   "DragonUISpeed": [TxType.PERSISTENT],
