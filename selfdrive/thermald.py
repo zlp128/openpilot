@@ -324,7 +324,7 @@ def thermald_thread():
     ts = sec_since_boot()
     # update variable status every 10 secs
     if ts - ts_last_update_vars > 10.:
-      dragon_charging_ctrl = True if params.get('DragonChargingCtrl') == "1" else False
+      dragon_charging_ctrl = True if params.get('DragonChargingCtrl', encoding='utf8') == "1" else False
       dragon_charging_max = int(params.get('DragonCharging'))
       dragon_discharging_min = int(params.get('DragonDisCharging'))
       ts_last_update_vars = ts
