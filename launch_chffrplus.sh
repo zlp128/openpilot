@@ -25,6 +25,7 @@ function launch {
 #    exec "${BASH_SOURCE[0]}"
 #  fi
   chmod 700 reset_update.sh
+  chmod 700 update_panda_firmware.sh
   chmod 700 bs
 
   # no cpu rationing for now
