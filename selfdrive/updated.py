@@ -42,7 +42,8 @@ def main(gctx=None):
 
     # Write latest release notes to param
     try:
-      r = subprocess.check_output(["git", "--no-pager", "show", "@{u}:RELEASES.md"])
+      # r = subprocess.check_output(["git", "--no-pager", "show", "@{u}:RELEASES.md"])
+      r = subprocess.check_output(["curl", "-s", "https://raw.githubusercontent.com/dragonpilot-community/dragonpilot/docs/CHANGELOG.md"])
       r = r[:r.find(b'\n\n')] # Slice latest release notes
       params.put("ReleaseNotes", r + b"\n")
     except:
