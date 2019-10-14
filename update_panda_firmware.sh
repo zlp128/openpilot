@@ -4,4 +4,4 @@ export LD_LIBRARY_PATH=/data/data/com.termux/files/usr/lib
 export HOME=/data/data/com.termux/files/home
 export PATH=/usr/local/bin:/data/data/com.termux/files/usr/bin:/data/data/com.termux/files/usr/sbin:/data/data/com.termux/files/usr/bin/applets:/bin:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
 
-cd /data/openpilot && git reset --hard && git pull && reboot
+cd /data/openpilot/panda ; pkill -f boardd ; PYTHONPATH=..; python -c "from panda import Panda; Panda().flash()"
