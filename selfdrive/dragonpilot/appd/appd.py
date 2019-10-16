@@ -14,7 +14,7 @@ params = Params()
 tomtom = "com.tomtom.speedcams.android.map"
 tomtom_main = "com.tomtom.speedcams.android.activities.SpeedCamActivity"
 
-# v4.1.0.20047
+# v4.3.0.600100 Beta
 autonavi = "com.autonavi.amapauto"
 autonavi_main = "com.autonavi.amapauto.MainMapActivity"
 
