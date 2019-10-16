@@ -86,9 +86,15 @@ dragonpilot (龍芯駕駛輔助系統)
     ```
 7. 切換想使用的版本/語系分支 (預設為英文開發版，不想切換可省略此步驟)
     ```bash
-    ./bs
+    # 简体开发版
+    #git checkout devel-zhs
+    # 繁體開發版
+    #git checkout devel-zht
+    # 简体稳定版 v0.6.5
+    #git checkout 0.6.5-zhs      
+    # 繁體穩定版 v0.6.5
+    #git checkout 0.6.5-zht
     ```
-    用上下鍵選擇指定的分支，按 Enter 鍵切換，或是輸入 "-en", "-zhs", "-zht" 過濾，按 Ctrl + C 強制關閉程式。
 8. 確認沒有錯誤
     ```bash
     make
@@ -121,9 +127,15 @@ dragonpilot (龍芯駕駛輔助系統)
     ```
 4. 切換到新的版本分支 (使用的是 devel 版可省略此步驟)
     ```bash
-    ./bs
+    # 简体开发版
+    #git checkout devel-zhs
+    # 繁體開發版
+    #git checkout devel-zht
+    # 简体稳定版 v0.6.5
+    #git checkout 0.6.5-zhs      
+    # 繁體穩定版 v0.6.5
+    #git checkout 0.6.5-zht
     ```
-    用上下鍵選擇指定的分支，按 Enter 鍵切換，或是輸入 "-en", "-zhs", "-zht" 過濾，按 Ctrl + C 強制關閉程式。
 5. 確認沒有錯誤
     ```bash
     make

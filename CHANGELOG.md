@@ -3,6 +3,7 @@
 * [DEVEL] 刷新 Panda 韌體按鈕將會自動重啟 EON。(感謝 鄧育林 建議)
 * [DEVEL] 下載更新記錄時使用 "no-cache" 標頭。
 * [DEVEL] 更新高德地圖至 v4.3.0
+* [DEVEL] 刪除 bs (Branch Switcher)
 
 2019-10-15
 ========================
