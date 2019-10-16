@@ -46,6 +46,8 @@ default_conf = {
   'DragonUIPath': '1',
   'DragonUIBlinker': '0',
   'DragonEnableDriverMonitoring': '1',
+  'DragonCarModel': '',
+  'DragonCarVIN': '',
 }
 
 deprecated_conf = {
