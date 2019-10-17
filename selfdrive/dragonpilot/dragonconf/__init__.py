@@ -48,6 +48,7 @@ default_conf = {
   'DragonEnableDriverMonitoring': '1',
   'DragonCarModel': '',
   'DragonCarVIN': '',
+  'DragonEnableSlowOnCurve': '1',
 }
 
 deprecated_conf = {
