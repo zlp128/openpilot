@@ -136,6 +136,8 @@ keys = {
   "DragonUIPath": [TxType.PERSISTENT],
   "DragonUIBlinker": [TxType.PERSISTENT],
   "DragonEnableDriverMonitoring": [TxType.PERSISTENT],
+  "DragonCarModel": [TxType.PERSISTENT],
+  "DragonCarVIN": [TxType.PERSISTENT],
 }
 
 
