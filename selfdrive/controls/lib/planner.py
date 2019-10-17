@@ -88,6 +88,10 @@ class Planner():
 
     self.params = Params()
 
+    # dragonpilot
+    self.dragon_slow_on_curve = True
+    self.last_ts = 0.
+
   def choose_solution(self, v_cruise_setpoint, enabled):
     if enabled:
       solutions = {'model': self.v_model, 'cruise': self.v_cruise}
@@ -120,6 +124,12 @@ class Planner():
     cur_time = sec_since_boot()
     v_ego = sm['carState'].vEgo
 
+    # dragonpilot
+    # update variable status every 5 secs
+    if cur_time - self.last_ts > 5.:
+      self.dragon_slow_on_curve = False if self.params.get("DragonEnableSlowOnCurve", encoding='utf8') == "0" else True
+      self.last_ts = cur_time
+
     long_control_state = sm['controlsState'].longControlState
     v_cruise_kph = sm['controlsState'].vCruise
     force_slow_decel = sm['controlsState'].forceDecel
@@ -130,7 +140,7 @@ class Planner():
 
     enabled = (long_control_state == LongCtrlState.pid) or (long_control_state == LongCtrlState.stopping)
 
-    if len(sm['model'].path.poly):
+    if self.dragon_slow_on_curve and len(sm['model'].path.poly):
       path = list(sm['model'].path.poly)
 
       # Curvature of polynomial https://en.wikipedia.org/wiki/Curvature#Curvature_of_the_graph_of_a_function
