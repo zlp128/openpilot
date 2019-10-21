@@ -563,8 +563,8 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
       events.append(create_event('canError', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
     if not sounds_available:
       events.append(create_event('soundsUnavailable', [ET.NO_ENTRY, ET.PERMANENT]))
-    if internet_needed:
-      events.append(create_event('internetConnectivityNeeded', [ET.NO_ENTRY, ET.PERMANENT]))
+    # if internet_needed:
+    #   events.append(create_event('internetConnectivityNeeded', [ET.NO_ENTRY, ET.PERMANENT]))
 
     if not dragon_toyota_stock_dsu:
       # Only allow engagement with brake pressed when stopped behind another stopped car
