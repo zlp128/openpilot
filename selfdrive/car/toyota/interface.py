@@ -237,7 +237,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kf = 0.00006
 
     elif candidate == CAR.LEXUS_ES_TSS2:
-      stop_and_go = False
+      stop_and_go = True
       ret.safetyParam = 73
       ret.wheelbase = 2.8702
       ret.steerRatio = 16.0 # not optimized
