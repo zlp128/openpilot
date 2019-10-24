@@ -523,7 +523,6 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
   dragon_display_steering_limit_alert = True
   dragon_stopped_has_lead_count = 0
   dragon_lead_car_moving_alert = False
-  dragon_send_lead_car_moving_alert = False
 
   while True:
     # dragonpilot, don't check for param too often as it's a kernel call
@@ -573,22 +572,19 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
 
     if dragon_lead_car_moving_alert:
       # when car has a lead and is standstill and lead is barely moving, we start counting
-      if not CP.radarOffCan and sm['plan'].hasLead and CS.vEgo < 0.1 and 0.1 > sm['plan'].vTarget >= 0:
+      if not CP.radarOffCan and sm['plan'].hasLead and CS.vEgo < 0.05 and 0.2 >= abs(sm['plan'].vTarget) >= 0:
         dragon_stopped_has_lead_count += 1
       else:
         dragon_stopped_has_lead_count = 0
 
       # when we detect lead car over a sec and the lead car is started moving, we are ready to send alerts
       # once the condition is triggered, we want to keep the trigger
-      if dragon_stopped_has_lead_count >= 100 and sm['plan'].vTargetFuture >= 0.1:
-        dragon_send_lead_car_moving_alert = True
+      if dragon_stopped_has_lead_count >= 50 and abs(sm['plan'].vTargetFuture) >= 0.1:
+        events.append(create_event('leadCarMoving', [ET.WARNING]))
 
       # we remove alert once our car is moving
-      if CS.vEgo >= 0.1:
-        dragon_send_lead_car_moving_alert = False
-
-      if dragon_send_lead_car_moving_alert:
-        events.append(create_event('leadCarMoving', [ET.WARNING]))
+      if CS.vEgo > 0.:
+        dragon_stopped_has_lead_count = 0
 
     if not read_only:
       # update control state
