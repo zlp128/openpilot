@@ -120,7 +120,7 @@ class CarController():
     # dragonpilot
     self.turning_signal_timer = 0
     self.dragon_enable_steering_on_signal = False
-    # self.dragon_allow_gas = False
+    self.dragon_allow_gas = False
     self.dragon_lat_ctrl = True
     self.dragon_lane_departure_warning = True
 
@@ -130,7 +130,7 @@ class CarController():
     # dragonpilot, don't check for param too often as it's a kernel call
     if frame % 500 == 0:
       self.dragon_enable_steering_on_signal = True if params.get("DragonEnableSteeringOnSignal", encoding='utf8') == "1" else False
-      # self.dragon_allow_gas = True if params.get("DragonAllowGas", encoding='utf8') == "1" else False
+      self.dragon_allow_gas = True if params.get("DragonAllowGas", encoding='utf8') == "1" else False
       self.dragon_lat_ctrl = False if params.get("DragonLatCtrl", encoding='utf8') == "0" else True
       self.dragon_lane_departure_warning = False if params.get("DragonToyotaLaneDepartureWarning", encoding='utf8') == "0" else True
 
@@ -247,15 +247,15 @@ class CarController():
     # DragonAllowGas
     # if we detect gas pedal pressed, we do not want OP to apply gas or brake
     # gasPressed code from interface.py
-    # if CS.CP.enableGasInterceptor:
-    #   # use interceptor values to disengage on pedal press
-    #   gasPressed = CS.pedal_gas > 15
-    # else:
-    #   gasPressed = CS.pedal_gas > 0
+    if CS.CP.enableGasInterceptor:
+      # use interceptor values to disengage on pedal press
+      gasPressed = CS.pedal_gas > 15
+    else:
+      gasPressed = CS.pedal_gas > 0
 
-    # if self.dragon_allow_gas and gasPressed:
-    #   apply_accel = 0
-    #   apply_gas = 0
+    if self.dragon_allow_gas and gasPressed:
+      apply_accel = 0
+      apply_gas = 0
 
     # accel cmd comes from DSU, but we can spam can to cancel the system even if we are using lat only control
     if (frame % 3 == 0 and ECU.DSU in self.fake_ecus) or (pcm_cancel_cmd and ECU.CAM in self.fake_ecus):
