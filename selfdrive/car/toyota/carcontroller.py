@@ -249,11 +249,11 @@ class CarController():
     # gasPressed code from interface.py
     if CS.CP.enableGasInterceptor:
       # use interceptor values to disengage on pedal press
-      gasPressed = CS.pedal_gas > 15
+      gas_pressed = CS.pedal_gas > 15
     else:
-      gasPressed = CS.pedal_gas > 0
+      gas_pressed = CS.pedal_gas > 0
 
-    if self.dragon_allow_gas and gasPressed:
+    if self.dragon_allow_gas and gas_pressed:
       apply_accel = 0
       apply_gas = 0
 
