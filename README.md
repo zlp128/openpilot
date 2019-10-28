@@ -29,13 +29,14 @@ dragonpilot (龍芯駕駛輔助系統)
 * 大陸版本田雅閣混動 
 * 台灣版 2019 Toyota RAV4 Hybrid by MaxDuan
 * 台灣版 2019 Toyota RAV4 by MaxDuan / CloudJ
-* 台灣版 2019 Toyota Corolla Altis (含油電版) by wlee72
+* 台灣版 2019 Toyota Corolla Altis by wlee72
 * 台灣版 Lexus CT200h by CloudJ
 * 台灣版 Toyota Prius 4.5 代 by Lin Xin Hong
 * ~~大陸版本田奧德賽 by eFiniLan (已入官方)~~
 * ~~大陸版本田 CR-V by eFiniLan (已入官方)~~
 * ~~美國版 2018 Lexus CT200h by thomaspich (已入官方)~~
 * ~~澳洲版 2017 Lexus IS300h by eFiniLan (已入官方)~~
+* ~~台灣版 2019 Toyota Corolla Altis 油電版 by wlee72 (已入官方)~~
 
 
 畫面截圖
