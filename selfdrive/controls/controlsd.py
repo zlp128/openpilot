@@ -575,7 +575,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
 
     if dragon_lead_car_moving_alert:
       # when car has a lead and is standstill and lead is barely moving, we start counting
-      if not CP.radarOffCan and sm['plan'].hasLead and CS.vEgo < 0.05 and 0.2 >= abs(sm['plan'].vTarget) >= 0:
+      if not CP.radarOffCan and sm['plan'].hasLead and CS.vEgo < 0.05 and 0.3 >= abs(sm['plan'].vTarget) >= 0:
         dragon_stopped_has_lead_count += 1
       else:
         dragon_stopped_has_lead_count = 0
