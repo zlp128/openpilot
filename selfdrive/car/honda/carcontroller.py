@@ -88,7 +88,7 @@ class CarController():
     # dragonpilot
     self.turning_signal_timer = 0
     self.dragon_enable_steering_on_signal = False
-    # self.dragon_allow_gas = False
+    self.dragon_allow_gas = False
     self.dragon_lat_ctrl = True
 
   def update(self, enabled, CS, frame, actuators, \
@@ -97,7 +97,7 @@ class CarController():
     # dragonpilot, don't check for param too often as it's a kernel call
     if frame % 500 == 0:
       self.dragon_enable_steering_on_signal = True if params.get("DragonEnableSteeringOnSignal", encoding='utf8') == "1" else False
-      # self.dragon_allow_gas = True if params.get("DragonAllowGas", encoding='utf8') == "1" else False
+      self.dragon_allow_gas = True if params.get("DragonAllowGas", encoding='utf8') == "1" else False
       self.dragon_lat_ctrl = False if params.get("DragonLatCtrl", encoding='utf8') == "0" else True
 
     # *** apply brake hysteresis ***
@@ -190,15 +190,15 @@ class CarController():
         # DragonAllowGas
         # if we detect gas pedal pressed, we do not want OP to apply gas or brake
         # gasPressed code from interface.py
-        # if not CS.CP.enableGasInterceptor:
-        #   gas_pressed = CS.pedal_gas > 0
-        # else:
-        #   gas_pressed = CS.user_gas_pressed
-        # dragon_apply_brake = apply_brake
-        # if self.dragon_allow_gas and gas_pressed:
-        #   dragon_apply_brake = 0
-        #   apply_gas = 0
-        can_sends.append(hondacan.create_brake_command(self.packer, apply_brake, pump_on,
+        if not CS.CP.enableGasInterceptor:
+          gas_pressed = CS.pedal_gas > 0
+        else:
+          gas_pressed = CS.user_gas_pressed
+        dragon_apply_brake = apply_brake
+        if self.dragon_allow_gas and gas_pressed:
+          dragon_apply_brake = 0
+          apply_gas = 0
+        can_sends.append(hondacan.create_brake_command(self.packer, dragon_apply_brake, pump_on,
           pcm_override, pcm_cancel_cmd, hud.fcw, idx, CS.CP.carFingerprint, CS.CP.isPandaBlack))
         self.apply_brake_last = apply_brake
 
