@@ -512,7 +512,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
 
   # FIXME: offroad alerts should not be created with negative severity
   connectivity_alert = params.get("Offroad_ConnectivityNeeded", encoding='utf8')
-  internet_needed = connectivity_alert is not None and json.loads(connectivity_alert.replace("'", "\""))["severity"] >= 0
+  internet_needed = connectivity_alert is not None and json.loads(connectivity_alert)["severity"] >= 0
 
   prof = Profiler(False)  # off by default
 
@@ -521,6 +521,8 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
   dragon_toyota_stock_dsu = False
   dragon_lat_control = True
   dragon_display_steering_limit_alert = True
+  dragon_stopped_has_lead_count = 0
+  dragon_lead_car_moving_alert = False
 
   while True:
     # dragonpilot, don't check for param too often as it's a kernel call
@@ -529,6 +531,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
       dragon_toyota_stock_dsu = True if params.get("DragonToyotaStockDSU", encoding='utf8') == "1" else False
       dragon_lat_control = False if params.get("DragonLatCtrl", encoding='utf8') == "0" else True
       dragon_display_steering_limit_alert = False if params.get("DragonDisplaySteeringLimitAlert", encoding='utf8') == "0" else True
+      dragon_lead_car_moving_alert = True if params.get("DragonEnableLeadCarMovingAlert", encoding='utf8') == "1" else False
       ts_last_check = ts
 
     start_time = sec_since_boot()
@@ -556,16 +559,35 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
     if sm['plan'].radarCanError:
       events.append(create_event('radarCanError', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
     if not CS.canValid:
-      events.append(create_event('canError', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
+      if dragon_toyota_stock_dsu:
+        events.append(create_event('pcmDisable', [ET.USER_DISABLE]))
+      else:
+        events.append(create_event('canError', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
     if not sounds_available:
       events.append(create_event('soundsUnavailable', [ET.NO_ENTRY, ET.PERMANENT]))
-    if internet_needed:
-      events.append(create_event('internetConnectivityNeeded', [ET.NO_ENTRY, ET.PERMANENT]))
+    # if internet_needed:
+    #   events.append(create_event('internetConnectivityNeeded', [ET.NO_ENTRY, ET.PERMANENT]))
 
     if not dragon_toyota_stock_dsu:
       # Only allow engagement with brake pressed when stopped behind another stopped car
       if CS.brakePressed and sm['plan'].vTargetFuture >= STARTING_TARGET_SPEED and not CP.radarOffCan and CS.vEgo < 0.3:
         events.append(create_event('noTarget', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
+
+    if dragon_lead_car_moving_alert:
+      # when car has a lead and is standstill and lead is barely moving, we start counting
+      if not CP.radarOffCan and sm['plan'].hasLead and CS.vEgo < 0.05 and 0.3 >= abs(sm['plan'].vTarget) >= 0:
+        dragon_stopped_has_lead_count += 1
+      else:
+        dragon_stopped_has_lead_count = 0
+
+      # when we detect lead car over a sec and the lead car is started moving, we are ready to send alerts
+      # once the condition is triggered, we want to keep the trigger
+      if dragon_stopped_has_lead_count >= 50 and abs(sm['plan'].vTargetFuture) >= 0.1:
+        events.append(create_event('leadCarMoving', [ET.WARNING]))
+
+      # we remove alert once our car is moving
+      if CS.vEgo > 0.:
+        dragon_stopped_has_lead_count = 0
 
     if not read_only:
       # update control state
