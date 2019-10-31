@@ -26,7 +26,6 @@ function launch {
 #  fi
   chmod 700 reset_update.sh
   chmod 700 update_panda_firmware.sh
-  chmod 700 bs
 
   # no cpu rationing for now
   echo 0-3 > /dev/cpuset/background/cpus

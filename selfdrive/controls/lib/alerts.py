@@ -731,4 +731,10 @@ ALERTS = [
     "",
     AlertStatus.normal, AlertSize.small,
     Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.25),
+  Alert(
+    "leadCarMoving",
+    "LEAD CAR IS MOVING",
+    "Resume Driving Manually",
+    AlertStatus.userPrompt, AlertSize.mid,
+    Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .1, .1, .1),
 ]
