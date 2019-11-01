@@ -134,3 +134,8 @@ With AHB switch toggle, dragonpilot will stay engaged all time for lateral contr
 ```
 Disable this will stop reciving Lane Departure warning (alerts/steering wheel vibration).
 ```
+
+**Enable SnG Mod**
+```
+Enable this will apply stop n go hack, see https://github.com/commaai/openpilot/pull/741 for more information.
+```
