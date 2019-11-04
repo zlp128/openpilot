@@ -1,5 +1,10 @@
 2019-11-01
 ========================
+* [DEVEL] 新增神盾測速照相。 (感謝 Sky Chang 和 Wei Yi Chen)
+* [DEVEL] 修正 offroad 翻譯。 (感謝 Leo Hsieh)
+
+2019-11-01
+========================
 * [DEVEL] 移除 Miui 字型，縮小 dp 使用空間。
 * [DEVEL] 更新 offroad 為多語言版
 * [DEVEL] 更新至最新的 commaai:devel (0.6.5)。
