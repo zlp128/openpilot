@@ -569,11 +569,11 @@ static void ui_init(UIState *s) {
 
   s->font_courbd = nvgCreateFont(s->vg, "courbd", "../assets/fonts/courbd.ttf");
   assert(s->font_courbd >= 0);
-  s->font_sans_regular = nvgCreateFont(s->vg, "sans-regular", "../assets/fonts/NotoSansCJKtc-Regular.otf");
+  s->font_sans_regular = nvgCreateFont(s->vg, "sans-regular", "../../dragonpilot/chinese-fonts/NotoSansCJKtc-Regular.otf");
   assert(s->font_sans_regular >= 0);
-  s->font_sans_semibold = nvgCreateFont(s->vg, "sans-semibold", "../assets/fonts/NotoSansCJKtc-Medium.otf");
+  s->font_sans_semibold = nvgCreateFont(s->vg, "sans-semibold", "../../dragonpilot/chinese-fonts/NotoSansCJKtc-Medium.otf");
   assert(s->font_sans_semibold >= 0);
-  s->font_sans_bold = nvgCreateFont(s->vg, "sans-bold", "../assets/fonts/NotoSansCJKtc-Bold.otf");
+  s->font_sans_bold = nvgCreateFont(s->vg, "sans-bold", "../../dragonpilot/chinese-fonts/NotoSansCJKtc-Bold.otf");
   assert(s->font_sans_bold >= 0);
 
   assert(s->img_wheel >= 0);
