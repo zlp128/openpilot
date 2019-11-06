@@ -45,7 +45,6 @@ def get_can_parser(CP):
     ("LKA_STATE", "EPS_STATUS", 0),
     ("IPAS_STATE", "EPS_STATUS", 1),
     ("BRAKE_LIGHTS_ACC", "ESP_CONTROL", 0),
-    ("AUTO_HIGH_BEAM", "LIGHT_STALK", 0),
   ]
 
   checks = [
@@ -60,6 +59,7 @@ def get_can_parser(CP):
     signals.append(("GAS_PEDAL", "GAS_PEDAL_ALT", 0))
     signals.append(("MAIN_ON", "PCM_CRUISE_ALT", 0))
     signals.append(("SET_SPEED", "PCM_CRUISE_ALT", 0))
+    signals.append(("AUTO_HIGH_BEAM", "LIGHT_STALK_ISH", 0))
     checks += [
       ("BRAKE_MODULE", 50),
       ("GAS_PEDAL_ALT", 50),
@@ -67,6 +67,7 @@ def get_can_parser(CP):
     ]
   else:
     signals += [
+      ("AUTO_HIGH_BEAM", "LIGHT_STALK", 0),
       ("GAS_PEDAL", "GAS_PEDAL", 0),
     ]
     checks += [
@@ -84,7 +85,7 @@ def get_can_parser(CP):
     signals.append(("LOW_SPEED_LOCKOUT", "PCM_CRUISE_2", 0))
     checks.append(("PCM_CRUISE_2", 33))
 
-  if CP.carFingerprint in NO_DSU_CAR:
+  if CP.carFingerprint in NO_DSU_CAR or CP.carFingerprint == CAR.LEXUS_ISH:
     signals += [("STEER_ANGLE", "STEER_TORQUE_SENSOR", 0)]
 
   if CP.carFingerprint == CAR.PRIUS:
@@ -172,7 +173,7 @@ class CarState():
 
     if self.CP.carFingerprint in TSS2_CAR:
       self.angle_steers = cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE']
-    elif self.CP.carFingerprint in NO_DSU_CAR:
+    elif self.CP.carFingerprint in NO_DSU_CAR or self.CP.carFingerprint == CAR.LEXUS_ISH:
       # cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE'] is zeroed to where the steering angle is at start.
       # need to apply an offset as soon as the steering angle measurements are both received
       self.angle_steers = cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE'] - self.angle_offset
@@ -223,5 +224,7 @@ class CarState():
     self.brake_lights = bool(cp.vl["ESP_CONTROL"]['BRAKE_LIGHTS_ACC'] or self.brake_pressed)
     if self.CP.carFingerprint == CAR.PRIUS:
       self.generic_toggle = cp.vl["AUTOPARK_STATUS"]['STATE'] != 0
+    elif self.CP.carFingerprint == CAR.LEXUS_ISH:
+      self.generic_toggle = bool(cp.vl["LIGHT_STALK_ISH"]['AUTO_HIGH_BEAM'])
     else:
       self.generic_toggle = bool(cp.vl["LIGHT_STALK"]['AUTO_HIGH_BEAM'])
