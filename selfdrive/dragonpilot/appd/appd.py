@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 import time
 import selfdrive.messaging as messaging
@@ -66,7 +66,7 @@ def main(gctx=None):
   system("pm disable %s" % gpsservice)
   system("pm disable %s" % aegis)
 
-  thermal_sock = messaging.sub_sock(service_list['thermal'].port)
+  thermal_sock = messaging.sub_sock('thermal')
 
   while dragon_enable_tomtom or dragon_enable_autonavi or dragon_enable_aegis or dragon_enable_mixplorer or dragon_greypanda_mode:
 
