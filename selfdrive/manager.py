@@ -99,7 +99,7 @@ managed_processes = {
 daemon_processes = {
   "manage_athenad": ("selfdrive.athena.manage_athenad", "AthenadPid"),
 }
-android_packages = ("cn.dragonpilot.gpsservice", "com.autonavi.amapauto", "com.mixplorer", "com.tomtom.speedcams.android.map", "ai.comma.plus.offroad", "ai.comma.plus.frame")
+android_packages = ("tw.com.ainvest.outpack", "cn.dragonpilot.gpsservice", "com.autonavi.amapauto", "com.mixplorer", "com.tomtom.speedcams.android.map", "ai.comma.plus.offroad", "ai.comma.plus.frame")
 
 running = {}
 def get_running():
