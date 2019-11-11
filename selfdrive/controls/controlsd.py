@@ -575,8 +575,11 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
 
       # when we detect lead car over a sec and the lead car is started moving, we are ready to send alerts
       # once the condition is triggered, we want to keep the trigger
-      if dragon_stopped_has_lead_count >= 50 and abs(sm['plan'].vTargetFuture) >= 0.1:
-        events.append(create_event('leadCarMoving', [ET.WARNING]))
+      if dragon_stopped_has_lead_count >= 50:
+        if abs(sm['plan'].vTargetFuture) >= 0.1:
+          events.append(create_event('leadCarMoving', [ET.WARNING]))
+        else:
+          events.append(create_event('leadCarDetected', [ET.WARNING]))
 
       # we remove alert once our car is moving
       if CS.vEgo > 0.:
