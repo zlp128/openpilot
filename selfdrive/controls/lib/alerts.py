@@ -740,8 +740,14 @@ ALERTS = [
     Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.25),
   Alert(
     "leadCarMoving",
-    "LEAD CAR IS MOVING",
-    "Resume Driving Manually",
-    AlertStatus.userPrompt, AlertSize.mid,
+    "Lead Car Is Moving",
+    "",
+    AlertStatus.userPrompt, AlertSize.small,
     Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .1, .1, .1),
+  Alert(
+    "leadCarDetected",
+    "Lead Car Detected",
+    "",
+    AlertStatus.normal, AlertSize.small,
+    Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.25),
 ]
