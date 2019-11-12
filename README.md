@@ -46,12 +46,23 @@ dragonpilot (龍芯駕駛輔助系統)
 
 **更多請看 screenshots/ 資料夾**
 
+
 硬體需求
 ---
-* 一加 oneplus 3t 或者 樂視 LeEco Le Pro3 (x727) 手機
+* 一加 oneplus 3t 或者 樂視 LeEco Le Pro3 (x727) 手機 / EON
 * Panda
 * Giraffe
 * 適配的車款
+
+
+硬件購買
+---
+您可以至以下的渠道購買相關硬件 (EON / Panda / Giraffe)：
+
+* comma ai 官方: https://comma.ai/shop/
+* Taobao: https://shop442817640.taobao.com/
+
+**我們並沒有與任何渠道商合作，若有任何問題請直接與他們聯系**
 
 
 安裝 NEOS
