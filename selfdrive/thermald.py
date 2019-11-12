@@ -166,6 +166,7 @@ def thermald_thread():
   dragon_charging_max = int(params.get('DragonCharging'))
   dragon_discharging_min = int(params.get('DragonDisCharging'))
   charging_disabled = False
+  dragon_is_eon = False if params.get('DragonIsEON', encoding='utf8') == "0" else True
 
   while 1:
     health = messaging.recv_sock(health_sock, wait=True)
@@ -217,7 +218,7 @@ def thermald_thread():
     max_comp_temp = max(max_cpu_temp, msg.thermal.mem / 10., msg.thermal.gpu / 10.)
     bat_temp = msg.thermal.bat/1000.
 
-    if health is not None and health.health.hwType == log.HealthData.HwType.uno:
+    if not dragon_is_eon and (health is not None and health.health.hwType == log.HealthData.HwType.uno):
       fan_speed = handle_fan_uno(max_cpu_temp, bat_temp, fan_speed)
     else:
       fan_speed = handle_fan_eon(max_cpu_temp, bat_temp, fan_speed)
