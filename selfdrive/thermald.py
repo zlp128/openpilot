@@ -6,7 +6,7 @@ import datetime
 from smbus2 import SMBus
 from cereal import log
 from common.basedir import BASEDIR
-from common.params import Params
+from common.params import Params, put_nonblocking
 from common.realtime import sec_since_boot, DT_TRML
 from common.numpy_fast import clip, interp
 from common.filter_simple import FirstOrderFilter
@@ -166,6 +166,7 @@ def thermald_thread():
   dragon_charging_max = int(params.get('DragonCharging'))
   dragon_discharging_min = int(params.get('DragonDisCharging'))
   charging_disabled = False
+  dragon_hw_checked = True if params.get('DragonHWChecked', encoding='utf8') == "1" else False
   dragon_is_eon = False if params.get('DragonIsEON', encoding='utf8') == "0" else True
 
   while 1:
@@ -218,7 +219,17 @@ def thermald_thread():
     max_comp_temp = max(max_cpu_temp, msg.thermal.mem / 10., msg.thermal.gpu / 10.)
     bat_temp = msg.thermal.bat/1000.
 
-    if not dragon_is_eon and (health is not None and health.health.hwType == log.HealthData.HwType.uno):
+    if not dragon_hw_checked:
+      put_nonblocking("DragonHWChecked", '1')
+      dragon_hw_checked = True
+      if health is not None and health.health.hwType == log.HealthData.HwType.uno:
+        dragon_is_eon = False
+        put_nonblocking("DragonIsEON", '0')
+      else:
+        dragon_is_eon = True
+        put_nonblocking("DragonIsEON", '1')
+
+    if not dragon_is_eon:
       fan_speed = handle_fan_uno(max_cpu_temp, bat_temp, fan_speed)
     else:
       fan_speed = handle_fan_eon(max_cpu_temp, bat_temp, fan_speed)
