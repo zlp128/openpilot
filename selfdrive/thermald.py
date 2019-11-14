@@ -157,9 +157,9 @@ def thermald_thread():
   time_valid_prev = True
 
   # dragonpilot
-  ts_last_ip = 0.
-  ts_last_update_vars = 0.
-  ts_last_charging_ctrl = 0.
+  ts_last_ip = None
+  ts_last_update_vars = None
+  ts_last_charging_ctrl = None
 
   ip_addr = '255.255.255.255'
   dragon_charging_ctrl = True if params.get('DragonChargingCtrl', encoding='utf8') == "1" else False
@@ -202,7 +202,7 @@ def thermald_thread():
     # dragonpilot ip Mod
     # update ip every 10 seconds
     ts = sec_since_boot()
-    if ts - ts_last_ip > 10.:
+    if ts_last_ip is None or ts - ts_last_ip > 10.:
       try:
         result = subprocess.check_output(["ifconfig", "wlan0"], encoding='utf8')  # pylint: disable=unexpected-keyword-arg
         ip_addr = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
@@ -374,25 +374,21 @@ def thermald_thread():
     # dragonpilot
     ts = sec_since_boot()
     # update variable status every 10 secs
-    if ts - ts_last_update_vars > 10.:
+    if ts_last_update_vars is None or ts - ts_last_update_vars > 10.:
       dragon_charging_ctrl = True if params.get('DragonChargingCtrl', encoding='utf8') == "1" else False
       dragon_charging_max = int(params.get('DragonCharging', encoding='utf8'))
       dragon_discharging_min = int(params.get('DragonDisCharging', encoding='utf8'))
       ts_last_update_vars = ts
 
-    # we only update charging status once every min
-    if ts - ts_last_charging_ctrl > 60.:
+    # we update charging status once every min
+    if ts_last_charging_ctrl is None or ts - ts_last_charging_ctrl > 60.:
       if dragon_charging_ctrl:
-        if msg.thermal.batteryPercent >= dragon_charging_max and not charging_disabled:
+        if msg.thermal.batteryPercent >= dragon_charging_max:
           os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
-          charging_disabled = True
-        if msg.thermal.batteryPercent <= dragon_discharging_min and charging_disabled:
+        if msg.thermal.batteryPercent <= dragon_discharging_min:
           os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
-          charging_disabled = False
       else:
-        if charging_disabled:
-          os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
-          charging_disabled = False
+        os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
       ts_last_charging_ctrl = ts
 
     # report to server once per minute
