@@ -1,18 +1,18 @@
 What is GreyPandaMode
 ---
-If you are using Grey Panda, this mode will allow the grey panda GPS data available to TomTom/Autonavi apps included in the dragonpilot (and probably other navigation apps). 
+If you are using Grey Panda or Harness, this mode will allow the external GPS data available to TomTom/Autonavi apps included in the dragonpilot (and probably other navigation apps). 
 
 Pros:
 1. Precise GPS data.
 2. Lock your location in under 30 seconds.
 
 Cons:
-1. Unable to located after you car is off.
-2. May not suitable to other app.
+1. Unable to located after you car is off. (The service will shutdown to save battery)
+2. May not suitable for other app.
 
 How to install
 ---
-1. Please make sure your dragonpilot is 0.6.4+ or devel.
+1. Please make sure your dragonpilot is 0.6.4+ or latest devel.
 2. [SSH] Open Android Settings: 
     ```bash
     am start -a android.settings.SETTINGS

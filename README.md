@@ -15,10 +15,10 @@ dragonpilot (龍芯駕駛輔助系統)
 * Noctua 風扇模式
 * 完全取消駕駛監控 (人臉+方向盤)
 * ACC 模式：讓 dp 只操控油門/剎車
-* TOM TOM 測速照相 / 高德地圖
+* TOM TOM 測速照相 / 高德地圖 / 神盾測速照相
 * MiXplorer 檔案管理器
 * 側邊欄顯示無線網路 IP 位置
-* TOM TOM 測速照相 / 高德地圖使用 Grey Panda 數據 (請參閱 HOWTO_GreyPandaMode.md 說明檔)
+* TOM TOM 測速照相 / 高德地圖使用 / 神盾測速照相 Grey Panda / Harness 數據 (請參閱 HOWTO_GreyPandaMode.md 說明檔)
 
 **更多客制化內容請參閱 [CHANGELOG.md](CHANGELOG.md)**
 

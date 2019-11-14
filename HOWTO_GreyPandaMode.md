@@ -1,6 +1,6 @@
 什麼是 GreyPandaMode
 ---
-如果您的 EON 用的是灰熊(Grey Panda)，您可以讓 dragonpilot 裡的**tomtom/高德地圖 (或是其它的 GPS 應用程式)**使用灰熊的高精度數據。
+如果您的 EON 用的是灰熊(Grey Panda) 或 Harness，您可以讓 dragonpilot 裡的**tomtom/高德地圖/神盾 (或是其它的 GPS 應用程式)**使用高精度GPS數據。
 
 優點：
 1. 達到 10 公分以內的精度 (最佳狀況下)
@@ -13,7 +13,7 @@
 
 安裝方法
 ---
-1. 請先確認您的 dragonpilot 在 0.6.4 以上或是 devel 的版本
+1. 請先確認您的 dragonpilot 在 0.6.4 以上或是最新的 devel 的版本
 2. [SSH] 打開設定頁面: 
     ```bash
     am start -a android.settings.SETTINGS
