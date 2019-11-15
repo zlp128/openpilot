@@ -388,7 +388,7 @@ def thermald_thread():
         if msg.thermal.batteryPercent <= dragon_discharging_min:
           os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
       else:
-        os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
+        os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
       ts_last_charging_ctrl = ts
 
     # report to server once per minute
