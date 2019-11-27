@@ -56,6 +56,7 @@ default_conf = {
   'DragonToyotaSnGMod': '0',
   'DragonIsEON': '1',
   'DragonHWChecked': '0',
+  'DragonEnableSRLearner': '1',
 }
 
 deprecated_conf = {
