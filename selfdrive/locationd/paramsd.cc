@@ -96,6 +96,18 @@ int main(int argc, char *argv[]) {
 
   // Main loop
   int save_counter = 0;
+
+  // dragonpilot
+  // Steer Ratio Learner
+  char* enable_sr_learner_val = NULL;
+  read_db_value(NULL, "DragonEnableSRLearner", &enable_sr_learner_val, NULL);
+  bool enable_sr_learner = true;
+  if (enable_sr_learner_val && strlen(enable_sr_learner_val) && enable_sr_learner_val[0] == '1') {
+    enable_sr_learner = true;
+  } else {
+    enable_sr_learner = false;
+  }
+
   while (true){
     for (auto s : poller->poll(-1)){
       Message * msg = s->receive();
@@ -120,7 +132,7 @@ int main(int argc, char *argv[]) {
         save_counter++;
 
         double yaw_rate = -localizer.x[0];
-        bool valid = learner.update(yaw_rate, localizer.car_speed, localizer.steering_angle);
+        bool valid = learner.update(yaw_rate, localizer.car_speed, localizer.steering_angle, enable_sr_learner);
 
         // TODO: Fix in replay
         double sensor_data_age = localizer.controls_state_time - localizer.sensor_data_time;
