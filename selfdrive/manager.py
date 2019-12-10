@@ -99,7 +99,7 @@ managed_processes = {
 daemon_processes = {
   "manage_athenad": ("selfdrive.athena.manage_athenad", "AthenadPid"),
 }
-android_packages = ("tw.com.ainvest.outpack", "cn.dragonpilot.gpsservice", "com.autonavi.amapauto", "com.mixplorer", "com.tomtom.speedcams.android.map", "ai.comma.plus.offroad", "ai.comma.plus.frame")
+android_packages = ("tw.com.ainvest.outpack", "cn.dragonpilot.gpsservice", "com.autonavi.amapauto", "com.mixplorer", "com.tomtom.speedcams.android.map", "com.waze", "ai.comma.plus.offroad", "ai.comma.plus.frame")
 
 running = {}
 def get_running():
@@ -445,10 +445,10 @@ def update_apks():
 def manager_update():
   update_apks()
 
-  uninstall = [app for app in get_installed_apks().keys() if app in ("com.spotify.music", "com.waze")]
-  for app in uninstall:
-    cloudlog.info("uninstalling %s" % app)
-    os.system("pm uninstall % s" % app)
+  #uninstall = [app for app in get_installed_apks().keys() if app in ("com.spotify.music", "com.waze")]
+  #for app in uninstall:
+  #  cloudlog.info("uninstalling %s" % app)
+  #  os.system("pm uninstall % s" % app)
 
 def manager_prepare(spinner=None):
   # build cereal first
