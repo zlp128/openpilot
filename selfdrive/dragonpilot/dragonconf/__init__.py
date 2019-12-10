@@ -57,6 +57,8 @@ default_conf = {
   'DragonIsEON': '1',
   'DragonHWChecked': '0',
   'DragonEnableSRLearner': '1',
+  'DragonWazeMode': '0',
+  'DragonRunWaze': '0',
 }
 
 deprecated_conf = {
