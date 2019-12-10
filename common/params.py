@@ -149,6 +149,9 @@ keys = {
   "DragonToyotaSnGMod": [TxType.PERSISTENT],
   "DragonIsEON": [TxType.PERSISTENT],
   "DragonHWChecked": [TxType.PERSISTENT],
+  "DragonEnableSRLearner": [TxType.PERSISTENT],
+  "DragonWazeMode": [TxType.PERSISTENT],
+  "DragonRunWaze": [TxType.PERSISTENT],
 }
 
 
