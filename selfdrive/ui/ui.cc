@@ -323,6 +323,7 @@ typedef struct UIState {
   int dragon_ui_lead_timeout;
   int dragon_ui_path_timeout;
   int dragon_ui_blinker_timeout;
+  int dragon_waze_mode_timeout;
 
   bool dragon_ui_speed;
   bool dragon_ui_event;
@@ -337,6 +338,7 @@ typedef struct UIState {
   bool dragon_ui_lead;
   bool dragon_ui_path;
   bool dragon_ui_blinker;
+  bool dragon_waze_mode;
 
 } UIState;
 
@@ -733,19 +735,35 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   read_param_bool(&s->longitudinal_control, "LongitudinalControl");
   read_param_bool(&s->limit_set_speed, "LimitSetSpeed");
   // dragonpilot
-  read_param_bool(&s->dragon_ui_speed, "DragonUISpeed");
-  read_param_bool(&s->dragon_ui_event, "DragonUIEvent");
-  read_param_bool(&s->dragon_ui_maxspeed, "DragonUIMaxSpeed");
-  read_param_bool(&s->dragon_ui_face, "DragonUIFace");
-  read_param_bool(&s->dragon_ui_dev, "DragonUIDev");
-  read_param_bool(&s->dragon_ui_dev_mini, "DragonUIDevMini");
-  read_param_bool(&s->dragon_enable_dashcam, "DragonEnableDashcam");
   read_param_float(&s->dragon_ui_volume_boost, "DragonUIVolumeBoost");
-  read_param_bool(&s->dragon_driving_ui, "DragonDrivingUI");
-  read_param_bool(&s->dragon_ui_lane, "DragonUILane");
-  read_param_bool(&s->dragon_ui_lead, "DragonUILead");
-  read_param_bool(&s->dragon_ui_path, "DragonUIPath");
-  read_param_bool(&s->dragon_ui_blinker, "DragonUIBlinker");
+  read_param_bool(&s->dragon_waze_mode, "DragonWazeMode");
+  if (s->dragon_waze_mode) {
+    s->dragon_ui_speed = false;
+    s->dragon_ui_event = false;
+    s->dragon_ui_maxspeed = false;
+    s->dragon_ui_face = false;
+    s->dragon_ui_dev = false;
+    s->dragon_ui_dev_mini = false;
+    s->dragon_enable_dashcam = false;
+    s->dragon_driving_ui = false;
+    s->dragon_ui_lane = false;
+    s->dragon_ui_lead = false;
+    s->dragon_ui_path = false;
+    s->dragon_ui_blinker = false;
+  } else {
+    read_param_bool(&s->dragon_ui_speed, "DragonUISpeed");
+    read_param_bool(&s->dragon_ui_event, "DragonUIEvent");
+    read_param_bool(&s->dragon_ui_maxspeed, "DragonUIMaxSpeed");
+    read_param_bool(&s->dragon_ui_face, "DragonUIFace");
+    read_param_bool(&s->dragon_ui_dev, "DragonUIDev");
+    read_param_bool(&s->dragon_ui_dev_mini, "DragonUIDevMini");
+    read_param_bool(&s->dragon_enable_dashcam, "DragonEnableDashcam");
+    read_param_bool(&s->dragon_driving_ui, "DragonDrivingUI");
+    read_param_bool(&s->dragon_ui_lane, "DragonUILane");
+    read_param_bool(&s->dragon_ui_lead, "DragonUILead");
+    read_param_bool(&s->dragon_ui_path, "DragonUIPath");
+    read_param_bool(&s->dragon_ui_blinker, "DragonUIBlinker");
+  }
 
 
   // Set offsets so params don't get read at the same time
@@ -767,6 +785,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   s->dragon_ui_lead_timeout = 100;
   s->dragon_ui_path_timeout = 100;
   s->dragon_ui_blinker_timeout = 100;
+  s->dragon_waze_mode_timeout = 100;
 }
 
 // Projects a point in car to space to the corresponding point in full frame
@@ -2706,19 +2725,36 @@ int main(int argc, char* argv[]) {
     read_param_bool_timeout(&s->limit_set_speed, "LimitSetSpeed", &s->limit_set_speed_timeout);
     read_param_float_timeout(&s->speed_lim_off, "SpeedLimitOffset", &s->limit_set_speed_timeout);
     // dragonpilot
-    read_param_bool_timeout(&s->dragon_ui_speed, "DragonUISpeed", &s->dragon_ui_speed_timeout);
-    read_param_bool_timeout(&s->dragon_ui_event, "DragonUIEvent", &s->dragon_ui_event_timeout);
-    read_param_bool_timeout(&s->dragon_ui_maxspeed, "DragonUIMaxSpeed", &s->dragon_ui_maxspeed_timeout);
-    read_param_bool_timeout(&s->dragon_ui_face, "DragonUIFace", &s->dragon_ui_face_timeout);
-    read_param_bool_timeout(&s->dragon_ui_dev, "DragonUIDev", &s->dragon_ui_dev_timeout);
-    read_param_bool_timeout(&s->dragon_ui_dev_mini, "DragonUIDevMini", &s->dragon_ui_dev_mini_timeout);
-    read_param_bool_timeout(&s->dragon_enable_dashcam, "DragonEnableDashcam", &s->dragon_enable_dashcam_timeout);
     read_param_float_timeout(&s->dragon_ui_volume_boost, "DragonUIVolumeBoost", &s->dragon_ui_volume_boost_timeout);
-    read_param_bool_timeout(&s->dragon_driving_ui, "DragonDrivingUI", &s->dragon_driving_ui_timeout);
-    read_param_bool_timeout(&s->dragon_ui_lane, "DragonUILane", &s->dragon_ui_lane_timeout);
-    read_param_bool_timeout(&s->dragon_ui_lead, "DragonUILead", &s->dragon_ui_lead_timeout);
-    read_param_bool_timeout(&s->dragon_ui_path, "DragonUIPath", &s->dragon_ui_path_timeout);
-    read_param_bool_timeout(&s->dragon_ui_blinker, "DragonUIBlinker", &s->dragon_ui_blinker_timeout);
+    read_param_bool_timeout(&s->dragon_waze_mode, "DragonWazeMode", &s->dragon_waze_mode_timeout);
+
+    if (s->dragon_waze_mode) {
+      s->dragon_ui_speed = false;
+      s->dragon_ui_event = false;
+      s->dragon_ui_maxspeed = false;
+      s->dragon_ui_face = false;
+      s->dragon_ui_dev = false;
+      s->dragon_ui_dev_mini = false;
+      s->dragon_enable_dashcam = false;
+      s->dragon_driving_ui = false;
+      s->dragon_ui_lane = false;
+      s->dragon_ui_lead = false;
+      s->dragon_ui_path = false;
+      s->dragon_ui_blinker = false;
+    } else {
+      read_param_bool_timeout(&s->dragon_ui_speed, "DragonUISpeed", &s->dragon_ui_speed_timeout);
+      read_param_bool_timeout(&s->dragon_ui_event, "DragonUIEvent", &s->dragon_ui_event_timeout);
+      read_param_bool_timeout(&s->dragon_ui_maxspeed, "DragonUIMaxSpeed", &s->dragon_ui_maxspeed_timeout);
+      read_param_bool_timeout(&s->dragon_ui_face, "DragonUIFace", &s->dragon_ui_face_timeout);
+      read_param_bool_timeout(&s->dragon_ui_dev, "DragonUIDev", &s->dragon_ui_dev_timeout);
+      read_param_bool_timeout(&s->dragon_ui_dev_mini, "DragonUIDevMini", &s->dragon_ui_dev_mini_timeout);
+      read_param_bool_timeout(&s->dragon_enable_dashcam, "DragonEnableDashcam", &s->dragon_enable_dashcam_timeout);
+      read_param_bool_timeout(&s->dragon_driving_ui, "DragonDrivingUI", &s->dragon_driving_ui_timeout);
+      read_param_bool_timeout(&s->dragon_ui_lane, "DragonUILane", &s->dragon_ui_lane_timeout);
+      read_param_bool_timeout(&s->dragon_ui_lead, "DragonUILead", &s->dragon_ui_lead_timeout);
+      read_param_bool_timeout(&s->dragon_ui_path, "DragonUIPath", &s->dragon_ui_path_timeout);
+      read_param_bool_timeout(&s->dragon_ui_blinker, "DragonUIBlinker", &s->dragon_ui_blinker_timeout);
+    }
 
     pthread_mutex_unlock(&s->lock);
 
