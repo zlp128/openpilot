@@ -139,3 +139,15 @@ Disable this will stop reciving Lane Departure warning (alerts/steering wheel vi
 ```
 Enable this will apply stop n go hack, see https://github.com/commaai/openpilot/pull/741 for more information.
 ```
+
+3rd Party Apps
+-
+**Enable Waze Mode**
+```
+Enable this will turn your EON into a Waze Navigator,  once it's enabled:
+1. It will disable Tomtom/Autonavi/Aegis apps.
+2. It will disable most of the driving UI elements. (you still see all the warnings.)
+3. Once the car is started, Waze will start automatically.
+4. Once Waze is started, you cannot make any changes to the DP settings*.
+   (* We need to disable frame app to enable soft keyboard.)
+```
