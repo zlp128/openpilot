@@ -131,8 +131,8 @@ class PathPlanner():
         if self.dragon_auto_lc_enabled and self.dragon_auto_lc_timer is not None and cur_time > self.dragon_auto_lc_timer:
           torque_applied = True
 
-        # allow auto LC when speed is above 50 mph / 80.46 kph
-        if self.dragon_auto_lc_enabled and v_ego >= 50 * CV.MPH_TO_MS:
+        # only allow auto lane change above 40 mph / 65kph
+        if self.dragon_auto_lc_enabled and v_ego >= 40 * CV.MPH_TO_MS:
           self.dragon_auto_lc_allowed = True
         else:
           self.dragon_auto_lc_allowed = False
@@ -141,7 +141,7 @@ class PathPlanner():
       # State transitions
       if self.dragon_assisted_lc_enabled and self.lane_change_state == LaneChangeState.off and one_blinker and not self.prev_one_blinker:
         self.lane_change_state = LaneChangeState.preLaneChange
-        # only allow auto lane change above 50 mph / 80.46kph
+        # only allow auto lane change above 40 mph / 65kph
         if self.dragon_auto_lc_allowed:
           self.dragon_auto_lc_timer = cur_time + 3.
 
@@ -158,9 +158,11 @@ class PathPlanner():
       # finishing
       elif self.lane_change_state == LaneChangeState.laneChangeFinishing and lane_change_prob < 0.2:
         self.lane_change_state = LaneChangeState.preLaneChange
+        self.dragon_auto_lc_allowed = False
+        self.dragon_auto_lc_timer = None
 
-      # Don't allow starting lane change below 37 mph / 59.54kph
-      if (v_ego < 37 * CV.MPH_TO_MS) and (self.lane_change_state == LaneChangeState.preLaneChange):
+      # Don't allow starting lane change below 24 mph / 40kph
+      if (v_ego < 24 * CV.MPH_TO_MS) and (self.lane_change_state == LaneChangeState.preLaneChange):
         self.lane_change_state = LaneChangeState.off
 
     # always reset timer if lane change state is off
