@@ -8,6 +8,8 @@ from selfdrive.controls.lib.lane_planner import LanePlanner
 from selfdrive.config import Conversions as CV
 import cereal.messaging as messaging
 from cereal import log
+# dragonpilot
+from common.params import Params
 
 LaneChangeState = log.PathPlan.LaneChangeState
 LaneChangeDirection = log.PathPlan.LaneChangeDirection
@@ -56,6 +58,14 @@ class PathPlanner():
     self.lane_change_timer = 0.0
     self.prev_one_blinker = False
 
+    # dragonpilot
+    self.params = Params()
+    self.dragon_assisted_lc_enabled = False
+    self.dragon_auto_lc_enabled = False
+    self.dragon_auto_lc_allowed = False
+    self.dragon_auto_lc_timer = None
+    self.last_ts = 0.
+
   def setup_mpc(self):
     self.libmpc = libmpc_py.libmpc
     self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.LANE, MPC_COST_LAT.HEADING, self.steer_rate_cost)
@@ -73,6 +83,13 @@ class PathPlanner():
     self.angle_steers_des_time = 0.0
 
   def update(self, sm, pm, CP, VM):
+    # dragonpilot
+    cur_time = sec_since_boot()
+    if cur_time - self.last_ts > 5.:
+      self.dragon_assisted_lc_enabled = True if self.params.get("DragonEnableAssistedLC", encoding='utf8') == "1" else False
+      self.dragon_auto_lc_enabled = True if self.params.get("DragonEnableAutoLC", encoding='utf8') == "1" else False
+      self.last_ts = cur_time
+
     v_ego = sm['carState'].vEgo
     angle_steers = sm['carState'].steeringAngle
     active = sm['controlsState'].active
@@ -90,7 +107,11 @@ class PathPlanner():
     lane_change_direction = LaneChangeDirection.none
     one_blinker = sm['carState'].leftBlinker != sm['carState'].rightBlinker
 
-    if not active or self.lane_change_timer > 10.0:
+    if not active:
+      self.lane_change_state = LaneChangeState.off
+    elif active and self.dragon_auto_lc_enabled and self.lane_change_timer > 13.0:
+      self.lane_change_state = LaneChangeState.off
+    elif active and self.lane_change_timer > 10.0:
       self.lane_change_state = LaneChangeState.off
     else:
       if sm['carState'].leftBlinker:
@@ -105,10 +126,24 @@ class PathPlanner():
 
       lane_change_prob = self.LP.l_lane_change_prob + self.LP.r_lane_change_prob
 
+      if self.dragon_assisted_lc_enabled:
+        # set torque_applied to Ture if auto_lc is enabled and time is up.
+        if self.dragon_auto_lc_enabled and self.dragon_auto_lc_timer is not None and cur_time > self.dragon_auto_lc_timer:
+          torque_applied = True
+
+        # allow auto LC when speed is above 50 mph / 80.46 kph
+        if self.dragon_auto_lc_enabled and v_ego >= 50 * CV.MPH_TO_MS:
+          self.dragon_auto_lc_allowed = True
+        else:
+          self.dragon_auto_lc_allowed = False
+          self.dragon_auto_lc_timer = None
+
       # State transitions
-      # off
-      if False: # self.lane_change_state == LaneChangeState.off and one_blinker and not self.prev_one_blinker:
+      if self.dragon_assisted_lc_enabled and self.lane_change_state == LaneChangeState.off and one_blinker and not self.prev_one_blinker:
         self.lane_change_state = LaneChangeState.preLaneChange
+        # only allow auto lane change above 50 mph / 80.46kph
+        if self.dragon_auto_lc_allowed:
+          self.dragon_auto_lc_timer = cur_time + 3.
 
       # pre
       elif self.lane_change_state == LaneChangeState.preLaneChange and not one_blinker:
@@ -124,9 +159,13 @@ class PathPlanner():
       elif self.lane_change_state == LaneChangeState.laneChangeFinishing and lane_change_prob < 0.2:
         self.lane_change_state = LaneChangeState.preLaneChange
 
-      # Don't allow starting lane change below 45 mph
-      if (v_ego < 45 * CV.MPH_TO_MS) and (self.lane_change_state == LaneChangeState.preLaneChange):
+      # Don't allow starting lane change below 37 mph / 59.54kph
+      if (v_ego < 37 * CV.MPH_TO_MS) and (self.lane_change_state == LaneChangeState.preLaneChange):
         self.lane_change_state = LaneChangeState.off
+
+    # always reset timer if lane change state is off
+    if self.lane_change_state == LaneChangeState.off:
+      self.dragon_auto_lc_timer = None
 
     if self.lane_change_state in [LaneChangeState.off, LaneChangeState.preLaneChange]:
       self.lane_change_timer = 0.0
@@ -214,6 +253,7 @@ class PathPlanner():
     plan_send.pathPlan.desire = desire
     plan_send.pathPlan.laneChangeState = self.lane_change_state
     plan_send.pathPlan.laneChangeDirection = lane_change_direction
+    plan_send.pathPlan.autoLCAllowed = self.dragon_auto_lc_allowed
 
     pm.send('pathPlan', plan_send)
 

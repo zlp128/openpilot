@@ -59,6 +59,8 @@ default_conf = {
   'DragonEnableSRLearner': '1',
   'DragonWazeMode': '0',
   'DragonRunWaze': '0',
+  'DragonEnableAssistedLC': '0',
+  'DragonEnableAutoLC': '0',
 }
 
 deprecated_conf = {

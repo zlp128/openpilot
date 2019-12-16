@@ -88,10 +88,14 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     lowMemory @63;
     stockAeb @64;
     ldw @65;
+
+    # dragonpilot
     manualSteeringRequired @66;
     manualSteeringRequiredBlinkersOn @67;
     leadCarMoving @68;
     leadCarDetected @69;
+    preAutoLaneChangeLeft @70;
+    preAutoLaneChangeRight @71;
   }
 }
 
