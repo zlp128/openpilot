@@ -287,10 +287,11 @@ struct ThermalData {
   thermalStatus @14 :ThermalStatus;
   chargingError @17 :Bool;
   chargingDisabled @18 :Bool;
-  ipAddr @19 :Text;
 
   memUsedPercent @19 :Int8;
   cpuPerc @20 :Int8;
+
+  ipAddr @22 :Text; # dragonpilot
 
   enum ThermalStatus {
     green @0;   # all processes run
@@ -746,6 +747,8 @@ struct PathPlan {
   desire @17 :Desire;
   laneChangeState @18 :LaneChangeState;
   laneChangeDirection @19 :LaneChangeDirection;
+  # dragonpilot
+  autoLCAllowed @20 :Bool;
 
   enum Desire {
     none @0;

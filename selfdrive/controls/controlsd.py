@@ -41,9 +41,15 @@ LaneChangeDirection = log.PathPlan.LaneChangeDirection
 def add_lane_change_event(events, path_plan):
   if path_plan.laneChangeState == LaneChangeState.preLaneChange:
     if path_plan.laneChangeDirection == LaneChangeDirection.left:
-      events.append(create_event('preLaneChangeLeft', [ET.WARNING]))
+      event_name = 'preLaneChangeLeft'
+      if path_plan.autoLCAllowed:
+        event_name = 'preAutoLaneChangeLeft'
+      events.append(create_event(event_name, [ET.WARNING]))
     else:
-      events.append(create_event('preLaneChangeRight', [ET.WARNING]))
+      event_name = 'preLaneChangeLeft'
+      if path_plan.autoLCAllowed:
+        event_name = 'preAutoLaneChangeRight'
+      events.append(create_event(event_name, [ET.WARNING]))
   elif path_plan.laneChangeState in [LaneChangeState.laneChangeStarting, LaneChangeState.laneChangeFinishing]:
       events.append(create_event('laneChange', [ET.WARNING]))
 
