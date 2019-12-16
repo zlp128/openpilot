@@ -1,8 +1,8 @@
 from cereal import car
 from common.numpy_fast import mean
 from common.kalman.simple_kalman import KF1D
-from selfdrive.can.can_define import CANDefine
-from selfdrive.can.parser import CANParser
+from opendbc.can.can_define import CANDefine
+from opendbc.can.parser import CANParser
 from selfdrive.config import Conversions as CV
 from selfdrive.car.toyota.values import CAR, DBC, STEER_THRESHOLD, TSS2_CAR, NO_DSU_CAR
 
@@ -108,7 +108,7 @@ def get_can_parser(CP):
 
 def get_cam_can_parser(CP):
 
-  signals = []
+  signals = [("FORCE", "PRE_COLLISION", 0), ("PRECOLLISION_ACTIVE", "PRE_COLLISION", 0)]
 
   # use steering message to check if panda is connected to frc
   checks = [("STEERING_LKA", 42)]
@@ -140,10 +140,11 @@ class CarState():
                          K=[[0.12287673], [0.29666309]])
     self.v_ego = 0.0
 
+    # dragonpilot
     self.dragon_toyota_stock_dsu = False
     self.ts_last_check = 0.
 
-  def update(self, cp):
+  def update(self, cp, cp_cam):
     # dragonpilot, don't check for param too often as it's a kernel call
     ts = sec_since_boot()
     if ts - self.ts_last_check > 5.:
@@ -242,6 +243,8 @@ class CarState():
       self.generic_toggle = bool(cp.vl["LIGHT_STALK_ISH"]['AUTO_HIGH_BEAM'])
     else:
       self.generic_toggle = bool(cp.vl["LIGHT_STALK"]['AUTO_HIGH_BEAM'])
+
+    self.stock_aeb = bool(cp_cam.vl["PRE_COLLISION"]["PRECOLLISION_ACTIVE"] and cp_cam.vl["PRE_COLLISION"]["FORCE"] < -1e-5)
 
     if self.dragon_toyota_stock_dsu and self.generic_toggle and self.main_on:
       enable_acc = True
