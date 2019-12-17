@@ -5,7 +5,7 @@ from common.numpy_fast import clip
 from selfdrive.car import create_gas_command
 from selfdrive.car.honda import hondacan
 from selfdrive.car.honda.values import AH, CruiseButtons, CAR
-from selfdrive.can.packer import CANPacker
+from opendbc.can.packer import CANPacker
 from common.params import Params
 params = Params()
 
@@ -172,7 +172,7 @@ class CarController():
     # Send dashboard UI commands.
     if (frame % 10) == 0:
       idx = (frame//10) % 4
-      can_sends.extend(hondacan.create_ui_commands(self.packer, pcm_speed, hud, CS.CP.carFingerprint, CS.is_metric, idx, CS.CP.isPandaBlack))
+      can_sends.extend(hondacan.create_ui_commands(self.packer, pcm_speed, hud, CS.CP.carFingerprint, CS.is_metric, idx, CS.CP.isPandaBlack, CS.stock_hud))
 
     if CS.CP.radarOffCan:
       # If using stock ACC, spam cancel command to kill gas when OP disengages.
@@ -187,19 +187,8 @@ class CarController():
         idx = frame // 2
         ts = frame * DT_CTRL
         pump_on, self.last_pump_ts = brake_pump_hysteresis(apply_brake, self.apply_brake_last, self.last_pump_ts, ts)
-        # DragonAllowGas
-        # if we detect gas pedal pressed, we do not want OP to apply gas or brake
-        # gasPressed code from interface.py
-        # if not CS.CP.enableGasInterceptor:
-        #   gas_pressed = CS.pedal_gas > 0
-        # else:
-        #   gas_pressed = CS.user_gas_pressed
-        # dragon_apply_brake = apply_brake
-        # if self.dragon_allow_gas and gas_pressed:
-        #   dragon_apply_brake = 0
-        #   apply_gas = 0
         can_sends.append(hondacan.create_brake_command(self.packer, apply_brake, pump_on,
-          pcm_override, pcm_cancel_cmd, hud.fcw, idx, CS.CP.carFingerprint, CS.CP.isPandaBlack))
+          pcm_override, pcm_cancel_cmd, hud.fcw, idx, CS.CP.carFingerprint, CS.CP.isPandaBlack, CS.stock_brake))
         self.apply_brake_last = apply_brake
 
         if CS.CP.enableGasInterceptor:

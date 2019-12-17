@@ -228,6 +228,33 @@ ALERTS = [
       "",
       AlertStatus.userPrompt, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .1, .1, .1),
+  Alert(
+      "preLaneChangeLeft",
+      "Steer Left to Start Lane Change",
+      "Monitor Other Vehicles",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
+
+  Alert(
+      "preLaneChangeRight",
+      "Steer Right to Start Lane Change",
+      "Monitor Other Vehicles",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
+
+  Alert(
+      "laneChange",
+      "Changing Lane",
+      "Monitor Other Vehicles",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1),
+
+  Alert(
+      "posenetInvalid",
+      "TAKE CONTROL",
+      "Vision Model Output Uncertain",
+      AlertStatus.userPrompt, AlertSize.mid,
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, .4, 2., 3.),
 
   # Non-entry only alerts
   Alert(
@@ -392,10 +419,11 @@ ALERTS = [
       AlertStatus.critical, AlertSize.full,
       Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, .1, 2., 2.),
 
+
   Alert(
-      "posenetInvalid",
+      "lowMemory",
       "即刻接管控制",
-      "視覺出現錯誤：請檢查相機",
+      "記憶體不足：請重啟您的 EON",
       AlertStatus.critical, AlertSize.full,
       Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, .1, 2., 2.),
 
@@ -478,13 +506,6 @@ ALERTS = [
       AlertStatus.normal, AlertSize.mid,
       Priority.HIGH, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
 
-  Alert(
-      "invalidGiraffeHonda",
-      "Giraffe 開關錯誤",
-      "dragonpilot 模式為 0111，原廠模式為 1011",
-      AlertStatus.normal, AlertSize.mid,
-      Priority.HIGH, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
-
   # Cancellation alerts causing non-entry
   Alert(
       "overheatNoEntry",
@@ -559,7 +580,7 @@ ALERTS = [
   Alert(
       "posenetInvalidNoEntry",
       "無法使用 dragonpilot",
-      "視覺錯誤：請檢查相機",
+      "視覺模型輸出不明確",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
@@ -627,30 +648,23 @@ ALERTS = [
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
-      "invalidGiraffeHondaNoEntry",
-      "無法使用 dragonpilot",
-      "penpilot 模式為 0111，原廠模式為 1011",
-      AlertStatus.normal, AlertSize.mid,
-      Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
-
-  Alert(
-      "invalidGiraffeToyotaNoEntry",
-      "無法使用 dragonpilot",
-      "請瀏覽 comma.ai/tg",
-      AlertStatus.normal, AlertSize.mid,
-      Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
-
-  Alert(
       "commIssueNoEntry",
       "無法使用 dragonpilot",
-      "程序間出現通訊問題",
+      "行程出現通訊問題",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
 
   Alert(
       "internetConnectivityNeededNoEntry",
       "無法使用 dragonpilot",
-      "需要網路連線",
+      "請連接網路",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
+
+  Alert(
+      "lowMemoryNoEntry",
+      "無法使用 dragonpilot",
+      "記憶體不足：請重啟您的 EON",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
 
@@ -684,13 +698,6 @@ ALERTS = [
       Priority.LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
-      "invalidGiraffeHondaPermanent",
-      "Giraffe 開關錯誤",
-      "dragonpilot 模式為 0111，原廠模式為 1011",
-      AlertStatus.normal, AlertSize.mid,
-      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
-
-  Alert(
       "invalidGiraffeToyotaPermanent",
       "未支援的 Giraffe 設置",
       "請查閱 comma.ai/tg",
@@ -699,10 +706,17 @@ ALERTS = [
 
   Alert(
       "internetConnectivityNeededPermanent",
-      "需要網路連線",
-      "請先檢查更新才能啟用",
+      "請連接網路",
+      "需檢查更新後才能啟用",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+
+  Alert(
+      "communityFeatureDisallowedPermanent",
+      "偵測到社群開發功能",
+      "請至開發人員設定裡啟用社群開發功能",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW, VisualAlert.none, AudibleAlert.none, 0., 0., .2),  # LOW priority to overcome Cruise Error
 
   Alert(
       "sensorDataInvalidPermanent",
@@ -719,12 +733,27 @@ ALERTS = [
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
+      "lowMemoryPermanent",
+      "RAM Memory Critically Low",
+      "Reboot your EON",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+
+  Alert(
       "vehicleModelInvalid",
       "車子參數識別失敗",
       "",
       AlertStatus.normal, AlertSize.small,
       Priority.LOWEST, VisualAlert.steerRequired, AudibleAlert.none, .0, .0, .1),
 
+  # offroad alerts
+  Alert(
+      "ldwPermanent",
+      "TAKE CONTROL",
+      "Lane Departure Detected",
+      AlertStatus.userPrompt, AlertSize.mid,
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimePrompt, 1., 2., 3.),
+  # dragonpilot
   Alert(
     "manualSteeringRequired",
     "請接管方向盤：車道維持關閉",
@@ -750,4 +779,17 @@ ALERTS = [
     "",
     AlertStatus.normal, AlertSize.small,
     Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.25),
+  Alert(
+    "preAutoLaneChangeLeft",
+    "Left Auto Lane Change will engage in 3 seconds",
+    "Monitor Other Vehicles",
+    AlertStatus.normal, AlertSize.mid,
+    Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
+
+  Alert(
+    "preAutoLaneChangeRight",
+    "Right Auto Lane Change will engage in 3 seconds",
+    "Monitor Other Vehicles",
+    AlertStatus.normal, AlertSize.mid,
+    Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
 ]
