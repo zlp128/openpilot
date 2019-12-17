@@ -230,29 +230,29 @@ ALERTS = [
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .1, .1, .1),
   Alert(
       "preLaneChangeLeft",
-      "Steer Left to Start Lane Change",
-      "Monitor Other Vehicles",
+      "請往左打方向盤切換車道",
+      "請注意其它車輛",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
 
   Alert(
       "preLaneChangeRight",
-      "Steer Right to Start Lane Change",
-      "Monitor Other Vehicles",
+      "請往右打方向盤切換車道",
+      "請注意其它車輛",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
 
   Alert(
       "laneChange",
-      "Changing Lane",
-      "Monitor Other Vehicles",
+      "切換車道中",
+      "請注意其它車輛",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1),
 
   Alert(
       "posenetInvalid",
-      "TAKE CONTROL",
-      "Vision Model Output Uncertain",
+      "接管控制",
+      "視覺模型輸出不明確",
       AlertStatus.userPrompt, AlertSize.mid,
       Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, .4, 2., 3.),
 
@@ -734,8 +734,8 @@ ALERTS = [
 
   Alert(
       "lowMemoryPermanent",
-      "RAM Memory Critically Low",
-      "Reboot your EON",
+      "記憶體嚴重不足",
+      "請重啟您的 EON",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
@@ -749,8 +749,8 @@ ALERTS = [
   # offroad alerts
   Alert(
       "ldwPermanent",
-      "TAKE CONTROL",
-      "Lane Departure Detected",
+      "接管控制",
+      "偵測到已偏離車道",
       AlertStatus.userPrompt, AlertSize.mid,
       Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimePrompt, 1., 2., 3.),
   # dragonpilot
@@ -781,15 +781,15 @@ ALERTS = [
     Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.25),
   Alert(
     "preAutoLaneChangeLeft",
-    "Left Auto Lane Change will engage in 3 seconds",
-    "Monitor Other Vehicles",
+    "將在三秒後自動切至左車道",
+    "請注意其它車輛",
     AlertStatus.normal, AlertSize.mid,
     Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
 
   Alert(
     "preAutoLaneChangeRight",
-    "Right Auto Lane Change will engage in 3 seconds",
-    "Monitor Other Vehicles",
+    "將在三秒後自動切至右車道",
+    "請注意其它車輛",
     AlertStatus.normal, AlertSize.mid,
     Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
 ]
