@@ -51,10 +51,10 @@ def add_lane_change_event(events, path_plan):
         event_name = 'preAutoLaneChangeRight'
       events.append(create_event(event_name, [ET.WARNING]))
   elif path_plan.laneChangeState in [LaneChangeState.laneChangeStarting, LaneChangeState.laneChangeFinishing]:
-      event_name = 'laneChange'
-      if path_plan.autoLCAllowed:
-          event_name = 'autoLaneChange'
-      events.append(create_event(event_name, [ET.WARNING]))
+    event_name = 'laneChange'
+    if path_plan.autoLCAllowed:
+      event_name = 'autoLaneChange'
+    events.append(create_event(event_name, [ET.WARNING]))
 
 
 def isActive(state):
