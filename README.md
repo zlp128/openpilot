@@ -19,6 +19,7 @@ dragonpilot (龍芯駕駛輔助系統)
 * MiXplorer 檔案管理器
 * 側邊欄顯示無線網路 IP 位置
 * TOM TOM 測速照相 / 高德地圖使用 / 神盾測速照相 / 位智 (Waze) 使用 Grey Panda / Harness GPS 數據 (請參閱 HOWTO_GreyPandaMode.md 說明檔)
+* 自動換道
 
 **更多客制化內容請參閱 [CHANGELOG.md](CHANGELOG.md)**
 
@@ -27,12 +28,15 @@ dragonpilot (龍芯駕駛輔助系統)
 除了官方支援的車款外，dp (0.6.4+) 還支援以下車款：
 * 大陸版東風本田 Inspire 混動 by KT
 * 大陸版本田雅閣混動 
+* 大陸版 2019 Toyota 雷凌 (汽油版) by Shell
+* 大陸版 2019 Toyota 卡羅拉 (汽油版) by Shell
 * 台灣版 2019 Toyota RAV4 Hybrid by MaxDuan
 * 台灣版 2019 Toyota RAV4 by MaxDuan / CloudJ
 * 台灣版 2019 Toyota Corolla Altis by wlee72
 * 台灣版 Lexus CT200h by CloudJ
 * 台灣版 Toyota Prius 4.5 代 by Lin Xin Hong
 * 台灣版 2017 Lexus GS450h by 簡銘佑
+* 美國版 2017 Civic Hatchback by CFranHonda
 * ~~大陸版本田奧德賽 by eFiniLan (已入官方)~~
 * ~~大陸版本田 CR-V by eFiniLan (已入官方)~~
 * ~~美國版 2018 Lexus CT200h by thomaspich (已入官方)~~

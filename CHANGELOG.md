@@ -1,3 +1,12 @@
+2019-12-17
+========================
+* [DEVEL] 更新至最新的 commaai:devel (0.7.0)。
+* [DEVEL] 加入輔助換道開關。（24mph / 40kph 以上)
+* [DEVEL] 加入自動換道開關。（40mph / 65kph 以上)
+* [DEVEL] [TOYOTA] 加入大陸版 2019 雷凌汽油版指紋。 (感謝 Shell 提供)
+* [DEVEL] [TOYOTA] 加入大陸版 2019 卡羅拉汽油版指紋。 (感謝 Shell 提供)
+* [DEVEL] [HONDA] 加入美版 2017 Civic Hatchback 指紋。(感謝 CFranHonda 提供)
+
 2019-12-10
 ========================
 * [DEVEL] 加入位智車機模式。 (Waze Mode)
