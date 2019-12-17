@@ -795,8 +795,8 @@ ALERTS = [
 
   Alert(
     "autoLaneChange",
-    "Changing Lane",
-    "Monitor Other Vehicles",
+    "切換車道中",
+    "請注意其它車輛",
     AlertStatus.normal, AlertSize.mid,
     Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .0, .1, .1),
 
