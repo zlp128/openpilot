@@ -155,6 +155,8 @@ keys = {
   "DragonEnableSRLearner": [TxType.PERSISTENT],
   "DragonWazeMode": [TxType.PERSISTENT],
   "DragonRunWaze": [TxType.PERSISTENT],
+  "DragonEnableAssistedLC": [TxType.PERSISTENT],
+  "DragonEnableAutoLC": [TxType.PERSISTENT],
 }
 
 
