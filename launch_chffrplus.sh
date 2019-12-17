@@ -11,21 +11,16 @@ if [ -z "$PASSIVE" ]; then
 fi
 
 function launch {
-  # apply update
-#  if [ "$(git rev-parse HEAD)" != "$(git rev-parse @{u})" ]; then
-#    git reset --hard @{u} &&
-#    git clean -xdf &&
-#
-#    # Touch all files on release2 after checkout to prevent rebuild
-#    BRANCH=$(git rev-parse --abbrev-ref HEAD)
-#    if [[ "$BRANCH" == "release2" ]]; then
-#        touch **
-#    fi
-#
-#    exec "${BASH_SOURCE[0]}"
-#  fi
-  chmod 700 reset_update.sh
-  chmod 700 update_panda_firmware.sh
+  # Wifi scan
+  wpa_cli IFNAME=wlan0 SCAN
+
+  ## apply update
+  #if [ "$(git rev-parse HEAD)" != "$(git rev-parse @{u})" ]; then
+  #  git reset --hard @{u} &&
+  #  git clean -xdf &&
+  #
+  #  exec "${BASH_SOURCE[0]}"
+  #fi
 
   # no cpu rationing for now
   echo 0-3 > /dev/cpuset/background/cpus
@@ -42,7 +37,7 @@ function launch {
   fi
 
   # Check for NEOS update
-  if [ $(< /VERSION) != "12" ]; then
+  if [ $(< /VERSION) != "13" ]; then
     if [ -f "$DIR/scripts/continue.sh" ]; then
       cp "$DIR/scripts/continue.sh" "/data/data/com.termux/files/continue.sh"
     fi
@@ -53,7 +48,7 @@ function launch {
 
 
   # handle pythonpath
-  ln -s /data/openpilot /data/pythonpath
+  ln -sfn $(pwd) /data/pythonpath
   export PYTHONPATH="$PWD"
 
   # start manager
