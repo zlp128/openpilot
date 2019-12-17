@@ -10,8 +10,7 @@
 import os
 import time
 import datetime
-import selfdrive.messaging as messaging
-from selfdrive.services import service_list
+import cereal.messaging as messaging
 import subprocess
 from selfdrive.swaglog import cloudlog
 from common.params import Params
