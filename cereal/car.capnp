@@ -96,6 +96,7 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     leadCarDetected @69;
     preAutoLaneChangeLeft @70;
     preAutoLaneChangeRight @71;
+    autoLaneChange @72;
   }
 }
 
