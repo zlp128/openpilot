@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 import time
-import selfdrive.messaging as messaging
-from selfdrive.services import service_list
+import cereal.messaging as messaging
 import subprocess
 import cereal
 ThermalStatus = cereal.log.ThermalData.ThermalStatus
