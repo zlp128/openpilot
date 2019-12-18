@@ -92,14 +92,29 @@ a lead car stopped in front of you for more than 0.5s and started moving
 This works better if you turn on Toyota > Stock DSU Mode
 ```
 
+**Enable Assisted Lane Change**
+```
+This is a hidden feature by comma ai in 0.7. 
+Once it's enabled, if your speed reach 24mph / 40kph or above and has left or right blinker on, it will help you to change lane when you apply a small force on the steering wheel (of the same direction as the blinker).
+NOTE: if you do not turn off your blinker, you can apply force again to change to the next lane. 
+```
+
+**Enable Auto Lane Change**
+```
+This option will appear when the "Enable Assisted Lane Change" is enabled.
+If your speed reach 40mph / 65kph or above and has left or right blinker on, it will help you to change lane with a 3 seconds delay.
+You can override the 3 seconds delay by applying force on the steering wheel.
+NOTE: if you do not turn off your blinker, it will keep changing to the next lane (3 seconds delay applied).   
+```
+
 **Enable Safety Check**
 ```
-This is the main switch for all safety checks, if you disable this, dragonpilot will stop driver monitoring (steering check and driver check)
+This is the main switch for all safety checks, if you disable this, dragonpilot will stop all safety checks (steering monitor and driver monitor).
 ```
 
 **Enable Driver Monitoring**
 ```
-Driver monitoring is permenantly on since 0.6.4 and this option will allow you to enable/disable driver monitoring only
+Driver monitoring is permenantly on since 0.6.4 and this option will let you enable/disable driver monitoring.
 ```
 
 **Steering Monitor Timer**
