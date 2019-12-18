@@ -46,7 +46,7 @@ def add_lane_change_event(events, path_plan):
         event_name = 'preAutoLaneChangeLeft'
       events.append(create_event(event_name, [ET.WARNING]))
     else:
-      event_name = 'preLaneChangeLeft'
+      event_name = 'preLaneChangeRight'
       if path_plan.autoLCAllowed:
         event_name = 'preAutoLaneChangeRight'
       events.append(create_event(event_name, [ET.WARNING]))
