@@ -95,14 +95,14 @@ This works better if you turn on Toyota > Stock DSU Mode
 **Enable Assisted Lane Change**
 ```
 This is a hidden feature by comma ai in 0.7. 
-Once it's enabled, if your speed reach 24mph / 40kph or above and has left or right blinker on, it will help you to change lane when you apply a small force on the steering wheel (of the same direction as the blinker).
+Once it's enabled, if your speed reach 37mph / 60kph or above and has left or right blinker on, it will help you to change lane when you apply a small force on the steering wheel (of the same direction as the blinker).
 NOTE: if you do not turn off your blinker, you can apply force again to change to the next lane. 
 ```
 
 **Enable Auto Lane Change**
 ```
 This option will appear when the "Enable Assisted Lane Change" is enabled.
-If your speed reach 40mph / 65kph or above and has left or right blinker on, it will help you to change lane with a 3 seconds delay.
+If your speed reach 60mph / 97kph or above and has left or right blinker on, it will help you to change lane with a 3 seconds delay.
 You can override the 3 seconds delay by applying force on the steering wheel.
 NOTE: if you do not turn off your blinker, it will keep changing to the next lane (3 seconds delay applied).   
 ```

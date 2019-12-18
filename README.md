@@ -36,7 +36,7 @@ dragonpilot (龍芯駕駛輔助系統)
 * 台灣版 Lexus CT200h by CloudJ
 * 台灣版 Toyota Prius 4.5 代 by Lin Xin Hong
 * 台灣版 2017 Lexus GS450h by 簡銘佑
-* 美國版 2017 Civic Hatchback by CFranHonda
+~~* 美國版 2017 Civic Hatchback by CFranHonda (有衝突)~~
 * ~~大陸版本田奧德賽 by eFiniLan (已入官方)~~
 * ~~大陸版本田 CR-V by eFiniLan (已入官方)~~
 * ~~美國版 2018 Lexus CT200h by thomaspich (已入官方)~~
