@@ -77,12 +77,12 @@ def main(gctx=None):
   put_nonblocking('DragonRunWaze', '0')
 
   # we want to disable all app when boot
-  system("pm disable %s" % tomtom)
-  system("pm disable %s" % autonavi)
-  system("pm disable %s" % mixplorer)
+  system("pm uninstall %s" % tomtom)
+  system("pm uninstall %s" % autonavi)
+  system("pm uninstall %s" % mixplorer)
   system("pm disable %s" % gpsservice)
-  system("pm disable %s" % aegis)
-  system("pm disable %s" % waze)
+  system("pm uninstall %s" % aegis)
+  system("pm uninstall %s" % waze)
 
   thermal_sock = messaging.sub_sock('thermal')
 

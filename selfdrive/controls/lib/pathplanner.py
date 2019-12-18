@@ -128,8 +128,8 @@ class PathPlanner():
 
       # dragonpilot auto lc
       if self.dragon_assisted_lc_enabled:
-        # we allow auto lc when speed is > 40mph / 65kph
-        if self.dragon_auto_lc_enabled and v_ego >= 40 * CV.MPH_TO_MS:
+        # we allow auto lc when speed is > 60mph / 96.5kph
+        if self.dragon_auto_lc_enabled and v_ego >= 60 * CV.MPH_TO_MS:
           self.dragon_auto_lc_allowed = True
 
           if self.dragon_auto_lc_timer is None:
@@ -169,8 +169,8 @@ class PathPlanner():
         # when finishing, we reset timer to none.
         self.dragon_auto_lc_timer = None
 
-      # Don't allow starting lane change below 24 mph / 40kph
-      if (v_ego < 24 * CV.MPH_TO_MS) and (self.lane_change_state == LaneChangeState.preLaneChange):
+      # Don't allow starting lane change below 37 mph / 59.5kph
+      if (v_ego < 37 * CV.MPH_TO_MS) and (self.lane_change_state == LaneChangeState.preLaneChange):
         self.lane_change_state = LaneChangeState.off
 
     if self.lane_change_state in [LaneChangeState.off, LaneChangeState.preLaneChange]:
