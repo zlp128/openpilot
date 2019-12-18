@@ -784,20 +784,20 @@ ALERTS = [
     "將在三秒後自動切至左車道",
     "請注意其它車輛",
     AlertStatus.normal, AlertSize.mid,
-    Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
+    Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .1, .1, .1, alert_rate=0.75),
 
   Alert(
     "preAutoLaneChangeRight",
     "將在三秒後自動切至右車道",
     "請注意其它車輛",
     AlertStatus.normal, AlertSize.mid,
-    Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
+    Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .1, .1, .1, alert_rate=0.75),
 
   Alert(
     "autoLaneChange",
     "切換車道中",
     "請注意其它車輛",
     AlertStatus.normal, AlertSize.mid,
-    Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .0, .1, .1),
+    Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .1, .1, .1),
 
 ]
