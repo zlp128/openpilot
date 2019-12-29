@@ -2,6 +2,7 @@
 ========================
 * [DEVEL] 更新至最新的 commaai:devel (0.7.0)。
 * [DEVEL] ALC 改為可調整參數。(DragonA*LCMinSpeed、DragonAutoLCDelay)
+* [DEVEL-ZHS] 修正無法運行第三方應用錯誤。(感謝 深鲸希西 反應)
 
 2019-12-18
 ========================
