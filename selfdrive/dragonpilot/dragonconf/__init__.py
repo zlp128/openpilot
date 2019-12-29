@@ -61,6 +61,9 @@ default_conf = {
   'DragonRunWaze': '0',
   'DragonEnableAssistedLC': '0',
   'DragonEnableAutoLC': '0',
+  'DragonAssistedLCMinMPH': 37,
+  'DragonAutoLCMinMPH': 60,
+  'DragonAutoLCDelay': 2,
 }
 
 deprecated_conf = {
