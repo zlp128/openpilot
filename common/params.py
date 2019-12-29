@@ -157,6 +157,9 @@ keys = {
   "DragonRunWaze": [TxType.PERSISTENT],
   "DragonEnableAssistedLC": [TxType.PERSISTENT],
   "DragonEnableAutoLC": [TxType.PERSISTENT],
+  "DragonAssistedLCMinMPH": [TxType.PERSISTENT],
+  "DragonAutoLCMinMPH": [TxType.PERSISTENT],
+  "DragonAutoLCDelay": [TxType.PERSISTENT],
 }
 
 
