@@ -1,3 +1,8 @@
+2019-12-29
+========================
+* [DEVEL] 更新至最新的 commaai:devel (0.7.0)。
+* [DEVEL] ALC 改為可調整參數。(DragonA*LCMinSpeed、DragonAutoLCDelay)
+
 2019-12-18
 ========================
 * [DEVEL] 修正自動換道邏輯。
