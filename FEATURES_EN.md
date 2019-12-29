@@ -166,3 +166,55 @@ Enable this will turn your EON into a Waze Navigator,  once it's enabled:
 4. Once Waze is started, you cannot make any changes to the DP settings*.
    (* We need to disable frame app to enable soft keyboard.)
 ```
+
+Advanced Settings
+-
+DP has a few additional settings that can only be modified via SSH/command line (limit to advanced users only), e.g.:
+```
+printf %s "1" > /data/params/d/ParamName
+``` 
+
+**DragonEnableSRLearner**
+```
+This will enable or disable Steer Ratio Learner, if you disable it, it will use the steerRatio value in LiveParameters.
+
+* Disable
+  printf %s "0" > /data/params/d/DragonEnableSRLearner
+
+* Enable
+  printf %s "1" > /data/params/d/DragonEnableSRLearner
+```
+
+**DragonAssistedLCMinMPH**
+```
+This allows you to adjust the minimum speed (in MPH) to trigger assisted lane change.
+
+* Default value: 37 (MPH)
+* Accept value: any float value greater than 0.
+* 0 will be used if set below 0.
+* If this value is larger than DragonAutoLCMinMPH, it will set to the same value as DragonAutoLCMinMPH.
+
+printf %s "37" > /data/params/d/DragonAssistedLCMinMPH    
+```
+
+**DragonAutoLCMinMPH**
+```
+This allows you to adjust the minimum speed (in MPH) to trigger auto lane change.
+
+* Default value: 60 (MPH)
+* Accept value: any float value greater than 0.
+* 0 will be used if set below 0.
+
+printf %s "60" > /data/params/d/DragonAutoLCMinMPH
+```
+
+**DragonAutoLCDelay**
+```
+This allows you to adjust the delay to trigger auto lane change.
+
+* Default value: 2 (seconds)
+* Accept value: any float value greater than 0.
+* 0 will be used if set below 0.
+
+printf %s "2" > /data/params/d/DragonAutoLCDelay
+```
