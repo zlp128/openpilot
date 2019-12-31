@@ -169,14 +169,14 @@ Enable this will turn your EON into a Waze Navigator,  once it's enabled:
 
 Advanced Settings
 -
-DP has a few additional settings that can only be modified via SSH/command line (limit to advanced users only), e.g.:
+dp has a few additional settings that can only be modified via SSH/command line (limit to advanced users only), to modify value:
 ```
 printf %s "1" > /data/params/d/ParamName
 ``` 
 
 **DragonEnableSRLearner**
 ```
-This will enable or disable Steer Ratio Learner, if you disable it, it will use the steerRatio value in LiveParameters.
+This will enable or disable Steer Ratio Learner, Steer Ratio Learner is enabled by default, if you disable it, it will use the last steerRatio value in LiveParameters and stop updating it.
 
 * Disable
   printf %s "0" > /data/params/d/DragonEnableSRLearner
