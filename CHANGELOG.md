@@ -1,7 +1,12 @@
+2019-12-31
+========================
+* [DEVEL-ZHS] 加回第三方應用。
+* [0.7.0] 建立，基於 2019-12-31 DEVEL。 
+
 2019-12-29
 ========================
 * [DEVEL] 更新至最新的 commaai:devel (0.7.0)。
-* [DEVEL] ALC 改為可調整參數。(DragonA*LCMinSpeed、DragonAutoLCDelay)
+* [DEVEL] 輔助/自動變道改為可調整參數 (進階用戶)。(DragonAssistedLCMinMPH、DragonAutoLCMinMPH、DragonAutoLCDelay)
 * [DEVEL-ZHS] 修正無法運行第三方應用錯誤。(感謝 深鲸希西 反應)
 
 2019-12-18
