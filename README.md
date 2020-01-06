@@ -29,6 +29,7 @@ dragonpilot (龍芯駕駛輔助系統)
 * 大陸版東風本田 Inspire 混動 by KT
 * 大陸版本田雅閣混動 
 * 大陸版 2019 Toyota 雷凌 (汽油版) by Shell
+* 大陸版 2019 Lexus RX300 by cafe
 * 大陸版 2019 Toyota 卡羅拉 (汽油版) by Shell
 * 台灣版 2019 Toyota RAV4 Hybrid by MaxDuan
 * 台灣版 2019 Toyota RAV4 by MaxDuan / CloudJ
