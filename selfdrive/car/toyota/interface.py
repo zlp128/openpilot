@@ -124,7 +124,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.2], [0.05]]
       ret.lateralTuning.pid.kf = 0.00003   # full torque for 20 deg at 80mph means 0.00007818594
 
-    elif candidate == CAR.LEXUS_RXH:
+    elif candidate in [CAR.LEXUS_RXH, CAR.LEXUS_RX]:
       stop_and_go = True
       ret.safetyParam = 73
       ret.wheelbase = 2.79
