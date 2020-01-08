@@ -218,3 +218,15 @@ This allows you to adjust the delay to trigger auto lane change.
 
 printf %s "2" > /data/params/d/DragonAutoLCDelay
 ```
+
+**DragonBTG**
+```
+Due to incompetible CAN message issue, some of the users (Taiwan Toyota RAV4 + Car Harness) were not be able to use
+Car Harness properly.
+
+to enable this mod:
+cd /data/openpilot && chmod +x btg_mode.sh && ./btgmode.sh 1
+
+to disable this mod:
+cd /data/openpilot && chmod +x btg_mode.sh && ./btgmode.sh 0
+```
