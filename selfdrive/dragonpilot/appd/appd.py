@@ -252,14 +252,16 @@ def init_apps(apps):
 def main():
   apps = []
 
-  #system(f"pm enable com.android.settings")
-  #system(f"am start -n com.android.settings/.TetherSettings")
-  #time.sleep(1)
-  #system(f"LD_LIBRARY_PATH= monkey -f /data/monkey.script 1")
-  #system(f"pm disable com.android.settings")
-  #system(f"pm enable com.android.settings")
-  #system(f"settings put system accelerometer_rotation 0")
-  #system(f"settings put system user_rotation 1")
+  # enable hotspot on boot
+  if params.get("DragonBootHotspot", encoding='utf8') == "1":
+    system(f"pm enable com.android.settings")
+    system(f"am start -n com.android.settings/.TetherSettings")
+    time.sleep(0.5)
+    system(f"LD_LIBRARY_PATH= monkey -f /data/openpilot/hotspot.script 1")
+    system(f"pm disable com.android.settings")
+    system(f"pm enable com.android.settings")
+    system(f"settings put system accelerometer_rotation 0")
+    system(f"settings put system user_rotation 1")
 
   init_apps(apps)
 
