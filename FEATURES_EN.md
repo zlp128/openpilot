@@ -1,5 +1,10 @@
 MAIN
 -
+**Enable Hotspot on Boot**
+```
+This will turn on hotspot feature in your EON automatically when boot up.
+```
+
 **Enable Logger**
 ```
 This will turn on / off logger service, disable this will completed stop logging anything. (e.g. camera footage, canbus logs)
