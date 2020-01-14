@@ -56,9 +56,8 @@ class App():
     # if it's a service app, we do not kill if device is too hot
     # if it's a full screen app, we need to do extra process on frame/offroad
     self.app_type = app_type
-    # app permissions
+
     self.permissions = permissions
-    # app options
     self.opts = opts
 
     self.is_enabled = False
@@ -69,7 +68,7 @@ class App():
     self.manually_ctrled = False
 
     self.set_package_permissions()
-    self.system("pm disable %s" % self.app)
+    self.system(f"pm disable %s" % self.app)
 
   def read_params(self):
     self.last_is_enabled = self.is_enabled
@@ -98,8 +97,8 @@ class App():
       self.manual_ctrl_status = self.MANUAL_IDLE
       self.manually_ctrled = False
 
-  def run(self, force = False):
-    if force or self.is_enabled:
+  def run(self):
+    if self.is_enabled:
       # app is manually ctrl, we record that
       if self.manual_ctrl_param is not None and self.manual_ctrl_status == self.MANUAL_ON:
         put_nonblocking(self.manual_ctrl_param, '0')
@@ -107,23 +106,23 @@ class App():
         self.is_running = False
 
       # only run app if it's not running
-      if force or not self.is_running:
+      if not self.is_running:
         # if it's a full screen app, we need to stop frame and offroad to get keyboard access
         if self.app_type == self.TYPE_FULLSCREEN:
-          self.system("pm disable %s" % self.FRAME)
-          self.system("am start -n %s/%s" % (self.OFFROAD, self.OFFROAD_MAIN))
+          self.system(f"pm disable %s" % self.FRAME)
+          self.system(f"am start -n %s/%s" % (self.OFFROAD, self.OFFROAD_MAIN))
 
-        self.system("pm enable %s" % self.app)
+        self.system(f"pm enable %s" % self.app)
 
         if self.app_type == self.TYPE_SERVICE:
-          self.system("am startservice %s/%s" % (self.app, self.activity))
+          self.system(f"am startservice %s/%s" % (self.app, self.activity))
         else:
-          self.system("am start -n %s/%s" % (self.app, self.activity))
+          self.system(f"am start -n %s/%s" % (self.app, self.activity))
 
         self.is_running = True
 
-  def kill(self, force = False):
-    if force or self.is_enabled:
+  def kill(self):
+    if self.is_enabled:
       # app is manually ctrl, we record that
       if self.manual_ctrl_param is not None and self.manual_ctrl_status == self.MANUAL_OFF:
         put_nonblocking(self.manual_ctrl_param, '0')
@@ -131,21 +130,21 @@ class App():
         self.is_running = True
 
       # only kill app if it's running
-      if force or self.is_running:
+      if self.is_running:
         # if it's a full screen app, we need to restart offroad and frame
         if self.app_type == self.TYPE_FULLSCREEN:
-          self.system("pm disable %s" % self.OFFROAD)
-          self.system("pm enable %s" % self.OFFROAD)
-          self.system("pm enable %s" % self.FRAME)
-          self.system("am start -n %s/%s" % (self.FRAME, self.FRAME_MAIN))
+          self.system(f"pm disable %s" % self.OFFROAD)
+          self.system(f"pm enable %s" % self.OFFROAD)
+          self.system(f"pm enable %s" % self.FRAME)
+          self.system(f"am start -n %s/%s" % (self.FRAME, self.FRAME_MAIN))
 
-
-        self.system("pm disable %s" % self.app)
+        self.system(f"pm disable %s" % self.app)
         self.is_running = False
 
   def system(self, cmd):
     try:
       # cloudlog.info("running %s" % cmd)
+      print(cmd)
       subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
     except subprocess.CalledProcessError as e:
       cloudlog.event("running failed",
@@ -250,96 +249,78 @@ def init_apps(apps):
   ))
 
 def main():
+  # has_enabled_apps = False
+  has_fullscreen_apps = False
+  has_auto_run_apps = False
   apps = []
-
-  # enable hotspot on boot
-  if params.get("DragonBootHotspot", encoding='utf8') == "1":
-    system(f"pm enable com.android.settings")
-    system(f"am start -n com.android.settings/.TetherSettings")
-    time.sleep(0.5)
-    system(f"LD_LIBRARY_PATH= monkey -f /data/openpilot/hotspot.script 1")
-    system(f"pm disable com.android.settings")
-    system(f"pm enable com.android.settings")
-    system(f"settings put system accelerometer_rotation 0")
-    system(f"settings put system user_rotation 1")
 
   init_apps(apps)
 
   last_started = False
   thermal_sock = messaging.sub_sock('thermal')
+  allow_auto_run = True
 
   frame = 0
   start_delay = None
   stop_delay = None
-  allow_auto_run = True
-  last_thermal_status = None
-  thermal_status = None
+
 
   while 1: #has_enabled_apps:
-    has_fullscreen_apps = False
+    msg = messaging.recv_sock(thermal_sock, wait=True)
+    started = msg.thermal.started
 
     for app in apps:
       # read params loop
       app.read_params()
-      if app.last_is_enabled and not app.is_enabled:
-        app.kill(True)
-
       if app.is_enabled:
         if app.app_type == App.TYPE_FULLSCREEN:
           has_fullscreen_apps = True
+        if app.is_auto_runnable:
+          has_auto_run_apps = True
+        if app.manual_ctrl_status != App.MANUAL_IDLE:
+          if app.manual_ctrl_status == App.MANUAL_ON:
+            app.run()
+          else:
+            app.kill()
 
-    # process manual ctrl apps
-    for app in apps:
-      if app.manual_ctrl_status != App.MANUAL_IDLE:
-        if app.manual_ctrl_status == App.MANUAL_ON:
-          app.run(True)
-        else:
-          app.kill(True)
-
-    msg = messaging.recv_sock(thermal_sock, wait=True)
-    started = msg.thermal.started
     # when car is running
     if started:
       stop_delay = None
-      # apps start 5 secs later
       if start_delay is None:
         start_delay = frame + 5
 
-      thermal_status = msg.thermal.thermalStatus
-      if thermal_status <= ThermalStatus.yellow:
-        allow_auto_run = True
-        # when temp reduce from red to yellow, we add start up delay as well
-        # so apps will not start up immediately
-        if last_thermal_status == ThermalStatus.red:
-          start_delay = frame + 60
-      elif thermal_status >= ThermalStatus.red:
-        allow_auto_run = False
-
-      last_thermal_status = thermal_status
-
-      # we run service apps and kill all util apps
-      # only run once
-      if last_started != started:
+      # start service and fullscreen apps and kill the reset
+      if has_fullscreen_apps:
         for app in apps:
-          if app.app_type == App.TYPE_SERVICE:
+          if not app.manually_ctrled and app.app_type in [App.TYPE_SERVICE, App.TYPE_FULLSCREEN]:
             app.run()
-          elif app.app_type == App.TYPE_UTIL:
+          else:
+            app.kill()
+      else:
+        # kill any util apps
+        for app in apps:
+          if app.app_type == App.TYPE_UTIL:
             app.kill()
 
-      # only run apps that's not manually ctrled
-      for app in apps:
-        if not app.manually_ctrled:
-          if has_fullscreen_apps:
-            if app.app_type == App.TYPE_FULLSCREEN:
-              app.run()
-            elif app.app_type in [App.TYPE_GPS, App.TYPE_UTIL]:
-              app.kill()
-          else:
-            if not allow_auto_run:
-              app.kill()
-            else:
-              if frame > start_delay and app.is_auto_runnable and app.app_type == App.TYPE_GPS:
-                app.run()
+        # auto run ctrl for normal apps
+        if has_auto_run_apps:
+          thermal_status = msg.thermal.thermalStatus
+          if not allow_auto_run and thermal_status <= ThermalStatus.yellow:
+            allow_auto_run = True
+
+          if allow_auto_run and thermal_status >= ThermalStatus.red:
+            allow_auto_run = False
+
+          if frame > start_delay:
+            for app in apps:
+              if app.is_auto_runnable and not app.manually_ctrled:
+                if allow_auto_run:
+                  if not app.is_running and app.app_type not in [App.TYPE_FULLSCREEN, App.TYPE_UTIL]:
+                    app.run()
+                else:
+                  if app.is_running and app.app_type not in [App.TYPE_SERVICE]:
+                    app.kill()
+
     # when car is stopped
     else:
       start_delay = None
@@ -347,10 +328,17 @@ def main():
       if stop_delay is None:
         stop_delay = frame + 30
 
-      for app in apps:
-        if app.is_running and not app.manually_ctrled:
-          if has_fullscreen_apps or frame > stop_delay:
+      # when car is off, we want to kill full screen app first
+      if has_fullscreen_apps:
+        for app in apps:
+          if not app.manually_ctrled and app.is_running:
             app.kill()
+      else:
+        # kill rest of the apps after delay
+        if frame > stop_delay:
+          for app in apps:
+            if not app.manually_ctrled and app.is_running:
+              app.kill()
 
     if last_started != started:
       for app in apps:
@@ -360,15 +348,6 @@ def main():
     frame += 3
     time.sleep(3)
 
-def system(cmd):
-  try:
-    cloudlog.info("running %s" % cmd)
-    subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
-  except subprocess.CalledProcessError as e:
-    cloudlog.event("running failed",
-                   cmd=e.cmd,
-                   output=e.output[-1024:],
-                   returncode=e.returncode)
-
 if __name__ == "__main__":
   main()
+
