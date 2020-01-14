@@ -63,6 +63,7 @@ default_conf = {
   'DragonAutoLCMinMPH': 60,
   'DragonAutoLCDelay': 2,
   'DragonBTG': 0,
+  'DragonBootHotspot': 0,
 }
 
 deprecated_conf = {
