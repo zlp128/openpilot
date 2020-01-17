@@ -242,6 +242,37 @@ typedef struct UIState {
   model_path_vertices_data model_path_vertices[MODEL_LANE_PATH_CNT * 2];
 
   track_vertices_data track_vertices[2];
+  
+  // dragonpilot
+  int dragon_ui_speed_timeout;
+  int dragon_ui_event_timeout;
+  int dragon_ui_maxspeed_timeout;
+  int dragon_ui_face_timeout;
+  int dragon_ui_dev_timeout;
+  int dragon_ui_dev_mini_timeout;
+  int dragon_enable_dashcam_timeout;
+  int dragon_ui_volume_boost_timeout;
+  int dragon_driving_ui_timeout;
+  int dragon_ui_lane_timeout;
+  int dragon_ui_lead_timeout;
+  int dragon_ui_path_timeout;
+  int dragon_ui_blinker_timeout;
+  int dragon_waze_mode_timeout;
+
+  bool dragon_ui_speed;
+  bool dragon_ui_event;
+  bool dragon_ui_maxspeed;
+  bool dragon_ui_face;
+  bool dragon_ui_dev;
+  bool dragon_ui_dev_mini;
+  bool dragon_enable_dashcam;
+  float dragon_ui_volume_boost;
+  bool dragon_driving_ui;
+  bool dragon_ui_lane;
+  bool dragon_ui_lead;
+  bool dragon_ui_path;
+  bool dragon_ui_blinker;
+  bool dragon_waze_mode;
 } UIState;
 
 // API
