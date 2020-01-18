@@ -260,9 +260,6 @@ def main():
     system(f"am start -n com.android.settings/.TetherSettings")
     time.sleep(1)
     system(f"LD_LIBRARY_PATH= input tap 995 160")
-    #system(f"LD_LIBRARY_PATH= monkey -f /data/openpilot/hotspot.script 1")
-    #system(f"settings put system accelerometer_rotation 0")
-    #system(f"settings put system user_rotation 1")
     system(f"pkill com.android.settings")
 
   init_apps(apps)
