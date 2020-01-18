@@ -963,7 +963,7 @@ int main(int argc, char* argv[]) {
         volume = volume * (1 + s->dragon_ui_volume_boost /100);
         volume = volume > MAX_VOLUME? MAX_VOLUME : volume;
       }
-      set_volume(s, volume);
+      set_volume(volume);
       s->volume_timeout = 5 * UI_FREQ;
     }
 

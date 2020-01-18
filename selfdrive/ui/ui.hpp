@@ -117,6 +117,16 @@ typedef struct UIScene {
 
   // Used to show gps planner status
   bool gps_planner_active;
+
+  // dragonpilot
+  // for minimal UI
+  float angleSteersDes;
+  float angleSteers;
+
+  // for blinker, from kegman
+  bool leftBlinker;
+  bool rightBlinker;
+  int blinker_blinkingrate;
 } UIScene;
 
 typedef struct {
@@ -244,6 +254,7 @@ typedef struct UIState {
   track_vertices_data track_vertices[2];
   
   // dragonpilot
+  SubSocket *carstate_sock;
   int dragon_ui_speed_timeout;
   int dragon_ui_event_timeout;
   int dragon_ui_maxspeed_timeout;
