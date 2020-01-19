@@ -69,9 +69,10 @@ keys = {
   "IsLdwEnabled": [TxType.PERSISTENT],
   "IsGeofenceEnabled": [TxType.PERSISTENT],
   "IsMetric": [TxType.PERSISTENT],
+  "IsOffroad": [TxType.CLEAR_ON_MANAGER_START],
   "IsRHD": [TxType.PERSISTENT],
   "IsTakingSnapshot": [TxType.CLEAR_ON_MANAGER_START],
-  "IsUpdateAvailable": [TxType.PERSISTENT],
+  "IsUpdateAvailable": [TxType.CLEAR_ON_MANAGER_START],
   "IsUploadRawEnabled": [TxType.PERSISTENT],
   "LastUpdateTime": [TxType.PERSISTENT],
   "LimitSetSpeed": [TxType.PERSISTENT],
@@ -80,6 +81,7 @@ keys = {
   "LongitudinalControl": [TxType.PERSISTENT],
   "OpenpilotEnabledToggle": [TxType.PERSISTENT],
   "PandaFirmware": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
+  "PandaFirmwareHex": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
   "PandaDongleId": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
   "Passive": [TxType.PERSISTENT],
   "RecordFront": [TxType.PERSISTENT],
@@ -150,8 +152,8 @@ keys = {
   "DragonEnableSlowOnCurve": [TxType.PERSISTENT],
   "DragonEnableLeadCarMovingAlert": [TxType.PERSISTENT],
   "DragonToyotaSnGMod": [TxType.PERSISTENT],
-  "DragonIsEON": [TxType.PERSISTENT],
-  "DragonHWChecked": [TxType.PERSISTENT],
+  "DragonIsEON": [TxType.PERSISTENT], # deprecated
+  "DragonHWChecked": [TxType.PERSISTENT], # deprecated
   "DragonEnableSRLearner": [TxType.PERSISTENT],
   "DragonWazeMode": [TxType.PERSISTENT],
   "DragonRunWaze": [TxType.PERSISTENT],
@@ -160,6 +162,8 @@ keys = {
   "DragonAssistedLCMinMPH": [TxType.PERSISTENT],
   "DragonAutoLCMinMPH": [TxType.PERSISTENT],
   "DragonAutoLCDelay": [TxType.PERSISTENT],
+  "DragonBTG": [TxType.PERSISTENT],
+  "DragonBootHotspot": [TxType.PERSISTENT],
 }
 
 

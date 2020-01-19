@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 #
 # courtesy of pjlao307 (https://github.com/pjlao307/)
 # this is just his original implementation but
