@@ -54,8 +54,6 @@ default_conf = {
   'DragonEnableSlowOnCurve': '1',
   'DragonEnableLeadCarMovingAlert': '0',
   'DragonToyotaSnGMod': '0',
-  'DragonIsEON': '1',
-  'DragonHWChecked': '0',
   'DragonEnableSRLearner': '1',
   'DragonWazeMode': '0',
   'DragonRunWaze': '0',
@@ -64,36 +62,35 @@ default_conf = {
   'DragonAssistedLCMinMPH': 37,
   'DragonAutoLCMinMPH': 60,
   'DragonAutoLCDelay': 2,
+  'DragonBTG': 0,
+  'DragonBootHotspot': 0,
 }
 
 deprecated_conf = {
-  'DragonDisableDriverSafetyCheck': 'DragonEnableDriverSafetyCheck',
-  'DragonTempDisableSteerOnSignal': 'DragonEnableSteeringOnSignal',
-  'DragonDisableLogger': 'DragonEnableLogger',
-  'DragonDisableUploader': 'DragonEnableUploader',
-  'DragonBBUI': 'DragonUIDev',
+  'DragonIsEON': '',
+  'DragonHWChecked': '',
 }
 
-# deprecated_conf_invert = {
+deprecated_conf_invert = {
 #   'DragonDisableDriverSafetyCheck': True,
 #   'DragonTempDisableSteerOnSignal': False,
 #   'DragonDisableLogger': True,
 #   'DragonDisableUploader': True,
 #   'DragonBBUI': False
-# }
+}
 
 def dragonpilot_set_params(params):
   # remove deprecated params
-  # for old, new in deprecated_conf.items():
-  #   if params.get(old) is not None:
-  #     if new is not None:
-  #       old_val = str(params.get(old))
-  #       new_val = old_val
-  #       # invert the value if true
-  #       if old in deprecated_conf_invert and deprecated_conf_invert[old] is True:
-  #         new_val = "1" if old_val == "0" else "0"
-  #       put_nonblocking(new, new_val)
-  #     params.delete(old)
+  for old, new in deprecated_conf.items():
+    if params.get(old) is not None:
+      if new is not None:
+        old_val = str(params.get(old))
+        new_val = old_val
+        # invert the value if true
+        if old in deprecated_conf_invert and deprecated_conf_invert[old] is True:
+          new_val = "1" if old_val == "0" else "0"
+        put_nonblocking(new, new_val)
+      params.delete(old)
 
   # set params
   for key, val in default_conf.items():

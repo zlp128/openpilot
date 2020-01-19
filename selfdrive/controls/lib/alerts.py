@@ -413,6 +413,13 @@ ALERTS = [
       Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, .1, 2., 2.),
 
   Alert(
+      "radarCommIssue",
+      "TAKE CONTROL IMMEDIATELY",
+      "Radar Communication Issue",
+      AlertStatus.critical, AlertSize.full,
+      Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, .1, 2., 2.),
+
+  Alert(
       "radarFault",
       "即刻接管控制",
       "雷达讯号错误：请重新发动车辆",
@@ -662,6 +669,13 @@ ALERTS = [
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
 
   Alert(
+      "radarCommIssueNoEntry",
+      "openpilot Unavailable",
+      "Radar Communication Issue",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
+
+  Alert(
       "internetConnectivityNeededNoEntry",
       "无法使用 dragonpilot",
       "需要连接到网络",
@@ -743,6 +757,13 @@ ALERTS = [
       "lowMemoryPermanent",
       "内存严重不足",
       "请重启您的 EON",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+
+  Alert(
+      "carUnrecognizedPermanent",
+      "Dashcam Mode",
+      "Car Unrecognized",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
