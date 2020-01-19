@@ -1,31 +1,31 @@
 {
   "Offroad_ChargeDisabled": {
-    "text": "EON charging disabled after car being off for more than 30 hours. Turn ignition on to start charging again.",
+    "text": "车辆熄火 30 小时后将停止为 EON 充电，再次启动车辆后，EON 恢复充电。",
     "severity": 0
   },
   "Offroad_TemperatureTooHigh": {
-    "text": "EON temperature too high. System won't start.",
+    "text": "EON 温度过高，系统暂不可用。",
     "severity": 1
   },
   "Offroad_ConnectivityNeededPrompt": {
-    "text": "Immediately connect to the internet to check for updates. If you do not connect to the internet, openpilot won't engage in ",
+    "text": "请立即连网检查更新，否则 dragonpilot 将不可用。",
     "severity": 0,
     "_comment": "Append the number of days at the end of the text"
   },
   "Offroad_ConnectivityNeeded": {
-    "text": "Connect to internet to check for updates. openpilot won't engage until it connects to internet to check for updates.",
+    "text": "请连网并检查更新，连网更新后 dragonpilot 才能正常使用。",
     "severity": 1
   },
   "Offroad_PandaFirmwareMismatch": {
-    "text": "Unexpected panda firmware version. System won't start. Reboot your EON to reflash panda.",
+    "text": "Panda 固件版本异常，系统无法启用，请重启 EON 并更新 Panda 固件。",
     "severity": 1
   },
   "Offroad_InvalidTime": {
-    "text": "Invalid date and time settings, system won't start. Connect to internet to set time.",
+    "text": "系统时间设置错误，系统无法启用。请连网更新时间设置。",
     "severity": 1
   },
   "Offroad_IsTakingSnapshot": {
-    "text": "Taking camera snapshots. System won't start until finished.",
+    "text": "相机拍摄中，完成前系统无法启动。",
     "severity": 0
   }
 }
