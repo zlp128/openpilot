@@ -84,8 +84,8 @@ ALERTS = [
 
   Alert(
       "fcwStock",
-      "BRAKE!",
-      "Risk of Collision",
+      "馬上剎車！",
+      "有碰撞風險",
       AlertStatus.critical, AlertSize.full,
       Priority.HIGHEST, VisualAlert.fcw, AudibleAlert.none, 1., 2., 2.),  # no EON chime for stock FCW
 
@@ -414,8 +414,8 @@ ALERTS = [
 
   Alert(
       "radarCommIssue",
-      "TAKE CONTROL IMMEDIATELY",
-      "Radar Communication Issue",
+      "即刻接管控制",
+      "雷達通訊出現問題",
       AlertStatus.critical, AlertSize.full,
       Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, .1, 2., 2.),
 
@@ -670,8 +670,8 @@ ALERTS = [
 
   Alert(
       "radarCommIssueNoEntry",
-      "openpilot Unavailable",
-      "Radar Communication Issue",
+      "無法使用 dragonpilot",
+      "雷達通訊出現問題",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
 
@@ -762,8 +762,8 @@ ALERTS = [
 
   Alert(
       "carUnrecognizedPermanent",
-      "Dashcam Mode",
-      "Car Unrecognized",
+      "行車記錄模式",
+      "無法辨識您的車款",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
@@ -827,5 +827,4 @@ ALERTS = [
     "請注意其它車輛",
     AlertStatus.normal, AlertSize.mid,
     Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .1, .1, .1),
-
 ]
