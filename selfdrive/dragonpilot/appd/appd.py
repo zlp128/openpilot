@@ -110,7 +110,7 @@ class App():
       if force or not self.is_running:
         # if it's a full screen app, we need to stop frame and offroad to get keyboard access
         if self.app_type == self.TYPE_FULLSCREEN:
-          self.system("pm disable %s" % self.FRAME)
+          self.system("pkill %s" % self.FRAME)
           self.system("am start -n %s/%s" % (self.OFFROAD, self.OFFROAD_MAIN))
 
         self.system("pm enable %s" % self.app)
@@ -140,7 +140,7 @@ class App():
           self.system("am start -n %s/%s" % (self.FRAME, self.FRAME_MAIN))
 
 
-        self.system("pm disable %s" % self.app)
+        self.system("pkill %s" % self.app)
         self.is_running = False
 
   def system(self, cmd):
@@ -254,14 +254,13 @@ def main():
 
   # enable hotspot on boot
   if params.get("DragonBootHotspot", encoding='utf8') == "1":
-    system(f"pm enable com.android.settings")
-    system(f"am start -n com.android.settings/.TetherSettings")
-    time.sleep(0.5)
-    system(f"LD_LIBRARY_PATH= monkey -f /data/openpilot/hotspot.script 1")
-    system(f"pm disable com.android.settings")
-    system(f"pm enable com.android.settings")
     system(f"settings put system accelerometer_rotation 0")
     system(f"settings put system user_rotation 1")
+    system(f"pm enable com.android.settings")
+    system(f"am start -n com.android.settings/.TetherSettings")
+    time.sleep(1)
+    system(f"LD_LIBRARY_PATH= input tap 995 160")
+    system(f"pkill com.android.settings")
 
   init_apps(apps)
 
