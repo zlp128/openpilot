@@ -1170,7 +1170,9 @@ static void ui_draw_vision(UIState *s) {
   glScissor(ui_viz_rx, s->fb_h-(box_y+box_h), ui_viz_rw, box_h);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  draw_frame(s);
+  if (s->dragon_driving_ui) {
+    draw_frame(s);
+  }
   glViewport(0, 0, s->fb_w, s->fb_h);
   glDisable(GL_SCISSOR_TEST);
 
@@ -1179,13 +1181,15 @@ static void ui_draw_vision(UIState *s) {
   nvgBeginFrame(s->vg, s->fb_w, s->fb_h, 1.0f);
   nvgSave(s->vg);
 
-  // Draw augmented elements
-  const int inner_height = viz_w*9/16;
-  nvgScissor(s->vg, ui_viz_rx, box_y, ui_viz_rw, box_h);
-  nvgTranslate(s->vg, ui_viz_rx+ui_viz_ro, box_y + (box_h-inner_height)/2.0);
-  nvgScale(s->vg, (float)viz_w / s->fb_w, (float)inner_height / s->fb_h);
-  if (!scene->frontview && !scene->fullview) {
-    ui_draw_world(s);
+  if (s->dragon_driving_ui) {
+    // Draw augmented elements
+    const int inner_height = viz_w*9/16;
+    nvgScissor(s->vg, ui_viz_rx, box_y, ui_viz_rw, box_h);
+    nvgTranslate(s->vg, ui_viz_rx+ui_viz_ro, box_y + (box_h-inner_height)/2.0);
+    nvgScale(s->vg, (float)viz_w / s->fb_w, (float)inner_height / s->fb_h);
+    if (!scene->frontview && !scene->fullview) {
+      ui_draw_world(s);
+    }
   }
 
   nvgRestore(s->vg);
