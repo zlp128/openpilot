@@ -13,8 +13,9 @@ class App():
   # app type
   TYPE_GPS = 0
   TYPE_SERVICE = 1
-  TYPE_FULLSCREEN = 2
-  TYPE_UTIL = 3
+  TYPE_GPS_SERVICE = 2
+  TYPE_FULLSCREEN = 3
+  TYPE_UTIL = 4
 
   # frame app
   FRAME = "ai.comma.plus.frame"
@@ -80,7 +81,7 @@ class App():
 
     if self.is_enabled:
       # a service app should run automatically and not manual controllable.
-      if self.app_type == App.TYPE_SERVICE:
+      if self.app_type in [App.TYPE_SERVICE, App.TYPE_GPS_SERVICE]:
         self.is_auto_runnable = True
         self.manual_ctrl_status = self.MANUAL_IDLE
       else:
@@ -110,12 +111,15 @@ class App():
       if force or not self.is_running:
         # if it's a full screen app, we need to stop frame and offroad to get keyboard access
         if self.app_type == self.TYPE_FULLSCREEN:
-          self.system("pkill %s" % self.FRAME)
+          self.system("pm disable %s" % self.FRAME)
           self.system("am start -n %s/%s" % (self.OFFROAD, self.OFFROAD_MAIN))
 
         self.system("pm enable %s" % self.app)
 
-        if self.app_type == self.TYPE_SERVICE:
+        if self.app_type == self.TYPE_GPS_SERVICE:
+          self.appops_set(self.app, "android:mock_location", "allow")
+
+        if self.app_type in [self.TYPE_SERVICE, self.TYPE_GPS_SERVICE]:
           self.system("am startservice %s/%s" % (self.app, self.activity))
         else:
           self.system("am start -n %s/%s" % (self.app, self.activity))
@@ -139,6 +143,8 @@ class App():
           self.system("pm enable %s" % self.FRAME)
           self.system("am start -n %s/%s" % (self.FRAME, self.FRAME_MAIN))
 
+        if self.app_type == self.TYPE_GPS_SERVICE:
+          self.appops_set(self.app, "android:mock_location", "deny")
 
         self.system("pkill %s" % self.app)
         self.is_running = False
@@ -227,7 +233,7 @@ def init_apps(apps):
     "DragonGreyPandaMode",
     None,
     None,
-    App.TYPE_SERVICE,
+    App.TYPE_GPS_SERVICE,
     [],
     [],
   ))
@@ -320,7 +326,7 @@ def main():
       # only run once
       if last_started != started:
         for app in apps:
-          if app.app_type == App.TYPE_SERVICE:
+          if app.app_type in [App.TYPE_SERVICE, App.TYPE_GPS_SERVICE]:
             app.run()
           elif app.app_type == App.TYPE_UTIL:
             app.kill()
