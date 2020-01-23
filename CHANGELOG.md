@@ -1,3 +1,9 @@
+2020-01-23
+========================
+* [DEVEL] 加入 Steer Ratio Learner 關閉。(感謝 eisenheim 建議)
+* [DEVEL] 行車介面加入電量、溫度。(感謝 eisenheim 建議)
+* [DEVEL] 優化 appd。
+
 2020-01-19
 ========================
 * [DEVEL] 更新至最新的 commaai:devel (0.7.1)。
