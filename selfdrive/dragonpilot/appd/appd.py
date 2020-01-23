@@ -5,6 +5,7 @@ import cereal
 import cereal.messaging as messaging
 ThermalStatus = cereal.log.ThermalData.ThermalStatus
 from selfdrive.swaglog import cloudlog
+from common.realtime import sec_since_boot
 from common.params import Params, put_nonblocking
 params = Params()
 
@@ -71,33 +72,38 @@ class App():
 
     self.set_package_permissions()
     self.system("pm disable %s" % self.app)
+    self.last_ts = sec_since_boot()
 
   def read_params(self):
-    self.last_is_enabled = self.is_enabled
-    if self.enable_param is None:
-      self.is_enabled = False
-    else:
-      self.is_enabled = True if params.get(self.enable_param, encoding='utf8') == "1" else False
-
-    if self.is_enabled:
-      # a service app should run automatically and not manual controllable.
-      if self.app_type in [App.TYPE_SERVICE, App.TYPE_GPS_SERVICE]:
-        self.is_auto_runnable = True
-        self.manual_ctrl_status = self.MANUAL_IDLE
+    cur_time = sec_since_boot()
+    if cur_time - self.last_ts > 5:
+      self.last_is_enabled = self.is_enabled
+      if self.enable_param is None:
+        self.is_enabled = False
       else:
-        if self.manual_ctrl_param is None:
+        self.is_enabled = True if params.get(self.enable_param, encoding='utf8') == "1" else False
+
+      if self.is_enabled:
+        # a service app should run automatically and not manual controllable.
+        if self.app_type in [App.TYPE_SERVICE, App.TYPE_GPS_SERVICE]:
+          self.is_auto_runnable = True
           self.manual_ctrl_status = self.MANUAL_IDLE
         else:
-          self.manual_ctrl_status = params.get(self.manual_ctrl_param, encoding='utf8')
+          if self.manual_ctrl_param is None:
+            self.manual_ctrl_status = self.MANUAL_IDLE
+          else:
+            self.manual_ctrl_status = params.get(self.manual_ctrl_param, encoding='utf8')
 
-        if self.auto_run_param is None:
-          self.is_auto_runnable = False
-        else:
-          self.is_auto_runnable = True if params.get(self.auto_run_param, encoding='utf8') == "1" else False
-    else:
-      self.is_auto_runnable = False
-      self.manual_ctrl_status = self.MANUAL_IDLE
-      self.manually_ctrled = False
+          if self.auto_run_param is None:
+            self.is_auto_runnable = False
+          else:
+            self.is_auto_runnable = True if params.get(self.auto_run_param, encoding='utf8') == "1" else False
+      else:
+        self.is_auto_runnable = False
+        self.manual_ctrl_status = self.MANUAL_IDLE
+        self.manually_ctrled = False
+
+      self.last_ts = cur_time
 
   def run(self, force = False):
     if force or self.is_enabled:
@@ -123,8 +129,7 @@ class App():
           self.system("am startservice %s/%s" % (self.app, self.activity))
         else:
           self.system("am start -n %s/%s" % (self.app, self.activity))
-
-        self.is_running = True
+    self.is_running = True
 
   def kill(self, force = False):
     if force or self.is_enabled:
@@ -151,7 +156,6 @@ class App():
 
   def system(self, cmd):
     try:
-      # cloudlog.info("running %s" % cmd)
       subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
     except subprocess.CalledProcessError as e:
       cloudlog.event("running failed",
@@ -280,26 +284,40 @@ def main():
   last_thermal_status = None
   thermal_status = None
 
+  set_location_provider_allowed = False
+
   while 1: #has_enabled_apps:
     has_fullscreen_apps = False
+    has_gps_apps = False
+    has_gps_service_apps = False
 
     for app in apps:
       # read params loop
       app.read_params()
-      if app.last_is_enabled and not app.is_enabled:
+      if app.last_is_enabled and not app.is_enabled and app.is_running:
         app.kill(True)
 
       if app.is_enabled:
-        if app.app_type == App.TYPE_FULLSCREEN:
+        if not has_fullscreen_apps and app.app_type == App.TYPE_FULLSCREEN:
           has_fullscreen_apps = True
+        elif not has_gps_apps and app.app_type == App.TYPE_GPS:
+          has_gps_apps = True
+        elif not has_gps_service_apps and app.app_type == App.TYPE_GPS_SERVICE:
+          has_gps_service_apps = True
 
-    # process manual ctrl apps
-    for app in apps:
-      if app.manual_ctrl_status != App.MANUAL_IDLE:
-        if app.manual_ctrl_status == App.MANUAL_ON:
-          app.run(True)
-        else:
-          app.kill(True)
+        # process manual ctrl apps
+        if app.manual_ctrl_status != App.MANUAL_IDLE:
+          if app.manual_ctrl_status == App.MANUAL_ON:
+            app.run(True)
+          else:
+            app.kill(True)
+
+    # set location provider accuracy
+    if not set_location_provider_allowed and (has_gps_apps or has_gps_service_apps):
+      system(f"settings put secure location_providers_allowed -gps")
+      system(f"settings put secure location_providers_allowed -network")
+      system(f"settings put secure location_providers_allowed +gps,network")
+      set_location_provider_allowed = True
 
     msg = messaging.recv_sock(thermal_sock, wait=True)
     started = msg.thermal.started
