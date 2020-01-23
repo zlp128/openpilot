@@ -790,78 +790,75 @@ static void ui_draw_infobar(UIState *s) {
   int ui_viz_rx = scene->ui_viz_rx;
   bool hasSidebar = !s->scene.uilayout_sidebarcollapsed;
   // rect_w = screen_width - sidebar width
-  int rect_w = vwp_w - (hasSidebar? sbr_w : 0);
-  if (s->dragon_driving_ui) {
-    // if driving ui is enabled, rect_w = rect_w - vision start x - small boarder
-    rect_w = rect_w - ui_viz_rx - bdr_s;
-  }
+
+  int rect_w = vwp_w - ui_viz_rx - bdr_s;
   int rect_h = 80;
   // rect_x = 0 + sidebar width
-  int rect_x = 0;
-  if (s->dragon_driving_ui) {
-    // if driving ui is enabled, rect_x = rect_x + vision start x
-    rect_x = rect_x + (hasSidebar? sbr_w : 0) + ui_viz_rx;
-  }
+
+  // if driving ui is enabled, rect_x = rect_x + vision start x
+  int rect_x = (hasSidebar? (bdr_s+sbr_w) : ui_viz_rx);
+
   // rect_y = screen height - board - background height
   int rect_y = vwp_h - bdr_s - rect_h;
 
 //  int text_width;
-  int text_x = rect_w / 2;
-  if (s->dragon_driving_ui) {
-    text_x = text_x + (hasSidebar? sbr_w : 0) + ui_viz_rx;
-  }
+  int text_x = rect_w / 2 + ui_viz_rx;
   int text_y = rect_y + 55;
 
-  // Get local time to display
-  char infobar[68];
-  time_t t = time(NULL);
-  struct tm tm = *localtime(&t);
+  char infobar[100];
+  // create time string
+  char date_time[17];
+  time_t rawtime = time(NULL);
+  struct tm timeinfo;
+  localtime_r(&rawtime, &timeinfo);
+  strftime(date_time, sizeof(date_time),"%D %T", &timeinfo);
+
+  // Create temp string
+  char temp[6];
+  snprintf(temp, sizeof(temp), "%02.0f°C", s->scene.pa0);
+
+  // create battery percentage string
+  char battery[4];
+  snprintf(battery, sizeof(battery), "%02d%%", s->scene.batteryPercent);
 
   if (s->dragon_ui_dev_mini) {
-      char rel_steer[9];
-      snprintf(rel_steer, sizeof(rel_steer), "%s%05.1f°", s->scene.angleSteers < 0? "-" : "+", fabs(s->scene.angleSteers));
+    char rel_steer[9];
+    snprintf(rel_steer, sizeof(rel_steer), "%s%05.1f°", s->scene.angleSteers < 0? "-" : "+", fabs(s->scene.angleSteers));
 
-      char des_steer[9];
-      if (s->scene.engaged) {
-        snprintf(des_steer, sizeof(des_steer), "%s%05.1f°", s->scene.angleSteersDes < 0? "-" : "+", fabs(s->scene.angleSteersDes));
-      } else {
-        snprintf(des_steer, sizeof(des_steer), "%7s", "N/A");
-      }
+    char des_steer[9];
+    if (s->scene.engaged) {
+      snprintf(des_steer, sizeof(des_steer), "%s%05.1f°", s->scene.angleSteersDes < 0? "-" : "+", fabs(s->scene.angleSteersDes));
+    } else {
+      snprintf(des_steer, sizeof(des_steer), "%7s", "-");
+    }
 
+    char lead_dist[8];
+    if (s->scene.lead_status) {
+      snprintf(lead_dist, sizeof(lead_dist), "%06.2fm", s->scene.lead_d_rel);
+    } else {
+      snprintf(lead_dist, sizeof(lead_dist), "%7s", "-");
+    }
 
-      char lead_dist[8];
-      if (s->scene.lead_status) {
-        snprintf(lead_dist, sizeof(lead_dist), "%06.2fm", s->scene.lead_d_rel);
-      } else {
-        snprintf(lead_dist, sizeof(lead_dist), "%7s", "N/A");
-      }
-
-      snprintf(
-        infobar,
-        sizeof(infobar),
-        "%04d/%02d/%02d %02d:%02d:%02d | REL: %s | DES: %s | DIST: %s",
-        tm.tm_year + 1900,
-        tm.tm_mon + 1,
-        tm.tm_mday,
-        tm.tm_hour,
-        tm.tm_min,
-        tm.tm_sec,
-        rel_steer,
-        des_steer,
-        lead_dist
-      );
+    snprintf(
+      infobar,
+      sizeof(infobar),
+      "%s /TMP: %s /BAT: %s /REL: %s /DES: %s /DIS: %s",
+      date_time,
+      temp,
+      battery,
+      rel_steer,
+      des_steer,
+      lead_dist
+    );
   } else {
-      snprintf(
-        infobar,
-        sizeof(infobar),
-        "%04d/%02d/%02d %02d:%02d:%02d",
-        tm.tm_year + 1900,
-        tm.tm_mon + 1,
-        tm.tm_mday,
-        tm.tm_hour,
-        tm.tm_min,
-        tm.tm_sec
-      );
+    snprintf(
+      infobar,
+      sizeof(infobar),
+      "%s /TMP: %s /BAT: %s",
+      date_time,
+      temp,
+      battery
+    );
   }
 
   nvgBeginPath(s->vg);
@@ -869,7 +866,7 @@ static void ui_draw_infobar(UIState *s) {
   nvgFillColor(s->vg, nvgRGBA(0, 0, 0, 180));
   nvgFill(s->vg);
 
-  nvgFontSize(s->vg, hasSidebar? 40:50);
+  nvgFontSize(s->vg, hasSidebar? 35:42);
   nvgFontFace(s->vg, "courbd");
   nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 180));
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER);
@@ -1096,7 +1093,7 @@ static void ui_draw_vision_footer(UIState *s) {
   if (s->dragon_ui_dev) {
     ui_draw_bbui(s);
   }
-  if (s->dragon_ui_dev_mini || s->dragon_enable_dashcam) {
+  if (s->dragon_ui_dev_mini || s->dragon_enable_dashcam || s->dragon_waze_mode) {
     ui_draw_infobar(s);
   }
 }
@@ -1170,7 +1167,9 @@ static void ui_draw_vision(UIState *s) {
   glScissor(ui_viz_rx, s->fb_h-(box_y+box_h), ui_viz_rw, box_h);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  draw_frame(s);
+  if (s->dragon_driving_ui) {
+    draw_frame(s);
+  }
   glViewport(0, 0, s->fb_w, s->fb_h);
   glDisable(GL_SCISSOR_TEST);
 
@@ -1180,12 +1179,14 @@ static void ui_draw_vision(UIState *s) {
   nvgSave(s->vg);
 
   // Draw augmented elements
-  const int inner_height = viz_w*9/16;
-  nvgScissor(s->vg, ui_viz_rx, box_y, ui_viz_rw, box_h);
-  nvgTranslate(s->vg, ui_viz_rx+ui_viz_ro, box_y + (box_h-inner_height)/2.0);
-  nvgScale(s->vg, (float)viz_w / s->fb_w, (float)inner_height / s->fb_h);
-  if (!scene->frontview && !scene->fullview) {
-    ui_draw_world(s);
+  if (s->dragon_driving_ui) {
+    const int inner_height = viz_w*9/16;
+    nvgScissor(s->vg, ui_viz_rx, box_y, ui_viz_rw, box_h);
+    nvgTranslate(s->vg, ui_viz_rx+ui_viz_ro, box_y + (box_h-inner_height)/2.0);
+    nvgScale(s->vg, (float)viz_w / s->fb_w, (float)inner_height / s->fb_h);
+    if (!scene->frontview && !scene->fullview) {
+      ui_draw_world(s);
+    }
   }
 
   nvgRestore(s->vg);
