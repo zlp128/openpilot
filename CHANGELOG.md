@@ -1,3 +1,7 @@
+2020-01-29
+========================
+* [DEVEL] 修正行車介面錯誤。(感謝 深鲸希西 測試；eisenheim、HeatNation 反應)
+
 2020-01-23
 ========================
 * [DEVEL] 加入 Steer Ratio Learner 關閉。(感謝 eisenheim 建議)

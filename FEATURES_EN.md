@@ -41,6 +41,16 @@ If you modify EON with Noctua fan (connect to old fan wires), enable this will a
 Enable this will store your fingerprint/model/vin in files so next time when you start the car, it will slightly reduce the time to recognize your car. 
 ```
 
+**Enable Steer Ratio Learner**
+```
+Enable this to turn on steer ratio learner, users reported that it's more stable if you use the stock steer ratio than the steer ratio learner.
+To do so:
+1. Disable steer ratio learner.
+2. modify "steerRatio" value in /data/params/d/LiveParameters
+
+To revert it back, simply turn the steer ratio learner back on. 
+```
+
 **Camera Offset (cm)**
 ```
 Adjust this value if your EON is not mounted as per instruction, or, if you find your car lean to one side, change this value should help a bit as well.
