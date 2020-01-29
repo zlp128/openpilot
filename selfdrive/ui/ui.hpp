@@ -122,7 +122,7 @@ typedef struct UIScene {
   // for minimal UI
   float angleSteersDes;
   float angleSteers;
-  float pa0;
+  int pa0;
   int batteryPercent;
 
   // for blinker, from kegman
@@ -257,21 +257,8 @@ typedef struct UIState {
   
   // dragonpilot
   SubSocket *carstate_sock;
-  SubSocket *thermal_sock;
-  int dragon_ui_speed_timeout;
-  int dragon_ui_event_timeout;
-  int dragon_ui_maxspeed_timeout;
-  int dragon_ui_face_timeout;
-  int dragon_ui_dev_timeout;
-  int dragon_ui_dev_mini_timeout;
-  int dragon_enable_dashcam_timeout;
-  int dragon_ui_volume_boost_timeout;
-  int dragon_driving_ui_timeout;
-  int dragon_ui_lane_timeout;
-  int dragon_ui_lead_timeout;
-  int dragon_ui_path_timeout;
-  int dragon_ui_blinker_timeout;
-  int dragon_waze_mode_timeout;
+  int dragon_ui_info_timeout;
+  int dragon_ui_timeout;
 
   bool dragon_ui_speed;
   bool dragon_ui_event;
