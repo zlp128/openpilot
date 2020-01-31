@@ -813,14 +813,6 @@ static void ui_draw_infobar(UIState *s) {
   localtime_r(&rawtime, &timeinfo);
   strftime(date_time, sizeof(date_time),"%D %T", &timeinfo);
 
-  // Create temp string
-  char temp[7];
-  snprintf(temp, sizeof(temp), "% 3d°C", s->scene.pa0);
-
-  // create battery percentage string
-  char battery[5];
-  snprintf(battery, sizeof(battery), "% 3d%%", s->scene.batteryPercent);
-
   if (s->dragon_ui_dev_mini) {
     char rel_steer[9];
     snprintf(rel_steer, sizeof(rel_steer), "%s% 5.1f°", s->scene.angleSteers < 0? "-" : "+", fabs(s->scene.angleSteers));
@@ -842,10 +834,8 @@ static void ui_draw_infobar(UIState *s) {
     snprintf(
       infobar,
       sizeof(infobar),
-      "%s /TMP: %s /BAT: %s /REL: %s /DES: %s /DIS: %s",
+      "%s /REL: %s /DES: %s /DIS: %s",
       date_time,
-      temp,
-      battery,
       rel_steer,
       des_steer,
       lead_dist
@@ -854,10 +844,8 @@ static void ui_draw_infobar(UIState *s) {
     snprintf(
       infobar,
       sizeof(infobar),
-      "%s /TMP: %s /BAT: %s",
-      date_time,
-      temp,
-      battery
+      "%s",
+      date_time
     );
   }
 
@@ -1297,11 +1285,11 @@ void ui_nvg_init(UIState *s) {
 
   s->font_courbd = nvgCreateFont(s->vg, "courbd", "../assets/fonts/courbd.ttf");
   assert(s->font_courbd >= 0);
-  s->font_sans_regular = nvgCreateFont(s->vg, "sans-regular", "../../dragonpilot/chinese-fonts/NotoSansCJKtc-Regular.otf");
+  s->font_sans_regular = nvgCreateFont(s->vg, "sans-regular", "../assets/fonts/opensans_regular.ttf");
   assert(s->font_sans_regular >= 0);
-  s->font_sans_semibold = nvgCreateFont(s->vg, "sans-semibold", "../../dragonpilot/chinese-fonts/NotoSansCJKtc-Medium.otf");
+  s->font_sans_semibold = nvgCreateFont(s->vg, "sans-semibold", "../assets/fonts/opensans_semibold.ttf");
   assert(s->font_sans_semibold >= 0);
-  s->font_sans_bold = nvgCreateFont(s->vg, "sans-bold", "../../dragonpilot/chinese-fonts/NotoSansCJKtc-Bold.otf");
+  s->font_sans_bold = nvgCreateFont(s->vg, "sans-bold", "../assets/fonts/opensans_bold.ttf");
   assert(s->font_sans_bold >= 0);
 
   assert(s->img_wheel >= 0);
