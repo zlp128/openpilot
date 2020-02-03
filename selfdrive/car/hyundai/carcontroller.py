@@ -2,6 +2,8 @@ from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11
 from selfdrive.car.hyundai.values import Buttons, SteerLimitParams
 from opendbc.can.packer import CANPacker
+from common.params import Params
+params = Params()
 
 
 class CarController():
@@ -14,7 +16,17 @@ class CarController():
     self.packer = CANPacker(dbc_name)
     self.steer_rate_limited = False
 
-  def update(self, enabled, CS, actuators, pcm_cancel_cmd, hud_alert):
+    # dragonpilot
+    self.turning_signal_timer = 0
+    self.dragon_enable_steering_on_signal = False
+    self.dragon_lat_ctrl = True
+
+  def update(self, enabled, CS, frame, actuators, pcm_cancel_cmd, hud_alert):
+
+    # dragonpilot, don't check for param too often as it's a kernel call
+    if frame % 500 == 0:
+      self.dragon_enable_steering_on_signal = True if params.get("DragonEnableSteeringOnSignal", encoding='utf8') == "1" else False
+      self.dragon_lat_ctrl = False if params.get("DragonLatCtrl", encoding='utf8') == "0" else True
 
     ### Steering Torque
     new_steer = actuators.steer * SteerLimitParams.STEER_MAX
@@ -29,6 +41,17 @@ class CarController():
     self.apply_steer_last = apply_steer
 
     can_sends = []
+
+    # dragonpilot
+    if enabled and (CS.left_blinker_on > 0 or CS.right_blinker_on > 0) and self.dragon_enable_steering_on_signal:
+      self.turning_signal_timer = 100
+
+    if self.turning_signal_timer > 0:
+      self.turning_signal_timer -= 1
+      steer_req = 0
+
+    if not self.dragon_lat_ctrl:
+      steer_req = 0
 
     self.lkas11_cnt = self.cnt % 0x10
     self.clu11_cnt = self.cnt % 0x10
