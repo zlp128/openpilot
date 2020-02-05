@@ -90,14 +90,15 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     ldw @65;
     carUnrecognized @66;
     radarCommIssue @67;
+    driverMonitorLowAcc @68;
     # dragonpilot
-    manualSteeringRequired @68;
-    manualSteeringRequiredBlinkersOn @69;
-    leadCarMoving @70;
-    leadCarDetected @71;
-    preAutoLaneChangeLeft @72;
-    preAutoLaneChangeRight @73;
-    autoLaneChange @74;
+    manualSteeringRequired @69;
+    manualSteeringRequiredBlinkersOn @70;
+    leadCarMoving @71;
+    leadCarDetected @72;
+    preAutoLaneChangeLeft @73;
+    preAutoLaneChangeRight @74;
+    autoLaneChange @75;
   }
 }
 
@@ -353,6 +354,7 @@ struct CarParams {
   tireStiffnessRear @24 :Float32;    # [N/rad] rear tire coeff of stiff
 
   longitudinalTuning @25 :LongitudinalPIDTuning;
+  lateralParams @48 :LateralParams;
   lateralTuning :union {
     pid @26 :LateralPIDTuning;
     indi @27 :LateralINDITuning;
@@ -379,6 +381,12 @@ struct CarParams {
   carFw @44 :List(CarFw);
   radarTimeStep @45: Float32 = 0.05;  # time delta between radar updates, 20Hz is very standard
   communityFeature @46: Bool;  # true if a community maintained feature is detected
+  fingerprintSource @49: FingerprintSource;
+
+  struct LateralParams {
+    torqueBP @0 :List(Int32);
+    torqueV @1 :List(Int32);
+  }
 
   struct LateralPIDTuning {
     kpBP @0 :List(Float32);
@@ -472,5 +480,10 @@ struct CarParams {
     # Toyota only
     dsu @6;
     apgs @7;
+  }
+
+  enum FingerprintSource {
+    can @0;
+    fw @1;
   }
 }
