@@ -64,6 +64,42 @@ def only_toyota_left(candidate_cars):
 
 # **** for use live only ****
 def fingerprint(logcan, sendcan, has_relay):
+  params = Params()
+  dragon_cache_car = params.get("DragonCacheCar", encoding='utf8')
+  dragon_car_fingerprint = None
+  dragon_finger = None
+  dragon_vin = VIN_UNKNOWN
+  dragon_car_fw = []
+  dragon_source = car.CarParams.FingerprintSource.can
+
+  dragon_has_cache = False
+  if dragon_cache_car == "1":
+    cached_source = params.get("DragonCachedSource", encoding='utf8')
+
+    dragon_source = car.CarParams.FingerprintSource.can if cached_source == "" else pickle.loads(cached_source)
+
+    cached_finger = params.get("DragonCachedFP")
+    cached_model = params.get("DragonCachedModel")
+    if cached_finger != "" and cached_model != "":
+      dragon_car_fingerprint = pickle.loads(cached_model)
+      dragon_finger = pickle.loads(cached_finger)
+
+      # car_fw and vin are only available if relay is used.
+      if dragon_source == car.CarParams.FingerprintSource.fw:
+        # load car_fw
+        cached_car_fw = params.get("DragonCachedCarFW")
+        if cached_car_fw != "":
+          dragon_car_fw = pickle.loads(cached_car_fw)
+
+        # load vin
+        cached_vin = params.get("DragonCachedVIN")
+        if cached_vin != "":
+          dragon_vin = pickle.loads(cached_vin)
+
+      # set relay to false if cache is right
+      has_relay = False
+      dragon_has_cache = True
+
   if has_relay:
     # Vin query only reliably works thorugh OBDII
     bus = 1
@@ -93,15 +129,8 @@ def fingerprint(logcan, sendcan, has_relay):
   car_fingerprint = None
   done = False
 
-  params = Params()
-  dragon_cache_car = params.get("DragonCacheCar", encoding='utf8')
-  dragon_cached_fp = params.get("DragonCachedFP")
-  dragon_cached_model = params.get("DragonCachedModel")
-
-  if dragon_cache_car == "1" and dragon_cached_fp != "" and dragon_cached_model != "":
-    car_fingerprint = pickle.loads(dragon_cached_model)
-    finger = pickle.loads(dragon_cached_fp)
-    vin = pickle.loads(params.get("DragonCachedVIN"))
+  # dp, skip loop if cach is on
+  if dragon_has_cache:
     done = True
 
   while not done:
@@ -138,19 +167,29 @@ def fingerprint(logcan, sendcan, has_relay):
 
     frame += 1
 
-    if succeeded:
-      put_nonblocking("DragonCachedModel", pickle.dumps(car_fingerprint))
-      put_nonblocking("DragonCachedFP", pickle.dumps(finger))
-      put_nonblocking("DragonCachedVIN", pickle.dumps(vin))
-      put_nonblocking("DragonCarModel", car_fingerprint)
-      put_nonblocking("DragonCarVIN", vin)
+  if dragon_has_cache:
+    car_fingerprint = dragon_car_fingerprint
+    finger = dragon_finger
+    vin = dragon_vin
+    car_fw = dragon_car_fw
+    source = dragon_source
 
-  source = car.CarParams.FingerprintSource.can
+  else:
+    source = car.CarParams.FingerprintSource.can
 
-  # If FW query returns exactly 1 candidate, use it
-  if len(fw_candidates) == 1:
-    car_fingerprint = list(fw_candidates)[0]
-    source = car.CarParams.FingerprintSource.fw
+    # If FW query returns exactly 1 candidate, use it
+    if len(fw_candidates) == 1:
+      car_fingerprint = list(fw_candidates)[0]
+      source = car.CarParams.FingerprintSource.fw
+
+    # dp, store values if cache is off
+    put_nonblocking("DragonCachedModel", pickle.dumps(car_fingerprint))
+    put_nonblocking("DragonCachedFP", pickle.dumps(finger))
+    put_nonblocking("DragonCachedVIN", pickle.dumps(vin))
+    put_nonblocking("DragonCachedCarFW", pickle.dumps(car_fw))
+    put_nonblocking("DragonCachedSource", pickle.dumps(source))
+    # these are for display only
+    put_nonblocking("DragonCarModel", car_fingerprint)
 
   cloudlog.warning("fingerprinted %s", car_fingerprint)
   return car_fingerprint, finger, vin, car_fw, source
