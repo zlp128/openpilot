@@ -151,6 +151,7 @@ keys = {
   "DragonUIBlinker": [TxType.PERSISTENT],
   "DragonEnableDriverMonitoring": [TxType.PERSISTENT],
   "DragonCarModel": [TxType.PERSISTENT],
+  "DragonCarVIN": [TxType.PERSISTENT], #deprecated
   "DragonEnableSlowOnCurve": [TxType.PERSISTENT],
   "DragonEnableLeadCarMovingAlert": [TxType.PERSISTENT],
   "DragonToyotaSnGMod": [TxType.PERSISTENT],
