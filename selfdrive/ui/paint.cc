@@ -807,26 +807,26 @@ static void ui_draw_infobar(UIState *s) {
 
   char infobar[100];
   // create time string
-  char date_time[17];
+  char date_time[20];
   time_t rawtime = time(NULL);
   struct tm timeinfo;
   localtime_r(&rawtime, &timeinfo);
-  strftime(date_time, sizeof(date_time),"%D %T", &timeinfo);
+  strftime(date_time, sizeof(date_time),"%F %T", &timeinfo);
 
   if (s->dragon_ui_dev_mini) {
     char rel_steer[9];
-    snprintf(rel_steer, sizeof(rel_steer), "%s% 5.1f°", s->scene.angleSteers < 0? "-" : "+", fabs(s->scene.angleSteers));
+    snprintf(rel_steer, sizeof(rel_steer), "%s%05.1f°", s->scene.angleSteers < 0? "-" : "+", fabs(s->scene.angleSteers));
 
     char des_steer[9];
     if (s->scene.engaged) {
-      snprintf(des_steer, sizeof(des_steer), "%s% 5.1f°", s->scene.angleSteersDes < 0? "-" : "+", fabs(s->scene.angleSteersDes));
+      snprintf(des_steer, sizeof(des_steer), "%s%05.1f°", s->scene.angleSteersDes < 0? "-" : "+", fabs(s->scene.angleSteersDes));
     } else {
       snprintf(des_steer, sizeof(des_steer), "%7s", "-");
     }
 
     char lead_dist[8];
     if (s->scene.lead_status) {
-      snprintf(lead_dist, sizeof(lead_dist), "% 6.2fm", s->scene.lead_d_rel);
+      snprintf(lead_dist, sizeof(lead_dist), "%06.2fm", s->scene.lead_d_rel);
     } else {
       snprintf(lead_dist, sizeof(lead_dist), "%7s", "-");
     }
@@ -854,7 +854,7 @@ static void ui_draw_infobar(UIState *s) {
   nvgFillColor(s->vg, nvgRGBA(0, 0, 0, 180));
   nvgFill(s->vg);
 
-  nvgFontSize(s->vg, hasSidebar? 35:42);
+  nvgFontSize(s->vg, hasSidebar? 43:50);
   nvgFontFace(s->vg, "courbd");
   nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 180));
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER);
