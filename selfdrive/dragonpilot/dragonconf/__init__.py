@@ -13,6 +13,8 @@ default_conf = {
   'DragonCachedModel': '', # for cache car
   'DragonCachedFP': '', # for cache car
   'DragonCachedVIN': '', # for cache car
+  'DragonCachedCarFW': '', # for cache car
+  'DragonCachedSource': '', # for cache car
   'DragonAllowGas': '0',
   'DragonToyotaStockDSU': '0',
   'DragonLatCtrl': '1',
@@ -50,7 +52,6 @@ default_conf = {
   'DragonUIBlinker': '0',
   'DragonEnableDriverMonitoring': '1',
   'DragonCarModel': '',
-  'DragonCarVIN': '',
   'DragonEnableSlowOnCurve': '1',
   'DragonEnableLeadCarMovingAlert': '0',
   'DragonToyotaSnGMod': '0',
@@ -67,8 +68,7 @@ default_conf = {
 }
 
 deprecated_conf = {
-  'DragonIsEON': '',
-  'DragonHWChecked': '',
+  'DragonCarVIN': '',
 }
 
 deprecated_conf_invert = {

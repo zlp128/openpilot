@@ -113,6 +113,8 @@ keys = {
   "DragonCachedModel": [TxType.PERSISTENT],
   "DragonCachedFP": [TxType.PERSISTENT],
   "DragonCachedVIN": [TxType.PERSISTENT],
+  "DragonCachedCarFW": [TxType.PERSISTENT],
+  "DragonCachedSource": [TxType.PERSISTENT],
   "DragonAllowGas": [TxType.PERSISTENT],
   "DragonToyotaStockDSU": [TxType.PERSISTENT],
   "DragonLatCtrl": [TxType.PERSISTENT],
@@ -149,12 +151,10 @@ keys = {
   "DragonUIBlinker": [TxType.PERSISTENT],
   "DragonEnableDriverMonitoring": [TxType.PERSISTENT],
   "DragonCarModel": [TxType.PERSISTENT],
-  "DragonCarVIN": [TxType.PERSISTENT],
+  "DragonCarVIN": [TxType.PERSISTENT], #deprecated
   "DragonEnableSlowOnCurve": [TxType.PERSISTENT],
   "DragonEnableLeadCarMovingAlert": [TxType.PERSISTENT],
   "DragonToyotaSnGMod": [TxType.PERSISTENT],
-  "DragonIsEON": [TxType.PERSISTENT], # deprecated
-  "DragonHWChecked": [TxType.PERSISTENT], # deprecated
   "DragonEnableSRLearner": [TxType.PERSISTENT],
   "DragonWazeMode": [TxType.PERSISTENT],
   "DragonRunWaze": [TxType.PERSISTENT],
