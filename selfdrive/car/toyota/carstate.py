@@ -5,21 +5,15 @@ from opendbc.can.can_define import CANDefine
 from opendbc.can.parser import CANParser
 from selfdrive.config import Conversions as CV
 from selfdrive.car.toyota.values import CAR, DBC, STEER_THRESHOLD, TSS2_CAR, NO_DSU_CAR
-
-GearShifter = car.CarState.GearShifter
-
 from common.realtime import sec_since_boot
 from common.params import Params
 params = Params()
 
-def parse_gear_shifter(gear, vals):
+GearShifter = car.CarState.GearShifter
 
-  val_to_capnp = {'P': GearShifter.park, 'R': GearShifter.reverse, 'N': GearShifter.neutral,
-                  'D': GearShifter.drive, 'B': GearShifter.brake}
-  try:
-    return val_to_capnp[vals[gear]]
-  except KeyError:
-    return GearShifter.unknown
+def parse_gear_shifter(gear):
+  return {'P': GearShifter.park, 'R': GearShifter.reverse, 'N': GearShifter.neutral,
+              'D': GearShifter.drive, 'B': GearShifter.brake}.get(gear, GearShifter.unknown)
 
 
 def get_can_parser(CP):
@@ -200,7 +194,7 @@ class CarState():
       self.angle_steers = cp.vl["STEER_ANGLE_SENSOR"]['STEER_ANGLE'] + cp.vl["STEER_ANGLE_SENSOR"]['STEER_FRACTION']
     self.angle_steers_rate = cp.vl["STEER_ANGLE_SENSOR"]['STEER_RATE']
     can_gear = int(cp.vl["GEAR_PACKET"]['GEAR'])
-    self.gear_shifter = parse_gear_shifter(can_gear, self.shifter_values)
+    self.gear_shifter = parse_gear_shifter(self.shifter_values.get(can_gear, None))
     if self.CP.carFingerprint == CAR.LEXUS_IS:
       self.main_on = cp.vl["DSU_CRUISE"]['MAIN_ON']
     elif self.CP.carFingerprint in [CAR.LEXUS_ISH, CAR.LEXUS_GSH]:
