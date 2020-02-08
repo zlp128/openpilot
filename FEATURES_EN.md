@@ -91,7 +91,6 @@ Turn this on if you want to temporary disable dragonpilot's lateral control when
 ```
 Cars like Honda has limited steering angle/torque, when the curvature is higher than the limitation, dragonpilot sends alerts to warn the driver,
 Disable this will stop any of those alerts.
-(Hyundai, Ford, Toyota do not use such alert)
 ```
 
 **Enable Slow on Curve**
@@ -109,7 +108,6 @@ This works better if you turn on Toyota > Stock DSU Mode
 
 **Enable Assisted Lane Change**
 ```
-This is a hidden feature by comma ai in 0.7. 
 Once it's enabled, if your speed reach 37mph / 60kph or above and has left or right blinker on, it will help you to change lane when you apply a small force on the steering wheel (of the same direction as the blinker).
 NOTE: if you do not turn off your blinker, you can apply force again to change to the next lane. 
 ```
