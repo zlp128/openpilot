@@ -210,7 +210,7 @@ ALERTS = [
 
   Alert(
       "steerTempUnavailableNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "转向控制暂时失效",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 0., 3.),
@@ -273,84 +273,84 @@ ALERTS = [
   # Non-entry only alerts
   Alert(
       "wrongCarModeNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "主开关关闭",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 0., 3.),
 
   Alert(
       "dataNeededNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "需要更多的数据来协助校准，请将行车记录上传后再试",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 0., 3.),
 
   Alert(
       "outOfSpaceNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "储存空间不足",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 0., 3.),
 
   Alert(
       "pedalPressedNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "试踩踏板",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, "brakePressed", AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "speedTooLowNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "车速过慢",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "brakeHoldNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "驻车刹车已启用",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "parkBrakeNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "电车驻车已启动",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "lowSpeedLockoutNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "巡航系统错误，请重新发动车辆",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "lowBatteryNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "电池电量过低",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "sensorDataInvalidNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "没有收到任何来自传感器的数据",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "soundsUnavailableNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "找不到音效装置",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "tooDistractedNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "注意力高度不集中",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
@@ -515,14 +515,14 @@ ALERTS = [
   # not loud cancellations (user is in control)
   Alert(
       "noTarget",
-      "openpilot已取消",
+      "dragonpilot 已取消",
       "没有侦测到前车",
       AlertStatus.normal, AlertSize.mid,
       Priority.HIGH, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
 
   Alert(
       "speedTooLow",
-      "openpilot已取消",
+      "dragonpilot 已取消",
       "车速过慢",
       AlertStatus.normal, AlertSize.mid,
       Priority.HIGH, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
@@ -530,14 +530,14 @@ ALERTS = [
   # Cancellation alerts causing non-entry
   Alert(
       "overheatNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "系统过热",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
   Alert(
       "wrongGearNoEntry",
-      "无法使用 openpilot",
+      "无法使用 dragonpilot",
       "车辆不在D档",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
@@ -677,8 +677,8 @@ ALERTS = [
 
   Alert(
       "radarCommIssueNoEntry",
-      "openpilot Unavailable",
-      "Radar Communication Issue",
+      "无法使用 dragonpilot",
+      "雷达通讯异常",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
 
