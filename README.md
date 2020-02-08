@@ -45,6 +45,11 @@ dragonpilot (龍芯駕駛輔助系統)
 * ~~澳洲版 2017 Lexus IS300h by eFiniLan (已入官方)~~
 * ~~台灣版 2019 Toyota Corolla Altis 油電版 by wlee72 (已入官方)~~
 
+目前有完整支援 dragonpilot 客制化功能的車系有：
+* Lexus / Toyota
+* Honda
+* Hyundai
+(其它 openpilot 支援的車系仍可使用 dragonpilot 部分的功能。)
 
 畫面截圖
 ---
@@ -52,6 +57,16 @@ dragonpilot (龍芯駕駛輔助系統)
 
 **更多請看 screenshots/ 資料夾**
 
+影片
+---
+<table>
+  <tr>
+    <td><a href="https://www.youtube.com/watch?v=-Womm0aO8Cc" title="YouTube" rel="noopener"><img src="http://i3.ytimg.com/vi/-Womm0aO8Cc/hqdefault.jpg"></a></td>
+    <td><a href="https://www.youtube.com/watch?v=ACrHqodnhKI" title="YouTube" rel="noopener"><img src="http://i3.ytimg.com/vi/ACrHqodnhKI/hqdefault.jpg"></a></td>
+    <td><a href="https://www.youtube.com/watch?v=D5M5qci5wsw" title="YouTube" rel="noopener"><img src="http://i3.ytimg.com/vi/D5M5qci5wsw/hqdefault.jpg"></a></td>
+    <td><a href="https://www.youtube.com/watch?v=fb0KEZgqH1Y" title="YouTube" rel="noopener"><img src="http://i3.ytimg.com/vi/fb0KEZgqH1Y/hqdefault.jpg"></a></td>
+  </tr>
+</table>
 
 硬體需求
 ---
@@ -116,17 +131,9 @@ dragonpilot (龍芯駕駛輔助系統)
     # 繁體穩定版 v0.6.5
     #git checkout 0.6.5-zht
     ```
-8. 確認沒有錯誤
-    ```bash
-    make
-    ```
-9.  重開機
+8.  重開機
     ```bash
     reboot
-    ```
-10. 手動更新 Panda 韌體
-    ```bash
-    cd /data/openpilot/panda ; pkill -f boardd ; PYTHONPATH=..; python -c "from panda import Panda; Panda().flash()"
     ```
 
 **如果重開機後中文字無法正確顯示，請再重開機一次。**
@@ -157,25 +164,18 @@ dragonpilot (龍芯駕駛輔助系統)
     # 繁體穩定版 v0.6.5
     #git checkout 0.6.5-zht
     ```
-5. 確認沒有錯誤
-    ```bash
-    make
-    ```
-6.  重開機
+5.  重開機
     ```bash
     reboot
-    ```
-7. 手動更新 Panda 韌體
-    ```bash
-    cd /data/openpilot/panda ; pkill -f boardd ; PYTHONPATH=..; python -c "from panda import Panda; Panda().flash()"
     ```
 
 版本分支介紹
 ---
 * docs: 說明檔
-* devel-unsupported-cars: 官方原版 + 方便移植新車款用的補丁。
-* devel-en: 開發版 - (英文，基於官方原版 + 客制化功能)
+* devel: 搶鮮版 - (英文，基於官方 devel-staging 版 + 客制化功能)
+* devel-en: 開發版 - (英文，基於官方 devel 版 + 客制化功能)
 * devel-zhs: 開發版 - (简体中文，基於 devel-en + 简体中文化)
+* devel-zhs-appless: 開發版 - (简体中文，基於 devel-zhs + 移除第三方應用)
 * devel-zht: 開發版 - (繁體中文，基於 devel-en + 繁體中文化)
 * ?.?.?-en: 穩定版 - (英文，測試過的 devel-en)
 * ?.?.?-zhs: 穩定版 - (简体中文，測試過的 devel-zhs)
