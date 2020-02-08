@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 from cereal import car
+from common.realtime import sec_since_boot
 from selfdrive.config import Conversions as CV
 from selfdrive.controls.lib.drive_helpers import EventTypes as ET, create_event
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.car.hyundai.carstate import CarState, get_can_parser, get_camera_parser
-from selfdrive.car.hyundai.values import ECU, ECU_FINGERPRINT, CAR, get_hud_alerts, FEATURES, FINGERPRINTS
+from selfdrive.car.hyundai.values import Ecu, ECU_FINGERPRINT, CAR, get_hud_alerts, FEATURES, FINGERPRINTS
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, is_ecu_disconnected, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
+from common.params import Params
+params = Params()
 
 GearShifter = car.CarState.GearShifter
 ButtonType = car.CarState.ButtonEvent.Type
@@ -32,6 +35,13 @@ class CarInterface(CarInterfaceBase):
     self.CC = None
     if CarController is not None:
       self.CC = CarController(self.cp.dbc_name, CP.carFingerprint)
+
+    # dragonpilot
+    self.frame = 0
+    self.dragon_enable_steering_on_signal = False
+    self.dragon_allow_gas = False
+    self.ts_last_check = 0.
+    self.dragon_lat_ctrl = True
 
   @staticmethod
   def compute_gb(accel, speed):
@@ -140,7 +150,7 @@ class CarInterface(CarInterfaceBase):
     ret.brakeMaxBP = [0.]
     ret.brakeMaxV = [1.]
 
-    ret.enableCamera = is_ecu_disconnected(fingerprint[0], FINGERPRINTS, ECU_FINGERPRINT, candidate, ECU.CAM) or has_relay
+    ret.enableCamera = is_ecu_disconnected(fingerprint[0], FINGERPRINTS, ECU_FINGERPRINT, candidate, Ecu.fwdCamera) or has_relay
     ret.openpilotLongitudinalControl = False
 
     ret.stoppingControl = False
@@ -150,6 +160,14 @@ class CarInterface(CarInterfaceBase):
 
   # returns a car.CarState
   def update(self, c, can_strings):
+    # dragonpilot, don't check for param too often as it's a kernel call
+    ts = sec_since_boot()
+    if ts - self.ts_last_check > 5.:
+      self.dragon_enable_steering_on_signal = True if params.get("DragonEnableSteeringOnSignal", encoding='utf8') == "1" else True
+      self.dragon_allow_gas = True if params.get("DragonAllowGas", encoding='utf8') == "1" else False
+      self.dragon_lat_ctrl = False if params.get("DragonLatCtrl", encoding='utf8') == "0" else True
+      self.ts_last_check = ts
+
     # ******************* do can recv *******************
     self.cp.update_strings(can_strings)
     self.cp_cam.update_strings(can_strings)
@@ -245,7 +263,11 @@ class CarInterface(CarInterfaceBase):
       events.append(create_event('wrongCarMode', [ET.NO_ENTRY, ET.USER_DISABLE]))
     if ret.gearShifter == GearShifter.reverse:
       events.append(create_event('reverseGear', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
-    if self.CS.steer_error:
+    if not self.dragon_lat_ctrl:
+      events.append(create_event('manualSteeringRequired', [ET.WARNING]))
+    elif (self.CS.left_blinker_on or self.CS.right_blinker_on) and self.dragon_enable_steering_on_signal:
+      events.append(create_event('manualSteeringRequiredBlinkersOn', [ET.WARNING]))
+    elif self.CS.steer_error:
       events.append(create_event('steerTempUnavailable', [ET.NO_ENTRY, ET.WARNING]))
 
     if ret.cruiseState.enabled and not self.cruise_enabled_prev:
@@ -253,13 +275,17 @@ class CarInterface(CarInterfaceBase):
     elif not ret.cruiseState.enabled:
       events.append(create_event('pcmDisable', [ET.USER_DISABLE]))
 
-    # disable on pedals rising edge or when brake is pressed and speed isn't zero
-    if (ret.gasPressed and not self.gas_pressed_prev) or \
-      (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgoRaw > 0.1)):
-      events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
+    # DragonAllowGas
+    if not self.dragon_allow_gas:
+      if (ret.gasPressed and not self.gas_pressed_prev) or \
+              (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgoRaw > 0.1)):
+        events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
-    if ret.gasPressed:
-      events.append(create_event('pedalPressed', [ET.PRE_ENABLE]))
+      if ret.gasPressed:
+        events.append(create_event('pedalPressed', [ET.PRE_ENABLE]))
+    else:
+      if ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.1):
+        events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
     if self.low_speed_alert:
       events.append(create_event('belowSteerSpeed', [ET.WARNING]))
@@ -276,7 +302,7 @@ class CarInterface(CarInterfaceBase):
 
     hud_alert = get_hud_alerts(c.hudControl.visualAlert)
 
-    can_sends = self.CC.update(c.enabled, self.CS, c.actuators,
+    can_sends = self.CC.update(c.enabled, self.CS, self.frame, c.actuators,
                                c.cruiseControl.cancel, hud_alert)
-
+    self.frame += 1
     return can_sends

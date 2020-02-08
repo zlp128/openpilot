@@ -95,7 +95,6 @@ class CarController():
     # dragonpilot
     self.turning_signal_timer = 0
     self.dragon_enable_steering_on_signal = False
-    self.dragon_allow_gas = False
     self.dragon_lat_ctrl = True
 
   def update(self, enabled, CS, frame, actuators, \
@@ -104,7 +103,6 @@ class CarController():
     # dragonpilot, don't check for param too often as it's a kernel call
     if frame % 500 == 0:
       self.dragon_enable_steering_on_signal = True if params.get("DragonEnableSteeringOnSignal", encoding='utf8') == "1" else False
-      self.dragon_allow_gas = True if params.get("DragonAllowGas", encoding='utf8') == "1" else False
       self.dragon_lat_ctrl = False if params.get("DragonLatCtrl", encoding='utf8') == "0" else True
 
     # *** apply brake hysteresis ***

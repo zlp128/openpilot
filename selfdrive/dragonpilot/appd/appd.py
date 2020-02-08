@@ -183,7 +183,7 @@ def init_apps(apps):
     ]
   ))
   apps.append(App(
-    # v4.3.0.600310 R2098NSLAE
+    # v4.5.0.600053
     "com.autonavi.amapauto",
     "com.autonavi.amapauto.MainMapActivity",
     "DragonEnableAutonavi",

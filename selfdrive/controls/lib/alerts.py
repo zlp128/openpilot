@@ -140,7 +140,7 @@ ALERTS = [
 
   Alert(
       "promptDriverUnresponsive",
-      "觸碰方向盤",
+      "請觸碰方向盤",
       "駕駛沒有反應",
       AlertStatus.userPrompt, AlertSize.mid,
       Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning2, .1, .1, .1),
@@ -153,18 +153,11 @@ ALERTS = [
       Priority.HIGH, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, .1, .1, .1),
 
   Alert(
-      "driverMonitorOff",
-      "駕駛監控暫時停用",
-      "監控準確率：低",
+      "driverMonitorLowAcc",
+      "請檢查駕駛面部的可見度",
+      "駕駛監控模型輸出不明確",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOW, VisualAlert.none, AudibleAlert.none, .4, 0., 4.),
-
-  Alert(
-      "driverMonitorOn",
-      "駕駛監控已啟用",
-      "監控準確率：高",
-      AlertStatus.normal, AlertSize.mid,
-      Priority.LOW, VisualAlert.none, AudibleAlert.none, .4, 0., 4.),
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .4, 0., 1.),
 
   Alert(
       "geofence",
@@ -178,6 +171,13 @@ ALERTS = [
       "隨時準備好接管",
       "請您將手放在方向盤上並持續注意路況",
       AlertStatus.normal, AlertSize.mid,
+      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
+
+  Alert(
+      "startupMaster",
+      "WARNING: This branch is not tested",
+      "Always keep hands on wheel and eyes on road",
+      AlertStatus.userPrompt, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
 
   Alert(
@@ -330,7 +330,7 @@ ALERTS = [
   Alert(
       "sensorDataInvalidNoEntry",
       "無法使用 dragonpilot",
-      "沒有收到任何來自 EON 傳感器的資料",
+      "沒有收到任何來自裝置傳感器的資料",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
@@ -366,7 +366,7 @@ ALERTS = [
   Alert(
       "calibrationInvalid",
       "即刻接管控制",
-      "校準無效：請將 EON 放於新的位置並重新校準",
+      "校準無效：請將裝置放於新的位置並重新校準",
       AlertStatus.critical, AlertSize.full,
       Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, .1, 2., 2.),
 
@@ -437,7 +437,7 @@ ALERTS = [
   Alert(
       "lowMemory",
       "即刻接管控制",
-      "記憶體不足：請重啟您的 EON",
+      "記憶體不足：請重啟您的裝置",
       AlertStatus.critical, AlertSize.full,
       Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, .1, 2., 2.),
 
@@ -538,7 +538,7 @@ ALERTS = [
   Alert(
       "calibrationInvalidNoEntry",
       "無法使用 dragonpilot",
-      "校準無效：請將 EON 放於新的位置並重新校準",
+      "校準無效：請將裝置放於新的位置並重新校準",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeError, .4, 2., 3.),
 
@@ -685,7 +685,7 @@ ALERTS = [
   Alert(
       "lowMemoryNoEntry",
       "無法使用 dragonpilot",
-      "記憶體不足：請重啟您的 EON",
+      "記憶體不足：請重啟您的裝置",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
 
@@ -742,21 +742,21 @@ ALERTS = [
   Alert(
       "sensorDataInvalidPermanent",
       "沒有收到任何來自 EON 傳感器的資料",
-      "請重啟您的 EON",
+      "請重啟您的裝置",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "soundsUnavailablePermanent",
       "找不到音效裝置",
-      "請重啟您的 EON",
+      "請重啟您的裝置",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "lowMemoryPermanent",
       "記憶體嚴重不足",
-      "請重啟您的 EON",
+      "請重啟您的裝置",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
