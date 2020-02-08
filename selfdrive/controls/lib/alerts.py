@@ -153,9 +153,9 @@ ALERTS = [
       Priority.HIGH, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, .1, .1, .1),
 
   Alert(
-      "driverMonitorOff",
-      "驾驶监控暂时停用",
-      "监控准确率：低",
+      "driverMonitorLowAcc",
+      "检查驾驶面部能见度",
+      "驾驶监控模型输出不明确",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .4, 0., 4.),
 
@@ -164,7 +164,7 @@ ALERTS = [
       "驾驶监控已启用",
       "监控准确率：高",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOW, VisualAlert.none, AudibleAlert.none, .4, 0., 4.),
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .4, 0., 1.),
 
   Alert(
       "geofence",
@@ -178,6 +178,13 @@ ALERTS = [
       "随时准备好接管",
       "请您将手放在方向盘上并持续注意路况",
       AlertStatus.normal, AlertSize.mid,
+      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
+
+  Alert(
+      "startupMaster",
+      "WARNING: This branch is not tested",
+      "Always keep hands on wheel and eyes on road",
+      AlertStatus.userPrompt, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
 
   Alert(
@@ -437,7 +444,7 @@ ALERTS = [
   Alert(
       "lowMemory",
       "即刻接管控制",
-      "内存过低: 请重启 EON",
+      "内存过低: 请重启装置",
       AlertStatus.critical, AlertSize.full,
       Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, .1, 2., 2.),
 
@@ -685,7 +692,7 @@ ALERTS = [
   Alert(
       "lowMemoryNoEntry",
       "无法使用 dragonpilot",
-      "内存过低: 请重启 EON",
+      "内存过低: 请重启装置",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeDisengage, .4, 2., 3.),
 
@@ -742,21 +749,21 @@ ALERTS = [
   Alert(
       "sensorDataInvalidPermanent",
       "没有收到任何来自传感器的数据",
-      "请重启您的传感器",
+      "请重启您的装置",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "soundsUnavailablePermanent",
       "找不到音效装置",
-      "请重启您的 EON",
+      "请重启您的装置",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "lowMemoryPermanent",
       "内存严重不足",
-      "请重启您的 EON",
+      "请重启您的装置",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 

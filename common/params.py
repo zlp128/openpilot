@@ -29,7 +29,7 @@ import fcntl
 import tempfile
 import threading
 from enum import Enum
-
+from common.basedir import PARAMS
 
 def mkdirs_exists_ok(path):
   try:
@@ -54,6 +54,7 @@ keys = {
   "AthenadPid": [TxType.PERSISTENT],
   "CalibrationParams": [TxType.PERSISTENT],
   "CarParams": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
+  "CarParamsCache": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
   "CarVin": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
   "CommunityFeaturesToggle": [TxType.PERSISTENT],
   "CompletedTrainingVersion": [TxType.PERSISTENT],
@@ -112,6 +113,8 @@ keys = {
   "DragonCachedModel": [TxType.PERSISTENT],
   "DragonCachedFP": [TxType.PERSISTENT],
   "DragonCachedVIN": [TxType.PERSISTENT],
+  "DragonCachedCarFW": [TxType.PERSISTENT],
+  "DragonCachedSource": [TxType.PERSISTENT],
   "DragonAllowGas": [TxType.PERSISTENT],
   "DragonToyotaStockDSU": [TxType.PERSISTENT],
   "DragonLatCtrl": [TxType.PERSISTENT],
@@ -148,12 +151,10 @@ keys = {
   "DragonUIBlinker": [TxType.PERSISTENT],
   "DragonEnableDriverMonitoring": [TxType.PERSISTENT],
   "DragonCarModel": [TxType.PERSISTENT],
-  "DragonCarVIN": [TxType.PERSISTENT],
+  "DragonCarVIN": [TxType.PERSISTENT], #deprecated
   "DragonEnableSlowOnCurve": [TxType.PERSISTENT],
   "DragonEnableLeadCarMovingAlert": [TxType.PERSISTENT],
   "DragonToyotaSnGMod": [TxType.PERSISTENT],
-  "DragonIsEON": [TxType.PERSISTENT], # deprecated
-  "DragonHWChecked": [TxType.PERSISTENT], # deprecated
   "DragonEnableSRLearner": [TxType.PERSISTENT],
   "DragonWazeMode": [TxType.PERSISTENT],
   "DragonRunWaze": [TxType.PERSISTENT],
@@ -383,13 +384,18 @@ def write_db(params_path, key, value):
     lock.release()
 
 class Params():
-  def __init__(self, db='/data/params'):
+  def __init__(self, db=PARAMS):
     self.db = db
 
     # create the database if it doesn't exist...
     if not os.path.exists(self.db+"/d"):
       with self.transaction(write=True):
         pass
+
+  def clear_all(self):
+    shutil.rmtree(self.db, ignore_errors=True)
+    with self.transaction(write=True):
+      pass
 
   def transaction(self, write=False):
     if write:
