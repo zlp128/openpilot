@@ -160,13 +160,6 @@ ALERTS = [
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .4, 0., 4.),
 
   Alert(
-      "driverMonitorOn",
-      "驾驶监控已启用",
-      "监控准确率：高",
-      AlertStatus.normal, AlertSize.mid,
-      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .4, 0., 1.),
-
-  Alert(
       "geofence",
       "请求解除",
       "不在地理围栏区域之内",
