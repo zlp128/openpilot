@@ -74,7 +74,7 @@ def fingerprint(logcan, sendcan, has_relay):
 
   dragon_has_cache = False
   if dragon_cache_car == "1":
-    cached_source = params.get("DragonCachedSource", encoding='utf8')
+    cached_source = params.get("DragonCachedSource")
 
     dragon_source = car.CarParams.FingerprintSource.can if cached_source == "" else pickle.loads(cached_source)
 
