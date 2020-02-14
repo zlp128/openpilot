@@ -367,12 +367,12 @@ def main(gctx=None):
 
     if not ping_failed:
       # download application update
-      git_fetch_output = run(NICE_LOW_PRIORITY + ["git", "fetch"])
+      git_fetch_output = run(NICE_LOW_PRIORITY + ["git", "-C", "/data/openpilot/", "fetch"])
       cloudlog.info("git fetch success: %s", git_fetch_output)
 
       # Write update available param
-      cur_hash = run(["git", "rev-parse", "HEAD"]).rstrip()
-      upstream_hash = run(["git", "rev-parse", "@{u}"]).rstrip()
+      cur_hash = run(["git", "-C", "/data/openpilot/", "rev-parse", "HEAD"]).rstrip()
+      upstream_hash = run(["git", "-C", "/data/openpilot/", "rev-parse", "@{u}"]).rstrip()
       cloudlog.info("comparing %s to %s" % (cur_hash, upstream_hash))
       params.put("UpdateAvailable", str(int(cur_hash != upstream_hash)))
 
