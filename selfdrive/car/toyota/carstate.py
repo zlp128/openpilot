@@ -210,7 +210,7 @@ class CarState(CarStateBase):
 
     if self.dragon_toyota_stock_dsu and self.generic_toggle and self.main_on:
       enable_acc = True
-      if not self.gear_shifter == GearShifter.drive or not self.seatbelt or not self.door_all_closed:
+      if not self.seatbelt or not self.door_all_closed:
        enable_acc = False
       self.pcm_acc_active = enable_acc
       if self.standstill:
