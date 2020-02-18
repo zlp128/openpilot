@@ -58,7 +58,6 @@ default_conf = {
   'DragonEnableSRLearner': '1',
   'DragonWazeMode': '0',
   'DragonRunWaze': '0',
-  'DragonEnableAssistedLC': '1',
   'DragonEnableAutoLC': '0',
   'DragonAssistedLCMinMPH': 45,
   'DragonAutoLCMinMPH': 60,
@@ -68,7 +67,6 @@ default_conf = {
 }
 
 deprecated_conf = {
-  'DragonCarVIN': '',
 }
 
 deprecated_conf_invert = {
