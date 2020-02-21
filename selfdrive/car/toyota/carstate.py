@@ -4,6 +4,7 @@ from selfdrive.car.interfaces import CarStateBase
 from opendbc.can.parser import CANParser
 from selfdrive.config import Conversions as CV
 from selfdrive.car.toyota.values import CAR, DBC, STEER_THRESHOLD, TSS2_CAR, NO_DSU_CAR
+
 from common.realtime import sec_since_boot
 from common.params import Params
 params = Params()
@@ -118,7 +119,7 @@ class CarState(CarStateBase):
   def update(self, cp, cp_cam):
     # dragonpilot, don't check for param too often as it's a kernel call
     ts = sec_since_boot()
-    if ts - self.ts_last_check > 5.:
+    if ts - self.ts_last_check >= 5.:
       self.dragon_toyota_stock_dsu = True if params.get("DragonToyotaStockDSU", encoding='utf8') == "1" else False
       self.ts_last_check = ts
 

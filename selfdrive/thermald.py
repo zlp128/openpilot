@@ -412,14 +412,14 @@ def thermald_thread():
     # dragonpilot
     ts = sec_since_boot()
     # update variable status every 10 secs
-    if ts_last_update_vars is None or ts - ts_last_update_vars > 10.:
+    if ts_last_update_vars is None or ts - ts_last_update_vars >= 10.:
       dragon_charging_ctrl = True if params.get('DragonChargingCtrl', encoding='utf8') == "1" else False
       dragon_charging_max = int(params.get('DragonCharging', encoding='utf8'))
       dragon_discharging_min = int(params.get('DragonDisCharging', encoding='utf8'))
       ts_last_update_vars = ts
 
     # we update charging status once every min
-    if ts_last_charging_ctrl is None or ts - ts_last_charging_ctrl > 60.:
+    if ts_last_charging_ctrl is None or ts - ts_last_charging_ctrl >= 60.:
       if dragon_charging_ctrl:
         if msg.thermal.batteryPercent >= dragon_charging_max:
           os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
