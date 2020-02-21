@@ -73,15 +73,15 @@ def fingerprint(logcan, sendcan, has_relay):
   dragon_source = car.CarParams.FingerprintSource.can
 
   dragon_has_cache = False
-  if dragon_cache_car == "1":
-    cached_source = params.get("DragonCachedSource")
+  try:
+    if dragon_cache_car == "1":
+      cached_source = params.get("DragonCachedSource")
 
-    dragon_source = car.CarParams.FingerprintSource.can if cached_source == "" else pickle.loads(cached_source)
+      dragon_source = car.CarParams.FingerprintSource.can if cached_source == b'' else pickle.loads(cached_source)
 
-    cached_finger = params.get("DragonCachedFP")
-    cached_model = params.get("DragonCachedModel")
-    if cached_finger != "" and cached_model != "":
-      try:
+      cached_finger = params.get("DragonCachedFP")
+      cached_model = params.get("DragonCachedModel")
+      if cached_finger != "" and cached_model != "":
         dragon_car_fingerprint = pickle.loads(cached_model)
         dragon_finger = pickle.loads(cached_finger)
 
@@ -100,8 +100,8 @@ def fingerprint(logcan, sendcan, has_relay):
         # set relay to false if cache is right
         has_relay = False
         dragon_has_cache = True
-      except EOFError as e:
-        pass # dragon_has_cache = False
+  except EOFError as e:
+    pass # dragon_has_cache = False
 
   if has_relay:
     # Vin query only reliably works thorugh OBDII
