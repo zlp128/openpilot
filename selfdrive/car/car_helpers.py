@@ -73,15 +73,15 @@ def fingerprint(logcan, sendcan, has_relay):
   dragon_source = car.CarParams.FingerprintSource.can
 
   dragon_has_cache = False
-  if dragon_cache_car == "1":
-    cached_source = params.get("DragonCachedSource")
+  try:
+    if dragon_cache_car == "1":
+      cached_source = params.get("DragonCachedSource")
 
-    dragon_source = car.CarParams.FingerprintSource.can if cached_source == "" else pickle.loads(cached_source)
+      dragon_source = car.CarParams.FingerprintSource.can if cached_source == b'' else pickle.loads(cached_source)
 
-    cached_finger = params.get("DragonCachedFP")
-    cached_model = params.get("DragonCachedModel")
-    if cached_finger != "" and cached_model != "":
-      try:
+      cached_finger = params.get("DragonCachedFP")
+      cached_model = params.get("DragonCachedModel")
+      if cached_finger != "" and cached_model != "":
         dragon_car_fingerprint = pickle.loads(cached_model)
         dragon_finger = pickle.loads(cached_finger)
 
@@ -100,8 +100,8 @@ def fingerprint(logcan, sendcan, has_relay):
         # set relay to false if cache is right
         has_relay = False
         dragon_has_cache = True
-      except EOFError as e:
-        pass # dragon_has_cache = False
+  except EOFError as e:
+    pass # dragon_has_cache = False
 
   if has_relay:
     # Vin query only reliably works thorugh OBDII
@@ -193,6 +193,16 @@ def fingerprint(logcan, sendcan, has_relay):
     put_nonblocking("DragonCachedSource", pickle.dumps(source))
     # these are for display only
     put_nonblocking("DragonCarModel", car_fingerprint)
+
+  fixed_fingerprint = os.environ.get('FINGERPRINT', "")
+  if len(fixed_fingerprint):
+    car_fingerprint = fixed_fingerprint
+    source = car.CarParams.FingerprintSource.fixed
+
+  fixed_fingerprint = os.environ.get('FINGERPRINT', "")
+  if len(fixed_fingerprint):
+    car_fingerprint = fixed_fingerprint
+    source = car.CarParams.FingerprintSource.fixed
 
   cloudlog.warning("fingerprinted %s", car_fingerprint)
   return car_fingerprint, finger, vin, car_fw, source
