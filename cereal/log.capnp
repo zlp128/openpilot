@@ -280,6 +280,7 @@ struct ThermalData {
   batteryVoltage @16 :Int32;
   usbOnline @12 :Bool;
   networkType @22 :NetworkType;
+  offroadPowerUsage @23 :UInt32;  # Power usage since going offroad in uWh
 
   fanSpeed @10 :UInt16;
   started @11 :Bool;
@@ -292,7 +293,7 @@ struct ThermalData {
   memUsedPercent @19 :Int8;
   cpuPerc @20 :Int8;
 
-  ipAddr @23 :Text; # dragonpilot
+  ipAddr @24 :Text; # dragonpilot
 
   enum ThermalStatus {
     green @0;   # all processes run
