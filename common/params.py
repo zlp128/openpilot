@@ -165,6 +165,7 @@ keys = {
   "DragonAutoLCDelay": [TxType.PERSISTENT],
   "DragonBTG": [TxType.PERSISTENT],
   "DragonBootHotspot": [TxType.PERSISTENT],
+  "DragonEnableFastAccel": [TxType.PERSISTENT],
 }
 
 
