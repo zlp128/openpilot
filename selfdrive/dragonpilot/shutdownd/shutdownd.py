@@ -24,16 +24,14 @@ def main(gctx=None):
       with open("/sys/class/power_supply/usb/present") as f:
         usb_online = bool(int(f.read()))
       auto_shutdown_at = get_shutdown_val()
+      if not last_shutdown_val == auto_shutdown_at:
+        shutdown_count = 0
+        last_shutdown_val = auto_shutdown_at
 
-    if started or usb_online:
-      shutdown_count = 0
+    if not started and not usb_online:
+      shutdown_count += 1
     else:
-      if not usb_online:
-        shutdown_count += 1
-
-    if not last_shutdown_val == auto_shutdown_at:
       shutdown_count = 0
-      last_shutdown_val = auto_shutdown_at
 
     if auto_shutdown_at is None:
       auto_shutdown_at = get_shutdown_val()
