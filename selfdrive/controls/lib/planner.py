@@ -24,7 +24,7 @@ AWARENESS_DECEL = -0.2     # car smoothly decel at .2m/s^2 when user is distract
 # make sure these accelerations are smaller than mpc limits
 _A_CRUISE_MIN_V_ECO = [-1.0, -0.7, -0.6, -0.5, -0.3]
 _A_CRUISE_MIN_V_SPORT = [-3.0, -2.6, -2.3, -2.0, -1.0]
-_A_CRUISE_MIN_V_FOLLOWING = [-4.0, -4.0, -3.5, -2.5, -2.0]
+
 _A_CRUISE_MIN_V = [-2.0, -1.5, -1.0, -0.7, -0.5]
 _A_CRUISE_MIN_BP = [0.0, 5.0, 10.0, 20.0, 55.0]
 
@@ -49,15 +49,12 @@ ACCEL_NORMAL_MODE = 0
 ACCEL_SPORT_MODE = 1
 
 def calc_cruise_accel_limits(v_ego, following, accel_profile):
-  if following:
-    a_cruise_min = interp(v_ego, _A_CRUISE_MIN_BP, _A_CRUISE_MIN_V_FOLLOWING)
+  if accel_profile == ACCEL_ECO_MODE:
+    a_cruise_min = interp(v_ego, _A_CRUISE_MIN_BP, _A_CRUISE_MIN_V_ECO)
+  elif accel_profile == ACCEL_SPORT_MODE:
+    a_cruise_min = interp(v_ego, _A_CRUISE_MIN_BP, _A_CRUISE_MIN_V_SPORT)
   else:
-    if accel_profile == ACCEL_ECO_MODE:
-      a_cruise_min = interp(v_ego, _A_CRUISE_MIN_BP, _A_CRUISE_MIN_V_ECO)
-    elif accel_profile == ACCEL_SPORT_MODE:
-      a_cruise_min = interp(v_ego, _A_CRUISE_MIN_BP, _A_CRUISE_MIN_V_SPORT)
-    else:
-      a_cruise_min = interp(v_ego, _A_CRUISE_MIN_BP, _A_CRUISE_MIN_V)
+    a_cruise_min = interp(v_ego, _A_CRUISE_MIN_BP, _A_CRUISE_MIN_V)
 
   if following:
     a_cruise_max = interp(v_ego, _A_CRUISE_MAX_BP, _A_CRUISE_MAX_V_FOLLOWING)
@@ -151,15 +148,9 @@ class Planner():
     # update variable status every 5 secs
     if cur_time - self.last_ts >= 5.:
       self.dragon_slow_on_curve = False if self.params.get("DragonEnableSlowOnCurve", encoding='utf8') == "0" else True
-      self.dragon_alt_accel_profile = True if self.params.get("DragonEnableAltAccelProfile", encoding='utf8') == "1" else False
-      self.dragon_fast_accel = True if self.params.get("DragonEnableFastAccel", encoding='utf8') == "1" else False
-      if self.dragon_accel_profile:
-        if self.dragon_fast_accel:
-            self.dragon_accel_profile = ACCEL_SPORT_MODE
-        else:
-            self.dragon_accel_profile = ACCEL_ECO_MODE
-      else:
-        self.dragon_accel_profile = ACCEL_NORMAL_MODE
+      self.dragon_accel_profile = int(self.params.get("DragonAccelProfile", encoding='utf8'))
+      if self.dragon_accel_profile >= 2 or self.dragon_accel_profile <= -2:
+        self.dragon_accel_profile = 0
       self.last_ts = cur_time
 
     long_control_state = sm['controlsState'].longControlState

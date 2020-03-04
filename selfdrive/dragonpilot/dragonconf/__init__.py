@@ -65,8 +65,7 @@ default_conf = {
   'DragonAutoLCDelay': 2,
   'DragonBTG': 0,
   'DragonBootHotspot': 0,
-  'DragonEnableAltAccelProfile': '0',
-  'DragonEnableFastAccel': '0',
+  'DragonAccelProfile': '0',
 }
 
 deprecated_conf = {
