@@ -214,6 +214,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
     s->dragon_ui_lead = false;
     s->dragon_ui_path = false;
     s->dragon_ui_blinker = false;
+    s->dragon_ui_dm_view = false;
   } else {
     read_param_bool(&s->dragon_ui_speed, "DragonUISpeed");
     read_param_bool(&s->dragon_ui_event, "DragonUIEvent");
@@ -227,6 +228,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
     read_param_bool(&s->dragon_ui_lead, "DragonUILead");
     read_param_bool(&s->dragon_ui_path, "DragonUIPath");
     read_param_bool(&s->dragon_ui_blinker, "DragonUIBlinker");
+    read_param_bool(&s->dragon_ui_dm_view, "DragonUIDMView");
   }
 
 
@@ -250,6 +252,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   s->dragon_ui_path_timeout = UI_FREQ * 4.2;
   s->dragon_ui_blinker_timeout = UI_FREQ * 4.3;
   s->dragon_waze_mode_timeout = UI_FREQ * 4.4;
+  s->dragon_ui_dm_view_timeout = UI_FREQ * 4.5;
 }
 
 static PathData read_path(cereal_ModelData_PathData_ptr pathp) {
@@ -1017,6 +1020,7 @@ int main(int argc, char* argv[]) {
       s->dragon_ui_lead = false;
       s->dragon_ui_path = false;
       s->dragon_ui_blinker = false;
+      s->dragon_ui_dm_view = false;
     } else {
       read_param_bool_timeout(&s->dragon_ui_speed, "DragonUISpeed", &s->dragon_ui_speed_timeout);
       read_param_bool_timeout(&s->dragon_ui_event, "DragonUIEvent", &s->dragon_ui_event_timeout);
@@ -1030,6 +1034,7 @@ int main(int argc, char* argv[]) {
       read_param_bool_timeout(&s->dragon_ui_lead, "DragonUILead", &s->dragon_ui_lead_timeout);
       read_param_bool_timeout(&s->dragon_ui_path, "DragonUIPath", &s->dragon_ui_path_timeout);
       read_param_bool_timeout(&s->dragon_ui_blinker, "DragonUIBlinker", &s->dragon_ui_blinker_timeout);
+      read_param_bool_timeout(&s->dragon_ui_dm_view, "DragonUIDMView", &s->dragon_ui_dm_view_timeout);
     }
 
     pthread_mutex_unlock(&s->lock);
