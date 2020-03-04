@@ -274,6 +274,7 @@ typedef struct UIState {
   int dragon_ui_path_timeout;
   int dragon_ui_blinker_timeout;
   int dragon_waze_mode_timeout;
+  int dragon_ui_dm_view_timeout;
 
   bool dragon_ui_speed;
   bool dragon_ui_event;
@@ -289,6 +290,7 @@ typedef struct UIState {
   bool dragon_ui_path;
   bool dragon_ui_blinker;
   bool dragon_waze_mode;
+  bool dragon_ui_dm_view;
 } UIState;
 
 // API
