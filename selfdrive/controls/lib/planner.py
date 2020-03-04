@@ -22,32 +22,50 @@ AWARENESS_DECEL = -0.2     # car smoothly decel at .2m/s^2 when user is distract
 
 # lookup tables VS speed to determine min and max accels in cruise
 # make sure these accelerations are smaller than mpc limits
-_A_CRUISE_MIN_V  = [-1.0, -.8, -.67, -.5, -.30]
-_A_CRUISE_MIN_BP = [   0., 5.,  10., 20.,  40.]
+_A_CRUISE_MIN_V_ECO = [-1.0, -0.7, -0.6, -0.5, -0.3]
+_A_CRUISE_MIN_V_SPORT = [-3.0, -2.6, -2.3, -2.0, -1.0]
+
+_A_CRUISE_MIN_V = [-2.0, -1.5, -1.0, -0.7, -0.5]
+_A_CRUISE_MIN_BP = [0.0, 5.0, 10.0, 20.0, 55.0]
 
 # need fast accel at very low speed for stop and go
 # make sure these accelerations are smaller than mpc limits
-_A_CRUISE_MAX_V = [1.2, 1.2, 0.65, .4]
-_A_CRUISE_MAX_V_FOLLOWING = [1.6, 1.6, 0.65, .4]
-_A_CRUISE_MAX_BP = [0.,  6.4, 22.5, 40.]
+_A_CRUISE_MAX_V = [2.0, 2.0, 1.5, .5, .3]
+_A_CRUISE_MAX_V_ECO = [1.0, 1.5, 1.0, 0.3, 0.1]
+_A_CRUISE_MAX_V_SPORT = [3.0, 3.5, 4.0, 4.0, 4.0]
+_A_CRUISE_MAX_V_FOLLOWING = [1.3, 1.6, 1.2, .7, .3]
+_A_CRUISE_MAX_BP = [0., 5., 10., 20., 55.]
 
 # Lookup table for turns
-_A_TOTAL_MAX_V = [1.7, 3.2]
-_A_TOTAL_MAX_BP = [20., 40.]
+_A_TOTAL_MAX_V = [3.3, 3.0, 3.9]
+_A_TOTAL_MAX_BP = [0., 25., 55.]
 
 # 75th percentile
 SPEED_PERCENTILE_IDX = 7
 
+# dragonpilot, accel profiles
+ACCEL_ECO_MODE = -1
+ACCEL_NORMAL_MODE = 0
+ACCEL_SPORT_MODE = 1
 
-def calc_cruise_accel_limits(v_ego, following):
-  a_cruise_min = interp(v_ego, _A_CRUISE_MIN_BP, _A_CRUISE_MIN_V)
+def calc_cruise_accel_limits(v_ego, following, accel_profile):
+  if accel_profile == ACCEL_ECO_MODE:
+    a_cruise_min = interp(v_ego, _A_CRUISE_MIN_BP, _A_CRUISE_MIN_V_ECO)
+  elif accel_profile == ACCEL_SPORT_MODE:
+    a_cruise_min = interp(v_ego, _A_CRUISE_MIN_BP, _A_CRUISE_MIN_V_SPORT)
+  else:
+    a_cruise_min = interp(v_ego, _A_CRUISE_MIN_BP, _A_CRUISE_MIN_V)
 
   if following:
     a_cruise_max = interp(v_ego, _A_CRUISE_MAX_BP, _A_CRUISE_MAX_V_FOLLOWING)
   else:
-    a_cruise_max = interp(v_ego, _A_CRUISE_MAX_BP, _A_CRUISE_MAX_V)
+    if accel_profile == ACCEL_ECO_MODE:
+      a_cruise_max = interp(v_ego, _A_CRUISE_MAX_BP, _A_CRUISE_MAX_V_ECO)
+    elif accel_profile == ACCEL_SPORT_MODE:
+      a_cruise_max = interp(v_ego, _A_CRUISE_MAX_BP, _A_CRUISE_MAX_V_SPORT)
+    else:
+      a_cruise_max = interp(v_ego, _A_CRUISE_MAX_BP, _A_CRUISE_MAX_V)
   return np.vstack([a_cruise_min, a_cruise_max])
-
 
 def limit_accel_in_turns(v_ego, angle_steers, a_target, CP):
   """
@@ -89,6 +107,9 @@ class Planner():
 
     # dragonpilot
     self.dragon_slow_on_curve = True
+    self.dragon_alt_accel_profile = False
+    self.dragon_fast_accel = False
+    self.dragon_accel_profile = ACCEL_NORMAL_MODE
     self.last_ts = 0.
 
   def choose_solution(self, v_cruise_setpoint, enabled):
@@ -125,8 +146,11 @@ class Planner():
 
     # dragonpilot
     # update variable status every 5 secs
-    if cur_time - self.last_ts > 5.:
+    if cur_time - self.last_ts >= 5.:
       self.dragon_slow_on_curve = False if self.params.get("DragonEnableSlowOnCurve", encoding='utf8') == "0" else True
+      self.dragon_accel_profile = int(self.params.get("DragonAccelProfile", encoding='utf8'))
+      if self.dragon_accel_profile >= 2 or self.dragon_accel_profile <= -2:
+        self.dragon_accel_profile = 0
       self.last_ts = cur_time
 
     long_control_state = sm['controlsState'].longControlState
@@ -160,7 +184,7 @@ class Planner():
 
     # Calculate speed for normal cruise control
     if enabled and not self.first_loop:
-      accel_limits = [float(x) for x in calc_cruise_accel_limits(v_ego, following)]
+      accel_limits = [float(x) for x in calc_cruise_accel_limits(v_ego, following, self.dragon_accel_profile)]
       jerk_limits = [min(-0.1, accel_limits[0]), max(0.1, accel_limits[1])]  # TODO: make a separate lookup for jerk tuning
       accel_limits_turns = limit_accel_in_turns(v_ego, sm['carState'].steeringAngle, accel_limits, self.CP)
 
