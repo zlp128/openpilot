@@ -151,6 +151,7 @@ keys = {
   "DragonUILead": [TxType.PERSISTENT],
   "DragonUIPath": [TxType.PERSISTENT],
   "DragonUIBlinker": [TxType.PERSISTENT],
+  "DragonUIDMView": [TxType.PERSISTENT],
   "DragonEnableDriverMonitoring": [TxType.PERSISTENT],
   "DragonCarModel": [TxType.PERSISTENT],
   "DragonEnableSlowOnCurve": [TxType.PERSISTENT],
@@ -165,6 +166,7 @@ keys = {
   "DragonAutoLCDelay": [TxType.PERSISTENT],
   "DragonBTG": [TxType.PERSISTENT],
   "DragonBootHotspot": [TxType.PERSISTENT],
+  "DragonAccelProfile": [TxType.PERSISTENT],
 }
 
 

@@ -264,6 +264,30 @@ static void draw_steering(UIState *s, float curvature) {
   // ui_draw_lane_edge(s, points, 0.0, nvgRGBA(0, 0, 255, 128), 5);
 }
 
+static void draw_front_frame(UIState *s) {
+  const UIScene *scene = &s->scene;
+
+  float x1, x2, y1, y2;
+  glBindVertexArray(s->frame_vao[1]);
+
+  mat4 *out_mat;
+  out_mat = &s->front_frame_mat;
+  glActiveTexture(GL_TEXTURE0);
+  if (s->cur_vision_front_idx >= 0) {
+    glBindTexture(GL_TEXTURE_2D, s->frame_front_texs[s->cur_vision_front_idx]);
+  }
+
+  glUseProgram(s->frame_program);
+  glUniform1i(s->frame_texture_loc, 0);
+  glUniformMatrix4fv(s->frame_transform_loc, 1, GL_TRUE, out_mat->v);
+
+  assert(glGetError() == GL_NO_ERROR);
+  glEnableVertexAttribArray(0);
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (const void*)0);
+  glDisableVertexAttribArray(0);
+  glBindVertexArray(0);
+}
+
 static void draw_frame(UIState *s) {
   const UIScene *scene = &s->scene;
 
@@ -1157,6 +1181,11 @@ static void ui_draw_vision(UIState *s) {
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   if (s->dragon_driving_ui) {
     draw_frame(s);
+  }
+  if (s->dragon_ui_dm_view) {
+    glViewport(1240, 110, viz_w*0.4, box_h*0.4);
+    draw_front_frame(s);
+    glClear(GL_STENCIL_BUFFER_BIT);
   }
   glViewport(0, 0, s->fb_w, s->fb_h);
   glDisable(GL_SCISSOR_TEST);
