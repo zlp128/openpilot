@@ -51,6 +51,13 @@ To do so:
 To revert it back, simply turn the steer ratio learner back on. 
 ```
 
+**Acceleration Profile**
+```
+This option allows you to adjust the acceleration/de-acceleration of dragonpilot.
+Special thanks to @arne182 for providing acceleration profiles.
+Choice of: "ECO", "NORMAL", "SPORT"
+```
+
 **Camera Offset (cm)**
 ```
 Adjust this value if your EON is not mounted as per instruction, or, if you find your car lean to one side, change this value should help a bit as well.
@@ -141,6 +148,11 @@ UI Settings
 ```
 Disable this will hide camera footage from the screen and leaves you only the sidebar and the rest of the UI components (that can be enable/disable below).
 It's good for using with TomTom or any other android apps run in full screen mode.
+```
+
+**Display Driver Monitor View**
+```
+This allows you to see the driver monitor view on your screen, handy if you want to know why Driver Monitor does not work for you sometimes.
 ```
 
 **Boost Audio Alert Volume (%)**
