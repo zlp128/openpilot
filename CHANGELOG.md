@@ -3,6 +3,7 @@
 * [DEVEL] 加入葡萄牙語支持。(感謝 berno22 提供)
 * [DEVEL] 加入大陸 2018 Camry、2020 RAV4 指紋。(感謝 笨木匠 提供)
 * [DEVEL] 建立 devel-i18n 取代 devel-en。
+* [DEVEL] devel-en is deprecated, please switch to devel-i18n instead.
 
 2020-03-04
 ========================
