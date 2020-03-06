@@ -4,7 +4,7 @@ dragonpilot (龍芯駕駛輔助系統)
 
 龍芯駕駛輔助系統在 openpilot 的基礎上加入更多客制化的功能，目前有：
 
-* 中文化介面 (简体/繁體)
+* 多語言介面 (目前支援：简体、繁體，部分支援：日文、法文)
 * 不間斷行車記錄
 * 可設定的行車介面
 * 斷電自動關機
@@ -21,6 +21,7 @@ dragonpilot (龍芯駕駛輔助系統)
 * TOM TOM 測速照相 / 高德地圖使用 / 神盾測速照相 / 位智 (Waze) 使用 Grey Panda / Harness GPS 數據 (請參閱 HOWTO_GreyPandaMode.md 說明檔)
 * 自動換道
 * 開機啟動個人熱點
+* 不同的加速模式 (只支援由 dp 控制車速的車種，Toyota 需拔 DSU，感謝 @arne182 提供相關代碼)
 
 **更多客制化內容請參閱 [CHANGELOG.md](CHANGELOG.md)**
 
@@ -38,14 +39,14 @@ dragonpilot (龍芯駕駛輔助系統)
 * 台灣版 Lexus CT200h by CloudJ
 * 台灣版 Toyota Prius 4.5 代 by Lin Xin Hong
 * 台灣版 2017 Lexus GS450h by 簡銘佑
-~~* 美國版 2017 Civic Hatchback by CFranHonda (有衝突)~~
+* ~~美國版 2017 Civic Hatchback by CFranHonda (有衝突)~~
 * ~~大陸版本田奧德賽 by eFiniLan (已入官方)~~
 * ~~大陸版本田 CR-V by eFiniLan (已入官方)~~
 * ~~美國版 2018 Lexus CT200h by thomaspich (已入官方)~~
 * ~~澳洲版 2017 Lexus IS300h by eFiniLan (已入官方)~~
 * ~~台灣版 2019 Toyota Corolla Altis 油電版 by wlee72 (已入官方)~~
 
-目前有完整支援 dragonpilot 客制化功能的車系有：
+目前完整支援 dragonpilot 客制化功能的車系有：
 * Lexus / Toyota
 * Honda
 * Hyundai
