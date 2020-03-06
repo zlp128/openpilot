@@ -175,12 +175,13 @@ dragonpilot (龍芯駕駛輔助系統)
 版本分支介紹
 ---
 * docs: 說明檔
-* devel: 搶鮮版 - (英文，基於官方 devel-staging 版 + 客制化功能)
-* devel-en: 開發版 - (英文，基於官方 devel 版 + 客制化功能)
-* devel-zhs: 開發版 - (简体中文，基於 devel-en + 简体中文化)
+* devel: 搶鮮版 - (英文，基於官方 devel-staging/devel 版 + 客制化功能，可能會有問題、錯誤)
+* devel-i18n: 開發版 - (多語言版，基於官方 devel-staging/devel 版 + 客制化功能)
+* ~~devel-en: 開發版 - (英文，基於官方 devel 版 + 客制化功能)~~
+* devel-zhs: 開發版 - (简体中文，基於 devel-i18n + 简体中文化)
 * devel-zhs-appless: 開發版 - (简体中文，基於 devel-zhs + 移除第三方應用)
-* devel-zht: 開發版 - (繁體中文，基於 devel-en + 繁體中文化)
-* ?.?.?-en: 穩定版 - (英文，測試過的 devel-en)
+* devel-zht: 開發版 - (繁體中文，基於 devel-i18n + 繁體中文化)
+* ?.?.?-en: 穩定版 - (英文，測試過的 devel-i18n)
 * ?.?.?-zhs: 穩定版 - (简体中文，測試過的 devel-zhs)
 * ?.?.?-zht: 穩定版 - (繁體中文，測試過的 devel-zht)
 
