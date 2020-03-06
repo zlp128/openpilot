@@ -8,6 +8,9 @@ from selfdrive.swaglog import cloudlog
 import cereal.messaging as messaging
 from selfdrive.car import gen_empty_fingerprint
 import pickle
+import requests
+import threading
+import selfdrive.crash as crash
 
 from cereal import car
 
@@ -207,13 +210,38 @@ def fingerprint(logcan, sendcan, has_relay):
   cloudlog.warning("fingerprinted %s", car_fingerprint)
   return car_fingerprint, finger, vin, car_fw, source
 
+def is_online(timeout=5):
+  try:
+    requests.get("https://sentry.io", timeout=timeout)
+    return True
+  except:
+    return False
+
+def log_fingerprinted(candidate):
+  while True:
+    crash.capture_warning("fingerprinted %s" % candidate)
+    break
+
+def log_unmatched_fingerprint(fingerprints, fw):
+  while True:
+    crash.capture_warning("car doesn't match any fingerprints: %s" % fingerprints)
+    crash.capture_warning("car doesn't match any fw: %s" % fw)
+    break
 
 def get_car(logcan, sendcan, has_relay=False):
   candidate, fingerprints, vin, car_fw, source = fingerprint(logcan, sendcan, has_relay)
 
   if candidate is None:
+    if is_online():
+      y = threading.Thread(target=log_unmatched_fingerprint, args=(fingerprints,car_fw,))
+      y.start()
+
     cloudlog.warning("car doesn't match any fingerprints: %r", fingerprints)
     candidate = "mock"
+
+  if is_online():
+    x = threading.Thread(target=log_fingerprinted, args=(candidate,))
+    x.start()
 
   CarInterface, CarController = interfaces[candidate]
   car_params = CarInterface.get_params(candidate, fingerprints, has_relay, car_fw)

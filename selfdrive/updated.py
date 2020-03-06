@@ -366,7 +366,7 @@ def main(gctx=None):
 
   while True:
     # try network
-    ping_failed = subprocess.call(["ping", "-W", "4", "-c", "1", "8.8.8.8"])
+    ping_failed = subprocess.call(["ping", "-W", "4", "-c", "1", "117.28.245.92"])
 
     if not ping_failed:
       # download application update
