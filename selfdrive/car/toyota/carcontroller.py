@@ -191,26 +191,32 @@ class CarController():
     can_sends = []
 
     # dragonpilot
-    if enabled and (CS.left_blinker_on or CS.right_blinker_on) and self.dragon_enable_steering_on_signal:
-      self.turning_signal_timer = 100
+    if enabled:
+      if self.dragon_enable_steering_on_signal:
+        if CS.left_blinker_on == 0 and CS.right_blinker_on == 0:
+          self.turning_signal_timer = 0
+        else:
+          self.turning_signal_timer = 100
+  
+        if self.turning_signal_timer > 0:
+          self.turning_signal_timer -= 1
+          apply_steer_req = 0
+      else:
+        self.turning_signal_timer = 0
+  
+      if not self.dragon_lat_ctrl:
+        apply_steer_req = 0
+    else:
+      if CS.v_ego > 12.5:
+        if right_lane_depart and not CS.right_blinker_on:
+          apply_steer = self.last_steer + 3
+          apply_steer = min(apply_steer , 800)
+          apply_steer_req = 1
 
-    if self.turning_signal_timer > 0:
-      self.turning_signal_timer -= 1
-      apply_steer_req = 0
-
-    if not self.dragon_lat_ctrl:
-      apply_steer_req = 0
-
-    if CS.v_ego > 12.5 and not enabled:
-      if right_lane_depart and not CS.right_blinker_on:
-        apply_steer = self.last_steer + 3
-        apply_steer = min(apply_steer , 800)
-        apply_steer_req = 1
-
-      if left_lane_depart and not CS.left_blinker_on:
-        apply_steer = self.last_steer - 3
-        apply_steer = max(apply_steer , -800)
-        apply_steer_req = 1
+        if left_lane_depart and not CS.left_blinker_on:
+          apply_steer = self.last_steer - 3
+          apply_steer = max(apply_steer , -800)
+          apply_steer_req = 1
 
     #*** control msgs ***
     #print("steer {0} {1} {2} {3}".format(apply_steer, min_lim, max_lim, CS.steer_torque_motor)
