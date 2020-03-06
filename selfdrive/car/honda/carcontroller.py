@@ -167,15 +167,21 @@ class CarController():
     can_sends = []
 
     # dragonpilot
-    if enabled and (CS.left_blinker_on > 0 or CS.right_blinker_on > 0) and self.dragon_enable_steering_on_signal:
-      self.turning_signal_timer = 100
+    if enabled:
+      if self.dragon_enable_steering_on_signal:
+        if CS.left_blinker_on == 0 and CS.right_blinker_on == 0:
+          self.turning_signal_timer = 0
+        else:
+          self.turning_signal_timer = 100
 
-    if self.turning_signal_timer > 0:
-      self.turning_signal_timer -= 1
-      lkas_active = False
+        if self.turning_signal_timer > 0:
+          self.turning_signal_timer -= 1
+          lkas_active = False
+      else:
+        self.turning_signal_timer = 0
 
-    if not self.dragon_lat_ctrl:
-      lkas_active = False
+      if not self.dragon_lat_ctrl:
+        lkas_active = False
 
     # Send steering command.
     idx = frame % 4
