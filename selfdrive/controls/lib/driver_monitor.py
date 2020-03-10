@@ -1,11 +1,12 @@
 from common.numpy_fast import interp
 from math import atan2, sqrt
-from common.realtime import DT_DMON
+from common.realtime import DT_DMON, sec_since_boot
 from selfdrive.controls.lib.drive_helpers import create_event, EventTypes as ET
 from common.filter_simple import FirstOrderFilter
 from common.stat_live import RunningStatFilter
 from common.params import Params
 params = Params()
+from selfdrive.dragonpilot.dragonconf import dp_get_last_modified
 
 _AWARENESS_TIME = 70.  # one minute limit without user touching steering wheels make the car enter a terminal status
 _AWARENESS_PRE_TIME_TILL_TERMINAL = 15.  # a first alert is issued 25s before expiration
@@ -114,10 +115,11 @@ class DriverStatus():
     self.is_rhd_region_checked = False
 
     # dragonpilot
-    self.awareness_time = float(params.get("DragonSteeringMonitorTimer", encoding='utf8'))
-    self.awareness_time = 86400 if self.awareness_time <= 0. else self.awareness_time * 60.
-    self.dragon_enable_driver_safety_check = False if params.get("DragonEnableDriverSafetyCheck", encoding='utf8') == "0" else True
-    self.dragon_enable_driver_monitoring = False if params.get("DragonEnableDriverMonitoring", encoding='utf8') == "0" else True
+    self.last_ts = 0
+    self.dp_last_modified = None
+    self.awareness_time = 100
+    self.dragon_enable_driver_safety_check = True
+    self.dragon_enable_driver_monitoring = True
 
     self._set_timers(active_monitoring=True)
 
@@ -220,6 +222,20 @@ class DriverStatus():
       self.hi_stds = 0
 
   def update(self, events, driver_engaged, ctrl_active, standstill):
+    cur_time = sec_since_boot()
+    if cur_time - self.last_ts >= 5.:
+      modified = dp_get_last_modified()
+      if self.dp_last_modified != modified:
+        self.awareness_time = int(params.get("DragonSteeringMonitorTimer", encoding='utf8'))
+        self.awareness_time = 100 if self.awareness_time <= 0. else self.awareness_time * 60.
+
+        self.dragon_enable_driver_safety_check = False if params.get("DragonEnableDriverSafetyCheck", encoding='utf8') == "0" else True
+        if self.dragon_enable_driver_safety_check:
+          self.dragon_enable_driver_monitoring = False if params.get("DragonEnableDriverMonitoring", encoding='utf8') == "0" else True
+        else:
+          self.dragon_enable_driver_monitoring = False
+        self.dp_last_modified = modified
+      self.last_ts = cur_time
     if (driver_engaged and self.awareness > 0) or not ctrl_active or not self.dragon_enable_driver_safety_check:
       # reset only when on disengagement if red reached
       self.awareness = 1.
