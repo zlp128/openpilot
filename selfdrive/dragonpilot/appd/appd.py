@@ -296,8 +296,6 @@ def main():
       enabled_apps = []
       has_fullscreen_apps = False
       modified = dp_get_last_modified()
-      if last_modified != modified:
-        print("modified!!!!!")
       for app in apps:
         # read params loop
         if last_modified != modified:
