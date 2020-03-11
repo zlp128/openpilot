@@ -307,6 +307,7 @@ FW_VERSIONS = {
       b'37805-5AN-LJ20\x00\x00',
       b'37805-5AZ-E850\x00\x00',
       b'37805-5BB-L640\x00\x00',
+      b'37805-5AN-E410\x00\x00', # AlexNoop's CIVIC_BOSCH (manual car?)
     ],
     (Ecu.unknown, 0x18da1ef1, None): [
       b'28101-5CG-A920\x00\x00',
