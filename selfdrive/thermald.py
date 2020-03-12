@@ -192,8 +192,8 @@ def thermald_thread():
 
   ip_addr = '255.255.255.255'
   dragon_charging_ctrl = False
-  dragon_charging_at = 70
-  dragon_discharging_at = 80
+  dragon_to_discharge = 70
+  dragon_to_charge = 60
 
   while 1:
     health = messaging.recv_sock(health_sock, wait=True)
@@ -420,22 +420,22 @@ def thermald_thread():
         dragon_charging_ctrl = True if params.get('DragonChargingCtrl', encoding='utf8') == "1" else False
         if dragon_charging_ctrl:
           try:
-            dragon_charging_at = int(params.get('DragonCharging', encoding='utf8'))
+            dragon_to_discharge = int(params.get('DragonCharging', encoding='utf8'))
           except TypeError:
-            dragon_charging_at = 70
+            dragon_to_discharge = 70
           try:
-            dragon_discharging_at = int(params.get('DragonDisCharging', encoding='utf8'))
+            dragon_to_charge = int(params.get('DragonDisCharging', encoding='utf8'))
           except TypeError:
-            dragon_discharging_at = 80
+            dragon_to_charge = 60
         dp_last_modified = modified
       ts_last_update_vars = ts
 
     # we update charging status once every min
     if ts_last_charging_ctrl is None or ts - ts_last_charging_ctrl >= 60.:
       if dragon_charging_ctrl:
-        if msg.thermal.batteryPercent >= dragon_charging_at:
+        if msg.thermal.batteryPercent >= dragon_to_discharge:
           os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
-        if msg.thermal.batteryPercent <= dragon_discharging_at:
+        if msg.thermal.batteryPercent <= dragon_to_charge:
           os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
       else:
         os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
