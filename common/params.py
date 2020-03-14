@@ -106,6 +106,7 @@ keys = {
   #dragonpilot config
   "DragonEnableDashcam": [TxType.PERSISTENT],
   "DragonEnableDriverSafetyCheck": [TxType.PERSISTENT],
+  "DragonEnableAutoShutdown": [TxType.PERSISTENT],
   "DragonAutoShutdownAt": [TxType.PERSISTENT],
   "DragonEnableSteeringOnSignal": [TxType.PERSISTENT],
   "DragonEnableLogger": [TxType.PERSISTENT],
@@ -167,6 +168,7 @@ keys = {
   "DragonBTG": [TxType.PERSISTENT],
   "DragonBootHotspot": [TxType.PERSISTENT],
   "DragonAccelProfile": [TxType.PERSISTENT],
+  "DragonLastModified": [TxType.PERSISTENT],
 }
 
 
