@@ -11,6 +11,7 @@ from selfdrive.car.interfaces import CarInterfaceBase
 from common.realtime import sec_since_boot
 from common.params import Params
 params = Params()
+from selfdrive.dragonpilot.dragonconf import dp_get_last_modified
 
 ButtonType = car.CarState.ButtonEvent.Type
 GearShifter = car.CarState.GearShifter
@@ -41,6 +42,7 @@ class CarInterface(CarInterfaceBase):
     self.dragon_allow_gas = False
     self.ts_last_check = 0.
     self.dragon_lat_ctrl = True
+    self.dp_last_modified = None
 
   @staticmethod
   def compute_gb(accel, speed):
@@ -72,7 +74,7 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.70
       ret.steerRatio = 15.74   # unknown end-to-end spec
       tire_stiffness_factor = 0.6371   # hand-tune
-      ret.mass = 3045. * CV.LB_TO_KG + STD_CARGO_KG
+      ret.mass = 3370. * CV.LB_TO_KG + STD_CARGO_KG
 
       ret.lateralTuning.init('indi')
       ret.lateralTuning.indi.innerLoopGain = 4.0
@@ -211,16 +213,6 @@ class CarInterface(CarInterfaceBase):
       tire_stiffness_factor = 0.7933
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
       ret.mass = 3370. * CV.LB_TO_KG + STD_CARGO_KG
-      ret.lateralTuning.pid.kf = 0.00007818594
-
-    elif candidate == CAR.RAV4H_TSS2:
-      stop_and_go = True
-      ret.safetyParam = 73
-      ret.wheelbase = 2.68986
-      ret.steerRatio = 14.3
-      tire_stiffness_factor = 0.7933
-      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
-      ret.mass = 3800. * CV.LB_TO_KG + STD_CARGO_KG
       ret.lateralTuning.pid.kf = 0.00007818594
 
     elif candidate == CAR.RAV4H_TSS2:
@@ -382,10 +374,13 @@ class CarInterface(CarInterfaceBase):
     # dragonpilot, don't check for param too often as it's a kernel call
     ts = sec_since_boot()
     if ts - self.ts_last_check >= 5.:
-      self.dragon_enable_steering_on_signal = True if params.get("DragonEnableSteeringOnSignal", encoding='utf8') == "1" else False
-      self.dragon_allow_gas = True if params.get("DragonAllowGas", encoding='utf8') == "1" else False
-      self.dragon_toyota_stock_dsu = True if params.get("DragonToyotaStockDSU", encoding='utf8') == "1" else False
-      self.dragon_lat_ctrl = False if params.get("DragonLatCtrl", encoding='utf8') == "0" else True
+      modified = dp_get_last_modified()
+      if self.dp_last_modified != modified:
+        self.dragon_enable_steering_on_signal = True if params.get("DragonEnableSteeringOnSignal", encoding='utf8') == "1" else False
+        self.dragon_allow_gas = True if params.get("DragonAllowGas", encoding='utf8') == "1" else False
+        self.dragon_toyota_stock_dsu = True if params.get("DragonToyotaStockDSU", encoding='utf8') == "1" else False
+        self.dragon_lat_ctrl = False if params.get("DragonLatCtrl", encoding='utf8') == "0" else True
+        self.dp_last_modified = modified
       self.ts_last_check = ts
 
     # ******************* do can recv *******************
