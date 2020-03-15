@@ -4,10 +4,10 @@ dragonpilot (龍芯駕駛輔助系統)
 
 龍芯駕駛輔助系統在 openpilot 的基礎上加入更多客制化的功能，目前有：
 
-* 多語言介面 (目前支援：简体、繁體，部分支援：日文、法文、葡萄牙語)
+* 多語言介面 (目前支援：英文、简体、繁體，部分支援：日文、法文、葡萄牙語)
 * 不間斷行車記錄
 * 可設定的行車介面
-* 斷電自動關機
+* 斷電自動關機 (C2 不適用)
 * 轉向燈/方向燈暫時取消控制
 * 停止 AI 訓練記錄
 * 取消 AI 訓練記錄上傳
@@ -18,7 +18,7 @@ dragonpilot (龍芯駕駛輔助系統)
 * TOM TOM 測速照相 / 高德地圖 / 神盾測速照相 / 位智 (Waze)
 * MiXplorer 檔案管理器
 * 側邊欄顯示無線網路 IP 位置
-* TOM TOM 測速照相 / 高德地圖使用 / 神盾測速照相 / 位智 (Waze) 使用 Grey Panda / Harness GPS 數據 (請參閱 HOWTO_GreyPandaMode.md 說明檔)
+* TOM TOM 測速照相 / 高德地圖使用 / 神盾測速照相 / 位智 (Waze) 使用 Grey Panda / Harness GPS 數據
 * 自動換道
 * 開機啟動個人熱點
 * 不同的加速模式 (只支援由 dp 控制車速的車種，Toyota 需拔 DSU，感謝 @arne182 提供相關代碼)
@@ -175,9 +175,10 @@ dragonpilot (龍芯駕駛輔助系統)
 版本分支介紹
 ---
 * docs: 說明檔
-* devel: 搶鮮版 - (英文，基於官方 devel-staging/devel 版 + 客制化功能，可能會有問題、錯誤)
-* devel-i18n: 開發版 - (多語言版，基於官方 devel-staging/devel 版 + 客制化功能)
-* ~~devel-en: 開發版 - (英文，基於官方 devel 版 + 客制化功能)~~
+* testing: 搶鮮版 - (英文，基於官方 devel-staging/devel 版 + 客制化功能，可能會有問題、錯誤)
+* feature-????: 新功能測試版 - (英文，基於 dp testing 版 + 新功能測試，可能會有問題、錯誤)
+* devel-i18n: 開發版 - (多語言版，基於 dp testing 版)
+* ~~devel-en: 開發版 - (英文，基於 dp testing 版)~~
 * devel-zhs: 開發版 - (简体中文，基於 devel-i18n + 简体中文化)
 * devel-zhs-appless: 開發版 - (简体中文，基於 devel-zhs + 移除第三方應用)
 * devel-zht: 開發版 - (繁體中文，基於 devel-i18n + 繁體中文化)
