@@ -5,7 +5,7 @@ from cereal import car, log
 # Priority
 class Priority:
   LOWEST = 0
-  LOW_LOWEST = 1
+  LOWER = 1
   LOW = 2
   MID = 3
   HIGH = 4
@@ -171,28 +171,28 @@ ALERTS = [
       "随时准备好接管",
       "请您将手放在方向盘上并持续注意路况",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
 
   Alert(
       "startupMaster",
       "WARNING: This branch is not tested",
       "Always keep hands on wheel and eyes on road",
       AlertStatus.userPrompt, AlertSize.mid,
-      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
 
   Alert(
       "startupNoControl",
       "硬扯记录模式",
       "请您将手放在方向盘上并持续注意路况",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
 
   Alert(
       "startupNoCar",
       "行车记录模式（为支持的车型）",
       "请您将手放在方向盘上并持续注意路况",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
 
   Alert(
       "ethicalDilemma",
@@ -695,21 +695,21 @@ ALERTS = [
       "LKAS错误: 请重新发动车辆",
       "",
       AlertStatus.normal, AlertSize.small,
-      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "brakeUnavailablePermanent",
       "巡航系统错误：请重新发动车辆",
       "",
       AlertStatus.normal, AlertSize.small,
-      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "lowSpeedLockoutPermanent",
       "巡航系统错误：请重新发动车辆",
       "",
       AlertStatus.normal, AlertSize.small,
-      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "calibrationIncompletePermanent",
@@ -723,14 +723,14 @@ ALERTS = [
       "不支持的 Giraffe 配置",
       "请查看 comma.ai/tg",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "internetConnectivityNeededPermanent",
       "需要连接到网络",
       "检查更新后才能启用",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "communityFeatureDisallowedPermanent",
@@ -744,28 +744,28 @@ ALERTS = [
       "没有收到任何来自传感器的数据",
       "请重启您的装置",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "soundsUnavailablePermanent",
       "找不到音效装置",
       "请重启您的装置",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "lowMemoryPermanent",
       "内存严重不足",
       "请重启您的装置",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "carUnrecognizedPermanent",
       "Dashcam Mode",
       "Car Unrecognized",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOW_LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
   Alert(
       "vehicleModelInvalid",
