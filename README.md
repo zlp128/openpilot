@@ -22,6 +22,7 @@ dragonpilot (龍芯駕駛輔助系統)
 * 自動換道
 * 開機啟動個人熱點
 * 不同的加速模式 (只支援由 dp 控制車速的車種，Toyota 需拔 DSU，感謝 @arne182 提供相關代碼)
+* 動態調整車距 (只支援由 dp 控制車速的車種，Toyota 需拔 DSU，感謝 @ShaneSmiskol 提供相關代碼)
 
 **更多客制化內容請參閱 [CHANGELOG.md](CHANGELOG.md)**
 
@@ -109,11 +110,11 @@ dragonpilot (龍芯駕駛輔助系統)
 4. 下載 dragonpilot 英文開發版並存至 openpilot 資料夾 (2 選 1):
     1. github 
     ```bash
-    git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en
+    git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-i18n
     ```
     2. gitee
     ```bash 
-    git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-en
+    git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-i18n
     ```
 5. 切換到 openpilot 的資料夾
     ```bash
