@@ -1,3 +1,7 @@
+2020-03-22
+========================
+* [TESTING] 更新至最新的 commaai:devel-staging 和 commaai:devel (0.7.4)。
+
 2020-03-17
 ========================
 * [DEVEL] 更新至最新的 testing 分支 (commaai:devel-staging 0.7.4)。
