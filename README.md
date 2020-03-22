@@ -31,6 +31,7 @@ dragonpilot (龍芯駕駛輔助系統)
 除了官方支援的車款外，dp (0.6.4+) 還支援以下車款：
 * 大陸版東風本田 Inspire 混動 by KT
 * 大陸版本田雅閣混動 
+* 大陆版 2018 Toyota Highlander by toyboxZ
 * 大陸版 2018 Toyota Camry by 笨木匠
 * 大陸版 2020 Toyota RAV4 by 笨木匠
 * 大陸版 2019 Toyota 雷凌 (汽油版) by Shell
