@@ -215,8 +215,8 @@ Enable this will allow you to use MiXplorer (File manager) App.
 ### Toyota / Lexus
 **Enable Stock DSU Mode**
 ```
-This is for TSS-P cars w/ DSU connected, once this is enabled, dragonpilot can be engaged via 1. ACC and/or 2. AHB toggle.
-With AHB switch toggle, dragonpilot will stay engaged all time for lateral control and wont be disengaged if step on gas or brake.
+This is for TSS-P cars w/ DSU connected, once this is enabled, dragonpilot will be engaged when main ACC switch is on, disengaged when main ACC switch is off.
+dragonpilot will stay engaged all time for lateral control and wont be disengaged if step on gas or brake.
 ```
 **Enable Lane Departure Warning**
 ```

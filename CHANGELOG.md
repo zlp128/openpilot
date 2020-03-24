@@ -1,6 +1,8 @@
 2020-03-24
 ========================
 * [TESTING] 加入波蘭版 2015 Lexus NX200T 支援。(感謝 wabes 提供)
+* [TESTING] 調整「啟用原廠 DSU 模式」為不再需要 AHB ，(Enable Stock DSU Mode no longer needs "AHB" toggle)
+
 
 2020-03-22
 ========================
