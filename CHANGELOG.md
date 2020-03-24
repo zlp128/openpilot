@@ -1,3 +1,7 @@
+2020-03-24
+========================
+* [TESTING] 加入波蘭版 2015 Lexus NX200T 支援。(感謝 wabes 提供)
+
 2020-03-22
 ========================
 * [TESTING] 更新至最新的 commaai:devel-staging 和 commaai:devel 分支 (0.7.4)。
