@@ -2,21 +2,13 @@
 ========================
 * [DEVEL] 更新至最新的 testing 分支:
   * 加入波蘭版 2015 Lexus NX200T 支援。(感謝 wabes 提供)
-  * 調整「啟用原廠 DSU 模式」為不再需要 AHB 。(Enable Stock DSU Mode no longer needs "AHB" toggle)
+  * 調整「啟用原廠 DSU 模式」為不再需要 AHB 。(Enable Stock DSU Mode no longer requires "AHB" toggle)
   * 加入「安全帶檢查」、「車門檢查」、「檔位檢查」、「溫度檢查」開關。
-  * 加入曲率學習腳本 - Curvature Learner 。(感謝 zorrobyte 提供)
+  * 加入曲率學習功能 - Curvature Learner 。(感謝 zorrobyte 提供)
   * 加入大陸版 2018 Toyota Highlander 支援。(感謝 toyboxZ 提供)
-* [TESTING/DEVEL] 加入大陸版 2018 Toyota Camry 2.0 支援。(感謝 Rming 提供)
-* [TESTING/DEVEL] 加入韓文支持。(感謝 crwusiz 提供)
-* [TESTING/DEVEL] OFFROAD - 調整部分翻譯將 "dragonpilot" 改回 "openpilot"。
-
-2020-03-24
-========================
-* [TESTING] 加入波蘭版 2015 Lexus NX200T 支援。(感謝 wabes 提供)
-* [TESTING] 調整「啟用原廠 DSU 模式」為不再需要 AHB ，(Enable Stock DSU Mode no longer needs "AHB" toggle)
-* [TESTING] 加入「安全帶檢查」、「車門檢查」、「檔位檢查」、「溫度檢查」開關。
-* [TESTING] 加入曲率學習腳本 - Curvature Learner 。(感謝 zorrobyte 提供)
-* [TESTING] 加入大陸版 2018 Highlander 支援。(感謝 toyboxZ 提供)
+  * 加入大陸版 2018 Toyota Camry 2.0 支援。(感謝 Rming 提供)
+  * 加入韓文支持。(感謝 crwusiz 提供)
+  * 調整 OFFROAD 主頁翻譯將 "dragonpilot" 改回 "openpilot"。
 
 2020-03-22
 ========================
