@@ -1,3 +1,10 @@
+2020-03-31
+========================
+* [TESTING] 還原部分修改代碼以達到 comma ai 安全準則。 (Reverted changes to panda safety code to comply with comma ai safety guideline.)
+* [TESTING] 調整「啟用原廠 DSU 模式」為踩剎車時會暫時斷開控制 。(Enable Stock DSU Mode will temporary disable controls when brake is pressed.)
+* [DEVEL] 更新至 2020-03-31 testing 分支。
+* [0.7.4] 更新至 2020-03-31 devel 分支。
+
 2020-03-27
 ========================
 * [DEVEL] 更新至最新的 testing 分支:
