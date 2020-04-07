@@ -77,7 +77,7 @@ def events_to_bytes(events):
   return ret
 
 
-def data_sample(CI, CC, sm, can_sock, state, mismatch_counter, can_error_counter, params):
+def data_sample(CI, CC, sm, can_sock, state, mismatch_counter, can_error_counter, params, dragon_toyota_stock_dsu):
   """Receive data from sockets and create events for battery, temperature and disk space"""
 
   # Update carstate from CAN and create events
@@ -131,11 +131,12 @@ def data_sample(CI, CC, sm, can_sock, state, mismatch_counter, can_error_counter
   if not enabled:
     mismatch_counter = 0
 
-  controls_allowed = sm['health'].controlsAllowed
-  if not controls_allowed and enabled:
-    mismatch_counter += 1
-  if mismatch_counter >= 200:
-    events.append(create_event('controlsMismatch', [ET.IMMEDIATE_DISABLE]))
+  if not dragon_toyota_stock_dsu:
+    controls_allowed = sm['health'].controlsAllowed
+    if not controls_allowed and enabled:
+      mismatch_counter += 1
+    if mismatch_counter >= 200:
+      events.append(create_event('controlsMismatch', [ET.IMMEDIATE_DISABLE]))
 
   return CS, events, cal_perc, mismatch_counter, can_error_counter
 
@@ -566,7 +567,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
     prof.checkpoint("Ratekeeper", ignore=True)
 
     # Sample data and compute car events
-    CS, events, cal_perc, mismatch_counter, can_error_counter = data_sample(CI, CC, sm, can_sock, state, mismatch_counter, can_error_counter, params)
+    CS, events, cal_perc, mismatch_counter, can_error_counter = data_sample(CI, CC, sm, can_sock, state, mismatch_counter, can_error_counter, params, dragon_toyota_stock_dsu)
     prof.checkpoint("Sample")
 
     # Create alerts
