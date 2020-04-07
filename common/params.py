@@ -180,6 +180,8 @@ keys = {
   "DragonEnableTempMonitor": [TxType.PERSISTENT],
   "DragonEnableCurvatureLearner": [TxType.PERSISTENT],
   "DragonCurvatureLearnerOffset": [TxType.PERSISTENT],
+  "DragonAppAutoUpdate": [TxType.PERSISTENT],
+  "DragonUpdating": [TxType.CLEAR_ON_MANAGER_START],
 }
 
 

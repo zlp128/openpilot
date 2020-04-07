@@ -78,6 +78,8 @@ default_conf = {
   'DragonEnableTempMonitor': '1',
   'DragonEnableCurvatureLearner': '0',
   'DragonCurvatureLearnerOffset': '0.0',
+  'DragonAppAutoUpdate': '1',
+  'DragonUpdating': '0',
 }
 
 deprecated_conf = {
