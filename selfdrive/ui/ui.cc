@@ -248,6 +248,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   // dragonpilot
   read_param_float(&s->dragon_ui_volume_boost, "DragonUIVolumeBoost");
   read_param_bool(&s->dragon_waze_mode, "DragonWazeMode");
+  read_param_bool(&s->dragon_updating, "DragonUpdating");
   if (s->dragon_waze_mode) {
     s->dragon_ui_speed = false;
     s->dragon_ui_event = false;
@@ -300,6 +301,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   s->dragon_ui_blinker_timeout = UI_FREQ * 6.3;
   s->dragon_waze_mode_timeout = UI_FREQ * 6.4;
   s->dragon_ui_dm_view_timeout = UI_FREQ * 6.5;
+  s->dragon_updating_timeout = UI_FREQ * 10;
 }
 
 static PathData read_path(cereal_ModelData_PathData_ptr pathp) {
@@ -960,7 +962,8 @@ int main(int argc, char* argv[]) {
   int draws = 0;
 
   s->scene.satelliteCount = -1;
-
+  s->scene.alert_rate = 0;
+  s->scene.alert_type = 1;
   while (!do_exit) {
     bool should_swap = false;
     if (!s->vision_connected) {
@@ -1090,6 +1093,7 @@ int main(int argc, char* argv[]) {
     // dragonpilot
     read_param_float_timeout(&s->dragon_ui_volume_boost, "DragonUIVolumeBoost", &s->dragon_ui_volume_boost_timeout);
     read_param_bool_timeout(&s->dragon_waze_mode, "DragonWazeMode", &s->dragon_waze_mode_timeout);
+    read_param_bool_timeout(&s->dragon_updating, "DragonUpdating", &s->dragon_updating_timeout);
 
     if (s->dragon_waze_mode) {
       s->dragon_ui_speed = false;

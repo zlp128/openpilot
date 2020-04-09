@@ -162,6 +162,8 @@ typedef struct UIScene {
   float angleSteersDes;
   float angleSteers;
   char ipAddr[20];
+  int alert_rate;
+  int alert_type;
 
   // for blinker, from kegman
   bool leftBlinker;
@@ -315,6 +317,7 @@ typedef struct UIState {
   int dragon_ui_blinker_timeout;
   int dragon_waze_mode_timeout;
   int dragon_ui_dm_view_timeout;
+  int dragon_updating_timeout;
 
   bool dragon_ui_speed;
   bool dragon_ui_event;
@@ -331,6 +334,7 @@ typedef struct UIState {
   bool dragon_ui_blinker;
   bool dragon_waze_mode;
   bool dragon_ui_dm_view;
+  bool dragon_updating;
 } UIState;
 
 // API

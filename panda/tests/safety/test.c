@@ -62,6 +62,13 @@ uint8_t hw_type = HW_TYPE_UNKNOWN;
  ({ __typeof__ (a) _a = (a);                    \
    (_a > 0) ? _a : (-_a); })
 
+// from faults.h
+#define FAULT_RELAY_MALFUNCTION         (1U << 0)
+void fault_occurred(uint32_t fault) {
+}
+void fault_recovered(uint32_t fault) {
+}
+
 // from llcan.h
 #define GET_BUS(msg) (((msg)->RDTR >> 4) & 0xFF)
 #define GET_LEN(msg) ((msg)->RDTR & 0xf)
@@ -72,13 +79,19 @@ uint8_t hw_type = HW_TYPE_UNKNOWN;
 
 #define UNUSED(x) (void)(x)
 
+#ifndef PANDA
 #define PANDA
+#endif
 #define NULL ((void*)0)
 #define static
 #include "safety.h"
 
 void set_controls_allowed(bool c){
   controls_allowed = c;
+}
+
+void set_unsafe_mode(int mode){
+  unsafe_mode = mode;
 }
 
 void set_relay_malfunction(bool c){
@@ -91,6 +104,10 @@ void set_gas_interceptor_detected(bool c){
 
 bool get_controls_allowed(void){
   return controls_allowed;
+}
+
+int get_unsafe_mode(void){
+  return unsafe_mode;
 }
 
 bool get_relay_malfunction(void){

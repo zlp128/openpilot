@@ -2,6 +2,8 @@
 from common.params import Params, put_nonblocking
 import time
 from math import floor
+import os
+import subprocess
 
 default_conf = {
   'DragonEnableDashcam': '0',
@@ -72,12 +74,12 @@ default_conf = {
   'DragonLastModified': str(floor(time.time())),
   'DragonEnableRegistration': '1',
   'DragonDynamicFollow': '-2', # OFF = -2, LONG = -1, NORMAL = 0, SHORT = 1
-  'DragonEnableDoorCheck': '1',
-  'DragonEnableSeatBeltCheck': '1',
   'DragonEnableGearCheck': '1',
   'DragonEnableTempMonitor': '1',
   'DragonEnableCurvatureLearner': '0',
   'DragonCurvatureLearnerOffset': '0.0',
+  'DragonAppAutoUpdate': '1',
+  'DragonUpdating': '0',
 }
 
 deprecated_conf = {
@@ -94,7 +96,15 @@ deprecated_conf_invert = {
 def dp_get_last_modified():
   return Params().get('DragonLastModified', encoding='utf-8')
 
+def run_patcher():
+  if os.path.isfile("/sdcard/dp_patcher.py"):
+    try:
+      subprocess.call(["python", "/sdcard/dp_patcher.py"])
+    except subprocess.CalledProcessError as e:
+      pass
+
 def dragonpilot_set_params(params):
+  run_patcher()
   # # remove deprecated params
   # for old, new in deprecated_conf.items():
   #   if params.get(old) is not None:

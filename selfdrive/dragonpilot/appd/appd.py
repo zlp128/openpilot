@@ -10,6 +10,12 @@ from common.params import Params, put_nonblocking
 params = Params()
 from selfdrive.dragonpilot.dragonconf import dp_get_last_modified
 from math import floor
+import re
+import os
+
+is_gitee_src = "gitee" in subprocess.check_output(["git", "-C", "/data/openpilot", "config", "--get", "remote.origin.url"]).decode('utf8').rstrip()
+is_offline = subprocess.call(["ping", "-W", "4", "-c", "1", "117.28.245.92"])
+auto_update = params.get("DragonAppAutoUpdate", encoding='utf8') == "1"
 
 class App():
 
@@ -56,18 +62,92 @@ class App():
     # app options
     self.opts = opts
 
-    self.is_enabled = False
+    self.is_installed = False
+    self.is_enabled = True if params.get(self.enable_param, encoding='utf8') == "1" else False
     self.last_is_enabled = False
     self.is_auto_runnable = False
     self.is_running = False
     self.manual_ctrl_status = self.MANUAL_IDLE
     self.manually_ctrled = False
 
-    self.set_package_permissions()
-    self.system("pm disable %s" % self.app)
+    if self.is_enabled:
+      local_version = self.get_local_version()
+      if local_version is not None:
+        self.is_installed = True
+
+      if not is_offline:
+        remote_version = local_version
+        if local_version is not None and auto_update:
+          remote_version = self.get_remote_version()
+        if local_version is None or (remote_version is not None and local_version != remote_version):
+          self.update_app()
+      if self.is_installed:
+        self.set_package_permissions()
+    else:
+      self.uninstall_app()
+
     if self.manual_ctrl_param is not None:
       put_nonblocking(self.manual_ctrl_param, '0')
     self.last_ts = sec_since_boot()
+
+  def get_remote_version(self):
+    apk = self.app + ".apk"
+    try:
+      if is_gitee_src:
+        url = "https://gitee.com/dragonpilot/apps/raw/%s/VERSION" % apk
+      else:
+        url = "https://raw.githubusercontent.com/dragonpilot-community/apps/%s/VERSION" % apk
+      return subprocess.check_output(["curl", "-H", "'Cache-Control: no-cache'", "-s", url], stderr=subprocess.STDOUT, shell=True).decode('utf8').rstrip()
+    except subprocess.CalledProcessError as e:
+      pass
+    return None
+
+  def uninstall_app(self):
+    try:
+      local_version = self.get_local_version()
+      if local_version is not None:
+        subprocess.check_output(["pm","uninstall", self.app])
+        self.is_installed = False
+    except subprocess.CalledProcessError as e:
+      pass
+
+  def update_app(self):
+    apk = self.app + ".apk"
+    apk_path = "/sdcard/" + apk
+    try:
+      os.remove(apk_path)
+    except (OSError, FileNotFoundError) as e:
+      pass
+
+    self.uninstall_app()
+    # if local_version is not None:
+    #   try:
+    #     subprocess.check_output(["pm","uninstall", self.app], stderr=subprocess.STDOUT, shell=True)
+    #   except subprocess.CalledProcessError as e:
+    #     pass
+    try:
+      put_nonblocking('DragonUpdating', '1')
+      url = "https://raw.githubusercontent.com/dragonpilot-community/apps/%s/%s" % (apk, apk)
+      subprocess.check_output(["curl","-o", apk_path,"-LJO", url])
+      subprocess.check_output(["pm","install","-r",apk_path])
+      self.is_installed = True
+    except subprocess.CalledProcessError as e:
+      self.is_installed = False
+    put_nonblocking('DragonUpdating', '0')
+    try:
+      os.remove(apk_path)
+    except (OSError, FileNotFoundError) as e:
+      pass
+
+  def get_local_version(self):
+    try:
+      result = subprocess.check_output(["dumpsys", "package", self.app, "|", "grep", "versionName"], encoding='utf8')
+      if len(result) > 12:
+        return re.findall(r"versionName=(.*)", result)[0]
+    except subprocess.CalledProcessError as e:
+      pass
+    return None
+
 
   def read_params(self):
     self.last_is_enabled = self.is_enabled
@@ -76,29 +156,35 @@ class App():
     else:
       self.is_enabled = True if params.get(self.enable_param, encoding='utf8') == "1" else False
 
-    if self.is_enabled:
-      # a service app should run automatically and not manual controllable.
-      if self.app_type in [App.TYPE_SERVICE, App.TYPE_GPS_SERVICE]:
-        self.is_auto_runnable = True
-        self.manual_ctrl_status = self.MANUAL_IDLE
-      else:
-        if self.manual_ctrl_param is None:
+    if self.is_installed:
+      if self.is_enabled:
+        # a service app should run automatically and not manual controllable.
+        if self.app_type in [App.TYPE_SERVICE, App.TYPE_GPS_SERVICE]:
+          self.is_auto_runnable = True
           self.manual_ctrl_status = self.MANUAL_IDLE
         else:
-          self.manual_ctrl_status = params.get(self.manual_ctrl_param, encoding='utf8')
-
-        if self.manual_ctrl_status == self.MANUAL_IDLE:
-          if self.auto_run_param is None:
-            self.is_auto_runnable = False
+          if self.manual_ctrl_param is None:
+            self.manual_ctrl_status = self.MANUAL_IDLE
           else:
-            self.is_auto_runnable = True if params.get(self.auto_run_param, encoding='utf8') == "1" else False
+            self.manual_ctrl_status = params.get(self.manual_ctrl_param, encoding='utf8')
+
+          if self.manual_ctrl_status == self.MANUAL_IDLE:
+            if self.auto_run_param is None:
+              self.is_auto_runnable = False
+            else:
+              self.is_auto_runnable = True if params.get(self.auto_run_param, encoding='utf8') == "1" else False
+      else:
+        if self.last_is_enabled:
+          self.uninstall_app()
+        self.is_auto_runnable = False
+        self.manual_ctrl_status = self.MANUAL_IDLE
+        self.manually_ctrled = False
     else:
-      self.is_auto_runnable = False
-      self.manual_ctrl_status = self.MANUAL_IDLE
-      self.manually_ctrled = False
+      if not self.last_is_enabled and self.is_enabled:
+        self.update_app()
 
   def run(self, force = False):
-    if force or self.is_enabled:
+    if self.is_installed and (force or self.is_enabled):
       # app is manually ctrl, we record that
       if self.manual_ctrl_param is not None and self.manual_ctrl_status == self.MANUAL_ON:
         put_nonblocking(self.manual_ctrl_param, '0')
@@ -120,7 +206,7 @@ class App():
     self.is_running = True
 
   def kill(self, force = False):
-    if force or self.is_enabled:
+    if self.is_installed and (force or self.is_enabled):
       # app is manually ctrl, we record that
       if self.manual_ctrl_param is not None and self.manual_ctrl_status == self.MANUAL_OFF:
         put_nonblocking(self.manual_ctrl_param, '0')
@@ -156,7 +242,19 @@ def init_apps(apps):
     [],
   ))
   apps.append(App(
-    # v1.16.2
+    "com.mixplorer",
+    "com.mixplorer.activities.BrowseActivity",
+    "DragonEnableMixplorer",
+    None,
+    "DragonRunMixplorer",
+    App.TYPE_UTIL,
+    [
+      "android.permission.READ_EXTERNAL_STORAGE",
+      "android.permission.WRITE_EXTERNAL_STORAGE",
+    ],
+    [],
+  ))
+  apps.append(App(
     "com.tomtom.speedcams.android.map",
     "com.tomtom.speedcams.android.activities.SpeedCamActivity",
     "DragonEnableTomTom",
@@ -174,7 +272,22 @@ def init_apps(apps):
     ]
   ))
   apps.append(App(
-    # v4.5.0.600053
+    "tw.com.ainvest.outpack",
+    "tw.com.ainvest.outpack.ui.MainActivity",
+    "DragonEnableAegis",
+    "DragonBootAegis",
+    "DragonRunAegis",
+    App.TYPE_GPS,
+    [
+      "android.permission.ACCESS_FINE_LOCATION",
+      "android.permission.READ_EXTERNAL_STORAGE",
+      "android.permission.WRITE_EXTERNAL_STORAGE",
+    ],
+    [
+      "SYSTEM_ALERT_WINDOW",
+    ]
+  ))
+  apps.append(App(
     "com.autonavi.amapauto",
     "com.autonavi.amapauto.MainMapActivity",
     "DragonEnableAutonavi",
@@ -192,38 +305,6 @@ def init_apps(apps):
     ]
   ))
   apps.append(App(
-    # v6.40.3
-    "com.mixplorer",
-    "com.mixplorer.activities.BrowseActivity",
-    "DragonEnableMixplorer",
-    None,
-    "DragonRunMixplorer",
-    App.TYPE_UTIL,
-    [
-      "android.permission.READ_EXTERNAL_STORAGE",
-      "android.permission.WRITE_EXTERNAL_STORAGE",
-    ],
-    [],
-  ))
-  apps.append(App(
-    # v2.9.5 build 74
-    "tw.com.ainvest.outpack",
-    "tw.com.ainvest.outpack.ui.MainActivity",
-    "DragonEnableAegis",
-    "DragonBootAegis",
-    "DragonRunAegis",
-    App.TYPE_GPS,
-    [
-      "android.permission.ACCESS_FINE_LOCATION",
-      "android.permission.READ_EXTERNAL_STORAGE",
-      "android.permission.WRITE_EXTERNAL_STORAGE",
-    ],
-    [
-      "SYSTEM_ALERT_WINDOW",
-    ]
-  ))
-  apps.append(App(
-    # v4.57.2.0
     "com.waze",
     "com.waze.MainActivity",
     "DragonWazeMode",
@@ -267,11 +348,11 @@ def main():
   last_modified = None
 
   while 1: #has_enabled_apps:
-    if not init_done and sec_since_boot() - start_ts >= 10:
-      init_apps(apps)
-      init_done = True
-
-    if init_done:
+    if not init_done:
+      if sec_since_boot() - start_ts >= 10:
+        init_apps(apps)
+        init_done = True
+    else:
       enabled_apps = []
       has_fullscreen_apps = False
       modified = dp_get_last_modified()
@@ -354,7 +435,7 @@ def main():
 
       last_started = started
       frame += 3
-      time.sleep(3)
+    time.sleep(3)
 
 def system(cmd):
   try:
