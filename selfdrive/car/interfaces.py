@@ -44,8 +44,6 @@ class CarInterfaceBase():
     self.ts_last_check = 0.
     self.dragon_lat_ctrl = True
     self.dp_last_modified = None
-    self.dp_door_check = True
-    self.dp_seatbelt_check = True
     self.dp_gear_check = True
 
   @staticmethod
@@ -116,8 +114,6 @@ class CarInterfaceBase():
           self.dragon_toyota_stock_dsu = False
         if not self.dragon_toyota_stock_dsu:
           self.dragon_allow_gas = True if params.get("DragonAllowGas", encoding='utf8') == "1" else False
-        self.dp_door_check = False if params.get("DragonEnableDoorCheck", encoding='utf8') == "0" else True
-        self.dp_seatbelt_check = False if params.get("DragonEnableSeatBeltCheck", encoding='utf8') == "0" else True
         self.dp_gear_check = False if params.get("DragonEnableGearCheck", encoding='utf8') == "0" else True
         self.dp_last_modified = modified
       self.ts_last_check = ts
@@ -125,9 +121,9 @@ class CarInterfaceBase():
   def create_common_events(self, cs_out, extra_gears=[], gas_resume_speed=-1):
     events = []
 
-    if self.dp_door_check and cs_out.doorOpen:
+    if cs_out.doorOpen:
       events.append(create_event('doorOpen', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
-    if self.dp_seatbelt_check and cs_out.seatbeltUnlatched:
+    if cs_out.seatbeltUnlatched:
       events.append(create_event('seatbeltNotLatched', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
     if self.dp_gear_check:
       if cs_out.gearShifter != GearShifter.drive and cs_out.gearShifter not in extra_gears:

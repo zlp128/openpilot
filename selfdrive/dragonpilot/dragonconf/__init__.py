@@ -74,8 +74,6 @@ default_conf = {
   'DragonLastModified': str(floor(time.time())),
   'DragonEnableRegistration': '1',
   'DragonDynamicFollow': '-2', # OFF = -2, LONG = -1, NORMAL = 0, SHORT = 1
-  'DragonEnableDoorCheck': '1',
-  'DragonEnableSeatBeltCheck': '1',
   'DragonEnableGearCheck': '1',
   'DragonEnableTempMonitor': '1',
   'DragonEnableCurvatureLearner': '0',
