@@ -1,3 +1,10 @@
+2020-04-10
+========================
+* [DEVEL] 更新 panda 至最新的 comma:master 分支。
+* [DEVEL] 移除所有的第三方應用改為自動下載。
+* [DEVEL] 移除「啟用原廠 DSU 模式」、「安全帶檢查」、「車門檢查」開關。
+* [0.7.4] 更新至 2020-04-10 devel 分支。
+
 2020-03-31
 ========================
 * [TESTING] 還原部分修改代碼以達到 comma ai 安全準則。 (Reverted changes to panda safety code to comply with comma ai safety guideline.)
