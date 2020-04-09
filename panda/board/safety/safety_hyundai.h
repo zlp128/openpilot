@@ -30,6 +30,8 @@ static int hyundai_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
   bool valid = addr_safety_check(to_push, hyundai_rx_checks, HYUNDAI_RX_CHECK_LEN,
                                  NULL, NULL, NULL);
 
+  bool unsafe_allow_gas = unsafe_mode & UNSAFE_DISABLE_DISENGAGE_ON_GAS;
+
   if (valid && GET_BUS(to_push) == 0) {
     int addr = GET_ADDR(to_push);
 
@@ -55,8 +57,8 @@ static int hyundai_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
     // exit controls on rising edge of gas press
     if (addr == 608) {
       bool gas_pressed = (GET_BYTE(to_push, 7) >> 6) != 0;
-      if (gas_pressed && !gas_pressed_prev) {
-        controls_allowed = 1;
+      if (!unsafe_allow_gas && gas_pressed && !gas_pressed_prev) {
+        controls_allowed = 0;
       }
       gas_pressed_prev = gas_pressed;
     }
@@ -79,7 +81,7 @@ static int hyundai_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 
     // check if stock camera ECU is on bus 0
     if ((safety_mode_cnt > RELAY_TRNS_TIMEOUT) && (addr == 832)) {
-      relay_malfunction = true;
+      relay_malfunction_set();
     }
   }
   return valid;

@@ -174,12 +174,12 @@ keys = {
   "DragonLastModified": [TxType.PERSISTENT],
   "DragonEnableRegistration": [TxType.PERSISTENT],
   "DragonDynamicFollow": [TxType.PERSISTENT],
-  "DragonEnableDoorCheck": [TxType.PERSISTENT],
-  "DragonEnableSeatBeltCheck": [TxType.PERSISTENT],
   "DragonEnableGearCheck": [TxType.PERSISTENT],
   "DragonEnableTempMonitor": [TxType.PERSISTENT],
   "DragonEnableCurvatureLearner": [TxType.PERSISTENT],
   "DragonCurvatureLearnerOffset": [TxType.PERSISTENT],
+  "DragonAppAutoUpdate": [TxType.PERSISTENT],
+  "DragonUpdating": [TxType.CLEAR_ON_MANAGER_START],
 }
 
 
