@@ -42,6 +42,26 @@ static void ui_draw_sidebar_home_button(UIState *s, bool hasSidebar) {
   nvgRect(s->vg, home_btn_xr, home_btn_y, home_btn_w, home_btn_h);
   nvgFillPaint(s->vg, imgPaint);
   nvgFill(s->vg);
+
+  if (s->dragon_updating) {
+    nvgBeginPath(s->vg);
+    nvgCircle(s->vg, home_btn_xr + home_btn_w/2, home_btn_y + home_btn_h/2+2, 72);
+//    nvgRoundedRect(s->vg, home_btn_xr, home_btn_y + home_btn_h/2-5, home_btn_w, 20, 5);
+    nvgFillColor(s->vg, nvgRGBA(255, 255, 255, s->scene.alert_rate));
+    nvgFill(s->vg);
+
+    nvgFillColor(s->vg, nvgRGBA(0, 0, 0, s->scene.alert_rate));
+    nvgFontSize(s->vg, 30);
+    nvgFontFace(s->vg, "sans-bold");
+    nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+    nvgTextBox(s->vg, home_btn_xr, home_btn_y + home_btn_h/2+5, home_btn_w, "UPDATING", NULL);
+
+    s->scene.alert_rate += 5*s->scene.alert_type;
+
+    if (s->scene.alert_rate == 0 || s->scene.alert_rate == 255) {
+      s->scene.alert_type *= -1;
+    }
+  }
 }
 
 static void ui_draw_sidebar_network_strength(UIState *s, bool hasSidebar) {
