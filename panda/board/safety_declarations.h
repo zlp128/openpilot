@@ -61,6 +61,8 @@ bool addr_safety_check(CAN_FIFOMailBox_TypeDef *to_push,
                        uint8_t (*get_checksum)(CAN_FIFOMailBox_TypeDef *to_push),
                        uint8_t (*compute_checksum)(CAN_FIFOMailBox_TypeDef *to_push),
                        uint8_t (*get_counter)(CAN_FIFOMailBox_TypeDef *to_push));
+void relay_malfunction_set(void);
+void relay_malfunction_reset(void);
 
 typedef void (*safety_hook_init)(int16_t param);
 typedef int (*rx_hook)(CAN_FIFOMailBox_TypeDef *to_push);
@@ -87,6 +89,24 @@ bool gas_interceptor_detected = false;
 int gas_interceptor_prev = 0;
 bool gas_pressed_prev = false;
 bool brake_pressed_prev = false;
+
+// This can be set with a USB command
+// It enables features we consider to be unsafe, but understand others may have different opinions
+// It is always 0 on mainline comma.ai openpilot
+
+// If using this flag, be very careful about what happens if your fork wants to brake while the
+//   user is pressing the gas. Tesla is careful with this.
+#define UNSAFE_DISABLE_DISENGAGE_ON_GAS 1
+
+// If using this flag, make sure to communicate to your users that a stock safety feature is now disabled.
+#define UNSAFE_DISABLE_STOCK_AEB 2
+
+// If using this flag, be aware that harder braking is more likely to lead to rear endings,
+//   and that alone this flag doesn't make braking compliant because there's also a time element.
+// See ISO 15622:2018 for more information.
+#define UNSAFE_RAISE_LONGITUDINAL_LIMITS_TO_ISO_MAX 8
+
+int unsafe_mode = 0;
 
 // time since safety mode has been changed
 uint32_t safety_mode_cnt = 0U;
