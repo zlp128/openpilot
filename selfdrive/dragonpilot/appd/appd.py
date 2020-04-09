@@ -348,11 +348,11 @@ def main():
   last_modified = None
 
   while 1: #has_enabled_apps:
-    if not init_done and sec_since_boot() - start_ts >= 10:
-      init_apps(apps)
-      init_done = True
-
-    if init_done:
+    if not init_done:
+      if sec_since_boot() - start_ts >= 10:
+        init_apps(apps)
+        init_done = True
+    else:
       enabled_apps = []
       has_fullscreen_apps = False
       modified = dp_get_last_modified()
@@ -435,7 +435,7 @@ def main():
 
       last_started = started
       frame += 3
-      time.sleep(3)
+    time.sleep(3)
 
 def system(cmd):
   try:
