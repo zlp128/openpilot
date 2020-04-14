@@ -269,10 +269,10 @@ Due to incompetible CAN message issue, some of the users (Taiwan Toyota RAV4 + C
 Car Harness properly.
 
 to enable this mod:
-cd /data/openpilot && chmod +x btg_mode.sh && ./btgmode.sh 1
+cd /data/openpilot && chmod +x btg_mode.sh && ./btg_mode.sh 1
 
 to disable this mod:
-cd /data/openpilot && chmod +x btg_mode.sh && ./btgmode.sh 0
+cd /data/openpilot && chmod +x btg_mode.sh && ./btg_mode.sh 0
 ```
 **DragonCharging**
 ```
