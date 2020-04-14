@@ -303,5 +303,5 @@ This allows you to adjust the stop and go response when the fornt car starts mov
 * Default value: 0.0
 * Accept value: any float value greater than 0.0
 
-printf %s "7.0" > /data/params/d/DragonDisCharging
+printf %s "7.0" > /data/params/d/DragonToyotaSngResponse
 ```
