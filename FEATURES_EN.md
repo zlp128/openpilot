@@ -294,3 +294,13 @@ This allows you to adjust the battery discharging percentage, when your battery 
 
 printf %s "70" > /data/params/d/DragonDisCharging
 ```
+**DragonToyotaSngResponse**
+```
+This allows you to adjust the stop and go response when the fornt car starts moving on Toyota/Lexsus cars.
+
+* Your Toyota/Lexsus vehicle must have one of following condition: TSS-P with Smart DSU, DSU unplugged, or TSS2 feature.
+* Default value: 0.0
+* Accept value: any float value greater than 0.0
+
+printf %s "7.0" > /data/params/d/DragonDisCharging
+```
