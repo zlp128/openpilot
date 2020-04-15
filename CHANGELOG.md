@@ -1,6 +1,7 @@
 2020-04-13
 ========================
-* [TESTING] 優化Toyota SNG 起步反應值 更改方式。設定值檔名為 DragonToyotaSngResponse 儲存在 /data/params/d/, 預設值為 0.0。
+* [DEVEL] 加入可調整 Toyota Sng 起步反應值 (DragonToyotaSngResponse)。 (特別感謝 @Wei 提供 PR)
+* [DEVEL] 駕駛介面加入「動態調整車距」按鈕。(感謝 @cgw1968-5779 建議)
 
 2020-04-10
 ========================
