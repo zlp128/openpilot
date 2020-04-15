@@ -2,6 +2,7 @@
 ========================
 * [DEVEL] 加入可調整 Toyota Sng 起步反應值 (DragonToyotaSngResponse)。 (特別感謝 @Wei 提供 PR)
 * [DEVEL] 駕駛介面加入「動態調整車距」按鈕。(感謝 @cgw1968-5779 建議)
+* [DEVEL] 更新 update script。(感謝 深鯨希西 回報)
 
 2020-04-10
 ========================
