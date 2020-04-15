@@ -269,10 +269,10 @@ Due to incompetible CAN message issue, some of the users (Taiwan Toyota RAV4 + C
 Car Harness properly.
 
 to enable this mod:
-cd /data/openpilot && chmod +x btg_mode.sh && ./btgmode.sh 1
+cd /data/openpilot && chmod +x btg_mode.sh && ./btg_mode.sh 1
 
 to disable this mod:
-cd /data/openpilot && chmod +x btg_mode.sh && ./btgmode.sh 0
+cd /data/openpilot && chmod +x btg_mode.sh && ./btg_mode.sh 0
 ```
 **DragonCharging**
 ```
@@ -303,5 +303,5 @@ This allows you to adjust the stop and go response when the fornt car starts mov
 * Default value: 0.0
 * Accept value: any float value greater than 0.0
 
-printf %s "7.0" > /data/params/d/DragonDisCharging
+printf %s "7.0" > /data/params/d/DragonToyotaSngResponse
 ```
