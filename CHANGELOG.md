@@ -1,3 +1,7 @@
+2020-04-13
+========================
+* [TESTING] 優化Toyota SNG 起步反應值 更改方式。設定值檔名為 DragonToyotaSngResponse 儲存在 /data/params/d/, 預設值為 0.0。
+
 2020-04-10
 ========================
 * [DEVEL] 更新 panda 至最新的 comma:master 分支。
