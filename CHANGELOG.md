@@ -1,3 +1,11 @@
+2020-04-16
+========================
+* [DEVEL] 加入台灣版 2016 Lexus IS200t 指紋。(感謝 Philip / Cody Dai)
+* [DEVEL] 加入台灣版 2016 Toyota Prius 4.5 代指紋。(感謝 Philip)
+* [DEVEL] 加入台灣版 201x Toyota RAV4 4WD 指紋。(感謝 Philip)
+* [DEVEL] 加入台灣版 2020 Toyota Auris w/ LTA 指紋。(感謝 Philip)
+* [DEVEL] 修正 commIssue 錯誤。(感謝 Kent 協助)
+
 2020-04-13
 ========================
 * [DEVEL] 加入可調整 Toyota Sng 起步反應值 (DragonToyotaSngResponse)。 (特別感謝 @Wei 提供 PR)

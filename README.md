@@ -38,6 +38,10 @@ dragonpilot (龍芯駕駛輔助系統)
 * 大陸版 2019 Toyota 雷凌 (汽油版) by Shell
 * 大陸版 2019 Lexus RX300 by cafe
 * 大陸版 2019 Toyota 卡羅拉 (汽油版) by Shell
+* 台灣版 2016 Toyota Prius by Philip
+* 台灣版 201? Toyota RAV4 4WD 5th Gen by Philip
+* 台灣版 2020 Toyota Auris w/ LTA by Philip
+* 台灣版 2017 Lexus IS200t by Philip / Cody Dai
 * 台灣版 2019 Toyota RAV4 Hybrid by MaxDuan
 * 台灣版 2019 Toyota RAV4 by MaxDuan / CloudJ
 * 台灣版 2019 Toyota Corolla Altis by wlee72
