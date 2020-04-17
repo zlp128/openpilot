@@ -213,8 +213,9 @@ Enable this will allow you to use MiXplorer (File manager) App.
 
 # Brand Specific Settings
 ### Toyota / Lexus
-**Enable Stock DSU Mode**
+**~~Enable Stock DSU Mode~~**
 ```
+Due to comma's safety guideline, this feature is no longer fully working beyond 0.7.4 
 This is for TSS-P cars w/ DSU connected, once this is enabled, dragonpilot will be engaged when main ACC switch is on, disengaged when main ACC switch is off.
 dragonpilot will stay engaged all time for lateral control and wont be disengaged if step on gas or brake.
 ```
@@ -302,6 +303,7 @@ This allows you to adjust the stop and go response when the fornt car starts mov
 * Your Comma Two or Eon must have Community Feature enabled.
 * Default value: 0.0
 * Accept value: any float value greater than 0.0
+* Reboot required
 
 printf %s "7.0" > /data/params/d/DragonToyotaSngResponse
 ```

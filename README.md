@@ -1,3 +1,5 @@
+[English Readme](README_EN.md)
+
 dragonpilot (龍芯駕駛輔助系統)
 ---
 龍芯駕駛輔助系統是一套基於 [openpilot](https://github.com/commaai/openpilot/) 的開源 L2 級自動駕駛系統軟體，它可以升級您車子裡的 ACC (主動式定速巡航系統) 以及 LKAS (車道保持輔助系統) 至接近特斯拉 Autopilot 的等級。 
@@ -156,28 +158,9 @@ dragonpilot (龍芯駕駛輔助系統)
     ```bash
     cd /data/openpilot
     ```
-2. 撤消所有手動的變更
+2. 執行更新指令
     ```bash
-    git reset --hard
-    ```
-3. 更新 git 資料庫
-    ```bash
-    git pull
-    ```
-4. 切換到新的版本分支 (使用的是 devel 版可省略此步驟)
-    ```bash
-    # 简体开发版
-    #git checkout devel-zhs
-    # 繁體開發版
-    #git checkout devel-zht
-    # 简体稳定版 v0.6.5
-    #git checkout 0.6.5-zhs      
-    # 繁體穩定版 v0.6.5
-    #git checkout 0.6.5-zht
-    ```
-5.  重開機
-    ```bash
-    reboot
+    ./reset_update.sh
     ```
 
 版本分支介紹
@@ -186,11 +169,10 @@ dragonpilot (龍芯駕駛輔助系統)
 * testing: 搶鮮版 - (英文，基於官方 devel-staging/devel 版 + 客制化功能，可能會有問題、錯誤)
 * feature-????: 新功能測試版 - (英文，基於 dp testing 版 + 新功能測試，可能會有問題、錯誤)
 * devel-i18n: 開發版 - (多語言版，基於 dp testing 版)
-* ~~devel-en: 開發版 - (英文，基於 dp testing 版)~~
 * devel-zhs: 開發版 - (简体中文，基於 devel-i18n + 简体中文化)
 * devel-zhs-appless: 開發版 - (简体中文，基於 devel-zhs + 移除第三方應用)
 * devel-zht: 開發版 - (繁體中文，基於 devel-i18n + 繁體中文化)
-* ?.?.?-en: 穩定版 - (英文，測試過的 devel-i18n)
+* ?.?.?-i18n: 穩定版 - (英文，測試過的 devel-i18n)
 * ?.?.?-zhs: 穩定版 - (简体中文，測試過的 devel-zhs)
 * ?.?.?-zht: 穩定版 - (繁體中文，測試過的 devel-zht)
 
