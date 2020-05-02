@@ -1,26 +1,28 @@
 dragonpilot
 ---
-dragonpilot is a modded version of [openpilot](https://github.com/commaai/openpilot/), we have additional features including:  
+dragonpilot is a modded version of [openpilot](https://github.com/commaai/openpilot/) with features including:  
 
-* Multi-language interface (current support: English, Simplified, Traditional, partial support: Japanese, Korean, French, Portuguese)
-* Non-stop dashcam recording
-* Configurable driving interface
-* Auto Shutdown (not applicable for Comma Two or Comma Power users)
+* Multi-language interface (current support: English, Simplified/Traditional Chinese, partial support: Japanese, Korean, French, Portuguese)
+* drive recording. (dashcam mode)
+* Configurable driving interface.
+* Auto Shutdown. (not applicable for Comma Two or Comma Power users)
 * Temporarily disable steering control when Turn signal / direction light is on.
-* Disallow AI training recording.
-* Disallow upload of AI training recording.
+* Disallow AI training video recording.
+* Disallow upload of AI training video recording.
 * Allow gas/throttle control while engaging.
-* Noctua Fan Mode (Fan runs at full speed all time).
+* Noctua Fan Mode (Fan runs at full speed at all time).
 * Adjustable driver monitoring.
 * ACC Only Mode: Only control gas / brake when engaging.
 * Integrated with TOM TOM Speed Camera (Global) / Autonavi (China) / Ainvest (Taiwan) / Waze (Global).
-* Allow Panda GPS passthru to 3rd Party Apps. 
+* Allow Panda GPS signal passthru to 3rd Party Apps. 
 * Integrated with MiXplorer File Manager.
 * Display WIFI IP Address on sidebar.
 * Automated Lane Change.
 * Hotspot on Boot.
-* Adjustable Acceleration Profile (longitudinal Control required, by @arne182)
-* Adjustable Lead Car Following Profile (longitudinal, aka Dynamic Following by @ShaneSmiskol)
+* Adjustable Acceleration Profile. (longitudinal Control required, by @arne182: https://github.com/arne182/ArnePilot)
+* Adjustable Lead Car Following Profile. (longitudinal, aka Dynamic Following by @ShaneSmiskol: https://github.com/ShaneSmiskol/openpilot)
+* Turn off screen while reversing. (by @mlp: https://github.com/martinl/openpilot/)
+* Custom Car Model selector. (fingerprint-less mode)
 
 ** Please see [FEATURES_EN.md](FEATURES_EN.md) for more information.**
 
@@ -79,24 +81,24 @@ Installation
     ```bash
     cd /data
     ```
-3. back up existing openpilot
+3. back up existing openpilot (optional)
     ```bash
     mv openpilot openpilot_bak
     ```
 4. download dragonpilot development version to openpilot directory from github or gitee:
     * github 
     ```bash
-    git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-i18n
+    git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot -b devel-i18n
     ```
     * gitee
     ```bash 
-    git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-i18n
+    git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot -b devel-i18n
     ```
 5. switch into openpilot directory
     ```bash
     cd openpilot
     ```
-6. update git repository
+6. update git repository again just in case
     ```bash
     git pull
     ```
@@ -107,12 +109,11 @@ Installation
 
 **Please reboot again if you have display issue. (Chinese / Japanese / Korean only)**
 
-
 Update
 ---
 1. switch to /data/openpilot directory 
     ```bash
-    cd /data/openpilot
+    cd /data/openpilot/scripts/
     ```
 2. run update command
     ```bash

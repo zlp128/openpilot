@@ -51,12 +51,6 @@ dragonpilot (龍芯駕駛輔助系統)
 * 台灣版 Toyota Prius 4.5 代 by Lin Xin Hong
 * 台灣版 2017 Lexus GS450h by 簡銘佑
 * 波蘭版 2015 Lexus NX200T by wabes
-* ~~美國版 2017 Civic Hatchback by CFranHonda (有衝突)~~
-* ~~大陸版本田奧德賽 by eFiniLan (已入官方)~~
-* ~~大陸版本田 CR-V by eFiniLan (已入官方)~~
-* ~~美國版 2018 Lexus CT200h by thomaspich (已入官方)~~
-* ~~澳洲版 2017 Lexus IS300h by eFiniLan (已入官方)~~
-* ~~台灣版 2019 Toyota Corolla Altis 油電版 by wlee72 (已入官方)~~
 
 目前完整支援 dragonpilot 客制化功能的車系有：
 * Lexus / Toyota
@@ -116,7 +110,7 @@ dragonpilot (龍芯駕駛輔助系統)
     ```bash
     mv openpilot openpilot_bak
     ```
-4. 下載 dragonpilot 英文開發版並存至 openpilot 資料夾 (2 選 1):
+4. 下載 dragonpilot 開發版並存至 openpilot 資料夾 (2 選 1):
     1. github 
     ```bash
     git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot --branch devel-i18n
@@ -133,16 +127,14 @@ dragonpilot (龍芯駕駛輔助系統)
     ```bash
     git pull
     ```
-7. 切換想使用的版本/語系分支 (預設為英文開發版，不想切換可省略此步驟)
+7. 切換語系 (預設為英文，不想切換可省略此步驟)
     ```bash
-    # 简体开发版
-    #git checkout devel-zhs
-    # 繁體開發版
-    #git checkout devel-zht
-    # 简体稳定版 v0.6.5
-    #git checkout 0.6.5-zhs      
-    # 繁體穩定版 v0.6.5
-    #git checkout 0.6.5-zht
+    # 简体
+    setprop persist.sys.locale zh-CN && setprop persist.sys.local zh-CN
+    ```
+    ```bash
+    # 繁體
+    setprop persist.sys.locale zh-TW && setprop persist.sys.local zh-TW
     ```
 8.  重開機
     ```bash
@@ -156,7 +148,7 @@ dragonpilot (龍芯駕駛輔助系統)
 ---
 1. 切換至 /data/openpilot 資料夾 
     ```bash
-    cd /data/openpilot
+    cd /data/openpilot/scripts/
     ```
 2. 執行更新指令
     ```bash
@@ -169,11 +161,6 @@ dragonpilot (龍芯駕駛輔助系統)
 * testing: 搶鮮版 - (英文，基於官方 devel-staging/devel 版 + 客制化功能，可能會有問題、錯誤)
 * feature-????: 新功能測試版 - (英文，基於 dp testing 版 + 新功能測試，可能會有問題、錯誤)
 * devel-i18n: 開發版 - (多語言版，基於 dp testing 版)
-* devel-zhs: 開發版 - (简体中文，基於 devel-i18n + 简体中文化)
-* devel-zhs-appless: 開發版 - (简体中文，基於 devel-zhs + 移除第三方應用)
-* devel-zht: 開發版 - (繁體中文，基於 devel-i18n + 繁體中文化)
-* ?.?.?-i18n: 穩定版 - (英文，測試過的 devel-i18n)
-* ?.?.?-zhs: 穩定版 - (简体中文，測試過的 devel-zhs)
-* ?.?.?-zht: 穩定版 - (繁體中文，測試過的 devel-zht)
+* ?.?.?-i18n: 穩定版 - (多語言版，測試過的 devel-i18n)
 
 **其它沒有說明的分支為測試功能版，非必要請勿使用**

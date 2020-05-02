@@ -1,4 +1,5 @@
-# MAIN
+# dp v0.7.5 Features
+## Main Settings
 ### Services
 **Enable Logger**
 ```
@@ -40,6 +41,10 @@ If you modify EON with Noctua fan (connect to old fan wires), enable this will a
 Enable this will keep your EON battery between 60% and 70%.
 This will not work with comma two. 
 ```
+**Temp Control**
+```
+Enable this will keep your dp running/controlling and ignoring the device temperature.
+```
 
 ### Tuning
 **Camera Offset (cm)**
@@ -48,10 +53,6 @@ Adjust this value if your EON is not mounted as per instruction, or, if you find
 * Leaning towards to the left, reduce this value.
 * Leaning towards to the right, increase this value.
 Default is 6 cm as per system standard.  
-```
-**Cache Fingerprint**
-```
-Enable this will store your fingerprint/model/vin in files so next time when you start the car, it will slightly reduce the time to recognize your car. 
 ```
 **Enable Steer Ratio Learner**
 ```
@@ -62,11 +63,11 @@ To use stock steer ratio:
 
 To revert it back, simply turn the steer ratio learner back on. 
 ```
-**Acceleration Profile**
+### Fingerprint
+**Custom Model**
 ```
-This option allows you to adjust the acceleration/de-acceleration of dragonpilot.
-Special thanks to @arne182 for providing acceleration profiles.
-Choice of: "ECO", "NORMAL", "SPORT"
+This will allow you to quickly select any supported car model without the need of fingerprints.
+* WARNING: you may damage your car if you select a unmatched model.
 ```
 **Open Android Settings (Button)**
 ```
@@ -78,7 +79,7 @@ This button will run flash panda firmware command, once it's done, your EON shou
 If you don't see your EON reboot, meaning there is something wrong while flashing, simply disconnect your Panda from power source and restart your EON then try again.
 ```
 
-# Controls Settings
+## Controls Settings
 ### Lateral Control
 **Enable Lateral Control**
 ```
@@ -103,6 +104,22 @@ NOTE: if you do not turn off your blinker, it will keep changing to the next lan
 ```
 
 ### Longitudinal Control
+**Following Distance Profile**
+```
+This option allows you to adjust the distance between your car and lead car.
+When it's not set to "OFF", you can quickly adjust the mode on driving ui. 
+
+Special thanks to @ShaneSmiskol for providing this feature.
+Choice of: "OFF", "LONG", "NORMAL", "SHORT"
+```
+**Acceleration Profile**
+```
+This option allows you to adjust the acceleration/de-acceleration of dragonpilot.
+When it's not set to "OFF", you can quickly adjust the mode on driving ui.
+
+Special thanks to @arne182 for providing this feature.
+Choice of: "OFF", "ECO", "NORMAL", "SPORT"
+```
 **Allow Gas**
 ```
 Enable this will allow you to use gas pedal while dragonpilot is engaged.
@@ -114,14 +131,10 @@ Disable this if you do not wish to slow down on curve automatically.
 **Enable Lead Car Moving Alert**
 ```
 dragonpilot will send an alert when:
-a lead car stopped in front of you for more than 3s and started moving
+a lead car stopped in front of you for more than 3s then started moving
 ```
 
 ### Safety Monitors
-**Enable Safety Check**
-```
-This is the main switch for all safety checks, if you disable this, dragonpilot will stop all safety checks (steering monitor and driver monitor).
-```
 **Enable Driver Monitoring**
 ```
 Driver monitoring is permenantly enabled since 0.6.4 and this option will let you enable/disable driver monitoring.
@@ -132,13 +145,22 @@ Driver monitoring is permenantly enabled since 0.6.4 and this option will let yo
 This option allows you to adjust the timer for steering monitor, set it to OFF if you do not wish to monitor through steering wheel.
 * You will see this option only when "Enable Safety Check" is enabled.
 ```
+**Enable Gear Safety Check**
+```
+This feature will disable gear safety check, this is useful when driving a manual car.
+```
 
-# UI Settings
+## UI Settings
 **Display Driving UI**
 ```
 Disable this will hide camera footage from the screen and leaves you only the sidebar and the rest of the UI components (that can be enable/disable below).
 It's good for using with TomTom or any other android apps run in full screen mode.
 ```
+**Turn Off Screen When Reversing**
+```
+Enable this will temporary turn off device screen when the car is reversing, special thanks to @mlp for providing this feature.  
+```
+
 **Display Driver Monitor View**
 ```
 This allows you to see the driver monitor view on your screen, handy if you want to know why Driver Monitor does not work for you sometimes.
@@ -179,10 +201,14 @@ Enable this will turn your EON into a Waze Navigator,  once it's enabled:
 3. Once the car is started, Waze will start automatically.
 4. Once Waze is started, you cannot make any changes to the DP settings*.
    (* We need to disable frame app to enable soft keyboard.)
+
+The app will download from github the moment you enable this feature so please make sure you have internet connected.
 ```
 **Enable TomTom Safety Camera App**
 ```
 Enable this will allow you to use TomTom Safety Camera App.
+
+The app will download from github the moment you enable this feature so please make sure you have internet connected.
 ```
 **Auto Run TomTom Safety Camera App**
 ```
@@ -192,6 +218,8 @@ Enable this will allow TomTom Safety Camera to run automatically when the car st
 ```
 Enable this will allow you to use Autonavi Map (高德地圖車機版) App.
 * This is for Mainland China users.
+
+The app will download from github the moment you enable this feature so please make sure you have internet connected.
  ```
 **Auto Run Autonavi Map App**
 ```
@@ -201,6 +229,8 @@ Enable this will allow Autonavi Map to run automatically when the car started.
 ```
 Enable this will allow you to use Aegis Safety Camera (神盾測速照相) App.
 * This is for Taiwan users.
+
+The app will download from github the moment you enable this feature so please make sure you have internet connected.
  ```
 **Auto Run Aegis Safety Camera App**
 ```
@@ -209,6 +239,8 @@ Enable this will allow Aegis Safety Camera to run automatically when the car sta
 **Enable MiXplorer App**
 ```
 Enable this will allow you to use MiXplorer (File manager) App.
+
+The app will download from github the moment you enable this feature so please make sure you have internet connected.
  ```
 
 # Brand Specific Settings
@@ -307,3 +339,5 @@ This allows you to adjust the stop and go response when the fornt car starts mov
 
 printf %s "7.0" > /data/params/d/DragonToyotaSngResponse
 ```
+
+there are a few undocumented settings can be found in /data/openpilot/selfdrive/dragonpilot/dragonconfig/__init__.py, try at your own risk :)
