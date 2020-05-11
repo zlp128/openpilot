@@ -14,7 +14,7 @@ If you would like to keep a copy of your logs, you can disable it first > backup
 ```
 **Enable Dashcam**
 ```
-originally from pjlao307, this will record whatever showing on the EON screen.
+originally from pjlao307 (https://github.com/pjlao307/), this will record whatever showing on the EON screen.
 (footages stored in /sdcard/dashcam/)
 ```
 
