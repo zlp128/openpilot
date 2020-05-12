@@ -97,6 +97,14 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     relayMalfunction @72;
     gasPressed @73;
     stockFcw @74;
+    # dp
+    preLaneChangeLeftALC @75;
+    preLaneChangeRightALC @76;
+    laneChangeALC @77;
+    manualSteeringRequired @78;
+    manualSteeringRequiredBlinkersOn @79;
+    leadCarMoving @80;
+    leadCarDetected @81;
   }
 }
 
@@ -156,6 +164,9 @@ struct CarState {
 
   # clutch (manual transmission only)
   clutchPressed @28 :Bool;
+
+  # dp
+  lkMode @37 :Bool;
 
   # which packets this state came from
   canMonoTimes @12: List(UInt64);
