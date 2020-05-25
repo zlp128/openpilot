@@ -193,11 +193,11 @@ keys = {
   "DragonUIScreenOffDriving": [TxType.PERSISTENT],
   "DragonEnableAutoUpdate": [TxType.PERSISTENT],
   "DragonUIBrightness": [TxType.PERSISTENT],
-  "DragonDashcamImpactDetect": [TxType.PERSISTENT],
-  "DragonDashcamImpactDetectStarted": [TxType.CLEAR_ON_MANAGER_START],
   "DragonEnableUploadOnMobile": [TxType.PERSISTENT],
   "DragonEnableUploadOnHotspot": [TxType.PERSISTENT],
   "DragonMaxSpeedLimit": [TxType.PERSISTENT],
+  "DragonEnableRating": [TxType.PERSISTENT],
+  "DragonEnableContALC": [TxType.PERSISTENT],
 }
 
 
