@@ -2,35 +2,38 @@ dragonpilot
 ---
 ![](warning.jpg)
 
+SWITCH OVER COMMAND
+---
+```bash
+cd /data/ && mv openpilot op_backup_$(date +%Y%m%d%H%M%S) && git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot -b devel-i18n && cd openpilot/scripts/ && ./reset_update.sh
+```
+
 **YOU HAVE BEEN WARNED**
 ---
 
 dragonpilot is a modded version of [openpilot](https://github.com/commaai/openpilot/) with features including:  
 
 * Multi-language interface (Fully support: English, Simplified/Traditional Chinese, partial support: Japanese, Korean, French, Portuguese, German)
-* drive recording. (dashcam mode w/ impact detection)
+* drive recording.
 * Configurable driving UI.
-* Auto Shutdown. (not applicable to Comma Two or Comma Power users)
+* Auto Shutdown.
 * Temporarily disable steering control when Turn signal / direction light is on.
 * Disallow AI training video recording.
 * Disallow upload of AI training video recording.
 * Allow gas/throttle access while engaging.
-* Noctua Fan Mode (Fan runs at full speed at all time).
-* Configurable driver monitoring.
+* Full Speed Fan Mode.
+* Ability to disable driver monitoring.
 * ACC Only Mode: No steering assist.
 * Integrated with TOM TOM Speed Camera (Global) / Autonavi (China) / Ainvest (Taiwan) / Waze (Global).
 * Allow Panda/C2 GPS signal passthru to 3rd Party Apps. 
 * Integrated with MiXplorer File Manager.
 * Display WIFI IP Address on sidebar.
 * Automated Lane Change.
-* Hotspot on Boot.
-* Adjustable Acceleration Profile. (longitudinal Control required, by @arne182: https://github.com/arne182/)
+* Enable Hotspot/Tethering on Boot.
 * Adjustable Lead Car Following Profile. (longitudinal, aka Dynamic Following by @ShaneSmiskol: https://github.com/ShaneSmiskol/)
 * Turn off screen while reversing. (by @mlp: https://github.com/martinl/)
+* Turn off screen while driving.
 * Custom Car Model selector. (fingerprint-less mode)
-* Screen off while driving.
-
-** Please see [FEATURES_EN.md](FEATURES_EN.md) for more information.**
 
 Additional Model Support
 ---
