@@ -1,4 +1,4 @@
-dragonpilot
+**YOU HAVE BEEN WARNED**
 ---
 ![](warning.jpg)
 
@@ -8,9 +8,8 @@ SWITCH OVER COMMAND
 cd /data/ && mv openpilot op_backup_$(date +%Y%m%d%H%M%S) && git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot -b devel-i18n && cd openpilot/scripts/ && ./reset_update.sh
 ```
 
-**YOU HAVE BEEN WARNED**
+dragonpilot (aka dp)
 ---
-
 dragonpilot is a modded version of [openpilot](https://github.com/commaai/openpilot/) with features including:  
 
 * Multi-language interface (Fully support: English, Simplified/Traditional Chinese, partial support: Japanese, Korean, French, Portuguese, German)
