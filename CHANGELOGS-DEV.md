@@ -1,5 +1,7 @@
 dragonpilot 0.7.5.4
 ========================
+* 加入 2018 skoda kodiaq 指紋v1。(感謝 @Gold 提供)
+* Added 2018 skoda kodiaq FPv1. (Thanks to @Gold)
 * 移除方向盤監控設定。(無法取消/關閉方向盤監控)
 * Removed Steering monitor timer adjustment in code (timer in settings will no longer work.)
 * Dynamic Follow 更新模型。(感謝 @ShaneSmiskol 提供代碼、 @cgw1968 測試)
