@@ -40,6 +40,7 @@
 #define COLOR_WHITE_ALPHA(x) nvgRGBA(255, 255, 255, x)
 #define COLOR_YELLOW nvgRGBA(218, 202, 37, 255)
 #define COLOR_RED nvgRGBA(201, 34, 49, 255)
+#define COLOR_RED_ALPHA(x) nvgRGBA(201, 34, 49, x)
 #define COLOR_OCHRE nvgRGBA(218, 111, 37, 255)
 
 #ifndef QCOM
@@ -89,6 +90,12 @@ const uint8_t bg_colors[][4] = {
   [STATUS_WARNING] = {0xDA, 0x6F, 0x25, 0xff},
   [STATUS_ALERT] = {0xC9, 0x22, 0x31, 0xff},
 };
+
+// dp - dynamic follow btn
+const int df_btn_h = 180;
+const int df_btn_w = 180;
+const int df_btn_x = 1650;
+const int df_btn_y = 750;
 
 
 typedef struct UIScene {
@@ -160,6 +167,43 @@ typedef struct UIScene {
   cereal::HealthData::HwType hwType;
   int satelliteCount;
   uint8_t athenaStatus;
+
+  // dp
+  bool dpDashcam;
+  bool dpAppWaze;
+  bool dpDrivingUi;
+  bool dpUiScreenOffReversing;
+  bool dpUiScreenOffDriving;
+  bool dpUiSpeed;
+  bool dpUiEvent;
+  bool dpUiMaxSpeed;
+  bool dpUiFace;
+  bool dpUiLane;
+  bool dpUiPath;
+  bool dpUiLead;
+  bool dpUiDev;
+  bool dpUiBlinker;
+  int dpUiBrightness;
+  int dpUiVolumeBoost;
+  std::string dpIpAddr;
+  // for minimal UI
+  float angleSteersDes;
+  float angleSteers;
+  // for black screen on reversing
+  bool isReversing;
+  // for blinker, from kegman
+  bool leftBlinker;
+  bool rightBlinker;
+  bool brakeLights;
+  int blinker_blinkingrate;
+  // for updating icon
+  int alert_rate;
+  int alert_type;
+  std::string dpLocale;
+  bool dpIsUpdating;
+  bool dpAthenad;
+  int dpDynamicFollow;
+
 } UIScene;
 
 typedef struct {

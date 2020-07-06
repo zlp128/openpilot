@@ -14,12 +14,12 @@ class CarState(CarStateBase):
     self.shifter_values = can_define.dv["GEAR_PACKET"]['GEAR']
 
     # All TSS2 car have the accurate sensor
-    self.accurate_steer_angle_seen = CP.carFingerprint in TSS2_CAR
+    self.accurate_steer_angle_seen = CP.carFingerprint in TSS2_CAR or CP.carFingerprint in [CAR.LEXUS_ISH]
 
     # On NO_DSU cars but not TSS2 cars the cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE']
     # is zeroed to where the steering angle is at start.
     # Need to apply an offset as soon as the steering angle measurements are both received
-    self.needs_angle_offset = CP.carFingerprint not in TSS2_CAR
+    self.needs_angle_offset = CP.carFingerprint not in TSS2_CAR or CP.carFingerprint in [CAR.LEXUS_ISH]
     self.angle_offset = 0.
 
   def update(self, cp, cp_cam):
@@ -34,6 +34,9 @@ class CarState(CarStateBase):
     if self.CP.enableGasInterceptor:
       ret.gas = (cp.vl["GAS_SENSOR"]['INTERCEPTOR_GAS'] + cp.vl["GAS_SENSOR"]['INTERCEPTOR_GAS2']) / 2.
       ret.gasPressed = ret.gas > 15
+    elif self.CP.carFingerprint in [CAR.LEXUS_ISH, CAR.LEXUS_GSH]:
+      ret.gas = cp.vl["GAS_PEDAL_ALT"]['GAS_PEDAL']
+      ret.gasPressed = ret.gas > 1e-5
     else:
       ret.gas = cp.vl["GAS_PEDAL"]['GAS_PEDAL']
       ret.gasPressed = cp.vl["PCM_CRUISE"]['GAS_RELEASED'] == 0
@@ -74,15 +77,23 @@ class CarState(CarStateBase):
     ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD
     ret.steerWarning = cp.vl["EPS_STATUS"]['LKA_STATE'] not in [1, 5]
 
-    if self.CP.carFingerprint == CAR.LEXUS_IS:
+    if self.CP.carFingerprint in [CAR.LEXUS_IS, CAR.LEXUS_NXT]:
       ret.cruiseState.available = cp.vl["DSU_CRUISE"]['MAIN_ON'] != 0
       ret.cruiseState.speed = cp.vl["DSU_CRUISE"]['SET_SPEED'] * CV.KPH_TO_MS
+      self.low_speed_lockout = False
+    elif self.CP.carFingerprint in [CAR.LEXUS_ISH, CAR.LEXUS_GSH]:
+      ret.cruiseState.available = cp.vl["PCM_CRUISE_ALT"]['MAIN_ON'] != 0
+      ret.cruiseState.speed = cp.vl["PCM_CRUISE_ALT"]['SET_SPEED'] * CV.KPH_TO_MS
       self.low_speed_lockout = False
     else:
       ret.cruiseState.available = cp.vl["PCM_CRUISE_2"]['MAIN_ON'] != 0
       ret.cruiseState.speed = cp.vl["PCM_CRUISE_2"]['SET_SPEED'] * CV.KPH_TO_MS
       self.low_speed_lockout = cp.vl["PCM_CRUISE_2"]['LOW_SPEED_LOCKOUT'] == 2
-    self.pcm_acc_status = cp.vl["PCM_CRUISE"]['CRUISE_STATE']
+    if self.CP.carFingerprint in [CAR.LEXUS_ISH, CAR.LEXUS_GSH]:
+      # Lexus ISH does not have CRUISE_STATUS value (always 0), so we use CRUISE_ACTIVE value instead
+      self.pcm_acc_status = cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE']
+    else:
+      self.pcm_acc_status = cp.vl["PCM_CRUISE"]['CRUISE_STATE']
     if self.CP.carFingerprint in NO_STOP_TIMER_CAR or self.CP.enableGasInterceptor:
       # ignore standstill in hybrid vehicles, since pcm allows to restart without
       # receiving any special command. Also if interceptor is detected
@@ -141,8 +152,8 @@ class CarState(CarStateBase):
     ]
 
     checks = [
-      ("BRAKE_MODULE", 40),
-      ("GAS_PEDAL", 33),
+      #("BRAKE_MODULE", 40),
+      #("GAS_PEDAL", 33),
       ("WHEEL_SPEEDS", 80),
       ("STEER_ANGLE_SENSOR", 80),
       ("PCM_CRUISE", 33),
@@ -150,7 +161,27 @@ class CarState(CarStateBase):
       ("EPS_STATUS", 25),
     ]
 
-    if CP.carFingerprint == CAR.LEXUS_IS:
+    if CP.carFingerprint in [CAR.LEXUS_ISH, CAR.LEXUS_GSH]:
+      signals.append(("GAS_PEDAL", "GAS_PEDAL_ALT", 0))
+      signals.append(("MAIN_ON", "PCM_CRUISE_ALT", 0))
+      signals.append(("SET_SPEED", "PCM_CRUISE_ALT", 0))
+      signals.append(("AUTO_HIGH_BEAM", "LIGHT_STALK_ISH", 0))
+      checks += [
+        ("BRAKE_MODULE", 50),
+        ("GAS_PEDAL_ALT", 50),
+        ("PCM_CRUISE_ALT", 1),
+      ]
+    else:
+      signals += [
+        ("AUTO_HIGH_BEAM", "LIGHT_STALK", 0),
+        ("GAS_PEDAL", "GAS_PEDAL", 0),
+      ]
+      checks += [
+        ("BRAKE_MODULE", 40),
+        ("GAS_PEDAL", 33),
+      ]
+
+    if CP.carFingerprint in [CAR.LEXUS_IS, CAR.LEXUS_NXT]:
       signals.append(("MAIN_ON", "DSU_CRUISE", 0))
       signals.append(("SET_SPEED", "DSU_CRUISE", 0))
       checks.append(("DSU_CRUISE", 5))
@@ -173,6 +204,8 @@ class CarState(CarStateBase):
     if CP.carFingerprint in TSS2_CAR:
       signals += [("L_ADJACENT", "BSM", 0)]
       signals += [("R_ADJACENT", "BSM", 0)]
+
+    checks = []
 
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, 0)
 

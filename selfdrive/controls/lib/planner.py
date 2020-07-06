@@ -88,6 +88,8 @@ class Planner():
     self.params = Params()
     self.first_loop = True
 
+    self.dp_slow_on_curve = True
+
   def choose_solution(self, v_cruise_setpoint, enabled):
     if enabled:
       solutions = {'model': self.v_model, 'cruise': self.v_cruise}
@@ -133,7 +135,9 @@ class Planner():
     enabled = (long_control_state == LongCtrlState.pid) or (long_control_state == LongCtrlState.stopping)
     following = lead_1.status and lead_1.dRel < 45.0 and lead_1.vLeadK > v_ego and lead_1.aLeadK > 0.0
 
-    if len(sm['model'].path.poly):
+    if sm.updated['dragonConf']:
+      self.dp_slow_on_curve = sm['dragonConf'].dpSlowOnCurve
+    if self.dp_slow_on_curve and len(sm['model'].path.poly):
       path = list(sm['model'].path.poly)
 
       # Curvature of polynomial https://en.wikipedia.org/wiki/Curvature#Curvature_of_the_graph_of_a_function

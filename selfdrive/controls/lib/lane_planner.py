@@ -1,6 +1,7 @@
 from common.numpy_fast import interp
 import numpy as np
 from cereal import log
+import cereal.messaging as messaging
 
 CAMERA_OFFSET = 0.06  # m from center car to camera
 
@@ -64,6 +65,7 @@ class LanePlanner():
 
     self._path_pinv = compute_path_pinv()
     self.x_points = np.arange(50)
+    self.sm = messaging.SubMaster(['dragonConf'])
 
   def parse_model(self, md):
     if len(md.leftLane.poly):
@@ -83,8 +85,9 @@ class LanePlanner():
 
   def update_d_poly(self, v_ego):
     # only offset left and right lane lines; offsetting p_poly does not make sense
-    self.l_poly[3] += CAMERA_OFFSET
-    self.r_poly[3] += CAMERA_OFFSET
+    dp_camera_offset = self.sm['dragonConf'].dpCameraOffset * 0.01
+    self.l_poly[3] += dp_camera_offset
+    self.r_poly[3] += dp_camera_offset
 
     # Find current lanewidth
     self.lane_width_certainty += 0.05 * (self.l_prob * self.r_prob - self.lane_width_certainty)

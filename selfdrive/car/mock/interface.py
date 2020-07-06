@@ -5,6 +5,7 @@ from selfdrive.swaglog import cloudlog
 import cereal.messaging as messaging
 from selfdrive.car import gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
+from common.dp_common import common_interface_atl
 
 # mocked car interface to work with chffrplus
 TS = 0.01  # 100Hz
@@ -48,7 +49,7 @@ class CarInterface(CarInterfaceBase):
     return ret
 
   # returns a car.CarState
-  def update(self, c, can_strings):
+  def update(self, c, can_strings, dragonconf):
     # get basic data from phone and gps since CAN isn't connected
     sensors = messaging.recv_sock(self.sensor)
     if sensors is not None:
