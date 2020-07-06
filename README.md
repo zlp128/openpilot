@@ -57,6 +57,7 @@ We support the following additional car models (v0.6.4+):
 * Taiwan Toyota Prius 4.5 Gen by Lin Xin Hong
 * Taiwan 2017 Lexus GS450h by 簡銘佑
 * Poland 2015 Lexus NX200T by wabes
+* Volkswagen MQB/PQ platform (special thanks to @jyoung8607 & @dingliangxue)
 
 We supports the following brand majorly:
 * Lexus / Toyota
@@ -91,7 +92,7 @@ Installation
     ```
 3. back up existing openpilot (optional)
     ```bash
-    mv openpilot openpilot_bak
+    mv openpilot op_backup_$(date +%Y%m%d%H%M%S)
     ```
 4. download dragonpilot development version to openpilot directory from github or gitee:
     * github 
