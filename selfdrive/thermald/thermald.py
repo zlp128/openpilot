@@ -20,6 +20,7 @@ from selfdrive.pandad import get_expected_signature
 from selfdrive.thermald.power_monitoring import PowerMonitoring, get_battery_capacity, get_battery_status, \
                                                 get_battery_current, get_battery_voltage, get_usb_present
 
+params = Params()
 FW_SIGNATURE = get_expected_signature()
 
 ThermalStatus = log.ThermalData.ThermalStatus
@@ -114,10 +115,14 @@ def set_eon_fan(val):
 _TEMP_THRS_H = [50., 65., 80., 10000]
 # temp thresholds to control fan speed - low hysteresis
 _TEMP_THRS_L = [42.5, 57.5, 72.5, 10000]
-# fan speed options
-_FAN_SPEEDS = [0, 16384, 32768, 65535]
-# max fan speed only allowed if battery is hot
-_BAT_TEMP_THERSHOLD = 45.
+if params.get('dp_full_speed_fan', encoding='utf8') == "1":
+  _FAN_SPEEDS = [65535, 65535, 65535, 65535]
+  _BAT_TEMP_THERSHOLD = 0.
+else:
+  # fan speed options
+  _FAN_SPEEDS = [0, 16384, 32768, 65535]
+  # max fan speed only allowed if battery is hot
+  _BAT_TEMP_THERSHOLD = 45.
 
 
 def handle_fan_eon(max_cpu_temp, bat_temp, fan_speed, ignition):
@@ -159,6 +164,7 @@ def thermald_thread():
   thermal_sock = messaging.pub_sock('thermal')
   health_sock = messaging.sub_sock('health', timeout=health_timeout)
   location_sock = messaging.sub_sock('gpsLocation')
+  sm = messaging.SubMaster(['dragonConf'])
 
   ignition = False
   fan_speed = 0
@@ -186,11 +192,16 @@ def thermald_thread():
   is_uno = False
   has_relay = False
 
-  params = Params()
   pm = PowerMonitoring()
   no_panda_cnt = 0
 
+  # dp
+  dp_temp_monitor = True
+
   while 1:
+    sm.update()
+    if sm.updated['dragonConf']:
+      dp_temp_monitor = sm['dragonConf'].dpTempMonitor
     health = messaging.recv_sock(health_sock, wait=True)
     location = messaging.recv_sock(location_sock)
     location = location.gpsLocation if location else None
@@ -292,46 +303,48 @@ def thermald_thread():
       # all good
       thermal_status = ThermalStatus.green
 
+    if not dp_temp_monitor and thermal_status in [ThermalStatus.yellow, ThermalStatus.red, ThermalStatus.danger]:
+      thermal_status = ThermalStatus.yellow
     # **** starting logic ****
-
+    time_valid = True
     # Check for last update time and display alerts if needed
-    now = datetime.datetime.utcnow()
-
-    # show invalid date/time alert
-    time_valid = now.year >= 2019
-    if time_valid and not time_valid_prev:
-      params.delete("Offroad_InvalidTime")
-    if not time_valid and time_valid_prev:
-      put_nonblocking("Offroad_InvalidTime", json.dumps(OFFROAD_ALERTS["Offroad_InvalidTime"]))
-    time_valid_prev = time_valid
-
-    # Show update prompt
-    try:
-      last_update = datetime.datetime.fromisoformat(params.get("LastUpdateTime", encoding='utf8'))
-    except (TypeError, ValueError):
-      last_update = now
-    dt = now - last_update
-
-    update_failed_count = params.get("UpdateFailedCount")
-    update_failed_count = 0 if update_failed_count is None else int(update_failed_count)
-
-    if dt.days > DAYS_NO_CONNECTIVITY_MAX and update_failed_count > 1:
-      if current_connectivity_alert != "expired":
-        current_connectivity_alert = "expired"
-        params.delete("Offroad_ConnectivityNeededPrompt")
-        put_nonblocking("Offroad_ConnectivityNeeded", json.dumps(OFFROAD_ALERTS["Offroad_ConnectivityNeeded"]))
-    elif dt.days > DAYS_NO_CONNECTIVITY_PROMPT:
-      remaining_time = str(max(DAYS_NO_CONNECTIVITY_MAX - dt.days, 0))
-      if current_connectivity_alert != "prompt" + remaining_time:
-        current_connectivity_alert = "prompt" + remaining_time
-        alert_connectivity_prompt = copy.copy(OFFROAD_ALERTS["Offroad_ConnectivityNeededPrompt"])
-        alert_connectivity_prompt["text"] += remaining_time + " days."
-        params.delete("Offroad_ConnectivityNeeded")
-        put_nonblocking("Offroad_ConnectivityNeededPrompt", json.dumps(alert_connectivity_prompt))
-    elif current_connectivity_alert is not None:
-      current_connectivity_alert = None
-      params.delete("Offroad_ConnectivityNeeded")
-      params.delete("Offroad_ConnectivityNeededPrompt")
+    # now = datetime.datetime.utcnow()
+    #
+    # # show invalid date/time alert
+    # time_valid = now.year >= 2019
+    # if time_valid and not time_valid_prev:
+    #   params.delete("Offroad_InvalidTime")
+    # if not time_valid and time_valid_prev:
+    #   put_nonblocking("Offroad_InvalidTime", json.dumps(OFFROAD_ALERTS["Offroad_InvalidTime"]))
+    # time_valid_prev = time_valid
+    #
+    # # Show update prompt
+    # try:
+    #   last_update = datetime.datetime.fromisoformat(params.get("LastUpdateTime", encoding='utf8'))
+    # except (TypeError, ValueError):
+    #   last_update = now
+    # dt = now - last_update
+    #
+    # update_failed_count = params.get("UpdateFailedCount")
+    # update_failed_count = 0 if update_failed_count is None else int(update_failed_count)
+    #
+    # if dt.days > DAYS_NO_CONNECTIVITY_MAX and update_failed_count > 1:
+    #   if current_connectivity_alert != "expired":
+    #     current_connectivity_alert = "expired"
+    #     params.delete("Offroad_ConnectivityNeededPrompt")
+    #     put_nonblocking("Offroad_ConnectivityNeeded", json.dumps(OFFROAD_ALERTS["Offroad_ConnectivityNeeded"]))
+    # elif dt.days > DAYS_NO_CONNECTIVITY_PROMPT:
+    #   remaining_time = str(max(DAYS_NO_CONNECTIVITY_MAX - dt.days, 0))
+    #   if current_connectivity_alert != "prompt" + remaining_time:
+    #     current_connectivity_alert = "prompt" + remaining_time
+    #     alert_connectivity_prompt = copy.copy(OFFROAD_ALERTS["Offroad_ConnectivityNeededPrompt"])
+    #     alert_connectivity_prompt["text"] += remaining_time + " days."
+    #     params.delete("Offroad_ConnectivityNeeded")
+    #     put_nonblocking("Offroad_ConnectivityNeededPrompt", json.dumps(alert_connectivity_prompt))
+    # elif current_connectivity_alert is not None:
+    #   current_connectivity_alert = None
+    #   params.delete("Offroad_ConnectivityNeeded")
+    #   params.delete("Offroad_ConnectivityNeededPrompt")
 
     do_uninstall = params.get("DoUninstall") == b"1"
     accepted_terms = params.get("HasAcceptedTerms") == terms_version
@@ -421,13 +434,13 @@ def thermald_thread():
     should_start_prev = should_start
 
     # report to server once per minute
-    if (count % int(60. / DT_TRML)) == 0:
-      cloudlog.event("STATUS_PACKET",
-                     count=count,
-                     health=(health.to_dict() if health else None),
-                     location=(location.to_dict() if location else None),
-                     thermal=msg.to_dict())
-
+    # if (count % int(60. / DT_TRML)) == 0:
+    #   cloudlog.event("STATUS_PACKET",
+    #                  count=count,
+    #                  health=(health.to_dict() if health else None),
+    #                  location=(location.to_dict() if location else None),
+    #                  thermal=msg.to_dict())
+    #
     count += 1
 
 

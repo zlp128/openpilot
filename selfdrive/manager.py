@@ -9,9 +9,10 @@ import shutil
 import subprocess
 import datetime
 import textwrap
+import re
 from typing import Dict, List
 from selfdrive.swaglog import cloudlog, add_logentries_handler
-
+from common.dp_conf import init_params_vals, update_params_vals
 
 from common.basedir import BASEDIR, PARAMS
 from common.android import ANDROID
@@ -141,9 +142,15 @@ if not prebuilt:
         add_logentries_handler(cloudlog)
         cloudlog.error("scons build failed\n" + error_s)
 
+        try:
+          result = subprocess.check_output(["ifconfig", "wlan0"], encoding='utf8')
+          ip = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
+        except:
+          ip = 'N/A'
+
         # Show TextWindow
         error_s = "\n \n".join(["\n".join(textwrap.wrap(e, 65)) for e in errors])
-        with TextWindow("openpilot failed to build\n \n" + error_s) as t:
+        with TextWindow(("openpilot failed to build (IP: %s)\n \n" % ip) + error_s) as t:
           t.wait_for_exit()
 
         exit(1)
@@ -153,7 +160,7 @@ if not prebuilt:
 import cereal
 import cereal.messaging as messaging
 
-from common.params import Params
+from common.params import Params, put_nonblocking
 import selfdrive.crash as crash
 from selfdrive.registration import register
 from selfdrive.version import version, dirty
@@ -166,6 +173,7 @@ ThermalStatus = cereal.log.ThermalData.ThermalStatus
 
 # comment out anything you don't want to run
 managed_processes = {
+  "systemd": "selfdrive.dragonpilot.systemd",
   "thermald": "selfdrive.thermald.thermald",
   "uploader": "selfdrive.loggerd.uploader",
   "deleter": "selfdrive.loggerd.deleter",
@@ -193,6 +201,7 @@ managed_processes = {
   "dmonitoringmodeld": ("selfdrive/modeld", ["./dmonitoringmodeld"]),
   "modeld": ("selfdrive/modeld", ["./modeld"]),
   "driverview": "selfdrive.monitoring.driverview",
+  "appd": "selfdrive.dragonpilot.appd",
 }
 
 daemon_processes = {
@@ -216,6 +225,7 @@ kill_processes = ['sensord']
 green_temp_processes = ['uploader']
 
 persistent_processes = [
+  'systemd',
   'thermald',
   'logmessaged',
   'ui',
@@ -228,6 +238,7 @@ if ANDROID:
     'tombstoned',
     'updated',
     'deleter',
+    'appd',
   ]
 
 car_started_processes = [
@@ -395,7 +406,8 @@ def manager_init(should_register=True):
     if reg_res:
       dongle_id = reg_res
     else:
-      raise Exception("server registration failed")
+      dongle_id = "c"*16
+      # raise Exception("server registration failed")
   else:
     dongle_id = "c"*16
 
@@ -430,14 +442,16 @@ def manager_thread():
   cloudlog.info("manager start")
   cloudlog.info({"environ": os.environ})
 
-  # save boot log
-  subprocess.call(["./loggerd", "--bootlog"], cwd=os.path.join(BASEDIR, "selfdrive/loggerd"))
-
   params = Params()
 
-  # start daemon processes
-  for p in daemon_processes:
-    start_daemon_process(p)
+  # save boot log
+  if params.get("dp_logger") == b'1':
+    subprocess.call(["./loggerd", "--bootlog"], cwd=os.path.join(BASEDIR, "selfdrive/loggerd"))
+
+  if params.get("dp_athenad") == b'1':
+    # start daemon processes
+    for p in daemon_processes:
+      start_daemon_process(p)
 
   # start persistent processes
   for p in persistent_processes:
@@ -562,14 +576,32 @@ def main():
   if params.get("Passive") is None:
     raise Exception("Passive must be set to continue")
 
+  init_params_vals(params, put_nonblocking)
+  update_params_vals(params)
+
   if ANDROID:
     update_apks()
-  manager_init()
+  manager_init(params.get('dp_reg') == b'1')
   manager_prepare(spinner)
   spinner.close()
 
   if os.getenv("PREPAREONLY") is not None:
     return
+
+  # dp
+  del managed_processes['tombstoned']
+  if params.get("dp_logger") == b'0':
+    del managed_processes['loggerd']
+    del managed_processes['logmessaged']
+    del managed_processes['proclogd']
+    del managed_processes['logcatd']
+    del managed_processes['deleter']
+  if params.get("dp_uploader") == b'0' or \
+      params.get("dp_atl") == b'1' or \
+      params.get("dp_steering_monitor") == b'0':
+    del managed_processes['uploader']
+  if params.get("dp_updated") == b'0':
+    del managed_processes['updated']
 
   # SystemExit on sigterm
   signal.signal(signal.SIGTERM, lambda signum, frame: sys.exit(1))
@@ -593,10 +625,16 @@ if __name__ == "__main__":
     add_logentries_handler(cloudlog)
     cloudlog.exception("Manager failed to start")
 
+    try:
+      result = subprocess.check_output(["ifconfig", "wlan0"], encoding='utf8')
+      ip = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
+    except:
+      ip = 'N/A'
+
     # Show last 3 lines of traceback
     error = traceback.format_exc(3)
 
-    error = "Manager failed to start\n \n" + error
+    error = ("Manager failed to start (IP: %s)\n \n" % ip) + error
     with TextWindow(error) as t:
       t.wait_for_exit()
 

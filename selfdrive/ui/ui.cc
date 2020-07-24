@@ -41,7 +41,7 @@ static void set_awake(UIState *s, bool awake) {
 #ifdef QCOM
   if (awake) {
     // 30 second timeout
-    s->awake_timeout = 30*UI_FREQ;
+    s->awake_timeout = (s->scene.dpUiScreenOffDriving && s->started)? 10*UI_FREQ : 30*UI_FREQ;
   }
   if (s->awake != awake) {
     s->awake = awake;
@@ -106,6 +106,46 @@ static void handle_sidebar_touch(UIState *s, int touch_x, int touch_y) {
   }
 }
 
+static bool handle_dp_btn_touch(UIState *s, int touch_x, int touch_y) {
+  //dfButton manager  // code below thanks to kumar: https://github.com/arne182/openpilot/commit/71d5aac9f8a3f5942e89634b20cbabf3e19e3e78
+  if (s->started && s->active_app != cereal::UiLayoutState::App::SETTINGS) {
+    if (s->scene.dpDynamicFollow > 0 && touch_x >= df_btn_x && touch_x <= (df_btn_x + df_btn_w) && touch_y >= df_btn_y && touch_y <= (df_btn_y + df_btn_h)) {
+      s->scene.uilayout_sidebarcollapsed = true;  // collapse sidebar when tapping df button
+      int val = s->scene.dpDynamicFollow;
+      val++;
+      if (val >= 5) {
+        val = 1;
+      }
+
+      char str[1];
+      sprintf(str, "%d", val);
+      write_db_value("dp_dynamic_follow", str, 1);
+
+      char time_str[11];
+      snprintf(time_str, 11, "%lu", time(NULL));
+      write_db_value("dp_last_modified", time_str, 11);
+      return true;
+    } else if (s->scene.dpAccelProfile > 0 && touch_x >= ap_btn_x && touch_x <= (ap_btn_x + ap_btn_w) && touch_y >= ap_btn_y && touch_y <= (ap_btn_y + ap_btn_h)) {
+      s->scene.uilayout_sidebarcollapsed = true;  // collapse sidebar when tapping df button
+      int val = s->scene.dpAccelProfile;
+      val++;
+      if (val >= 4) {
+        val = 1;
+      }
+
+      char str[1];
+      sprintf(str, "%d", val);
+      write_db_value("dp_accel_profile", str, 1);
+
+      char time_str[11];
+      snprintf(time_str, 11, "%lu", time(NULL));
+      write_db_value("dp_last_modified", time_str, 11);
+      return true;
+    }
+  }
+  return false;
+}
+
 static void handle_vision_touch(UIState *s, int touch_x, int touch_y) {
   if (s->started && (touch_x >= s->scene.ui_viz_rx - bdr_s)
     && (s->active_app != cereal::UiLayoutState::App::SETTINGS)) {
@@ -168,7 +208,7 @@ static void ui_init(UIState *s) {
 
   pthread_mutex_init(&s->lock, NULL);
   s->sm = new SubMaster({"model", "controlsState", "uiLayoutState", "liveCalibration", "radarState", "thermal",
-                         "health", "ubloxGnss", "driverState", "dMonitoringState"
+                         "health", "ubloxGnss", "driverState", "dMonitoringState", "dragonConf", "carState"
 #ifdef SHOW_SPEEDLIMIT
                                     , "liveMapData"
 #endif
@@ -283,6 +323,7 @@ void handle_message(UIState *s, SubMaster &sm) {
   UIScene &scene = s->scene;
   if (s->started && sm.updated("controlsState")) {
     auto event = sm["controlsState"];
+    auto data = event.getControlsState();
     scene.controls_state = event.getControlsState();
     s->controls_timeout = 1 * UI_FREQ;
     scene.frontview = scene.controls_state.getRearViewCam();
@@ -293,6 +334,9 @@ void handle_message(UIState *s, SubMaster &sm) {
       if (alert_sound == AudibleAlert::NONE) {
         s->sound.stop();
       } else {
+        if (s->scene.dpUiScreenOffDriving) {
+          set_awake(s, true);
+        }
         s->sound.play(alert_sound);
       }
     }
@@ -326,6 +370,9 @@ void handle_message(UIState *s, SubMaster &sm) {
         }
       }
     }
+    // dp - steer data
+    scene.angleSteers = data.getAngleSteers();
+    scene.angleSteersDes = data.getAngleSteersDes();
   }
   if (sm.updated("radarState")) {
     auto data = sm["radarState"].getRadarState();
@@ -383,11 +430,51 @@ void handle_message(UIState *s, SubMaster &sm) {
     scene.is_rhd = data.getIsRHD();
     s->preview_started = data.getIsPreview();
   }
+  // dp
+  if (sm.updated("dragonConf")) {
+    auto data = sm["dragonConf"].getDragonConf();
+    scene.dpDashcam = data.getDpDashcam();
+    scene.dpAppWaze = data.getDpAppWaze();
+    scene.dpDrivingUi = data.getDpDrivingUi();
+    scene.dpUiScreenOffReversing = data.getDpUiScreenOffReversing();
+    scene.dpUiScreenOffDriving = data.getDpUiScreenOffDriving();
+    scene.dpUiSpeed = data.getDpUiSpeed();
+    scene.dpUiEvent = data.getDpUiEvent();
+    scene.dpUiMaxSpeed = data.getDpUiMaxSpeed();
+    scene.dpUiFace = data.getDpUiFace();
+    scene.dpUiLane = data.getDpUiLane();
+    scene.dpUiPath = data.getDpUiPath();
+    scene.dpUiLead = data.getDpUiLead();
+    scene.dpUiDev = data.getDpUiDev();
+    scene.dpUiBlinker = data.getDpUiBlinker();
+    scene.dpUiBrightness = data.getDpUiBrightness();
+    scene.dpUiVolumeBoost = data.getDpUiVolumeBoost();
+    scene.dpDynamicFollow = data.getDpDynamicFollow();
+    scene.dpAccelProfile = data.getDpAccelProfile();
+
+    scene.dpIpAddr = data.getDpIpAddr();
+    scene.dpLocale = data.getDpLocale();
+    scene.dpIsUpdating = data.getDpIsUpdating();
+    scene.dpAthenad = data.getDpAthenad();
+  }
+  if (sm.updated("carState")) {
+    auto data = sm["carState"].getCarState();
+    if(scene.leftBlinker!=data.getLeftBlinker() || scene.rightBlinker!=data.getRightBlinker()) {
+      scene.blinker_blinkingrate = 100;
+    }
+    scene.leftBlinker = data.getLeftBlinker();
+    scene.rightBlinker = data.getRightBlinker();
+    scene.brakeLights = data.getBrakeLights();
+    scene.isReversing = data.getGearShifter() == cereal::CarState::GearShifter::REVERSE;
+    scene.leftBlindspot = data.getLeftBlindspot();
+    scene.rightBlindspot = data.getRightBlindspot();
+  }
 
   s->started = scene.thermal.getStarted() || s->preview_started;
   // Handle onroad/offroad transition
   if (!s->started) {
     if (s->status != STATUS_STOPPED) {
+      framebuffer_swap_layer(s->fb, 0);
       update_status(s, STATUS_STOPPED);
       s->vision_seen = false;
       s->controls_seen = false;
@@ -489,6 +576,10 @@ static void ui_update(UIState *s) {
 
     s->alert_blinking_alpha = 1.0;
     s->alert_blinked = false;
+
+    if (s->scene.dpAppWaze) {
+      framebuffer_swap_layer(s->fb, 0x00010000);
+    }
   }
 
   zmq_pollitem_t polls[1] = {{0}};
@@ -749,6 +840,13 @@ int main(int argc, char* argv[]) {
 
   int draws = 0;
 
+  // dp
+  s->scene.dp_alert_rate = 0;
+  s->scene.dp_alert_type = 1;
+  if (s->scene.dpUiScreenOffDriving) {
+    set_awake(s, true);
+  }
+
   while (!do_exit) {
     bool should_swap = false;
     if (!s->started) {
@@ -760,11 +858,15 @@ int main(int argc, char* argv[]) {
     double u1 = millis_since_boot();
 
     // light sensor is only exposed on EONs
+    if (s->scene.dpUiBrightness == 0) {
     float clipped_brightness = (s->light_sensor*brightness_m) + brightness_b;
     if (clipped_brightness > 512) clipped_brightness = 512;
     smooth_brightness = clipped_brightness * 0.01 + smooth_brightness * 0.99;
     if (smooth_brightness > 255) smooth_brightness = 255;
     ui_set_brightness(s, (int)smooth_brightness);
+    } else {
+      ui_set_brightness(s, (int)(255*s->scene.dpUiBrightness*0.01));
+    }
 
     // resize vision for collapsing sidebar
     const bool hasSidebar = !s->scene.uilayout_sidebarcollapsed;
@@ -772,13 +874,24 @@ int main(int argc, char* argv[]) {
     s->scene.ui_viz_rw = hasSidebar ? box_w : (box_w + sbr_w - (bdr_s * 2));
     s->scene.ui_viz_ro = hasSidebar ? -(sbr_w - 6 * bdr_s) : 0;
 
-    // poll for touch events
-    int touch_x = -1, touch_y = -1;
-    int touched = touch_poll(&touch, &touch_x, &touch_y, 0);
-    if (touched == 1) {
-      set_awake(s, true);
-      handle_sidebar_touch(s, touch_x, touch_y);
-      handle_vision_touch(s, touch_x, touch_y);
+    if (s->started && s->scene.dpAppWaze) {
+      // always collapsed sidebar when vision is connect and in waze mode
+      s->scene.uilayout_sidebarcollapsed = true;
+    } else {
+      // poll for touch events
+      int touch_x = -1, touch_y = -1;
+      int touched = touch_poll(&touch, &touch_x, &touch_y, 0);
+      if (touched == 1) {
+        if (s->scene.dpUiScreenOffDriving && s->awake_timeout == 0) {
+          set_awake(s, true);
+        } else {
+          set_awake(s, true);
+          if (!handle_dp_btn_touch(s, touch_x, touch_y)) {
+            handle_sidebar_touch(s, touch_x, touch_y);
+            handle_vision_touch(s, touch_x, touch_y);
+          }
+        }
+      }
     }
 
     if (!s->started) {
@@ -789,7 +902,13 @@ int main(int argc, char* argv[]) {
         s->controls_timeout = 5 * UI_FREQ;
       }
     } else {
-      set_awake(s, true);
+      if (s->scene.dpUiScreenOffDriving) {
+        // do nothing
+      } else if (s->scene.isReversing && s->scene.dpUiScreenOffReversing) {
+        set_awake(s, false);
+      } else {
+        set_awake(s, true);
+      }
       // Car started, fetch a new rgb image from ipc
       if (s->vision_connected){
         ui_update(s);
@@ -827,7 +946,11 @@ int main(int argc, char* argv[]) {
       should_swap = true;
     }
 
-    s->sound.setVolume(fmin(MAX_VOLUME, MIN_VOLUME + s->scene.controls_state.getVEgo() / 5)); // up one notch every 5 m/s
+    float min = MIN_VOLUME + s->scene.controls_state.getVEgo() / 5;
+    if (s->scene.dpUiVolumeBoost > 0 || s->scene.dpUiVolumeBoost < 0) {
+      min = fmax(MIN_VOLUME, min * (1 + s->scene.dpUiVolumeBoost * 0.01));
+    }
+    s->sound.setVolume(fmin(MAX_VOLUME, min)); // up one notch every 5 m/s
 
     if (s->controls_timeout > 0) {
       s->controls_timeout--;

@@ -84,6 +84,7 @@ void pigeon_init();
 void *pigeon_thread(void *crap);
 
 void *safety_setter_thread(void *s) {
+  #ifndef DisableRelay
   // diagnostic only is the default, needed for VIN query
   pthread_mutex_lock(&usb_lock);
   libusb_control_transfer(dev_handle, 0x40, 0xdc, (uint16_t)(cereal::CarParams::SafetyModel::ELM327), 0, NULL, 0, TIMEOUT);
@@ -107,7 +108,7 @@ void *safety_setter_thread(void *s) {
   pthread_mutex_lock(&usb_lock);
   libusb_control_transfer(dev_handle, 0x40, 0xdc, (uint16_t)(cereal::CarParams::SafetyModel::NO_OUTPUT), 0, NULL, 0, TIMEOUT);
   pthread_mutex_unlock(&usb_lock);
-
+  #endif
   std::vector<char> params;
   LOGW("waiting for params to set safety model");
   while (1) {
@@ -125,6 +126,9 @@ void *safety_setter_thread(void *s) {
 
   capnp::FlatArrayMessageReader cmsg(amsg);
   cereal::CarParams::Reader car_params = cmsg.getRoot<cereal::CarParams>();
+
+  LOGW("setting unsafety mode");
+  libusb_control_transfer(dev_handle, 0x40, 0xdf, 9, 0, NULL, 0, TIMEOUT);
 
   int safety_model = int(car_params.getSafetyModel());
   auto safety_param = car_params.getSafetyParam();
@@ -330,7 +334,7 @@ void can_recv(PubMaster &pm) {
   pm.send("can", msg);
 }
 
-void can_health(PubMaster &pm) {
+void can_health(PubMaster &pm, int no_ign_cnt_max) {
   int cnt;
   int err;
 
@@ -384,14 +388,14 @@ void can_health(PubMaster &pm) {
   }
 
   voltage_f = VOLTAGE_K * (health.voltage / 1000.0) + (1.0 - VOLTAGE_K) * voltage_f;  // LPF
-
+  #ifndef DisableRelay
   // Make sure CAN buses are live: safety_setter_thread does not work if Panda CAN are silent and there is only one other CAN node
   if (health.safety_model == (uint8_t)(cereal::CarParams::SafetyModel::SILENT)) {
     pthread_mutex_lock(&usb_lock);
     libusb_control_transfer(dev_handle, 0x40, 0xdc, (uint16_t)(cereal::CarParams::SafetyModel::NO_OUTPUT), 0, NULL, 0, TIMEOUT);
     pthread_mutex_unlock(&usb_lock);
   }
-
+  #endif
   bool ignition = ((health.ignition_line != 0) || (health.ignition_can != 0));
 
   if (ignition) {
@@ -402,7 +406,7 @@ void can_health(PubMaster &pm) {
 
 #ifndef __x86_64__
   bool cdp_mode = health.usb_power_mode == (uint8_t)(cereal::HealthData::UsbPowerMode::CDP);
-  bool no_ignition_exp = no_ignition_cnt > NO_IGNITION_CNT_MAX;
+  bool no_ignition_exp = no_ignition_cnt > no_ign_cnt_max;
   if ((no_ignition_exp || (voltage_f < VBATT_PAUSE_CHARGING)) && cdp_mode && !ignition) {
     std::vector<char> disable_power_down = read_db_bytes("DisablePowerDown");
     if (disable_power_down.size() != 1 || disable_power_down[0] != '1') {
@@ -431,12 +435,14 @@ void can_health(PubMaster &pm) {
     libusb_control_transfer(dev_handle, 0xc0, 0xe7, 1, 0, NULL, 0, TIMEOUT);
     pthread_mutex_unlock(&usb_lock);
   }
+  #ifndef DisableRelay
   // set safety mode to NO_OUTPUT when car is off. ELM327 is an alternative if we want to leverage athenad/connect
   if (!ignition && (health.safety_model != (uint8_t)(cereal::CarParams::SafetyModel::NO_OUTPUT))) {
     pthread_mutex_lock(&usb_lock);
     libusb_control_transfer(dev_handle, 0x40, 0xdc, (uint16_t)(cereal::CarParams::SafetyModel::NO_OUTPUT), 0, NULL, 0, TIMEOUT);
     pthread_mutex_unlock(&usb_lock);
   }
+  #endif
 #endif
 
   // clear VIN, CarParams, and set new safety on car start
@@ -650,9 +656,23 @@ void *can_health_thread(void *crap) {
   // health = 8011
   PubMaster pm({"health"});
 
+  SubMaster sm({"dragonConf"});
+  int no_ign_cnt_max = NO_IGNITION_CNT_MAX;
+  int check_cnt = 0;
   // run at 2hz
   while (!do_exit) {
-    can_health(pm);
+    // dp - check value every 30 secs
+    if (check_cnt % 60 == 0) {
+      sm.update(1000);
+      if (sm.updated("dragonConf") && sm["dragonConf"].getDragonConf().getDpAutoShutdown()) {
+        no_ign_cnt_max = sm["dragonConf"].getDragonConf().getDpAutoShutdownIn() * 60 * 2 - 10;  // -5 seconds, turn off earlier than EON
+      } else {
+        no_ign_cnt_max = NO_IGNITION_CNT_MAX; // use stock value
+      }
+      check_cnt = 0;
+    }
+    check_cnt++;
+    can_health(pm, no_ign_cnt_max);
     usleep(500*1000);
   }
 
@@ -838,6 +858,11 @@ void *pigeon_thread(void *crap) {
     if (pigeon_needs_init) {
       pigeon_needs_init = false;
       pigeon_init();
+      #ifdef DisableRelay
+      pthread_mutex_lock(&usb_lock);
+      libusb_control_transfer(dev_handle, 0x40, 0xdc, 2, 100, NULL, 0, TIMEOUT);
+      pthread_mutex_unlock(&usb_lock);
+      #endif
     }
     int alen = 0;
     while (alen < 0xfc0) {
@@ -871,6 +896,9 @@ void *pigeon_thread(void *crap) {
 int main() {
   int err;
   LOGW("starting boardd");
+  #ifdef DisableRelay
+  LOGW("boardd is running with relay disabled.");
+  #endif
 
   // set process priority and affinity
   err = set_realtime_priority(54);

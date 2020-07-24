@@ -29,6 +29,7 @@ import tempfile
 import threading
 from enum import Enum
 from common.basedir import PARAMS
+from common.dp_conf import init_params_keys
 
 
 def mkdirs_exists_ok(path):
@@ -110,6 +111,7 @@ keys = {
   "Offroad_NeosUpdate": [TxType.CLEAR_ON_MANAGER_START],
 }
 
+keys = init_params_keys(keys, [TxType.PERSISTENT])
 
 def fsync_dir(path):
   fd = os.open(path, os.O_RDONLY)

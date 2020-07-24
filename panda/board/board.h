@@ -18,12 +18,18 @@
   #include "boards/pedal.h"
 #endif
 
+//#define DP_USE_DOS 1
+
 void detect_board_type(void) {
   #ifdef PANDA
     // SPI lines floating: white (TODO: is this reliable? Not really, we have to enable ESP/GPS to be able to detect this on the UART)
     set_gpio_output(GPIOC, 14, 1);
     set_gpio_output(GPIOC, 5, 1);
+    #ifdef DP_USE_DOS
     if(!detect_with_pull(GPIOB, 1, PULL_UP)){
+    #else
+    if (false) {
+    #endif
       hw_type = HW_TYPE_DOS;
       current_board = &board_dos;
     } else if((detect_with_pull(GPIOA, 4, PULL_DOWN)) || (detect_with_pull(GPIOA, 5, PULL_DOWN)) || (detect_with_pull(GPIOA, 6, PULL_DOWN)) || (detect_with_pull(GPIOA, 7, PULL_DOWN))){

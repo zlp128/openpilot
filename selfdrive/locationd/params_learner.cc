@@ -44,7 +44,7 @@ ParamsLearner::ParamsLearner(cereal::CarParams::Reader car_params,
   alpha4 = 1.0 * learning_rate;
 }
 
-bool ParamsLearner::update(double psi, double u, double sa) {
+bool ParamsLearner::update(double psi, double u, double sa, bool dp_sr_leaner) {
   if (u > 10.0 && fabs(sa) < (DEGREES_TO_RADIANS * 90.)) {
     double ao_diff = 2.0*cF0*cR0*l*u*x*(1.0*cF0*cR0*l*u*x*(ao - sa) + psi*sR*(cF0*cR0*pow(l, 2)*x - m*pow(u, 2)*(aF*cF0 - aR*cR0)))/(pow(sR, 2)*pow(cF0*cR0*pow(l, 2)*x - m*pow(u, 2)*(aF*cF0 - aR*cR0), 2));
     double new_ao = ao - alpha1 * ao_diff;
@@ -53,12 +53,14 @@ bool ParamsLearner::update(double psi, double u, double sa) {
     double new_slow_ao = slow_ao - alpha2 * slow_ao_diff;
 
     double new_x = x - alpha3 * (-2.0*cF0*cR0*l*m*pow(u, 3)*(slow_ao - sa)*(aF*cF0 - aR*cR0)*(1.0*cF0*cR0*l*u*x*(slow_ao - sa) + psi*sR*(cF0*cR0*pow(l, 2)*x - m*pow(u, 2)*(aF*cF0 - aR*cR0)))/(pow(sR, 2)*pow(cF0*cR0*pow(l, 2)*x - m*pow(u, 2)*(aF*cF0 - aR*cR0), 3)));
-    double new_sR = sR - alpha4 * (-2.0*cF0*cR0*l*u*x*(slow_ao - sa)*(1.0*cF0*cR0*l*u*x*(slow_ao - sa) + psi*sR*(cF0*cR0*pow(l, 2)*x - m*pow(u, 2)*(aF*cF0 - aR*cR0)))/(pow(sR, 3)*pow(cF0*cR0*pow(l, 2)*x - m*pow(u, 2)*(aF*cF0 - aR*cR0), 2)));
 
     ao = new_ao;
     slow_ao = new_slow_ao;
     x = new_x;
-    sR = new_sR;
+    if (dp_sr_leaner) {
+      double new_sR = sR - alpha4 * (-2.0*cF0*cR0*l*u*x*(slow_ao - sa)*(1.0*cF0*cR0*l*u*x*(slow_ao - sa) + psi*sR*(cF0*cR0*pow(l, 2)*x - m*pow(u, 2)*(aF*cF0 - aR*cR0)))/(pow(sR, 3)*pow(cF0*cR0*pow(l, 2)*x - m*pow(u, 2)*(aF*cF0 - aR*cR0), 2)));
+      sR = new_sR;
+    }
   }
 
 #ifdef DEBUG
@@ -93,7 +95,7 @@ extern "C" {
 
   bool params_learner_update(void * params_learner, double psi, double u, double sa) {
     ParamsLearner * p = (ParamsLearner*) params_learner;
-    return p->update(psi, u, sa);
+    return p->update(psi, u, sa, true);
   }
 
   double params_learner_get_ao(void * params_learner){

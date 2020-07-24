@@ -1,5 +1,5 @@
 import os
-from common.params import Params
+from common.params import Params, put_nonblocking
 from common.basedir import BASEDIR
 from selfdrive.version import comma_remote, tested_branch
 from selfdrive.car.fingerprints import eliminate_incompatible_cars, all_known_cars
@@ -8,6 +8,9 @@ from selfdrive.car.fw_versions import get_fw_versions, match_fw_to_car
 from selfdrive.swaglog import cloudlog
 import cereal.messaging as messaging
 from selfdrive.car import gen_empty_fingerprint
+from common.dp_common import is_online
+import threading
+import selfdrive.crash as crash
 
 from cereal import car, log
 EventName = car.CarEvent.EventName
@@ -15,10 +18,10 @@ HwType = log.HealthData.HwType
 
 
 def get_startup_event(car_recognized, controller_available):
-  if comma_remote and tested_branch:
-    event = EventName.startup
-  else:
-    event = EventName.startupMaster
+  # if comma_remote and tested_branch:
+  event = EventName.startup
+  # else:
+  #   event = EventName.startupMaster
 
   if not car_recognized:
     event = EventName.startupNoCar
@@ -76,7 +79,7 @@ def only_toyota_left(candidate_cars):
 
 # **** for use live only ****
 def fingerprint(logcan, sendcan, has_relay):
-  fixed_fingerprint = os.environ.get('FINGERPRINT', "")
+  fixed_fingerprint = os.environ.get('FINGERPRINT', "") or Params().get('dp_car_selected', encoding='utf8')
   skip_fw_query = os.environ.get('SKIP_FW_QUERY', False)
 
   if has_relay and not fixed_fingerprint and not skip_fw_query:
@@ -159,6 +162,7 @@ def fingerprint(logcan, sendcan, has_relay):
     source = car.CarParams.FingerprintSource.fixed
 
   cloudlog.warning("fingerprinted %s", car_fingerprint)
+  put_nonblocking('dp_car_detected', car_fingerprint)
   return car_fingerprint, finger, vin, car_fw, source
 
 
@@ -169,6 +173,10 @@ def get_car(logcan, sendcan, has_relay=False):
     cloudlog.warning("car doesn't match any fingerprints: %r", fingerprints)
     candidate = "mock"
 
+  if is_online():
+    x = threading.Thread(target=log_fingerprinted, args=(candidate,))
+    x.start()
+
   CarInterface, CarController, CarState = interfaces[candidate]
   car_params = CarInterface.get_params(candidate, fingerprints, has_relay, car_fw)
   car_params.carVin = vin
@@ -176,3 +184,8 @@ def get_car(logcan, sendcan, has_relay=False):
   car_params.fingerprintSource = source
 
   return CarInterface(car_params, CarController, CarState), car_params
+
+def log_fingerprinted(candidate):
+  while True:
+    crash.capture_warning("fingerprinted %s" % candidate)
+    break

@@ -3,7 +3,9 @@ import os
 import sys
 import threading
 import capnp
-from selfdrive.version import version, dirty
+from selfdrive.version import version, dirty, origin, branch
+from common.params import Params
+uniqueID = Params().get('DongleId', None)
 
 from selfdrive.swaglog import cloudlog
 from common.android import ANDROID
@@ -23,8 +25,19 @@ if os.getenv("NOLOG") or os.getenv("NOCRASH") or not ANDROID:
 else:
   from raven import Client
   from raven.transport.http import HTTPTransport
-  client = Client('https://1994756b5e6f41cf939a4c65de45f4f2:cefebaf3a8aa40d182609785f7189bd7@app.getsentry.com/77924',
-                  install_sys_hook=False, transport=HTTPTransport, release=version, tags={'dirty': dirty})
+  params = Params()
+  try:
+    dongle_id = params.get("DongleId").decode('utf8')
+  except AttributeError:
+    dongle_id = "None"
+  error_tags = {'dirty': dirty, 'username': uniqueID, 'dongle_id': dongle_id, 'branch': branch, 'remote': origin}
+
+
+  client = Client('https://fa39b8804ae94ea6bbb22279d68b3dc7:5ac1b337f7be42308cabbb534b342669@sentry.io/1428745',
+                  install_sys_hook=False, transport=HTTPTransport, release=version, tags=error_tags)
+  
+  # client = Client('https://980a0cba712a4c3593c33c78a12446e1:fecab286bcaf4dba8b04f7cff0188e2d@sentry.io/1488600',
+  #                 install_sys_hook=False, transport=HTTPTransport, release=version, tags=error_tags)
 
   def capture_exception(*args, **kwargs):
     exc_info = sys.exc_info()
@@ -34,6 +47,14 @@ else:
 
   def bind_user(**kwargs):
     client.user_context(kwargs)
+
+  def capture_warning(warning_string):
+    bind_user(id=dongle_id)
+    client.captureMessage(warning_string, level='warning')
+
+  def capture_info(info_string):
+    bind_user(id=dongle_id)
+    client.captureMessage(info_string, level='info')
 
   def bind_extra(**kwargs):
     client.extra_context(kwargs)

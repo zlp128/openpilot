@@ -112,6 +112,14 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     wrongCruiseMode @87;
     neosUpdateRequired @88;
     modeldLagging @89;
+
+    #dp
+    preLaneChangeLeftALC @90;
+    preLaneChangeRightALC @91;
+    laneChangeALC @92;
+    manualSteeringRequired @93;
+    manualSteeringRequiredBlinkersOn @94;
+    leadCarMoving @95;
   }
 }
 
@@ -178,6 +186,9 @@ struct CarState {
   # blindspot sensors
   leftBlindspot @33 :Bool; # Is there something blocking the left lane change
   rightBlindspot @34 :Bool; # Is there something blocking the right lane change
+
+  # dp
+  lkMode @37 :Bool;
 
   struct WheelSpeeds {
     # optional wheel speeds
