@@ -5,7 +5,7 @@ from selfdrive.config import Conversions as CV
 from selfdrive.car.ford.values import MAX_ANGLE, Ecu, ECU_FINGERPRINT, FINGERPRINTS
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, is_ecu_disconnected, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
-from common.dp_common import common_interface_atl
+from common.dp_common import common_interface_atl, common_interface_get_params_lqr
 
 class CarInterface(CarInterfaceBase):
 
@@ -31,6 +31,9 @@ class CarInterface(CarInterfaceBase):
     ret.steerRateCost = 1.0
     ret.centerToFront = ret.wheelbase * 0.44
     tire_stiffness_factor = 0.5328
+
+    # dp
+    ret = common_interface_get_params_lqr(ret)
 
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase

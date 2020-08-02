@@ -5,7 +5,7 @@ from selfdrive.car.gm.values import CAR, Ecu, ECU_FINGERPRINT, CruiseButtons, \
                                     AccState, FINGERPRINTS
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, is_ecu_disconnected, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
-from common.dp_common import common_interface_atl
+from common.dp_common import common_interface_atl, common_interface_get_params_lqr
 
 ButtonType = car.CarState.ButtonEvent.Type
 EventName = car.CarEvent.EventName
@@ -92,6 +92,9 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 15.3
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.49
+
+    # dp
+    ret = common_interface_get_params_lqr(ret)
 
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase

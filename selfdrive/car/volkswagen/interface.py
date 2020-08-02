@@ -3,7 +3,7 @@ from selfdrive.car.volkswagen.values import CAR, BUTTON_STATES, NWL, TRANS, GEAR
 from common.params import put_nonblocking
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
-from common.dp_common import common_interface_atl
+from common.dp_common import common_interface_atl, common_interface_get_params_lqr
 
 EventName = car.CarEvent.EventName
 
@@ -87,6 +87,9 @@ class CarInterface(CarInterfaceBase):
       ret.centerToFront = ret.wheelbase * 0.45  # Estimated
       ret.steerRatio = 15.6
       tire_stiffness_factor = 1.0
+
+    # dp
+    ret = common_interface_get_params_lqr(ret)
 
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase

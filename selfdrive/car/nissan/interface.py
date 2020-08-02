@@ -3,7 +3,7 @@ from cereal import car
 from selfdrive.car.nissan.values import CAR
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
-from common.dp_common import common_interface_atl
+from common.dp_common import common_interface_atl, common_interface_get_params_lqr
 
 class CarInterface(CarInterfaceBase):
   def __init__(self, CP, CarController, CarState):
@@ -45,6 +45,9 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.705
       ret.centerToFront = ret.wheelbase * 0.44
       ret.steerRatio = 17
+
+    # dp
+    ret = common_interface_get_params_lqr(ret)
 
     ret.steerControlType = car.CarParams.SteerControlType.angle
     ret.radarOffCan = True

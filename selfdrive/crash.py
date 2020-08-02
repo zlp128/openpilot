@@ -33,11 +33,11 @@ else:
   error_tags = {'dirty': dirty, 'username': uniqueID, 'dongle_id': dongle_id, 'branch': branch, 'remote': origin}
 
 
-  client = Client('https://fa39b8804ae94ea6bbb22279d68b3dc7:5ac1b337f7be42308cabbb534b342669@sentry.io/1428745',
-                  install_sys_hook=False, transport=HTTPTransport, release=version, tags=error_tags)
-  
-  # client = Client('https://980a0cba712a4c3593c33c78a12446e1:fecab286bcaf4dba8b04f7cff0188e2d@sentry.io/1488600',
+  # client = Client('https://fa39b8804ae94ea6bbb22279d68b3dc7:5ac1b337f7be42308cabbb534b342669@sentry.io/1428745',
   #                 install_sys_hook=False, transport=HTTPTransport, release=version, tags=error_tags)
+
+  client = Client('https://980a0cba712a4c3593c33c78a12446e1:fecab286bcaf4dba8b04f7cff0188e2d@sentry.io/1488600',
+                  install_sys_hook=False, transport=HTTPTransport, release=version, tags=error_tags)
 
   def capture_exception(*args, **kwargs):
     exc_info = sys.exc_info()

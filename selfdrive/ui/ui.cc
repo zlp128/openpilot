@@ -948,7 +948,7 @@ int main(int argc, char* argv[]) {
 
     float min = MIN_VOLUME + s->scene.controls_state.getVEgo() / 5;
     if (s->scene.dpUiVolumeBoost > 0 || s->scene.dpUiVolumeBoost < 0) {
-      min = fmax(MIN_VOLUME, min * (1 + s->scene.dpUiVolumeBoost * 0.01));
+      min = min * (1 + s->scene.dpUiVolumeBoost * 0.01);
     }
     s->sound.setVolume(fmin(MAX_VOLUME, min)); // up one notch every 5 m/s
 

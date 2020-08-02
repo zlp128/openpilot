@@ -103,7 +103,9 @@ class Controls:
     self.LoC = LongControl(self.CP, self.CI.compute_gb)
     self.VM = VehicleModel(self.CP)
 
-    if self.CP.lateralTuning.which() == 'pid':
+    if params.get('dp_lqr') == b'1':
+      self.LaC = LatControlLQR(self.CP)
+    elif self.CP.lateralTuning.which() == 'pid':
       self.LaC = LatControlPID(self.CP)
     elif self.CP.lateralTuning.which() == 'indi':
       self.LaC = LatControlINDI(self.CP)

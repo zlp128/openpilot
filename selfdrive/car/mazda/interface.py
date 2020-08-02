@@ -4,7 +4,7 @@ from selfdrive.config import Conversions as CV
 from selfdrive.car.mazda.values import CAR, LKAS_LIMITS, FINGERPRINTS, ECU_FINGERPRINT, Ecu
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint, is_ecu_disconnected
 from selfdrive.car.interfaces import CarInterfaceBase
-from common.dp_common import common_interface_atl
+from common.dp_common import common_interface_atl, common_interface_get_params_lqr
 
 ButtonType = car.CarState.ButtonEvent.Type
 EventName = car.CarEvent.EventName
@@ -46,6 +46,9 @@ class CarInterface(CarInterfaceBase):
 
       # No steer below disable speed
       ret.minSteerSpeed = LKAS_LIMITS.DISABLE_SPEED * CV.KPH_TO_MS
+
+    # dp
+    ret = common_interface_get_params_lqr(ret)
 
     ret.centerToFront = ret.wheelbase * 0.41
 

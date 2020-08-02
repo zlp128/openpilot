@@ -89,6 +89,7 @@ confs = [
   #misc
   {'name': 'dp_ip_addr', 'default': '', 'type': 'Text', 'conf_type': ['struct']},
   {'name': 'dp_full_speed_fan', 'default': False, 'type': 'Bool', 'conf_type': ['param']},
+  {'name': 'dp_uno_fan_mode', 'default': False, 'type': 'Bool', 'conf_type': ['param']},
   {'name': 'dp_last_modified', 'default': str(floor(time.time())), 'type': 'Text', 'conf_type': ['param']},
   {'name': 'dp_camera_offset', 'default': 6, 'type': 'Int8', 'min': -255, 'max': 255, 'conf_type': ['param', 'struct']},
 
@@ -101,6 +102,7 @@ confs = [
   {'name': 'dp_is_updating', 'default': False, 'type': 'Bool', 'set_param_only': True, 'conf_type': ['param', 'struct']},
 
   {'name': 'dp_sr_learner', 'default': True, 'type': 'Bool', 'conf_type': ['param']},
+  {'name': 'dp_lqr', 'default': False, 'type': 'Bool', 'conf_type': ['param']},
 
   # including thermal data
   {'name': 'dp_thermal_started', 'default': False, 'type': 'Bool', 'conf_type': ['struct']},

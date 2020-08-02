@@ -78,13 +78,6 @@ int main(int argc, char *argv[]) {
 
   ParamsLearner learner(car_params, ao, x, sR, 1.0);
 
-  // dp - sr learner
-  bool enable_sr_learner = true;
-  std::vector<char> result = read_db_bytes("dp_sr_learner");
-  if (result.size() > 0 && result[0] == '0') {
-    enable_sr_learner = false;
-  }
-
   // Main loop
   int save_counter = 0;
   while (true){
@@ -95,7 +88,7 @@ int main(int argc, char *argv[]) {
       save_counter++;
 
       double yaw_rate = -localizer.x[0];
-      bool valid = learner.update(yaw_rate, localizer.car_speed, localizer.steering_angle, enable_sr_learner);
+      bool valid = learner.update(yaw_rate, localizer.car_speed, localizer.steering_angle);
 
       double angle_offset_degrees = RADIANS_TO_DEGREES * learner.ao;
       double angle_offset_average_degrees = RADIANS_TO_DEGREES * learner.slow_ao;

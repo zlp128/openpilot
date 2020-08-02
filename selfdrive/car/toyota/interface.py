@@ -5,8 +5,7 @@ from selfdrive.car.toyota.values import Ecu, ECU_FINGERPRINT, CAR, TSS2_CAR, FIN
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, is_ecu_disconnected, gen_empty_fingerprint
 from selfdrive.swaglog import cloudlog
 from selfdrive.car.interfaces import CarInterfaceBase
-from common.dp_common import common_interface_atl
-from common.params import Params
+from common.dp_common import common_interface_atl, common_interface_get_params_lqr
 
 EventName = car.CarEvent.EventName
 
@@ -287,6 +286,9 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 4070 * CV.LB_TO_KG + STD_CARGO_KG
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.3], [0.05]]
       ret.lateralTuning.pid.kf = 0.00006
+
+    # dp
+    ret = common_interface_get_params_lqr(ret)
 
     ret.steerRateCost = 1.
     ret.centerToFront = ret.wheelbase * 0.44

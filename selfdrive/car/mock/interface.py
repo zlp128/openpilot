@@ -5,7 +5,6 @@ from selfdrive.swaglog import cloudlog
 import cereal.messaging as messaging
 from selfdrive.car import gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
-from common.dp_common import common_interface_atl
 
 # mocked car interface to work with chffrplus
 TS = 0.01  # 100Hz

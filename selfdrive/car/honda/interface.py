@@ -10,7 +10,7 @@ from selfdrive.car.honda.values import CruiseButtons, CAR, HONDA_BOSCH, Ecu, ECU
 from selfdrive.car import STD_CARGO_KG, CivicParams, scale_rot_inertia, scale_tire_stiffness, is_ecu_disconnected, gen_empty_fingerprint
 from selfdrive.controls.lib.planner import _A_CRUISE_MAX_V_FOLLOWING
 from selfdrive.car.interfaces import CarInterfaceBase
-from common.dp_common import common_interface_atl
+from common.dp_common import common_interface_atl, common_interface_get_params_lqr
 
 A_ACC_MAX = max(_A_CRUISE_MAX_V_FOLLOWING)
 
@@ -393,6 +393,9 @@ class CarInterface(CarInterfaceBase):
 
     else:
       raise ValueError("unsupported car %s" % candidate)
+
+    # dp
+    ret = common_interface_get_params_lqr(ret)
 
     # min speed to enable ACC. if car can do stop and go, then set enabling speed
     # to a negative value, so it won't matter. Otherwise, add 0.5 mph margin to not

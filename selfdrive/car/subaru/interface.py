@@ -3,7 +3,7 @@ from cereal import car
 from selfdrive.car.subaru.values import CAR
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
-from common.dp_common import common_interface_atl
+from common.dp_common import common_interface_atl, common_interface_get_params_lqr
 
 class CarInterface(CarInterfaceBase):
 
@@ -58,6 +58,9 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kf = 0.000038
       ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0., 14., 23.], [0., 14., 23.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.01, 0.065, 0.2], [0.001, 0.015, 0.025]]
+
+    # dp
+    ret = common_interface_get_params_lqr(ret)
 
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase

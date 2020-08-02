@@ -4,7 +4,7 @@ from selfdrive.config import Conversions as CV
 from selfdrive.car.hyundai.values import Ecu, ECU_FINGERPRINT, CAR, FINGERPRINTS
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, is_ecu_disconnected, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
-from common.dp_common import common_interface_atl
+from common.dp_common import common_interface_atl, common_interface_get_params_lqr
 
 class CarInterface(CarInterfaceBase):
 
@@ -144,6 +144,9 @@ class CarInterface(CarInterfaceBase):
       tire_stiffness_factor = 0.5
       ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.25], [0.05]]
+
+    # dp
+    ret = common_interface_get_params_lqr(ret)
 
     # these cars require a special panda safety mode due to missing counters and checksums in the messages
     if candidate in [CAR.HYUNDAI_GENESIS, CAR.IONIQ_EV_LTD, CAR.IONIQ, CAR.KONA_EV]:

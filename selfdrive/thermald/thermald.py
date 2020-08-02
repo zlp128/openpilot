@@ -146,10 +146,17 @@ def handle_fan_eon(max_cpu_temp, bat_temp, fan_speed, ignition):
 
 
 def handle_fan_uno(max_cpu_temp, bat_temp, fan_speed, ignition):
-  new_speed = int(interp(max_cpu_temp, [40.0, 80.0], [0, 80]))
+  dp_uno_fan_mode = params.get('dp_uno_fan_mode') == b'1'
+  if dp_uno_fan_mode:
+    new_speed = int(interp(max_cpu_temp, [65.0, 80.0, 90.0], [0, 20, 60]))
+  else:
+    new_speed = int(interp(max_cpu_temp, [40.0, 80.0], [0, 80]))
 
   if not ignition:
-    new_speed = min(30, new_speed)
+    if dp_uno_fan_mode:
+      new_speed = min(10, new_speed)
+    else:
+      new_speed = min(30, new_speed)
 
   return new_speed
 

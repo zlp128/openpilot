@@ -3,7 +3,7 @@ from cereal import car
 from selfdrive.car.chrysler.values import Ecu, ECU_FINGERPRINT, CAR, FINGERPRINTS
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, is_ecu_disconnected, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
-from common.dp_common import common_interface_atl
+from common.dp_common import common_interface_atl, common_interface_get_params_lqr
 
 class CarInterface(CarInterfaceBase):
   @staticmethod
@@ -39,6 +39,9 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.91  # in meters
       ret.steerRatio = 12.7
       ret.steerActuatorDelay = 0.2  # in seconds
+
+    # dp
+    ret = common_interface_get_params_lqr(ret)
 
     ret.centerToFront = ret.wheelbase * 0.44
 

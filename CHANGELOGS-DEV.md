@@ -1,3 +1,14 @@
+dragonpilot 0.7.7.1
+========================
+* 加入 C2 風扇靜音模式。(感謝 @dingliangxue)
+* Added C2 quiet fan mode. (Thanks to @dingliangxue)
+* 加入「輔助換道最低啟動速度」、「自動換道最低啟動速度」設定。
+* Added "Assisted Lane Change Min Engage Speed" and "Auto Lane Change Min Engage Speed" settings.
+* 加入回調校介面。(感謝 @Kent)
+* Re-added Dev UI. (Thanks to @Kent)
+* 加入 "dp_lqr" 設定來強制使用 RAV4 的 lqr 調校。(感謝 @eisenheim)
+* Added "dp_lqr" setting to force enable lqr tuning from RAV4. (Thanks to eisenheim) 
+
 dragonpilot 0.7.7.0
 ========================
 * 基於最新 openpilot 0.7.7 devel.

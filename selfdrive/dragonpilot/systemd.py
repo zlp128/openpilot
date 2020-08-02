@@ -157,6 +157,9 @@ def confd_thread():
     we can have some logic here
     ===================================================
     '''
+    if msg.dragonConf.dpAssistedLcMinMph > msg.dragonConf.dpAutoLcMinMph:
+      put_nonblocking('dp_auto_lc_min_mph', str(msg.dragonConf.dpAssistedLcMinMph))
+      msg.dragonConf.dpAutoLcMinMph = msg.dragonConf.dpAssistedLcMinMph
     if msg.dragonConf.dpAtl:
       msg.dragonConf.dpAllowGas = True
       msg.dragonConf.dpDynamicFollow = 0
