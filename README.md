@@ -1,11 +1,11 @@
-**YOU HAVE BEEN WARNED**
----
-![](warning.jpg)
-
-SWITCH OVER COMMAND
+1-Step installation
 ---
 ```bash
-cd /data/ && mv openpilot op_backup_$(date +%Y%m%d%H%M%S) && git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot -b devel-i18n && cd openpilot/scripts/ && ./reset_update.sh
+cd /data/ && \
+mv openpilot op_backup_$(date +%Y%m%d%H%M%S) && \
+git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot -b devel-i18n && \
+cd openpilot/scripts/ && \
+./reset_update.sh
 ```
 
 dragonpilot (aka dp)
@@ -33,6 +33,8 @@ dragonpilot is a modded version of [openpilot](https://github.com/commaai/openpi
 * Turn off screen while reversing. (by @mlp: https://github.com/martinl/)
 * Turn off screen while driving.
 * Custom Car Model selector. (fingerprint-less mode)
+* Support ZSS Mod.
+* Ability to use LQR on all models. (based from RAV4 tune, result may vary)
 
 Additional Model Support
 ---
@@ -58,12 +60,6 @@ We support the following additional car models (v0.6.4+):
 * Taiwan 2017 Lexus GS450h by 簡銘佑
 * Poland 2015 Lexus NX200T by wabes
 * Volkswagen MQB/PQ platform (special thanks to @jyoung8607 & @dingliangxue)
-
-We supports the following brand majorly:
-* Lexus / Toyota
-* Honda
-* Hyundai
-(Other openpilot supported cars/brands are partially supported.)
 
 Screenshots
 ---
