@@ -1,11 +1,35 @@
-dragonpilot 0.7.7.0
+dragonpilot 0.7.7
 ========================
-* 基於最新 openpilot 0.7.7 devel.
-* Based on latest openpilot 0.7.7 devel.
+* 基於 openpilot 0.7.7 devel.
+* Based on openpilot 0.7.7 devel.
 * 當 Manager 出現錯誤時，顯示 IP 位置。(感謝 @dingliangxue)
 * When Manager failed, display IP address. (Thanks to  @dingliangxue)
 * 加回 sr learner 開關。
 * Re-added sr learner toggle.
+* 加回 加速模式 開關。
+* Re-added Accel Profile toggle.
+* Toyota 加入改寫最低巡航速度功能。(感謝 @Mojo)
+* Added Toyota to override lowerest cruise speed. (Thanks to @Mojo)
+* 介面加入盲點偵測顯示。(感謝 @wabes)
+* Added BSM indicator to UI. (Thanks to @wabes)
+* 加回彎道減速功能。(感謝 @Mojo)
+* re-added Slow On Curve functionality. (Thanks to @Mojo)
+* 加入 C2 風扇靜音模式。(感謝 @dingliangxue)
+* Added C2 quiet fan mode. (Thanks to @dingliangxue)
+* 加入「輔助換道最低啟動速度」、「自動換道最低啟動速度」設定。
+* Added "Assisted Lane Change Min Engage Speed" and "Auto Lane Change Min Engage Speed" settings.
+* 加入回調校介面。(感謝 @Kent)
+* Re-added Dev UI. (Thanks to @Kent)
+* 加入 "dp_lqr" 設定來強制使用 RAV4 的 lqr 調校。(感謝 @eisenheim)
+* Added "dp_lqr" setting to force enable lqr tuning from RAV4. (Thanks to eisenheim) 
+* 加入 d_poly offset。 (感謝 @ShaneSmiskol)
+* Added d_poly offset. (Thanks to @ShaneSmiskol)
+* 加入 ZSS 支援。(感謝 @bobbydough, @WilliamPrius 建議, @bobbydough 測試)
+* Added ZSS support. (Thanks to @bobbydough, @WilliamPrius for recommendation, @bobbydough for testing)
+* 加入錯誤記錄至 /sdcard/crash_logs/ (感謝 @ShaneSmiskol 提供代碼)
+* Added error logs to /sdcard/crash_logs/ (Special Thanks to @ShaneSmiskol)
+* 加入 LQR 控制器開關進設定畫面。
+* Added LQR Controller toggle to settings.
 
 dragonpilot 0.7.6
 ========================
