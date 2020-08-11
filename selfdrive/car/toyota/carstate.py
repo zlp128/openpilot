@@ -5,6 +5,7 @@ from selfdrive.car.interfaces import CarStateBase
 from opendbc.can.parser import CANParser
 from selfdrive.config import Conversions as CV
 from selfdrive.car.toyota.values import CAR, DBC, STEER_THRESHOLD, TSS2_CAR, NO_STOP_TIMER_CAR
+from common.params import Params
 
 
 class CarState(CarStateBase):
@@ -13,13 +14,16 @@ class CarState(CarStateBase):
     can_define = CANDefine(DBC[CP.carFingerprint]['pt'])
     self.shifter_values = can_define.dv["GEAR_PACKET"]['GEAR']
 
+    # dp
+    self.dp_toyota_zss = Params().get('dp_toyota_zss') == b'1'
+
     # All TSS2 car have the accurate sensor
-    self.accurate_steer_angle_seen = CP.carFingerprint in TSS2_CAR or CP.carFingerprint in [CAR.LEXUS_ISH]
+    self.accurate_steer_angle_seen = CP.carFingerprint in TSS2_CAR or CP.carFingerprint in [CAR.LEXUS_ISH] or self.dp_toyota_zss
 
     # On NO_DSU cars but not TSS2 cars the cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE']
     # is zeroed to where the steering angle is at start.
     # Need to apply an offset as soon as the steering angle measurements are both received
-    self.needs_angle_offset = CP.carFingerprint not in TSS2_CAR or CP.carFingerprint in [CAR.LEXUS_ISH]
+    self.needs_angle_offset = CP.carFingerprint not in TSS2_CAR or CP.carFingerprint in [CAR.LEXUS_ISH] or self.dp_toyota_zss
     self.angle_offset = 0.
 
   def update(self, cp, cp_cam):
@@ -55,11 +59,14 @@ class CarState(CarStateBase):
       self.accurate_steer_angle_seen = True
 
     if self.accurate_steer_angle_seen:
-      ret.steeringAngle = cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE'] - self.angle_offset
+      if self.dp_toyota_zss:
+        ret.steeringAngle = cp.vl["SECONDARY_STEER_ANGLE"]['ZORRO_STEER'] - self.angle_offset
+      else:
+        ret.steeringAngle = cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE'] - self.angle_offset
 
       if self.needs_angle_offset:
         angle_wheel = cp.vl["STEER_ANGLE_SENSOR"]['STEER_ANGLE'] + cp.vl["STEER_ANGLE_SENSOR"]['STEER_FRACTION']
-        if abs(angle_wheel) > 1e-3 and abs(ret.steeringAngle) > 1e-3:
+        if (abs(angle_wheel) > 1e-3 and abs(ret.steeringAngle) > 1e-3) or self.dp_toyota_zss:
           self.needs_angle_offset = False
           self.angle_offset = ret.steeringAngle - angle_wheel
     else:
@@ -207,6 +214,9 @@ class CarState(CarStateBase):
       signals += [("L_APPROACHING", "BSM", 0)]
       signals += [("R_ADJACENT", "BSM", 0)]
       signals += [("R_APPROACHING", "BSM", 0)]
+
+    if Params().get('dp_toyota_zss') == b'1':
+      signals += [("ZORRO_STEER", "SECONDARY_STEER_ANGLE", 0)]
 
     checks = []
 

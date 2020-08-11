@@ -1,3 +1,27 @@
+2020-08-11 (0.7.7.0)
+========================
+* 加入 d_poly offset。 (感謝 @ShaneSmiskol)
+* Added d_poly offset. (Thanks to @ShaneSmiskol)
+
+2020-08-05 (0.7.7.0)
+========================
+* 修正 Dev UI 顯示。
+* Fixed Dev UI display.
+* 加入 LQR 控制器開關進設定畫面。
+* Added LQR Controller toggle to settings.
+
+2020-08-04 (0.7.7.0)
+========================
+* 嘗試修正非 Toyota 使用 lqr 產生的錯誤。
+* Attempted to fix lqr issue on non-Toyota Cars.
+* 加入錯誤記錄至 /sdcard/crash_logs/ (感謝 @ShaneSmiskol 提供代碼)
+* Added error logs to /sdcard/crash_logs/ (Special Thanks to @ShaneSmiskol)
+
+2020-08-02 (0.7.7.0)
+========================
+* 加入 ZSS 支援。(感謝 @bobbydough, @WilliamPrius 建議, @bobbydough 測試)
+* Added ZSS support. (Thanks to @bobbydough, @WilliamPrius for recommendation, @bobbydough for testing)
+
 2020-07-28 (0.7.7.0)
 ========================
 * 修正 steer ratio learner 關閉。(感謝 @Mojo 回報, @ShaneSmiskol 提供代碼)

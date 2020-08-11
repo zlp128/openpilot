@@ -28,6 +28,7 @@ class CarInterface(CarInterfaceBase):
   @staticmethod
   def get_params(candidate, fingerprint=gen_empty_fingerprint(), has_relay=False, car_fw=[]):  # pylint: disable=dangerous-default-value
     ret = CarInterfaceBase.get_std_params(candidate, fingerprint, has_relay)
+    ret.lateralTuning.init('pid')
 
     # Set global default parameters
     ret.radarOffCan = True

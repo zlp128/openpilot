@@ -6,6 +6,7 @@ from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness,
 from selfdrive.swaglog import cloudlog
 from selfdrive.car.interfaces import CarInterfaceBase
 from common.dp_common import common_interface_atl, common_interface_get_params_lqr
+from common.params import Params
 
 EventName = car.CarEvent.EventName
 
@@ -287,11 +288,16 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.3], [0.05]]
       ret.lateralTuning.pid.kf = 0.00006
 
+    ret.steerRateCost = 1.
+    ret.centerToFront = ret.wheelbase * 0.44
+
     # dp
     ret = common_interface_get_params_lqr(ret)
 
-    ret.steerRateCost = 1.
-    ret.centerToFront = ret.wheelbase * 0.44
+    if candidate == CAR.PRIUS and Params().get('dp_toyota_zss') == b'1':
+      ret.mass = 3370. * CV.LB_TO_KG + STD_CARGO_KG
+      ret.lateralTuning.indi.timeConstant = 0.1
+      ret.steerRateCost = 0.5
 
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase

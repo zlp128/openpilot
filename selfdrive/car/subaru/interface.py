@@ -18,6 +18,7 @@ class CarInterface(CarInterfaceBase):
     ret.carName = "subaru"
     ret.radarOffCan = True
     ret.safetyModel = car.CarParams.SafetyModel.subaru
+    ret.lateralTuning.init('pid')
 
     # Subaru port is a community feature, since we don't own one to test
     ret.communityFeature = True

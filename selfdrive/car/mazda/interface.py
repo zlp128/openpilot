@@ -21,6 +21,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.carName = "mazda"
     ret.safetyModel = car.CarParams.SafetyModel.mazda
+    ret.lateralTuning.init('pid')
 
     ret.dashcamOnly = True
 

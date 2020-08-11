@@ -97,6 +97,7 @@ class LanePlanner():
       self.last_ts = sec_since_boot()
     self.l_poly[3] += self.dp_camera_offset
     self.r_poly[3] += self.dp_camera_offset
+    self.p_poly[3] += self.dp_camera_offset
 
     # Find current lanewidth
     self.lane_width_certainty += 0.05 * (self.l_prob * self.r_prob - self.lane_width_certainty)

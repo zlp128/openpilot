@@ -79,6 +79,7 @@ confs = [
   # toyota
   {'name': 'dp_toyota_ldw', 'default': True, 'type': 'Bool', 'conf_type': ['param', 'struct']},
   {'name': 'dp_toyota_sng', 'default': False, 'type': 'Bool', 'depends': [{'name': 'dp_atl', 'vals': [False]}], 'conf_type': ['param', 'struct']},
+  {'name': 'dp_toyota_zss', 'default': False, 'type': 'Bool', 'conf_type': ['param']},
   {'name': 'dp_toyota_lowest_cruise_override', 'default': False, 'type': 'Bool', 'depends': [{'name': 'dp_atl', 'vals': [False]}], 'conf_type': ['param', 'struct']},
   {'name': 'dp_toyota_lowest_cruise_override_at', 'default': 44, 'type': 'Float32', 'depends': [{'name': 'dp_toyota_lowest_cruise_override', 'vals': [True]}], 'min': 44, 'max': 46, 'conf_type': ['param', 'struct']},
   {'name': 'dp_toyota_lowest_cruise_override_speed', 'default': 32, 'type': 'Float32', 'depends': [{'name': 'dp_toyota_lowest_cruise_override_speed', 'vals': [True]}], 'min': 27, 'max': 44, 'conf_type': ['param', 'struct']},

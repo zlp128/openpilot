@@ -156,7 +156,7 @@ def handle_fan_uno(max_cpu_temp, bat_temp, fan_speed, ignition):
     if dp_uno_fan_mode:
       new_speed = min(10, new_speed)
     else:
-      new_speed = min(30, new_speed)
+      new_speed = min(20, new_speed)
 
   return new_speed
 

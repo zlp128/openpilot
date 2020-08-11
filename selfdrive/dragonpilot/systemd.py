@@ -218,7 +218,7 @@ def confd_thread():
           try:
             files = [f for f in sorted(os.listdir(DASHCAM_VIDEOS_PATH)) if os.path.isfile(DASHCAM_VIDEOS_PATH + f)]
             os.system("rm -fr %s &" % (DASHCAM_VIDEOS_PATH + files[0]))
-          except (IndexError, FileNotFoundError):
+          except (IndexError, FileNotFoundError, OSError):
             pass
     '''
     ===================================================

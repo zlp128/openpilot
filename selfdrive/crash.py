@@ -3,9 +3,12 @@ import os
 import sys
 import threading
 import capnp
+from datetime import datetime
+import traceback
 from selfdrive.version import version, dirty, origin, branch
 from common.params import Params
 uniqueID = Params().get('DongleId', None)
+CRASHES_DIR = '/sdcard/crash_logs/'
 
 from selfdrive.swaglog import cloudlog
 from common.android import ANDROID
@@ -40,10 +43,20 @@ else:
                   install_sys_hook=False, transport=HTTPTransport, release=version, tags=error_tags)
 
   def capture_exception(*args, **kwargs):
+    save_exception(traceback.format_exc())
     exc_info = sys.exc_info()
     if not exc_info[0] is capnp.lib.capnp.KjException:
       client.captureException(*args, **kwargs)
     cloudlog.error("crash", exc_info=kwargs.get('exc_info', 1))
+
+  # dp - from @ShaneSmiskol, save log into local directory
+  def save_exception(exc_text):
+    if not os.path.exists(CRASHES_DIR):
+      os.mkdir(CRASHES_DIR)
+    log_file = '{}/{}'.format(CRASHES_DIR, datetime.now().strftime('%Y-%m-%d--%H-%M-%S.%f.log')[:-3])
+    with open(log_file, 'w') as f:
+      f.write(exc_text)
+    print('Logged current crash to {}'.format(log_file))
 
   def bind_user(**kwargs):
     client.user_context(kwargs)

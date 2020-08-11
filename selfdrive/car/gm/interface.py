@@ -22,6 +22,7 @@ class CarInterface(CarInterfaceBase):
     ret.carName = "gm"
     ret.safetyModel = car.CarParams.SafetyModel.gm  # default to gm
     ret.enableCruise = False  # stock cruise control is kept off
+    ret.lateralTuning.init('pid')
 
     # GM port is considered a community feature, since it disables AEB;
     # TODO: make a port that uses a car harness and it only intercepts the camera
