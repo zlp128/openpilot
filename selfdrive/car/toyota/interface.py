@@ -296,7 +296,8 @@ class CarInterface(CarInterfaceBase):
 
     if candidate == CAR.PRIUS and Params().get('dp_toyota_zss') == b'1':
       ret.mass = 3370. * CV.LB_TO_KG + STD_CARGO_KG
-      ret.lateralTuning.indi.timeConstant = 0.1
+      if Params().get('dp_lqr') == b'0':
+        ret.lateralTuning.indi.timeConstant = 0.1
       ret.steerRateCost = 0.5
 
     # TODO: get actual value, for now starting with reasonable value for

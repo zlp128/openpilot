@@ -1,3 +1,35 @@
+2020-08-18 (0.7.7.0)
+========================
+* gpxd 不再切換至 GCJ-02 格式。(感謝 @arne182 建議)
+* gpxd no longer switch to GCJ-02 format automatically. (Thanks to @arne182)
+* 修正方向盤監控。
+* Fixed steering monitor timer param.
+* 修正行駛時關閉畫面導致當機的錯誤。(感謝 @salmankhan, @stevej99, @bobbydough 回報)
+* Fixed screen frozen issue when "screen off while driving" toggle is enabled. (Thanks to @salmankhan, @stevej99, @bobbydough)
+* 加回 Dev Mini UI 開關。(感謝 @Ninjaa 建議)
+* Re-added Dev Mini UI. (Thanks to @Ninjaa)
+
+2020-08-17 (0.7.7.0)
+========================
+* gpxd 只儲存高精度數據。(感謝 @arne182)
+* gpxd now only stored high accuracy data. (Thanks to @arne182)
+* gpxd 加入自動切換成 GCJ-02 格式。
+* added ability to switch to GCJ-02 format in gpxd.
+* 新增 (dp_reset_live_parameters_on_start) 每次發車重設 LiveParameters 值。(感謝 @eisenheim)
+* Added ability (dp_reset_live_param_on_start) to reset LiveParameters on each start. (Thanks @eisenheim)
+
+2020-08-12 (0.7.7.0)
+========================
+* 修正同時開啟 dp_toyota_zss 和 dp_lqr 產生的錯誤。(感謝 @bobbydough)
+* Fixed error cuased by enabling both dp_toyota_zss and dp_lqr at the same time. (Thanks to @bobbydough)
+
+2020-08-12 (0.7.7.0)
+========================
+* 新增 (dp_gpxd) 將 GPS 軌跡導出至 GPX 格式 (/sdcard/gpx_logs/）的功能。 （感謝 @mageymoo1）
+* Added ability (dp_gpxd) to export GPS track into GPX files (/sdcard/gpx_logs/). (Thanks to @mageymoo1)
+* 使用德國的車道寬度估算值。 （感謝 @arne182）
+* Used lane width estimate value from Germany. (Thanks to @arne182)
+
 2020-08-11 (0.7.7.0)
 ========================
 * 加入 d_poly offset。 (感謝 @ShaneSmiskol)

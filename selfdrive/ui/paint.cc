@@ -1063,7 +1063,7 @@ static void ui_draw_vision_footer(UIState *s) {
   if (s->scene.dpUiDev) {
     ui_draw_bbui(s);
   }
-  if (s->scene.dpUiDev || s->scene.dpDashcam || s->scene.dpAppWaze) {
+  if (s->scene.dpUiDevMini) {
     ui_draw_infobar(s);
   }
 

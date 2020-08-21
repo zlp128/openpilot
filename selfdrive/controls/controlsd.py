@@ -43,6 +43,7 @@ class Controls:
     gc.disable()
     set_realtime_priority(53)
     set_core_affinity(3)
+    params = Params()
 
     # Setup sockets
     self.pm = pm
@@ -52,8 +53,10 @@ class Controls:
 
     self.sm = sm
     if self.sm is None:
-      self.sm = messaging.SubMaster(['dragonConf', 'thermal', 'health', 'frame', 'model', 'liveCalibration',
-                                     'dMonitoringState', 'plan', 'pathPlan', 'liveLocationKalman'])
+      socks = ['dragonConf', 'thermal', 'health', 'frame', 'model', 'liveCalibration',
+               'dMonitoringState', 'plan', 'pathPlan', 'liveLocationKalman']
+      ignore_alive = None if params.get('dp_driver_monitor') == b'1' else ['dMonitoringState']
+      self.sm = messaging.SubMaster(socks, ignore_alive=ignore_alive)
 
     self.can_sock = can_sock
     if can_sock is None:
@@ -69,7 +72,6 @@ class Controls:
     self.CI, self.CP = get_car(self.can_sock, self.pm.sock['sendcan'], has_relay)
 
     # read params
-    params = Params()
     self.is_metric = params.get("IsMetric", encoding='utf8') == "1"
     self.is_ldw_enabled = params.get("IsLdwEnabled", encoding='utf8') == "1"
     internet_needed = False #(params.get("Offroad_ConnectivityNeeded", encoding='utf8') is not None) and (params.get("DisableUpdates") != b"1")

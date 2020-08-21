@@ -8,6 +8,8 @@ from selfdrive.controls.lib.events import Events
 from selfdrive.monitoring.driver_monitor import DriverStatus, MAX_TERMINAL_ALERTS, MAX_TERMINAL_DURATION
 from selfdrive.locationd.calibration_helpers import Calibration
 from common.realtime import DT_DMON
+from common.realtime import sec_since_boot
+import time
 
 def dmonitoringd_thread(sm=None, pm=None):
   gc.disable()
@@ -51,6 +53,7 @@ def dmonitoringd_thread(sm=None, pm=None):
 
   # 10Hz <- dmonitoringmodeld
   while True:
+    start_time = sec_since_boot()
     sm.update()
 
     # dp
@@ -121,6 +124,9 @@ def dmonitoringd_thread(sm=None, pm=None):
         "isPreview": False,
       }
       pm.send('dMonitoringState', dat)
+    diff = sec_since_boot() - start_time
+    if not sm['dragonConf'].dpDriverMonitor and diff < 0.1:
+      time.sleep(0.1-diff)
 
 def main(sm=None, pm=None):
   dmonitoringd_thread(sm, pm)

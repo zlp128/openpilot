@@ -334,7 +334,7 @@ void handle_message(UIState *s, SubMaster &sm) {
       if (alert_sound == AudibleAlert::NONE) {
         s->sound.stop();
       } else {
-        if (s->scene.dpUiScreenOffDriving) {
+        if (s->scene.dpUiScreenOffDriving && !s->awake) {
           set_awake(s, true);
         }
         s->sound.play(alert_sound);
@@ -446,6 +446,7 @@ void handle_message(UIState *s, SubMaster &sm) {
     scene.dpUiPath = data.getDpUiPath();
     scene.dpUiLead = data.getDpUiLead();
     scene.dpUiDev = data.getDpUiDev();
+    scene.dpUiDevMini = data.getDpUiDevMini();
     scene.dpUiBlinker = data.getDpUiBlinker();
     scene.dpUiBrightness = data.getDpUiBrightness();
     scene.dpUiVolumeBoost = data.getDpUiVolumeBoost();
@@ -843,7 +844,7 @@ int main(int argc, char* argv[]) {
   // dp
   s->scene.dp_alert_rate = 0;
   s->scene.dp_alert_type = 1;
-  if (s->scene.dpUiScreenOffDriving) {
+  if (s->scene.dpUiScreenOffDriving && !s->awake) {
     set_awake(s, true);
   }
 
@@ -954,7 +955,7 @@ int main(int argc, char* argv[]) {
 
     if (s->controls_timeout > 0) {
       s->controls_timeout--;
-    } else if (s->started) {
+    } else if (s->started && !s->scene.dpUiScreenOffReversing && !s->scene.dpUiScreenOffDriving) {
       if (!s->controls_seen) {
         // car is started, but controlsState hasn't been seen at all
         s->scene.alert_text1 = "openpilot Unavailable";

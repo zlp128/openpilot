@@ -82,7 +82,7 @@ def main(sm=None, pm=None):
   CP = car.CarParams.from_bytes(params_reader.get("CarParams", block=True))
   cloudlog.info("paramsd got CarParams")
 
-  params = params_reader.get("LiveParameters")
+  params = params_reader.get("LiveParameters") if params_reader.get('dp_reset_live_param_on_start') == b'0' else None
 
   # Check if car model matches
   if params is not None:

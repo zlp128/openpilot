@@ -159,6 +159,7 @@ typedef struct UIScene {
   bool dpUiPath;
   bool dpUiLead;
   bool dpUiDev;
+  bool dpUiDevMini;
   bool dpUiBlinker;
   int dpUiBrightness;
   int dpUiVolumeBoost;
