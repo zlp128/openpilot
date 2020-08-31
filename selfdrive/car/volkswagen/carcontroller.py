@@ -5,8 +5,6 @@ from selfdrive.car.volkswagen.values import DBC, CANBUS, NWL, MQB_LDW_MESSAGES, 
 from opendbc.can.packer import CANPacker
 from common.dp_common import common_controller_ctrl
 
-VisualAlert = car.CarControl.HUDControl.VisualAlert
-
 
 class CarController():
   def __init__(self, dbc_name, CP, VM):
@@ -142,7 +140,7 @@ class CarController():
     if frame % P.LDW_STEP == 0:
       hcaEnabled = True if enabled and not CS.out.standstill else False
 
-      if visual_alert == VisualAlert.steerRequired:
+      if visual_alert == car.CarControl.HUDControl.VisualAlert.steerRequired:
         hud_alert = MQB_LDW_MESSAGES["laneAssistTakeOverSilent"]
       else:
         hud_alert = MQB_LDW_MESSAGES["none"]

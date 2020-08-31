@@ -370,13 +370,15 @@ static void ui_draw_world(UIState *s) {
 
   // Draw lane edges and vision/mpc tracks
   ui_draw_vision_lanes(s);
+
+  // Draw lead indicators if openpilot is handling longitudinal
   if (scene->dpUiLead) {
-  if (scene->lead_data[0].getStatus()) {
-    draw_lead(s, scene->lead_data[0]);
-  }
-  if (scene->lead_data[1].getStatus() && (std::abs(scene->lead_data[0].getDRel() - scene->lead_data[1].getDRel()) > 3.0)) {
-    draw_lead(s, scene->lead_data[1]);
-  }
+    if (scene->lead_data[0].getStatus()) {
+      draw_lead(s, scene->lead_data[0]);
+    }
+    if (scene->lead_data[1].getStatus() && (std::abs(scene->lead_data[0].getDRel() - scene->lead_data[1].getDRel()) > 3.0)) {
+      draw_lead(s, scene->lead_data[1]);
+    }
   }
   nvgRestore(s->vg);
 }
@@ -587,7 +589,7 @@ static void ui_draw_vision_face(UIState *s) {
   const int face_size = 96;
   const int face_x = (s->scene.ui_viz_rx + face_size + (bdr_s * 2));
   const int face_y = (footer_y + ((footer_h - face_size) / 2));
-  ui_draw_circle_image(s->vg, face_x, face_y, face_size, s->img_face, s->scene.controls_state.getDriverMonitoringOn());
+  ui_draw_circle_image(s->vg, face_x, face_y, face_size, s->img_face, s->scene.dmonitoring_state.getFaceDetected());
 }
 
 static void ui_draw_df_button(UIState *s) {
@@ -657,19 +659,11 @@ static void ui_draw_driver_view(UIState *s) {
   const int valid_frame_x = frame_x + (frame_w - valid_frame_w) / 2 + ff_xoffset;
 
   // blackout
-  if (!scene->is_rhd) {
-    NVGpaint gradient = nvgLinearGradient(s->vg, valid_frame_x + valid_frame_w,
-                          box_y,
-                          valid_frame_x + box_h / 2, box_y,
-                          nvgRGBAf(0,0,0,1), nvgRGBAf(0,0,0,0));
-    ui_draw_rect(s->vg, valid_frame_x + box_h / 2, box_y, valid_frame_w - box_h / 2, box_h, gradient);
-  } else {
-    NVGpaint gradient = nvgLinearGradient(s->vg, valid_frame_x,
-                          box_y,
-                          valid_frame_w - box_h / 2, box_y,
-                          nvgRGBAf(0,0,0,1), nvgRGBAf(0,0,0,0));
-    ui_draw_rect(s->vg, valid_frame_x, box_y, valid_frame_w - box_h / 2, box_h, gradient);
-  }
+  NVGpaint gradient = nvgLinearGradient(s->vg, scene->is_rhd ? valid_frame_x : (valid_frame_x + valid_frame_w),
+                                        box_y,
+                                        scene->is_rhd ? (valid_frame_w - box_h / 2) : (valid_frame_x + box_h / 2), box_y,
+                                        COLOR_BLACK, COLOR_BLACK_ALPHA(0));
+  ui_draw_rect(s->vg, scene->is_rhd ? valid_frame_x : (valid_frame_x + box_h / 2), box_y, valid_frame_w - box_h / 2, box_h, gradient);
   ui_draw_rect(s->vg, scene->is_rhd ? valid_frame_x : valid_frame_x + box_h / 2, box_y, valid_frame_w - box_h / 2, box_h, COLOR_BLACK_ALPHA(144));
 
   // borders
@@ -677,7 +671,7 @@ static void ui_draw_driver_view(UIState *s) {
   ui_draw_rect(s->vg, valid_frame_x + valid_frame_w, box_y, frame_w - valid_frame_w - (valid_frame_x - frame_x), box_h, nvgRGBA(23, 51, 73, 255));
 
   // draw face box
-  if (scene->driver_state.getFaceProb() > 0.4) {
+  if (scene->dmonitoring_state.getFaceDetected()) {
     auto fxy_list = scene->driver_state.getFacePosition();
     const float face_x = fxy_list[0];
     const float face_y = fxy_list[1];
@@ -688,6 +682,7 @@ static void ui_draw_driver_view(UIState *s) {
     } else {
       fbox_x = valid_frame_x + valid_frame_w - box_h / 2 + (face_x + 0.5) * (box_h / 2) - 0.5 * 0.6 * box_h / 2;
     }
+
     if (std::abs(face_x) <= 0.35 && std::abs(face_y) <= 0.4) {
       ui_draw_rect(s->vg, fbox_x, fbox_y, 0.6 * box_h / 2, 0.6 * box_h / 2,
                    nvgRGBAf(1.0, 1.0, 1.0, 0.8 - ((std::abs(face_x) > std::abs(face_y) ? std::abs(face_x) : std::abs(face_y))) * 0.6 / 0.375),
@@ -701,7 +696,7 @@ static void ui_draw_driver_view(UIState *s) {
   const int face_size = 85;
   const int x = (valid_frame_x + face_size + (bdr_s * 2)) + (scene->is_rhd ? valid_frame_w - box_h / 2:0);
   const int y = (box_y + box_h - face_size - bdr_s - (bdr_s * 1.5));
-  ui_draw_circle_image(s->vg, x, y, face_size, s->img_face, scene->driver_state.getFaceProb() > 0.4);
+  ui_draw_circle_image(s->vg, x, y, face_size, s->img_face, scene->dmonitoring_state.getFaceDetected());
 }
 
 static void ui_draw_vision_header(UIState *s) {
@@ -1078,35 +1073,36 @@ void ui_draw_vision_alert(UIState *s, cereal::ControlsState::AlertSize va_size, 
       {cereal::ControlsState::AlertSize::NONE, 0},
       {cereal::ControlsState::AlertSize::SMALL, 241},
       {cereal::ControlsState::AlertSize::MID, 390},
-      {cereal::ControlsState::AlertSize::FULL, vwp_h}};
+      {cereal::ControlsState::AlertSize::FULL, vwp_h - 150}};
 
   const UIScene *scene = &s->scene;
   const bool hasSidebar = !scene->uilayout_sidebarcollapsed;
   const bool mapEnabled = scene->uilayout_mapenabled;
-  bool longAlert1 = strlen(va_text1) > 15;
+  bool longAlert1 = true;
 
   const uint8_t *color = alert_colors[va_color];
   int alr_s = alert_size_map[va_size];
 
-  const int alr_x = scene->ui_viz_rx-(mapEnabled?(hasSidebar?nav_w:(nav_ww)):0)-bdr_s;
-  const int alr_w = scene->ui_viz_rw+(mapEnabled?(hasSidebar?nav_w:(nav_ww)):0)+(bdr_s*2);
-  const int alr_h = alr_s+(va_size==cereal::ControlsState::AlertSize::NONE?0:bdr_s);
-  const int alr_y = vwp_h-alr_h;
+  const int alr_x = scene->ui_viz_rx-(mapEnabled?(hasSidebar?nav_w:(nav_ww)):0)-bdr_s + 100;
+  const int alr_w = scene->ui_viz_rw+(mapEnabled?(hasSidebar?nav_w:(nav_ww)):0)+(bdr_s*2) - 200;
+  const int alr_h = alr_s+(va_size==cereal::ControlsState::AlertSize::NONE?0:bdr_s) - 100;
+  const int alr_y = vwp_h-alr_h - 100;
 
-  ui_draw_rect(s->vg, alr_x, alr_y, alr_w, alr_h, nvgRGBA(color[0],color[1],color[2],(color[3]*s->alert_blinking_alpha)));
+  if (va_size != cereal::ControlsState::AlertSize::NONE) {
+    ui_draw_rect(s->vg, alr_x, alr_y, alr_w, alr_h, nvgRGBA(color[0],color[1],color[2],(color[3]*s->alert_blinking_alpha)), 20);
 
-  NVGpaint gradient = nvgLinearGradient(s->vg, alr_x, alr_y, alr_x, alr_y+alr_h,
-                        nvgRGBAf(0.0,0.0,0.0,0.05), nvgRGBAf(0.0,0.0,0.0,0.35));
-  ui_draw_rect(s->vg, alr_x, alr_y, alr_w, alr_h, gradient);
+    NVGpaint gradient = nvgLinearGradient(s->vg, alr_x, alr_y, alr_x, alr_y+alr_h,
+                          nvgRGBAf(0.0,0.0,0.0,0.05), nvgRGBAf(0.0,0.0,0.0,0.35));
+    ui_draw_rect(s->vg, alr_x, alr_y, alr_w, alr_h, gradient, 20);
 
-  nvgFillColor(s->vg, COLOR_WHITE);
-  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
-
+    nvgFillColor(s->vg, COLOR_WHITE);
+    nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
+  }
   if (va_size == cereal::ControlsState::AlertSize::SMALL) {
-    ui_draw_text(s->vg, alr_x+alr_w/2, alr_y+alr_h/2+15, va_text1, 40*2.5, COLOR_WHITE, s->font_sans_semibold);
+    ui_draw_text(s->vg, alr_x+alr_w/2, alr_y+alr_h/2+15, va_text1, 32*2.5, COLOR_WHITE, s->font_sans_semibold);
   } else if (va_size == cereal::ControlsState::AlertSize::MID) {
-    ui_draw_text(s->vg, alr_x+alr_w/2, alr_y+alr_h/2-45, va_text1, 48*2.5, COLOR_WHITE, s->font_sans_bold);
-    ui_draw_text(s->vg, alr_x+alr_w/2, alr_y+alr_h/2+75, va_text2, 36*2.5, COLOR_WHITE, s->font_sans_regular);
+    ui_draw_text(s->vg, alr_x+alr_w/2, alr_y+alr_h/2-45, va_text1, 40*2.5, COLOR_WHITE, s->font_sans_bold);
+    ui_draw_text(s->vg, alr_x+alr_w/2, alr_y+alr_h/2+75, va_text2, 28*2.5, COLOR_WHITE, s->font_sans_regular);
   } else if (va_size == cereal::ControlsState::AlertSize::FULL) {
     nvgFontSize(s->vg, (longAlert1?72:96)*2.5);
     nvgFontFaceId(s->vg, s->font_sans_bold);
@@ -1115,7 +1111,7 @@ void ui_draw_vision_alert(UIState *s, cereal::ControlsState::AlertSize va_size, 
     nvgFontSize(s->vg, 48*2.5);
     nvgFontFaceId(s->vg,  s->font_sans_regular);
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BOTTOM);
-    nvgTextBox(s->vg, alr_x, alr_h-(longAlert1?300:360), alr_w-60, va_text2, NULL);
+    nvgTextBox(s->vg, alr_x, alr_h-(longAlert1?150:210), alr_w-60, va_text2, NULL);
   }
 }
 

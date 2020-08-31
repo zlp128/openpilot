@@ -3,6 +3,7 @@ import os
 import json
 import time
 from math import floor
+from common.android import getprop
 
 confs = [
   {'name': 'dp_atl', 'default': False, 'type': 'Bool', 'conf_type': ['param', 'struct'], 'update_once': True},
@@ -59,7 +60,8 @@ confs = [
   {'name': 'dp_ui_lane', 'default': True, 'type': 'Bool', 'depends': [{'name': 'dp_driving_ui', 'vals': [True]}, {'name': 'dp_ui_screen_off_driving', 'vals': [False]}, {'name': 'dp_app_waze', 'vals': [False]}], 'conf_type': ['param', 'struct']},
   {'name': 'dp_ui_path', 'default': True, 'type': 'Bool', 'depends': [{'name': 'dp_driving_ui', 'vals': [True]}, {'name': 'dp_ui_screen_off_driving', 'vals': [False]}, {'name': 'dp_app_waze', 'vals': [False]}], 'conf_type': ['param', 'struct']},
   {'name': 'dp_ui_lead', 'default': True, 'type': 'Bool', 'depends': [{'name': 'dp_driving_ui', 'vals': [True]}, {'name': 'dp_ui_screen_off_driving', 'vals': [False]}, {'name': 'dp_app_waze', 'vals': [False]}], 'conf_type': ['param', 'struct']},
-  {'name': 'dp_ui_dev', 'default': False, 'type': 'Bool', 'depends': [{'name': 'dp_driving_ui', 'vals': [True]}, {'name': 'dp_ui_screen_off_driving', 'vals': [False]}], 'conf_type': ['param', 'struct']},
+  {'name': 'dp_ui_dev', 'default': False, 'type': 'Bool', 'conf_type': ['param', 'struct']},
+  {'name': 'dp_ui_dev_mini', 'default': False, 'type': 'Bool', 'conf_type': ['param', 'struct']},
   {'name': 'dp_ui_blinker', 'default': False, 'type': 'Bool', 'depends': [{'name': 'dp_driving_ui', 'vals': [True]}, {'name': 'dp_ui_screen_off_driving', 'vals': [False]}, {'name': 'dp_app_waze', 'vals': [False]}], 'conf_type': ['param', 'struct']},
   {'name': 'dp_ui_brightness', 'default': 0, 'type': 'UInt8', 'min': 0, 'max': 100, 'conf_type': ['param', 'struct']},
   {'name': 'dp_ui_volume_boost', 'default': 0, 'type': 'Int8', 'min': -100, 'max': 100, 'conf_type': ['param', 'struct']},
@@ -95,13 +97,13 @@ confs = [
   {'name': 'dp_last_modified', 'default': str(floor(time.time())), 'type': 'Text', 'conf_type': ['param']},
   {'name': 'dp_camera_offset', 'default': 6, 'type': 'Int8', 'min': -255, 'max': 255, 'conf_type': ['param', 'struct']},
 
-  {'name': 'dp_locale', 'default': '', 'type': 'Text', 'conf_type': ['param', 'struct'], 'update_once': True},
+  {'name': 'dp_locale', 'default': getprop("persist.sys.locale").rstrip('\n'), 'type': 'Text', 'conf_type': ['param', 'struct'], 'update_once': True},
   {'name': 'dp_disable_relay', 'default': False, 'type': 'Bool', 'conf_type': ['param']},
   {'name': 'dp_charging_ctrl', 'default': False, 'type': 'Bool', 'conf_type': ['param', 'struct']},
   {'name': 'dp_charging_at', 'default': 60, 'type': 'UInt8', 'min': 0, 'max': 100, 'depends': [{'name': 'dp_charging_ctrl', 'vals': [True]}], 'conf_type': ['param', 'struct']},
   {'name': 'dp_discharging_at', 'default': 70, 'type': 'UInt8', 'min': 0, 'max': 100, 'depends': [{'name': 'dp_charging_ctrl', 'vals': [True]}], 'conf_type': ['param', 'struct']},
   {'name': 'dp_reg', 'default': True, 'type': 'Bool', 'conf_type': ['param']},
-  {'name': 'dp_is_updating', 'default': False, 'type': 'Bool', 'set_param_only': True, 'conf_type': ['param', 'struct']},
+  {'name': 'dp_is_updating', 'default': False, 'type': 'Bool', 'conf_type': ['param', 'struct']},
 
   {'name': 'dp_sr_learner', 'default': True, 'type': 'Bool', 'conf_type': ['param']},
   {'name': 'dp_lqr', 'default': False, 'type': 'Bool', 'conf_type': ['param']},

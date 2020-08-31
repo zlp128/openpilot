@@ -1,7 +1,8 @@
 # This Python file uses the following encoding: utf-8
 # -*- coding: utf-8 -*-
-from cereal import log, car
+from functools import total_ordering
 
+from cereal import log, car
 from common.realtime import DT_CTRL
 from selfdrive.config import Conversions as CV
 from selfdrive.locationd.calibration_helpers import Filter
@@ -97,6 +98,7 @@ class Events:
       ret.append(event)
     return ret
 
+@total_ordering
 class Alert:
   def __init__(self,
                alert_text_1,
@@ -139,6 +141,9 @@ class Alert:
 
   def __gt__(self, alert2):
     return self.alert_priority > alert2.alert_priority
+
+  def __eq__(self, alert2):
+    return self.alert_priority == alert2.alert_priority
 
 class NoEntryAlert(Alert):
   def __init__(self, alert_text_2, audible_alert=AudibleAlert.chimeError,
@@ -529,15 +534,6 @@ EVENTS = {
                               duration_hud_alert=0.),
   },
 
-  EventName.posenetInvalid: {
-    ET.WARNING: Alert(
-      _("TAKE CONTROL"),
-      _("Vision Model Output Uncertain"),
-      AlertStatus.userPrompt, AlertSize.mid,
-      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, .4, 2., 3.),
-    ET.NO_ENTRY: NoEntryAlert(_("Vision Model Output Uncertain")),
-  },
-
   EventName.focusRecoverActive: {
     ET.WARNING: Alert(
       _("TAKE CONTROL"),
@@ -661,6 +657,26 @@ EVENTS = {
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .2, .2, .2),
 #     ET.SOFT_DISABLE: SoftDisableAlert(_("Driving model lagging")),
     ET.NO_ENTRY : NoEntryAlert(_("Driving model lagging")),
+  },
+
+  EventName.posenetInvalid: {
+    ET.SOFT_DISABLE: SoftDisableAlert(_("Vision Model Output Uncertain")),
+    ET.NO_ENTRY: NoEntryAlert(_("Vision Model Output Uncertain")),
+  },
+
+  EventName.deviceFalling: {
+    ET.SOFT_DISABLE: SoftDisableAlert(_("Device Fell Off Mount")),
+    ET.NO_ENTRY: NoEntryAlert(_("Device Fell Off Mount")),
+  },
+
+  EventName.posenetInvalid: {
+    ET.SOFT_DISABLE: SoftDisableAlert(_("Vision Model Output Uncertain")),
+    ET.NO_ENTRY: NoEntryAlert(_("Vision Model Output Uncertain")),
+  },
+
+  EventName.deviceFalling: {
+    ET.SOFT_DISABLE: SoftDisableAlert(_("Device Fell Off Mount")),
+    ET.NO_ENTRY: NoEntryAlert(_("Device Fell Off Mount")),
   },
 
   EventName.lowMemory: {

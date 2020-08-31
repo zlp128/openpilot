@@ -112,14 +112,15 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     wrongCruiseMode @87;
     neosUpdateRequired @88;
     modeldLagging @89;
+    deviceFalling @90;
 
     #dp
-    preLaneChangeLeftALC @90;
-    preLaneChangeRightALC @91;
-    laneChangeALC @92;
-    manualSteeringRequired @93;
-    manualSteeringRequiredBlinkersOn @94;
-    leadCarMoving @95;
+    preLaneChangeLeftALC @91;
+    preLaneChangeRightALC @92;
+    laneChangeALC @93;
+    manualSteeringRequired @94;
+    manualSteeringRequiredBlinkersOn @95;
+    leadCarMoving @96;
   }
 }
 
@@ -485,6 +486,7 @@ struct CarParams {
     volkswagenPq @21;
     subaruLegacy @22;  # pre-Global platform
     hyundaiLegacy @23;
+    hyundaiCommunity @24;
   }
 
   enum SteerControlType {
