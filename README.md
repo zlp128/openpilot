@@ -197,5 +197,6 @@ Versions
 * 开发版- (多语言版，基于dp testing 版)
 * ?.?.?-i18n: stable release - (i18n, based on devel-i18n branch, more stable than devel-i18n but may still contain bugs/errors)
 * 稳定版- (多语言版，测试过的devel-i18n)
+
 **Always stick with beta/stable version unless you know what you are doing.**
 **其它没有说明的分支为测试功能版，非必要请勿使用**
