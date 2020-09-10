@@ -169,6 +169,7 @@ Installation
 
 **Please reboot again if you have display issue. (Chinese / Japanese / Korean only)**
 **如果遇到显示问题，请重启. (中文 / 日文 / 韩文 的时候)**
+
 Update
 更新
 ---
