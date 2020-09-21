@@ -9,6 +9,7 @@ import datetime
 import signal
 import threading
 import math
+import zipfile
 
 pi = 3.1415926535897932384626
 x_pi = 3.14159265358979324 * 3000.0 / 180.0
@@ -18,7 +19,7 @@ ee = 0.00669342162296594323
 GPX_LOG_PATH = '/sdcard/gpx_logs/'
 
 LOG_DELAY = 0.1 # secs, lower for higher accuracy, 0.1 seems fine
-LOG_LENGTH = 30 # mins, higher means it keeps more data in the memory, will take more time to write into a file too.
+LOG_LENGTH = 60 # mins, higher means it keeps more data in the memory, will take more time to write into a file too.
 LOST_SIGNAL_COUNT_LENGTH = 30 # secs, if we lost signal for this long, perform output to data
 MIN_MOVE_SPEED_KMH = 5 # km/h, min speed to trigger logging
 
@@ -133,21 +134,31 @@ def wgs84togcj02(lng, lat):
   return mglng, mglat
 
 '''
-write logs to a gpx file
+write logs to a gpx file and zip it
 '''
-def to_gpx(logs, filename):
-  if not os.path.exists(GPX_LOG_PATH):
-    os.makedirs(GPX_LOG_PATH)
-  with open('%s%sZ.gpx' % (GPX_LOG_PATH, filename.replace(':','-')), 'w') as f:
-    f.write("%s\n" % '<?xml version="1.0" encoding="UTF-8" standalone="no" ?>')
-    f.write("%s\n" % '<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1">')
-    f.write("\t<trk>\n")
-    f.write("\t\t<trkseg>\n")
+def to_gpx(logs, timestamp):
+  if len(logs) > 0:
+    if not os.path.exists(GPX_LOG_PATH):
+      os.makedirs(GPX_LOG_PATH)
+    filename = timestamp.replace(':','-')
+    str = ''
+    str += "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n"
+    str += "<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\" version=\"1.1\">\n"
+    str += "\t<trk>\n"
+    str += "\t\t<trkseg>\n"
     for trkpt in logs:
-      f.write("\t\t\t<trkpt time=\"%sZ\" lat=\"%s\" lon=\"%s\" ele=\"%s\" />\n" % (trkpt[0], trkpt[1], trkpt[2], trkpt[3]))
-    f.write("\t\t</trkseg>\n")
-    f.write("\t</trk>\n")
-    f.write("%s\n" % '</gpx>')
+      str += "\t\t\t<trkpt time=\"%sZ\" lat=\"%s\" lon=\"%s\" ele=\"%s\" />\n" % (trkpt[0], trkpt[1], trkpt[2], trkpt[3])
+    str += "\t\t</trkseg>\n"
+    str += "\t</trk>\n"
+    str += "</gpx>\n"
+    try:
+      zi = zipfile.ZipInfo('%sZ.gpx' % filename, time.localtime())
+      zi.compress_type = zipfile.ZIP_DEFLATED
+      zf = zipfile.ZipFile('%s%sZ.zip' % (GPX_LOG_PATH, filename), mode='w')
+      zf.writestr(zi, str)
+      zf.close()
+    except:
+      pass
 
 if __name__ == "__main__":
   main()

@@ -117,7 +117,7 @@ static bool handle_dp_btn_touch(UIState *s, int touch_x, int touch_y) {
         val = 1;
       }
 
-      char str[1];
+      char str[2] = {0};
       sprintf(str, "%d", val);
       write_db_value("dp_dynamic_follow", str, 1);
 
@@ -133,7 +133,7 @@ static bool handle_dp_btn_touch(UIState *s, int touch_x, int touch_y) {
         val = 1;
       }
 
-      char str[1];
+      char str[2] = {0};
       sprintf(str, "%d", val);
       write_db_value("dp_accel_profile", str, 1);
 

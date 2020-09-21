@@ -1,3 +1,25 @@
+2020-09-21 (0.7.8.0)
+========================
+* 強制關閉 panda 檢查 DOS 硬體。
+* Force disabled DOS hardware check in panda.
+
+2020-09-18 (0.7.8.0)
+========================
+* gpxd 記錄改自動存成 zip 格式。
+* gpxd now store in zip format.
+
+2020-09-15 (0.7.8.0)
+========================
+* 加入 Honda Jade 支援。(感謝 @李俊灝)
+* Added Honda Jade support. (Thanks to @lijunhao731)
+* 修正 ui.cc 內存越界的問題。(感謝 @piggy 提供)
+* Fixed ui.cc memory out of bound issue. (Thanks to @piggy)
+
+2020-09-01 (0.7.8.0)
+========================
+* 加入 ko-KR 翻譯。
+* Added ko-KR translation.
+
 2020-08-21 (0.7.8.0)
 ========================
 * 基於最新 openpilot 0.7.8 devel.

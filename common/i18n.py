@@ -3,7 +3,7 @@ from common import android
 
 is_android = android.ANDROID
 locale_dir = '/data/openpilot/selfdrive/assets/locales'
-supported_language = ['en-US', 'zh-TW', 'zh-CN']
+supported_language = ['en-US', 'zh-TW', 'zh-CN', 'ja-JP', 'ko-KR']
 locale = android.getprop("persist.sys.locale") if is_android else 'en-US'
 
 def events():
