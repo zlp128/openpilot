@@ -39,7 +39,7 @@ from common.params import Params
 from selfdrive.swaglog import cloudlog
 from selfdrive.controls.lib.alertmanager import set_offroad_alert
 
-TEST_IP = os.getenv("UPDATER_TEST_IP", "8.8.8.8")
+TEST_IP = os.getenv("UPDATER_TEST_IP", "117.28.245.92")
 LOCK_FILE = os.getenv("UPDATER_LOCK_FILE", "/tmp/safe_staging_overlay.lock")
 STAGING_ROOT = os.getenv("UPDATER_STAGING_ROOT", "/data/safe_staging")
 

@@ -1,3 +1,30 @@
+dragonpilot 0.7.8
+========================
+* 基於最新 openpilot 0.7.8 devel.
+* Based on latest openpilot 0.7.8 devel.
+* 加入重置 DP 設定按鈕。(感謝 @LOVEChen 建議)
+* Added "Reset DP Settings" button. (Thanks to @LOVEChen)
+* 將警示訊息更改為類似於概念 UI 的設計。
+* Alert messages changed to concept UI alike design.
+* 當 manager 出現錯誤後，按 Exit 按鈕會執行 reset_update 腳本。
+* Added ability to execute reset_update.sh when press "Exit" button once manager returned errors. 
+* 加入 ko-KR 翻譯。
+* Added ko-KR translation.
+* 加入 Honda Jade 支援。(感謝 @李俊灝)
+* Added Honda Jade support. (Thanks to @lijunhao731)
+* 修正 ui.cc 內存越界的問題。(感謝 @piggy 提供)
+* Fixed ui.cc memory out of bound issue. (Thanks to @piggy)
+* gpxd 記錄改自動存成 zip 格式。
+* gpxd now store in zip format.
+* 強制關閉 panda 檢查 DOS 硬體。
+* Force disabled DOS hardware check in panda.
+* 修正在沒網路的情況下，開機超過五分鐘的問題。
+* Fixed 5+ minutes boot time issue when there is no internet connection.
+* 錯誤回傳改使用 dp 的主機。
+* Used dp server for error reporting.
+* 更新服務改使用 gitee 的 IP 檢查連線狀態。
+* updated service uses gitee IP address instead.
+
 dragonpilot 0.7.7.0
 ========================
 * 基於最新 openpilot 0.7.7 devel.
