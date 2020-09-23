@@ -7,7 +7,8 @@ from datetime import datetime
 import traceback
 from selfdrive.version import version, dirty, origin, branch
 from common.params import Params
-uniqueID = Params().get('DongleId', None)
+import requests
+from common.dp_common import is_online
 CRASHES_DIR = '/sdcard/crash_logs/'
 
 from selfdrive.swaglog import cloudlog
@@ -33,13 +34,13 @@ else:
     dongle_id = params.get("DongleId").decode('utf8')
   except AttributeError:
     dongle_id = "None"
-  error_tags = {'dirty': dirty, 'username': uniqueID, 'dongle_id': dongle_id, 'branch': branch, 'remote': origin}
+  try:
+    ip = requests.get('https://checkip.amazonaws.com/', timeout=3).text.strip() if is_online() else '255.255.255.255'
+  except:
+    ip = "255.255.255.255"
+  error_tags = {'dirty': dirty, 'username': dongle_id, 'dongle_id': dongle_id, 'branch': branch, 'remote': origin}
 
-
-  # client = Client('https://fa39b8804ae94ea6bbb22279d68b3dc7:5ac1b337f7be42308cabbb534b342669@sentry.io/1428745',
-  #                 install_sys_hook=False, transport=HTTPTransport, release=version, tags=error_tags)
-
-  client = Client('https://980a0cba712a4c3593c33c78a12446e1:fecab286bcaf4dba8b04f7cff0188e2d@sentry.io/1488600',
+  client = Client('http://7107f046f45b4b4f9b277d0684bc9281@sentry.dragonpilot.cn:9000/2',
                   install_sys_hook=False, transport=HTTPTransport, release=version, tags=error_tags)
 
   def capture_exception(*args, **kwargs):
@@ -62,11 +63,11 @@ else:
     client.user_context(kwargs)
 
   def capture_warning(warning_string):
-    bind_user(id=dongle_id)
+    bind_user(id=dongle_id, ip_address=ip)
     client.captureMessage(warning_string, level='warning')
 
   def capture_info(info_string):
-    bind_user(id=dongle_id)
+    bind_user(id=dongle_id, ip_address=ip)
     client.captureMessage(info_string, level='info')
 
   def bind_extra(**kwargs):
