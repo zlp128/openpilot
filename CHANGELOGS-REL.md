@@ -18,6 +18,12 @@ dragonpilot 0.7.8
 * gpxd now store in zip format.
 * 強制關閉 panda 檢查 DOS 硬體。
 * Force disabled DOS hardware check in panda.
+* 修正在沒網路的情況下，開機超過五分鐘的問題。
+* Fixed 5+ minutes boot time issue when there is no internet connection.
+* 錯誤回傳改使用 dp 的主機。
+* Used dp server for error reporting.
+* 更新服務改使用 gitee 的 IP 檢查連線狀態。
+* updated service uses gitee IP address instead.
 
 dragonpilot 0.7.7.0
 ========================
