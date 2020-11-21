@@ -2208,4 +2208,5 @@ struct DragonConf {
   dpDischargingAt @71 :UInt8;
   dpIsUpdating @72 :Bool;
   dpTimebombAssist @73 :Bool;
+  dpDynamicGas @74 :Bool;
 }
