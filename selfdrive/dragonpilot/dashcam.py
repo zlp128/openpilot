@@ -62,4 +62,8 @@ class Dashcam():
         pass
 
   def get_used_spaces(self):
-    return sum(os.path.getsize(DASHCAM_VIDEOS_PATH + f) for f in os.listdir(DASHCAM_VIDEOS_PATH) if os.path.isfile(DASHCAM_VIDEOS_PATH + f))
+    try:
+      val = sum(os.path.getsize(DASHCAM_VIDEOS_PATH + f) for f in os.listdir(DASHCAM_VIDEOS_PATH) if os.path.isfile(DASHCAM_VIDEOS_PATH + f))
+    except (IndexError, FileNotFoundError, OSError):
+      val = 0
+    return val
