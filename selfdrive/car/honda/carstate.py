@@ -111,7 +111,7 @@ def get_can_signals(CP):
       signals += [("DRIVERS_DOOR_OPEN", "SCM_FEEDBACK", 1),
                   ("LEAD_DISTANCE", "RADAR_HUD", 0)]
       checks += [("RADAR_HUD", 50)]
-  elif CP.carFingerprint in (CAR.CIVIC_BOSCH, CAR.CRV_HYBRID, CAR.CIVIC_BOSCH_DIESEL):
+  elif CP.carFingerprint in (CAR.CIVIC_BOSCH, CAR.CIVIC_BOSCH_DIESEL, CAR.CRV_HYBRID,  CAR.ACURA_RDX_3G):
       signals += [("DRIVERS_DOOR_OPEN", "SCM_FEEDBACK", 1)]
       checks += [("RADAR_HUD", 50)]
   elif CP.carFingerprint == CAR.ODYSSEY_CHN:
@@ -201,7 +201,7 @@ class CarState(CarStateBase):
         ret.standstill = cp.vl["ENGINE_DATA"]['XMISSION_SPEED'] < 0.1
         ret.doorOpen = bool(cp.vl["SCM_FEEDBACK"]['DRIVERS_DOOR_OPEN'])
         self.lead_distance = cp.vl["RADAR_HUD"]['LEAD_DISTANCE']
-    elif self.CP.carFingerprint in (CAR.CIVIC_BOSCH, CAR.CRV_HYBRID, CAR.CIVIC_BOSCH_DIESEL):
+    elif self.CP.carFingerprint in (CAR.CIVIC_BOSCH, CAR.CIVIC_BOSCH_DIESEL, CAR.CRV_HYBRID,  CAR.ACURA_RDX_3G):
         ret.standstill = cp.vl["ENGINE_DATA"]['XMISSION_SPEED'] < 0.1
         ret.doorOpen = bool(cp.vl["SCM_FEEDBACK"]['DRIVERS_DOOR_OPEN'])
     elif self.CP.carFingerprint == CAR.ODYSSEY_CHN:
