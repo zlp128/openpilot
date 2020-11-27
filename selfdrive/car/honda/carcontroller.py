@@ -209,8 +209,7 @@ class CarController():
               hondacan.spam_buttons_command(self.packer, CruiseButtons.RES_ACCEL, idx, CS.CP.carFingerprint,
                                             CS.CP.isPandaBlack))
         else:
-          
-		  can_sends.append(hondacan.spam_buttons_command(self.packer, CruiseButtons.RES_ACCEL, idx, CS.CP.carFingerprint,CS.CP.isPandaBlack))
+          can_sends.append(hondacan.spam_buttons_command(self.packer, CruiseButtons.RES_ACCEL, idx, CS.CP.carFingerprint,CS.CP.isPandaBlack))
       else:
         self.stopped_lead_distance = CS.lead_distance
         self.prev_lead_distance = CS.lead_distance
