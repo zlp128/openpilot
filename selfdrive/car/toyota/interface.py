@@ -11,6 +11,12 @@ from common.params import Params
 EventName = car.CarEvent.EventName
 
 class CarInterface(CarInterfaceBase):
+  def __init__(self, CP, CarController, CarState):
+    super().__init__(CP, CarController, CarState)
+
+    # dp
+    self.dp_cruise_speed = 0.
+
   @staticmethod
   def compute_gb(accel, speed):
     return float(accel) / 3.0
@@ -367,8 +373,16 @@ class CarInterface(CarInterfaceBase):
     # dp
     self.dragonconf = dragonconf
     ret.cruiseState.enabled = common_interface_atl(ret, dragonconf.dpAtl)
-    if dragonconf.dpToyotaLowestCruiseOverride and ret.cruiseState.speed < dragonconf.dpToyotaLowestCruiseOverrideAt * CV.KPH_TO_MS:
-      ret.cruiseState.speed = dragonconf.dpToyotaLowestCruiseOverrideSpeed * CV.KPH_TO_MS
+    if ret.cruiseState.enabled and dragonconf.dpToyotaLowestCruiseOverride and ret.cruiseState.speed < dragonconf.dpToyotaLowestCruiseOverrideAt * CV.KPH_TO_MS:
+      if dragonconf.dpToyotaLowestCruiseOverrideVego:
+        if self.dp_cruise_speed == 0.:
+          ret.cruiseState.speed = self.dp_cruise_speed = max( dragonconf.dpToyotaLowestCruiseOverrideSpeed * CV.KPH_TO_MS,ret.vEgo)
+        else:
+          ret.cruiseState.speed = self.dp_cruise_speed
+      else:
+        ret.cruiseState.speed = dragonconf.dpToyotaLowestCruiseOverrideSpeed * CV.KPH_TO_MS
+    else:
+      self.dp_cruise_speed = 0.
 
     ret.canValid = self.cp.can_valid and self.cp_cam.can_valid
     ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False

@@ -2145,7 +2145,6 @@ struct Event {
   }
 }
 
-# dp
 struct DragonConf {
   dpThermalStarted @0 :Bool;
   dpThermalOverheat @1 :Bool;
@@ -2211,14 +2210,15 @@ struct DragonConf {
   dpToyotaLdw @61 :Bool;
   dpToyotaSng @62 :Bool;
   dpToyotaLowestCruiseOverride @63 :Bool;
-  dpToyotaLowestCruiseOverrideAt @64 :Float32;
-  dpToyotaLowestCruiseOverrideSpeed @65 :Float32;
-  dpIpAddr @66 :Text;
-  dpCameraOffset @67 :Int8;
-  dpLocale @68 :Text;
-  dpChargingCtrl @69 :Bool;
-  dpChargingAt @70 :UInt8;
-  dpDischargingAt @71 :UInt8;
-  dpIsUpdating @72 :Bool;
-  dpTimebombAssist @73 :Bool;
+  dpToyotaLowestCruiseOverrideVego @64 :Bool;
+  dpToyotaLowestCruiseOverrideAt @65 :Float32;
+  dpToyotaLowestCruiseOverrideSpeed @66 :Float32;
+  dpIpAddr @67 :Text;
+  dpCameraOffset @68 :Int8;
+  dpLocale @69 :Text;
+  dpChargingCtrl @70 :Bool;
+  dpChargingAt @71 :UInt8;
+  dpDischargingAt @72 :UInt8;
+  dpIsUpdating @73 :Bool;
+  dpTimebombAssist @74 :Bool;
 }

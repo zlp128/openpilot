@@ -35,10 +35,12 @@ dragonpilot 0.7.10.0
 * GENESIS_G70 Optimisation (Thanks to @sebastian4k)
 * HYUNDAI_GENESIS 優化 (感謝 @donfyffe 提供)
 * HYUNDAI_GENESIS Optimisation (Thanks to @donfyffe)
-* 加入 Dynamic gas Lite。(感謝 toyboxZ 提供)
-* Added Dynamic Gas Lite. (Thanks to toyboxZ)
+* 加入 Dynamic gas Lite。(感謝 @toyboxZ 提供)
+* Added Dynamic Gas Lite. (Thanks to @toyboxZ)
 * 加入來自 afa 的 Honda inspire, accord, crv SnG 優化。(感謝 @menwenliang 提供)
 * Added Honda inspire, accord, crv SnG optimisation from afa fork. (Thanks to @menwenliang) 
+* 加入 dp_toyota_lowest_cruise_override_vego。(感謝 @toyboxZ 提供)
+* Added dp_toyota_lowest_cruise_override_vego. (Thanks to @toyboxZ)
 
 dragonpilot 0.7.8
 ========================
