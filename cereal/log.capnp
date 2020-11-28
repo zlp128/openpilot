@@ -2209,4 +2209,5 @@ struct DragonConf {
   dpIsUpdating @72 :Bool;
   dpTimebombAssist @73 :Bool;
   dpDynamicGas @74 :Bool;
+  dpToyotaLowestCruiseOverrideVego @75 :Bool;
 }
