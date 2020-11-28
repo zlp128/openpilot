@@ -37,6 +37,8 @@ dragonpilot 0.7.10.0
 * HYUNDAI_GENESIS Optimisation (Thanks to @donfyffe)
 * 加入 Dynamic gas Lite。(感謝 toyboxZ 提供)
 * Added Dynamic Gas Lite. (Thanks to toyboxZ)
+* 加入來自 afa 的 Honda inspire, accord, crv SnG 優化。(感謝 @menwenliang 提供)
+* Added Honda inspire, accord, crv SnG optimisation from afa fork. (Thanks to @menwenliang) 
 
 dragonpilot 0.7.8
 ========================
