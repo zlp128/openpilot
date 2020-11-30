@@ -2,7 +2,7 @@
 import os
 from cereal import car, log
 from common.hardware import HARDWARE
-from common.numpy_fast import clip
+from common.numpy_fast import clip, interp
 from common.realtime import sec_since_boot, config_realtime_process, Priority, Ratekeeper, DT_CTRL
 from common.profiler import Profiler
 from common.params import Params, put_nonblocking
@@ -38,6 +38,10 @@ Desire = log.PathPlan.Desire
 LaneChangeState = log.PathPlan.LaneChangeState
 LaneChangeDirection = log.PathPlan.LaneChangeDirection
 EventName = car.CarEvent.EventName
+
+LEAD_AWAY_STATE_OFF = 0
+LEAD_AWAY_STATE_ON = 1
+LEAD_AWAY_STATE_ALERTED = 2
 
 
 class Controls:
@@ -160,6 +164,13 @@ class Controls:
     self.sm['dragonConf'].dpAtl = False
     self.sm['dragonConf'].dpCameraOffset = 6
 
+    self.dp_lead_away_alert = params.get('dp_driver_monitor') == b'0' and params.get('dp_steering_monitor') == b'0'
+    self.dp_lead_away_min_speed = 40 # kph
+    self.dp_lead_away_alert_lead_count = 0
+    self.dp_lead_away_alert_nolead_count = 0
+
+    self.dp_lead_away_state = LEAD_AWAY_STATE_OFF
+
   def update_events(self, CS):
     """Compute carEvents from carState"""
 
@@ -257,6 +268,28 @@ class Controls:
     if not self.sm['dragonConf'].dpAtl and CS.brakePressed and self.sm['plan'].vTargetFuture >= STARTING_TARGET_SPEED \
       and self.CP.openpilotLongitudinalControl and CS.vEgo < 0.3:
       self.events.add(EventName.noTarget)
+
+    if self.dp_lead_away_alert:
+      current_speed = CS.vEgo * 3.6
+
+      if CS.brakePressed or current_speed < self.dp_lead_away_min_speed or self.dp_lead_away_state == LEAD_AWAY_STATE_ALERTED:
+        self.dp_lead_away_alert_lead_count = 0
+        self.dp_lead_away_alert_nolead_count = 0
+        self.dp_lead_away_state = LEAD_AWAY_STATE_OFF
+
+      if current_speed >= self.dp_lead_away_min_speed:
+        nolead_count = interp(current_speed, [self.dp_lead_away_min_speed, 100], [500, 250])
+        # when car had lead for 5 more secs and lead move away for 3 secs
+        if self.dp_lead_away_state == LEAD_AWAY_STATE_OFF and self.sm['plan'].hasLead:
+          self.dp_lead_away_alert_lead_count += 1
+        elif self.dp_lead_away_state == LEAD_AWAY_STATE_ON and not self.sm['plan'].hasLead:
+          self.dp_lead_away_alert_nolead_count += 1
+
+        if self.dp_lead_away_state == LEAD_AWAY_STATE_OFF and self.dp_lead_away_alert_lead_count >= 300:
+          self.dp_lead_away_state = LEAD_AWAY_STATE_ON
+        elif self.dp_lead_away_state == LEAD_AWAY_STATE_ON and self.dp_lead_away_alert_nolead_count >= nolead_count:
+          self.events.add(EventName.leadCarMoving)
+          self.dp_lead_away_state = LEAD_AWAY_STATE_ALERTED
 
     # dp lead car moving alert
     if self.sm['dragonConf'].dpLeadCarAlert:
