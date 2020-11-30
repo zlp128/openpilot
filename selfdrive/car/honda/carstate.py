@@ -183,6 +183,7 @@ class CarState(CarStateBase):
 
     #dp
     self.lkMode = True
+    self.lead_distance = 0.
 
   def update(self, cp, cp_cam, cp_body):
     ret = car.CarState.new_message()
