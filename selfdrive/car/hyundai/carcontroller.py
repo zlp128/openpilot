@@ -5,6 +5,7 @@ from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create
 from selfdrive.car.hyundai.values import Buttons, SteerLimitParams, CAR
 from opendbc.can.packer import CANPacker
 from common.dp_common import common_controller_ctrl
+from common.params import Params
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
@@ -38,17 +39,18 @@ def process_hud_alert(enabled, fingerprint, visual_alert, left_lane,
 
 class CarController():
   def __init__(self, dbc_name, CP, VM):
+    self.p = SteerLimitParams(CP)
+    self.packer = CANPacker(dbc_name)
+
     self.apply_steer_last = 0
     self.car_fingerprint = CP.carFingerprint
-    self.packer = CANPacker(dbc_name)
     self.steer_rate_limited = False
     self.last_resume_frame = 0
-
-    self.p = SteerLimitParams(CP)
 
     # dp
     self.last_blinker_on = False
     self.blinker_end_frame = 0.
+    self.dp_hkg_smart_mdps = Params().get('dp_hkg_smart_mdps') == b'1'
 
   def update(self, enabled, CS, frame, actuators, pcm_cancel_cmd, visual_alert,
              left_lane, right_lane, left_lane_depart, right_lane_depart, dragonconf):
@@ -61,7 +63,7 @@ class CarController():
     lkas_active = enabled and abs(CS.out.steeringAngle) < 90.
 
     # fix for Genesis hard fault at low speed
-    if CS.out.vEgo < 16.7 and self.car_fingerprint == CAR.HYUNDAI_GENESIS:
+    if not self.dp_hkg_smart_mdps and CS.out.vEgo < 16.7 and self.car_fingerprint == CAR.HYUNDAI_GENESIS:
       lkas_active = False
 
     if not lkas_active:
@@ -100,7 +102,7 @@ class CarController():
         self.last_resume_frame = frame
 
     # 20 Hz LFA MFA message
-    if frame % 5 == 0 and self.car_fingerprint in [CAR.SONATA, CAR.PALISADE, CAR.IONIQ]:
+    if frame % 5 == 0 and self.car_fingerprint in [CAR.SONATA, CAR.PALISADE, CAR.IONIQ, CAR.KIA_NIRO_EV]:
       can_sends.append(create_lfa_mfa(self.packer, frame, enabled))
 
     return can_sends

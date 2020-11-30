@@ -485,6 +485,10 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
     ET.PERMANENT: NormalPermanentAlert(_("Fan Malfunction"), _("Contact Support")),
   },
 
+  EventName.cameraMalfunction: {
+    ET.PERMANENT: NormalPermanentAlert(_("Camera Malfunction"), _("Contact Support")),
+  },
+
   # ********** events that affect controls state transitions **********
 
   EventName.pcmEnable: {

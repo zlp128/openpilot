@@ -2,7 +2,7 @@
 import os
 from cereal import car, log
 from common.hardware import HARDWARE
-from common.numpy_fast import clip
+from common.numpy_fast import clip, interp
 from common.realtime import sec_since_boot, config_realtime_process, Priority, Ratekeeper, DT_CTRL
 from common.profiler import Profiler
 from common.params import Params, put_nonblocking
@@ -39,6 +39,10 @@ LaneChangeState = log.PathPlan.LaneChangeState
 LaneChangeDirection = log.PathPlan.LaneChangeDirection
 EventName = car.CarEvent.EventName
 
+LEAD_AWAY_STATE_OFF = 0
+LEAD_AWAY_STATE_ON = 1
+LEAD_AWAY_STATE_ALERTED = 2
+
 
 class Controls:
   def __init__(self, sm=None, pm=None, can_sock=None):
@@ -54,7 +58,7 @@ class Controls:
 
     self.sm = sm
     if self.sm is None:
-      socks = ['thermal', 'health', 'model', 'liveCalibration',
+      socks = ['thermal', 'health', 'model', 'liveCalibration', 'radarState', 'frontFrame',
                                      'dMonitoringState', 'plan', 'pathPlan', 'liveLocationKalman', 'dragonConf']
       ignore_alive = None if params.get('dp_driver_monitor') == b'1' else ['dMonitoringState']
       self.sm = messaging.SubMaster(socks, ignore_alive=ignore_alive)
@@ -108,12 +112,12 @@ class Controls:
 
     if params.get('dp_lqr') == b'1':
       self.LaC = LatControlLQR(self.CP)
-    elif self.CP.lateralTuning.which() == 'pid':
-      self.LaC = LatControlPID(self.CP)
     elif self.CP.lateralTuning.which() == 'indi':
       self.LaC = LatControlINDI(self.CP)
     elif self.CP.lateralTuning.which() == 'lqr':
       self.LaC = LatControlLQR(self.CP)
+    elif self.CP.lateralTuning.which() == 'pid':
+      self.LaC = LatControlPID(self.CP)
 
     self.state = State.disabled
     self.enabled = False
@@ -159,6 +163,13 @@ class Controls:
     self.dp_camera_offset = CAMERA_OFFSET * 100
     self.sm['dragonConf'].dpAtl = False
     self.sm['dragonConf'].dpCameraOffset = 6
+
+    self.dp_lead_away_alert = params.get('dp_driver_monitor') == b'0' and params.get('dp_steering_monitor') == b'0'
+    self.dp_lead_away_min_speed = 40 # kph
+    self.dp_lead_away_alert_lead_count = 0
+    self.dp_lead_away_alert_nolead_count = 0
+
+    self.dp_lead_away_state = LEAD_AWAY_STATE_OFF
 
   def update_events(self, CS):
     """Compute carEvents from carState"""
@@ -247,13 +258,38 @@ class Controls:
       self.events.add(EventName.relayMalfunction)
     if self.sm['plan'].fcw:
       self.events.add(EventName.fcw)
-    if self.sm['model'].frameDropPerc > 1 and (not SIMULATION):
-        self.events.add(EventName.modeldLagging)
+    if not self.sm.alive['frontFrame'] and (self.sm.frame > 5 / DT_CTRL) and not SIMULATION:
+      self.events.add(EventName.cameraMalfunction)
+
+    if self.sm['model'].frameDropPerc > 20 and not SIMULATION:
+      self.events.add(EventName.modeldLagging)
 
     # Only allow engagement with brake pressed when stopped behind another stopped car
     if not self.sm['dragonConf'].dpAtl and CS.brakePressed and self.sm['plan'].vTargetFuture >= STARTING_TARGET_SPEED \
       and self.CP.openpilotLongitudinalControl and CS.vEgo < 0.3:
       self.events.add(EventName.noTarget)
+
+    if self.dp_lead_away_alert:
+      current_speed = CS.vEgo * 3.6
+
+      if CS.brakePressed or current_speed < self.dp_lead_away_min_speed or self.dp_lead_away_state == LEAD_AWAY_STATE_ALERTED:
+        self.dp_lead_away_alert_lead_count = 0
+        self.dp_lead_away_alert_nolead_count = 0
+        self.dp_lead_away_state = LEAD_AWAY_STATE_OFF
+
+      if current_speed >= self.dp_lead_away_min_speed:
+        nolead_count = interp(current_speed, [self.dp_lead_away_min_speed, 100], [500, 250])
+        # when car had lead for 5 more secs and lead move away for 3 secs
+        if self.dp_lead_away_state == LEAD_AWAY_STATE_OFF and self.sm['plan'].hasLead:
+          self.dp_lead_away_alert_lead_count += 1
+        elif self.dp_lead_away_state == LEAD_AWAY_STATE_ON and not self.sm['plan'].hasLead:
+          self.dp_lead_away_alert_nolead_count += 1
+
+        if self.dp_lead_away_state == LEAD_AWAY_STATE_OFF and self.dp_lead_away_alert_lead_count >= 300:
+          self.dp_lead_away_state = LEAD_AWAY_STATE_ON
+        elif self.dp_lead_away_state == LEAD_AWAY_STATE_ON and self.dp_lead_away_alert_nolead_count >= nolead_count:
+          self.events.add(EventName.leadCarMoving)
+          self.dp_lead_away_state = LEAD_AWAY_STATE_ALERTED
 
     # dp lead car moving alert
     if self.sm['dragonConf'].dpLeadCarAlert:
@@ -264,7 +300,6 @@ class Controls:
 
       if self.dp_lead_count >= 300 and abs(self.sm['plan'].vTargetFuture) >= 0.1:
         self.events.add(EventName.leadCarMoving)
-        self.dp_lead_count = 0
 
       if CS.vEgo > 0. or CS.gearShifter in [car.CarState.GearShifter.reverse, car.CarState.GearShifter.park]:
         self.dp_lead_count = 0
@@ -401,7 +436,7 @@ class Controls:
     v_acc_sol = plan.vStart + dt * (a_acc_sol + plan.aStart) / 2.0
 
     # Gas/Brake PID loop
-    actuators.gas, actuators.brake = self.LoC.update(self.active, CS, v_acc_sol, plan.vTargetFuture, a_acc_sol, self.CP)
+    actuators.gas, actuators.brake = self.LoC.update(self.active, CS, v_acc_sol, plan.vTargetFuture, a_acc_sol, self.CP, self.sm)
     # Steering PID loop and lateral MPC
     actuators.steer, actuators.steerAngle, lac_log = self.LaC.update(self.active, CS, self.CP, path_plan)
 

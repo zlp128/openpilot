@@ -102,6 +102,7 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     modeldLagging @89;
     deviceFalling @90;
     fanMalfunction @91;
+    cameraMalfunction @92;
 
     gasUnavailableDEPRECATED @3;
     dataNeededDEPRECATED @16;
@@ -115,18 +116,19 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     canErrorPersistentDEPRECATED @83;
     focusRecoverActiveDEPRECATED @86;
     neosUpdateRequiredDEPRECATED @88;
+    modelLagWarningDEPRECATED @93;
 
     #dp
-    preLaneChangeLeftALC @92;
-    preLaneChangeRightALC @93;
-    manualSteeringRequired @94;
-    manualSteeringRequiredBlinkersOn @95;
-    leadCarMoving @96;
+    preLaneChangeLeftALC @94;
+    preLaneChangeRightALC @95;
+    manualSteeringRequired @96;
+    manualSteeringRequiredBlinkersOn @97;
+    leadCarMoving @98;
 
     # timebomb assist
-    timebombWarn @97;
-    timebombBypassing @98;
-    timebombBypassed @99;
+    timebombWarn @99;
+    timebombBypassing @100;
+    timebombBypassed @101;
   }
 }
 

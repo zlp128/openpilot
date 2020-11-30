@@ -17,6 +17,30 @@ dragonpilot 0.7.10.0
 * Based on latest openpilot 0.7.10 devel.
 * 修正 EON 接 PC/USB 充電器時仍會自動關機的錯誤。(感謝 @小愛 回報)
 * Fixed auto shutdown issue when EON connect to PC/USB Charger. (Thanks to @LOVEChen)
+* HYUNDAI_GENESIS 使用 INDI 控制器。(感謝 @donfyffe 提供)
+* HYUNDAI_GENESIS uses INDI controller. (Thanks to @donfyffe)
+* HYUNDAI_GENESIS 加入 Cruise 按紐 和 lkMode 支援。(感謝 @donfyffe 建議)
+* HYUNDAI_GENESIS added Cruise button event and lkMode feature. (Thanks to @donfyffe) 
+* 支援台灣版 2018 Huyndai IONIQ + smart MDPS (dp_hkg_smart_mdps) (感謝 @andy741217 提供)
+* Support 2018 Taiwan Hyundai IONIQ + smart MDPS (dp_hkg_smart_mdps) (Thanks to @andy741217)
+* 使用 openpilot v0.8 的模型。(感謝 @eisenheim)
+* Use openpilot v0.8 model. (Thanks to @eisenheim)
+* 加入 0.8 測試版的部分優化。
+* Added optimizations from pre-0.8.
+* 加入 dp_honda_eps_mod 設定來使用更高的扭力 (需 eps mod)。(感謝 @Wuxl_369 提供)
+* Added dp_honda_eps_mod setting to enable higher torque (eps mod required). (Thanks to @Wuxl_369)
+* 修正 VW 對白/灰熊的支援 (感謝 @lirudy 提供)
+* Fixed issue with white/grey panda support for VW (Thanks to @lirudy)
+* GENESIS_G70 優化 (感謝 @sebastian4k 提供)
+* GENESIS_G70 Optimisation (Thanks to @sebastian4k)
+* HYUNDAI_GENESIS 優化 (感謝 @donfyffe 提供)
+* HYUNDAI_GENESIS Optimisation (Thanks to @donfyffe)
+* 加入 Dynamic gas Lite。(感謝 @toyboxZ 提供)
+* Added Dynamic Gas Lite. (Thanks to @toyboxZ)
+* 加入來自 afa 的 Honda inspire, accord, crv SnG 優化。(感謝 @menwenliang 提供)
+* Added Honda inspire, accord, crv SnG optimisation from afa fork. (Thanks to @menwenliang) 
+* 加入 dp_toyota_lowest_cruise_override_vego。(感謝 @toyboxZ 提供)
+* Added dp_toyota_lowest_cruise_override_vego. (Thanks to @toyboxZ)
 
 dragonpilot 0.7.8
 ========================

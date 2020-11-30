@@ -11,6 +11,12 @@ from common.params import Params
 EventName = car.CarEvent.EventName
 
 class CarInterface(CarInterfaceBase):
+  def __init__(self, CP, CarController, CarState):
+    super().__init__(CP, CarController, CarState)
+
+    # dp
+    self.dp_cruise_speed = 0.
+
   @staticmethod
   def compute_gb(accel, speed):
     return float(accel) / 3.0
@@ -248,7 +254,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.3], [0.05]]
       ret.lateralTuning.pid.kf = 0.00007
 
-    elif candidate == CAR.LEXUS_NXH:
+    elif candidate in [CAR.LEXUS_NXH, CAR.LEXUS_NX]:
       stop_and_go = True
       ret.safetyParam = 73
       ret.wheelbase = 2.66
@@ -257,6 +263,16 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 4070 * CV.LB_TO_KG + STD_CARGO_KG
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
       ret.lateralTuning.pid.kf = 0.00006
+
+    elif candidate == CAR.PRIUS_TSS2:
+      stop_and_go = True
+      ret.safetyParam = 73
+      ret.wheelbase = 2.70002 #from toyota online sepc.
+      ret.steerRatio = 13.4   # True steerRation from older prius
+      tire_stiffness_factor = 0.6371   # hand-tune
+      ret.mass = 3115. * CV.LB_TO_KG + STD_CARGO_KG
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.35], [0.15]]
+      ret.lateralTuning.pid.kf = 0.00007818594
 
     elif candidate == CAR.LEXUS_ISH:
       stop_and_go = True # set to true because it's a hybrid
@@ -357,8 +373,16 @@ class CarInterface(CarInterfaceBase):
     # dp
     self.dragonconf = dragonconf
     ret.cruiseState.enabled = common_interface_atl(ret, dragonconf.dpAtl)
-    if dragonconf.dpToyotaLowestCruiseOverride and ret.cruiseState.speed < dragonconf.dpToyotaLowestCruiseOverrideAt * CV.KPH_TO_MS:
-      ret.cruiseState.speed = dragonconf.dpToyotaLowestCruiseOverrideSpeed * CV.KPH_TO_MS
+    if ret.cruiseState.enabled and dragonconf.dpToyotaLowestCruiseOverride and ret.cruiseState.speed < dragonconf.dpToyotaLowestCruiseOverrideAt * CV.KPH_TO_MS:
+      if dragonconf.dpToyotaLowestCruiseOverrideVego:
+        if self.dp_cruise_speed == 0.:
+          ret.cruiseState.speed = self.dp_cruise_speed = max( dragonconf.dpToyotaLowestCruiseOverrideSpeed * CV.KPH_TO_MS,ret.vEgo)
+        else:
+          ret.cruiseState.speed = self.dp_cruise_speed
+      else:
+        ret.cruiseState.speed = dragonconf.dpToyotaLowestCruiseOverrideSpeed * CV.KPH_TO_MS
+    else:
+      self.dp_cruise_speed = 0.
 
     ret.canValid = self.cp.can_valid and self.cp_cam.can_valid
     ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False
