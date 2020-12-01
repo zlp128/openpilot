@@ -1,3 +1,8 @@
+dragonpilot 0.8.0
+========================
+* 基於最新 openpilot 0.8.0 devel.
+* Based on latest openpilot 0.8.0 devel.
+
 dragonpilot 0.7.10.1
 ========================
 * HYUNDAI_GENESIS 使用 INDI 控制器。(感謝 @donfyffe 提供)

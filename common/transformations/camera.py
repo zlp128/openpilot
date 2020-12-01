@@ -178,7 +178,7 @@ def img_from_device(pt_device):
 def get_camera_frame_from_calib_frame(camera_frame_from_road_frame, intrinsics=fcam_intrinsics):
   camera_frame_from_ground = camera_frame_from_road_frame[:, (0, 1, 3)]
   calib_frame_from_ground = np.dot(intrinsics,
-                                   get_view_frame_from_road_frame(0, 0, 0, 1.22))[:, (0, 1, 3)]
+                                     get_view_frame_from_road_frame(0, 0, 0, 1.22))[:, (0, 1, 3)]
   ground_from_calib_frame = np.linalg.inv(calib_frame_from_ground)
   camera_frame_from_calib_frame = np.dot(camera_frame_from_ground, ground_from_calib_frame)
   return camera_frame_from_calib_frame

@@ -6,6 +6,7 @@
 #include "common/util.h"
 #include <algorithm>
 
+
 #define NANOVG_GLES3_IMPLEMENTATION
 #include "nanovg_gl.h"
 #include "nanovg_gl_utils.h"
@@ -55,6 +56,7 @@ bool car_space_to_full_frame(const UIState *s, float in_x, float in_y, float in_
 
   return *out_x >= 0 && *out_x <= s->fb_w && *out_y >= 0 && *out_y <= s->fb_h;
 }
+
 
 static void ui_draw_text(NVGcontext *vg, float x, float y, const char* string, float size, NVGcolor color, int font){
   nvgFontFaceId(vg, font);
@@ -260,7 +262,9 @@ static void ui_draw_world(UIState *s) {
   const UIScene *scene = &s->scene;
 
   nvgSave(s->vg);
-  nvgScissor(s->vg, s->video_rect.x, s->video_rect.y, s->video_rect.w, s->video_rect.h);
+
+  // Don't draw on top of sidebar
+  nvgScissor(s->vg, scene->viz_rect.x, scene->viz_rect.y, scene->viz_rect.w, scene->viz_rect.h);
 
   // Apply transformation such that video pixel coordinates match video
   // 1) Put (0, 0) in the middle of the video

@@ -188,8 +188,8 @@ void Panda::set_safety_model(cereal::CarParams::SafetyModel safety_model, int sa
   usb_write(0xdc, (uint16_t)safety_model, safety_param);
 }
 
-void Panda::set_unsafe_mode(uint16_t wValue){
-  usb_write(0xdf, wValue, 0);
+void Panda::set_unsafe_mode(uint16_t unsafe_mode) {
+  usb_write(0xdf, unsafe_mode, 0);
 }
 
 cereal::HealthData::HwType Panda::get_hw_type() {
@@ -283,7 +283,6 @@ const char* Panda::get_serial(){
 
   delete[] serial_buf;
   return NULL;
-
 }
 
 void Panda::set_power_saving(bool power_saving){

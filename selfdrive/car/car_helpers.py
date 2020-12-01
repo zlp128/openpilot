@@ -13,24 +13,20 @@ from common.dp_common import is_online
 import threading
 import selfdrive.crash as crash
 
-from cereal import car, log
+from cereal import car
 EventName = car.CarEvent.EventName
-HwType = log.HealthData.HwType
 
 
-def get_startup_event(car_recognized, controller_available, hw_type):
-  # if comma_remote and tested_branch:
-  #   event = EventName.startup
-  # else:
-  #   event = EventName.startupMaster
-  event = EventName.startup
+def get_startup_event(car_recognized, controller_available):
+  if comma_remote and tested_branch:
+    event = EventName.startup
+  else:
+    event = EventName.startupMaster
 
   if not car_recognized:
     event = EventName.startupNoCar
   elif car_recognized and not controller_available:
     event = EventName.startupNoControl
-  # elif hw_type == HwType.greyPanda:
-  #   event = EventName.startupGreyPanda
   return event
 
 
@@ -89,15 +85,22 @@ def only_toyota_left(candidate_cars):
 
 
 # **** for use live only ****
-def fingerprint(logcan, sendcan, has_relay):
-  fixed_fingerprint = os.environ.get('FINGERPRINT', "") or Params().get('dp_car_selected', encoding='utf8')
+def fingerprint(logcan, sendcan):
+  params = Params()
+  car_selected = params.get('dp_car_selected', encoding='utf8')
+  car_detected = params.get('dp_car_detected', encoding='utf8')
+  if car_selected == "" and car_detected != "":
+    params.put('dp_car_selected', car_detected)
+    params.put('dp_car_detected', "")
+
+  fixed_fingerprint = os.environ.get('FINGERPRINT', "") or params.get('dp_car_selected', encoding='utf8')
   skip_fw_query = os.environ.get('SKIP_FW_QUERY', False)
 
-  if has_relay and not fixed_fingerprint and not skip_fw_query:
+  if not fixed_fingerprint and not skip_fw_query:
     # Vin query only reliably works thorugh OBDII
     bus = 1
 
-    cached_params = Params().get("CarParamsCache")
+    cached_params = params.get("CarParamsCache")
     if cached_params is not None:
       cached_params = car.CarParams.from_bytes(cached_params)
       if cached_params.carName == "mock":
@@ -149,8 +152,7 @@ def fingerprint(logcan, sendcan, has_relay):
       # Toyota needs higher time to fingerprint, since DSU does not broadcast immediately
       if only_toyota_left(candidate_cars[b]):
         frame_fingerprint = 100  # 1s
-      if len(candidate_cars[b]) == 1:
-        if frame > frame_fingerprint:
+      if len(candidate_cars[b]) == 1 and frame > frame_fingerprint:
           # fingerprint done
           car_fingerprint = candidate_cars[b][0]
 
@@ -177,8 +179,8 @@ def fingerprint(logcan, sendcan, has_relay):
   return car_fingerprint, finger, vin, car_fw, source
 
 
-def get_car(logcan, sendcan, has_relay=False):
-  candidate, fingerprints, vin, car_fw, source = fingerprint(logcan, sendcan, has_relay)
+def get_car(logcan, sendcan):
+  candidate, fingerprints, vin, car_fw, source = fingerprint(logcan, sendcan)
 
   if candidate is None:
     cloudlog.warning("car doesn't match any fingerprints: %r", fingerprints)
@@ -189,7 +191,7 @@ def get_car(logcan, sendcan, has_relay=False):
     x.start()
 
   CarInterface, CarController, CarState = interfaces[candidate]
-  car_params = CarInterface.get_params(candidate, fingerprints, has_relay, car_fw)
+  car_params = CarInterface.get_params(candidate, fingerprints, car_fw)
   car_params.carVin = vin
   car_params.carFw = car_fw
   car_params.fingerprintSource = source
