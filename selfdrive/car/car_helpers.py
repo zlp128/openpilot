@@ -18,10 +18,7 @@ EventName = car.CarEvent.EventName
 
 
 def get_startup_event(car_recognized, controller_available):
-  if comma_remote and tested_branch:
-    event = EventName.startup
-  else:
-    event = EventName.startupMaster
+  event = EventName.startup
 
   if not car_recognized:
     event = EventName.startupNoCar
@@ -89,18 +86,20 @@ def fingerprint(logcan, sendcan):
   params = Params()
   car_selected = params.get('dp_car_selected', encoding='utf8')
   car_detected = params.get('dp_car_detected', encoding='utf8')
-  if car_selected == "" and car_detected != "":
+  cached_params = params.get("CarParamsCache")
+  if cached_params is None and car_selected == "" and car_detected != "":
     params.put('dp_car_selected', car_detected)
     params.put('dp_car_detected', "")
 
-  fixed_fingerprint = os.environ.get('FINGERPRINT', "") or params.get('dp_car_selected', encoding='utf8')
+  fixed_fingerprint = os.environ.get('FINGERPRINT', "")
+  if fixed_fingerprint == "" and cached_params is None and car_selected != "":
+    fixed_fingerprint = car_selected
   skip_fw_query = os.environ.get('SKIP_FW_QUERY', False)
 
   if not fixed_fingerprint and not skip_fw_query:
     # Vin query only reliably works thorugh OBDII
     bus = 1
 
-    cached_params = params.get("CarParamsCache")
     if cached_params is not None:
       cached_params = car.CarParams.from_bytes(cached_params)
       if cached_params.carName == "mock":
