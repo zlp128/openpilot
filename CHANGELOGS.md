@@ -1,3 +1,8 @@
+2020-12-04 (0.7.10.0)
+========================
+* 0.8 相關熱修復。 https://github.com/commaai/openpilot/pull/2689/files
+* 0.8 related hotfixes. https://github.com/commaai/openpilot/pull/2689/files
+
 2020-11-28 (0.7.10.0)
 ========================
 * 加入來自 afa 的 Honda inspire, accord, crv SnG 優化。(感謝 @menwenliang 提供)

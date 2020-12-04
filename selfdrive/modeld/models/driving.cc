@@ -311,7 +311,7 @@ void model_publish_v2(PubMaster &pm, uint32_t vipc_frame_id, uint32_t frame_id,
                      float model_execution_time) {
   // make msg
   MessageBuilder msg;
-  auto framed = msg.initEvent(frame_drop < MAX_FRAME_DROP).initModelV2();
+  auto framed = msg.initEvent().initModelV2();
   uint32_t frame_age = (frame_id > vipc_frame_id) ? (frame_id - vipc_frame_id) : 0;
   framed.setFrameId(vipc_frame_id);
   framed.setFrameAge(frame_age);
@@ -393,7 +393,7 @@ void model_publish(PubMaster &pm, uint32_t vipc_frame_id, uint32_t frame_id,
 
   uint32_t frame_age = (frame_id > vipc_frame_id) ? (frame_id - vipc_frame_id) : 0;
   MessageBuilder msg;
-  auto framed = msg.initEvent(frame_drop < MAX_FRAME_DROP).initModel();
+  auto framed = msg.initEvent().initModel();
   framed.setFrameId(vipc_frame_id);
   framed.setFrameAge(frame_age);
   framed.setFrameDropPerc(frame_drop * 100);
