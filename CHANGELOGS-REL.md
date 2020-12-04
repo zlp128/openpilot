@@ -2,6 +2,8 @@ dragonpilot 0.8.0
 ========================
 * 基於最新 openpilot 0.8.0 devel.
 * Based on latest openpilot 0.8.0 devel.
+* 加入 git 錯誤修正。(感謝 @toyboxZ 提供)
+* Added git error fix. (Thanks to @toyboxZ)
 
 dragonpilot 0.7.10.0
 ========================
