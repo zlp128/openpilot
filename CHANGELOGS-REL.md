@@ -1,22 +1,12 @@
+dragonpilot 0.7.10.2
+========================
+* 0.8 相關熱修復。 https://github.com/commaai/openpilot/pull/2689/files
+* 0.8 related hotfixes. https://github.com/commaai/openpilot/pull/2689/files
+* 加入 git 錯誤修正。(感謝 @toyboxZ 提供)
+* Added git error fix. (Thanks to @toyboxZ)
+
 dragonpilot 0.7.10.0
 ========================
-* 基於最新 openpilot 0.7.10 devel.
-* Based on latest openpilot 0.7.10 devel.
-* 修正 Prius 特定情況下無法操控方向盤的問題。
-* Fixed unable to regain Prius steering control under certain condition.
-* 更新 VW MQB 的支援。(需執行 scripts/vw.sh 腳本)
-* Updated support of VW MQB. (scripts/vw.sh script required)
-* 新增 2018 China Toyota CHR 指紋v2。（感謝 @xiaohongcheung 提供)
-* Added 2018 China Toyota CHR FPv2. (Thanks to @xiaohongcheung)
-* 加入 Headunit Reloaded Android Auto App 支援。(感謝 @Ninjaa 提供)
-* Added Headunit Reloaded Android Auto App Support. (Thanks to @Ninjaa)
-* 優化 nanovg。(感謝 @piggy 提供)
-* Optomized nanovg. (Thanks to @piggy)
-* 加入 complete_setup.sh (感謝 @深鲸希西 提供)
-* Added complete_setup.sh (Thanks to @深鲸希西)
-* Based on latest openpilot 0.7.10 devel.
-* 修正 EON 接 PC/USB 充電器時仍會自動關機的錯誤。(感謝 @小愛 回報)
-* Fixed auto shutdown issue when EON connect to PC/USB Charger. (Thanks to @LOVEChen)
 * HYUNDAI_GENESIS 使用 INDI 控制器。(感謝 @donfyffe 提供)
 * HYUNDAI_GENESIS uses INDI controller. (Thanks to @donfyffe)
 * HYUNDAI_GENESIS 加入 Cruise 按紐 和 lkMode 支援。(感謝 @donfyffe 建議)
@@ -41,6 +31,26 @@ dragonpilot 0.7.10.0
 * Added Honda inspire, accord, crv SnG optimisation from afa fork. (Thanks to @menwenliang) 
 * 加入 dp_toyota_lowest_cruise_override_vego。(感謝 @toyboxZ 提供)
 * Added dp_toyota_lowest_cruise_override_vego. (Thanks to @toyboxZ)
+
+dragonpilot 0.7.10.0
+========================
+* 基於最新 openpilot 0.7.10 devel.
+* Based on latest openpilot 0.7.10 devel.
+* 修正 Prius 特定情況下無法操控方向盤的問題。
+* Fixed unable to regain Prius steering control under certain condition.
+* 更新 VW MQB 的支援。(需執行 scripts/vw.sh 腳本)
+* Updated support of VW MQB. (scripts/vw.sh script required)
+* 新增 2018 China Toyota CHR 指紋v2。（感謝 @xiaohongcheung 提供)
+* Added 2018 China Toyota CHR FPv2. (Thanks to @xiaohongcheung)
+* 加入 Headunit Reloaded Android Auto App 支援。(感謝 @Ninjaa 提供)
+* Added Headunit Reloaded Android Auto App Support. (Thanks to @Ninjaa)
+* 優化 nanovg。(感謝 @piggy 提供)
+* Optomized nanovg. (Thanks to @piggy)
+* 加入 complete_setup.sh (感謝 @深鲸希西 提供)
+* Added complete_setup.sh (Thanks to @深鲸希西)
+* Based on latest openpilot 0.7.10 devel.
+* 修正 EON 接 PC/USB 充電器時仍會自動關機的錯誤。(感謝 @小愛 回報)
+* Fixed auto shutdown issue when EON connect to PC/USB Charger. (Thanks to @LOVEChen)
 
 dragonpilot 0.7.8
 ========================

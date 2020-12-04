@@ -1,3 +1,10 @@
+dragonpilot 0.7.10.2
+========================
+* 0.8 相關熱修復。 https://github.com/commaai/openpilot/pull/2689/files
+* 0.8 related hotfixes. https://github.com/commaai/openpilot/pull/2689/files
+* 加入 git 錯誤修正。(感謝 @toyboxZ 提供)
+* Added git error fix. (Thanks to @toyboxZ)
+
 dragonpilot 0.7.10.1
 ========================
 * HYUNDAI_GENESIS 使用 INDI 控制器。(感謝 @donfyffe 提供)
