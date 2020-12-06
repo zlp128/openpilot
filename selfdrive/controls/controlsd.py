@@ -160,8 +160,8 @@ class Controls:
     self.sm['dragonConf'].dpAtl = False
     self.sm['dragonConf'].dpCameraOffset = 6
 
-    self.dp_lead_away_alert = params.get('dp_driver_monitor') == b'0' and params.get('dp_steering_monitor') == b'0'
-    self.dp_lead_away_min_speed = 40 # kph
+    self.dp_lead_away_alert = params.get('dp_lead_car_away_alert') == b'1'
+    self.dp_lead_away_min_speed = 80 # kph
     self.dp_lead_away_alert_lead_count = 0
     self.dp_lead_away_alert_nolead_count = 0
 
@@ -275,7 +275,7 @@ class Controls:
         self.dp_lead_away_state = LEAD_AWAY_STATE_OFF
 
       if current_speed >= self.dp_lead_away_min_speed:
-        nolead_count = interp(current_speed, [self.dp_lead_away_min_speed, 100], [500, 250])
+        nolead_count = interp(current_speed, [self.dp_lead_away_min_speed, 100], [300, 100])
         # when car had lead for 5 more secs and lead move away for 3 secs
         if self.dp_lead_away_state == LEAD_AWAY_STATE_OFF and self.sm['plan'].hasLead:
           self.dp_lead_away_alert_lead_count += 1
