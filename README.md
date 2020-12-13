@@ -59,6 +59,10 @@ dragonpilot 驾驶辅助系统是一套基于 openpilot 的开源 L2 級驾驶�
 * 支援ZSS 模块
 * Ability to use LQR on all models. (based from RAV4 tune, result may vary)
 * 选用LQR 控制器(基于RAV4 调校，不同车种的效果不一)
+* Dynamic gas in stop and go traffic. (longitudinal, by @ShaneSmiskol: https://github.com/ShaneSmiskol/)
+* 在低速跟车时动态油门(只支援由dp 控制车速的车种，感谢@ShaneSmiskol 提供相关代码，使用说明参考http://wiki.dragonpilot.cn/cn/dragonpilot_feature.html)
+* Toyota Cruise set speed available down to 7 kph. ( longitudinal control by openpilot)
+* 丰田巡航速度可低于原车最低值(只支援由dp 控制车速的丰田车，使用说明参考http://wiki.dragonpilot.cn/cn/dragonpilot_feature.html)
 
 Additional Model Support
 支持的车型
@@ -128,7 +132,7 @@ Videos
 Installation
 安装
 ---
- 
+
 1. SSH into your device
 通过SSH方式连接并进入你的设备（手机）
 2. Switch to /data/ directory 
