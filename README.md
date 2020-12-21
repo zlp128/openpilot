@@ -1,9 +1,21 @@
-1-Step installation
-一步安装
+1-Step installation(Minimum size)
+一步安装(最小下载)
+---
+```bash
+#about 130MB
+cd /data/ && \
+mv openpilot op_backup_$(date +%Y%m%d%H%M%S) ; \
+git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot -b devel-i18n --single-branch --depth=1 && \
+cd openpilot/scripts/ && \
+./reset_update.sh
+```
+
+Full installation(all branch)
+完整安装(能切换分支)
 ---
 ```bash
 cd /data/ && \
-mv openpilot op_backup_$(date +%Y%m%d%H%M%S) && \
+mv openpilot op_backup_$(date +%Y%m%d%H%M%S) ; \
 git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot -b devel-i18n && \
 cd openpilot/scripts/ && \
 ./reset_update.sh
