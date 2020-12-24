@@ -3,6 +3,7 @@
 from libcpp cimport bool
 from libcpp.string cimport string
 from common.params_pxd cimport Params as c_Params
+from common.dp_conf import init_params_keys
 
 import os
 import threading
@@ -71,6 +72,8 @@ keys = {
   b"Offroad_UpdateFailed": [TxType.CLEAR_ON_MANAGER_START],
   b"Offroad_HardwareUnsupported": [TxType.CLEAR_ON_MANAGER_START],
 }
+
+keys = init_params_keys(keys, [TxType.PERSISTENT])
 
 def ensure_bytes(v):
   if isinstance(v, str):
