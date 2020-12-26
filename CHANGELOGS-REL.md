@@ -4,6 +4,8 @@ dragonpilot 0.7.10.2
 * 0.8 related hotfixes. https://github.com/commaai/openpilot/pull/2689/files
 * 加入 git 錯誤修正。(感謝 @toyboxZ 提供)
 * Added git error fix. (Thanks to @toyboxZ)
+* 更新至 0.8.1 模型。
+* Updated to 0.8.1 model.
 
 dragonpilot 0.7.10.0
 ========================
