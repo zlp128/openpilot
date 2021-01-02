@@ -245,6 +245,7 @@ void update_sockets(UIState *s) {
   if (sm.updated("dragonConf")) {
     auto data = sm["dragonConf"].getDragonConf();
     scene.dpDashcam = data.getDpDashcam();
+    scene.dpDashcamUi = data.getDpDashcamUi();
     scene.dpFullScreenApp = data.getDpAppWaze() || data.getDpAppHr();
     scene.dpDrivingUi = data.getDpDrivingUi();
     scene.dpUiScreenOffReversing = data.getDpUiScreenOffReversing();

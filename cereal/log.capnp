@@ -2160,7 +2160,7 @@ struct DragonConf {
   dpAppHr @6 :Bool;
   dpAppHrManual @7 :Int8;
   dpDashcam @8 :Bool;
-  dpDashcamHoursStored @9 :UInt8;
+  dpDashcamUi @9 :Bool;
   dpAutoShutdown @10 :Bool;
   dpAthenad @11 :Bool;
   dpUploader @12 :Bool;

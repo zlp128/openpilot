@@ -363,3 +363,21 @@ void ui_draw_bbui(UIState *s) {
     bb_ui_draw_measures_right(s, bb_dml_x, bb_dml_y, bb_dml_w);
     bb_ui_draw_measures_left(s, bb_dmr_x, bb_dmr_y, bb_dmr_w);
 }
+
+void ui_draw_rec_button(UIState *s) {
+  nvgBeginPath(s->vg);
+  nvgRoundedRect(s->vg, rec_btn_x, rec_btn_y, rec_btn_w, rec_btn_h, 20);
+  nvgStrokeColor(s->vg, COLOR_WHITE_ALPHA(80));
+  nvgStrokeWidth(s->vg, 6);
+  nvgStroke(s->vg);
+
+  nvgFontSize(s->vg, 80);
+  if (s->scene.dpDashcam) {
+    nvgFillColor(s->vg, nvgRGBA(255,0,0,255));
+  }
+  else {
+    nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 255));
+  }
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER);
+  nvgText(s->vg, rec_btn_x + rec_btn_w / 2, rec_btn_y + (rec_btn_h / 2)+20,"REC",NULL);
+}

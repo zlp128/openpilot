@@ -71,6 +71,11 @@ const int ap_btn_w = 180;
 const int ap_btn_x = 1450;
 const int ap_btn_y = 750;
 const int info_bar_h = 80;
+// dp - rec btn
+const int rec_btn_h = 130;
+const int rec_btn_w = 180;
+const int rec_btn_x = 870;
+const int rec_btn_y = 800;
 
 typedef enum NetStatus {
   NET_CONNECTED,
@@ -140,6 +145,7 @@ typedef struct UIScene {
 
   // dp
   bool dpDashcam;
+  bool dpDashcamUi;
   bool dpFullScreenApp;
   bool dpDrivingUi;
   bool dpUiScreenOffReversing;

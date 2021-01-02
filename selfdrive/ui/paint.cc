@@ -498,6 +498,9 @@ static void ui_draw_vision_footer(UIState *s) {
   } else {
     ui_draw_blindspots(s, false);
   }
+  if (s->scene.dpDashcamUi) {
+    ui_draw_rec_button(s);
+  }
 }
 
 static void ui_draw_vision_alert(UIState *s) {
