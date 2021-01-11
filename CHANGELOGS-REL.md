@@ -2,6 +2,8 @@ dragonpilot 0.8.1
 ========================
 * 基於最新 openpilot 0.8.1 devel.
 * Based on latest openpilot 0.8.1 devel.
+* 加入行車記錄按鈕。(感謝 @toyboxZ 提供)
+* Added REC screen button. (Thanks to @toyboxZ)
 
 dragonpilot 0.8.0
 ========================

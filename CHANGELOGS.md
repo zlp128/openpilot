@@ -1,3 +1,13 @@
+2021-01-11 (0.8.1.0)
+========================
+* 修正 honda 剎車錯誤顯示。(感謝 @深鲸希西 提供)
+* Fixed Honda display incorrect brake display. (Thanks to @深鲸希西)
+
+2021-01-02 (0.8.1.0)
+========================
+* 加入行車記錄按鈕。(感謝 @toyboxZ 提供)
+* Added REC screen button. (Thanks to @toyboxZ)
+
 2020-12-23 (0.8.1.0)
 ========================
 * 基於最新 openpilot 0.8.1 devel.
