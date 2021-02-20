@@ -5,7 +5,7 @@
 #about 130MB
 cd /data/ && \
 mv openpilot op_backup_$(date +%Y%m%d%H%M%S) ; \
-git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot -b devel-i18n --single-branch --depth=1 && \
+git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot -b testing --single-branch --depth=1 && \
 cd openpilot/scripts/ && \
 ./reset_update.sh
 ```
@@ -16,7 +16,7 @@ Full installation(all branch)
 ```bash
 cd /data/ && \
 mv openpilot op_backup_$(date +%Y%m%d%H%M%S) ; \
-git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot -b devel-i18n && \
+git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot -b testing && \
 cd openpilot/scripts/ && \
 ./reset_update.sh
 ```
@@ -161,11 +161,11 @@ Installation
 载dragonpilot 开发版并存至openpilot 资料夹(2 选1):
     * github 
     ```bash
-    git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot -b devel-i18n
+    git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot -b testing --single-branch --depth=1
     ```
     * gitee
     ```bash 
-    git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot -b devel-i18n
+    git clone https://gitee.com/dragonpilot-community/dragonpilot.git openpilot -b testing  --single-branch --depth=1
     ```
 5. switch into openpilot directory
 切换到openpilot 的文件夹
