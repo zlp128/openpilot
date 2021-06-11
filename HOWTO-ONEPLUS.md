@@ -3,7 +3,7 @@ How to install on Oneplus 3t?
 1. clone dragonpilot to /data/ and make sure it's named openpilot:
    (手動安裝切換至 dragonpilot 0.8.4 branch)
 ```
-cd /data/ && rm -fr openpilot; && git clone https://github.com/dragonpilot-community/dragonpilot.git -b 0.8.4
+cd /data/ && rm -fr openpilot; && git clone https://github.com/dragonpilot-community/dragonpilot.git openpilot -b 0.8.4
 ```
 
 2. run command:
