@@ -47,6 +47,7 @@ def get_can_signals(CP):
     ("PEDAL_GAS", "POWERTRAIN_DATA", 0),
     ("CRUISE_SETTING", "SCM_BUTTONS", 0),
     ("ACC_STATUS", "POWERTRAIN_DATA", 0),
+    ("HUD_LEAD", "ACC_HUD", 0),
   ]
 
   checks = [
@@ -118,11 +119,14 @@ def get_can_signals(CP):
       checks += [("CRUISE_PARAMS", 10)]
     else:
       checks += [("CRUISE_PARAMS", 50)]
-  if CP.carFingerprint in (CAR.ACCORD, CAR.ACCORD_15, CAR.ACCORDH, CAR.CIVIC_BOSCH, CAR.CIVIC_BOSCH_DIESEL, CAR.CRV_HYBRID, CAR.INSIGHT, CAR.ACURA_RDX_3G):
+  if CP.carFingerprint in (CAR.ACCORD, CAR.ACCORD_15, CAR.ACCORDH, CAR.INSIGHT):
+    signals += [("DRIVERS_DOOR_OPEN", "SCM_FEEDBACK", 1),
+                ("LEAD_DISTANCE", "RADAR_HUD", 0)]
+  elif CP.carFingerprint in (CAR.CIVIC_BOSCH, CAR.CIVIC_BOSCH_DIESEL, CAR.CRV_HYBRID,  CAR.ACURA_RDX_3G):
     signals += [("DRIVERS_DOOR_OPEN", "SCM_FEEDBACK", 1)]
   elif CP.carFingerprint == CAR.ODYSSEY_CHN:
     signals += [("DRIVERS_DOOR_OPEN", "SCM_BUTTONS", 1)]
-  elif CP.carFingerprint == CAR.HRV:
+  elif CP.carFingerprint in [CAR.HRV, CAR.JADE]:
     signals += [("DRIVERS_DOOR_OPEN", "SCM_BUTTONS", 1),
                 ("WHEELS_MOVING", "STANDSTILL", 1)]
   else:
@@ -161,7 +165,7 @@ def get_can_signals(CP):
     checks += [
       ("GAS_PEDAL_2", 100),
     ]
-  elif CP.carFingerprint == CAR.HRV:
+  elif CP.carFingerprint in [CAR.HRV, CAR.JADE]:
     signals += [("CAR_GAS", "GAS_PEDAL", 0),
                 ("MAIN_ON", "SCM_BUTTONS", 0),
                 ("BRAKE_HOLD_ACTIVE", "VSA_STATUS", 0)]
@@ -206,6 +210,11 @@ class CarState(CarStateBase):
     self.v_cruise_pcm_prev = 0
     self.cruise_mode = 0
 
+    #dp
+    self.lkMode = True
+    self.hud_lead = 0
+    self.lead_distance = 0.
+
   def update(self, cp, cp_cam, cp_body):
     ret = car.CarState.new_message()
 
@@ -219,13 +228,17 @@ class CarState(CarStateBase):
 
     # ******************* parse out can *******************
     # TODO: find wheels moving bit in dbc
-    if self.CP.carFingerprint in (CAR.ACCORD, CAR.ACCORD_15, CAR.ACCORDH, CAR.CIVIC_BOSCH, CAR.CIVIC_BOSCH_DIESEL, CAR.CRV_HYBRID, CAR.INSIGHT, CAR.ACURA_RDX_3G):
+    if self.CP.carFingerprint in (CAR.ACCORD, CAR.ACCORD_15, CAR.ACCORDH, CAR.INSIGHT):
+      ret.standstill = cp.vl["ENGINE_DATA"]['XMISSION_SPEED'] < 0.1
+      ret.doorOpen = bool(cp.vl["SCM_FEEDBACK"]['DRIVERS_DOOR_OPEN'])
+      self.lead_distance = cp.vl["RADAR_HUD"]['LEAD_DISTANCE']
+    elif self.CP.carFingerprint in (CAR.CIVIC_BOSCH, CAR.CIVIC_BOSCH_DIESEL, CAR.CRV_HYBRID,  CAR.ACURA_RDX_3G):
       ret.standstill = cp.vl["ENGINE_DATA"]['XMISSION_SPEED'] < 0.1
       ret.doorOpen = bool(cp.vl["SCM_FEEDBACK"]['DRIVERS_DOOR_OPEN'])
     elif self.CP.carFingerprint == CAR.ODYSSEY_CHN:
       ret.standstill = cp.vl["ENGINE_DATA"]['XMISSION_SPEED'] < 0.1
       ret.doorOpen = bool(cp.vl["SCM_BUTTONS"]['DRIVERS_DOOR_OPEN'])
-    elif self.CP.carFingerprint == CAR.HRV:
+    elif self.CP.carFingerprint in [CAR.HRV, CAR.JADE]:
       ret.doorOpen = bool(cp.vl["SCM_BUTTONS"]['DRIVERS_DOOR_OPEN'])
     else:
       ret.standstill = not cp.vl["STANDSTILL"]['WHEELS_MOVING']
@@ -261,6 +274,14 @@ class CarState(CarStateBase):
     ret.steeringAngleDeg = cp.vl["STEERING_SENSORS"]['STEER_ANGLE']
     ret.steeringRateDeg = cp.vl["STEERING_SENSORS"]['STEER_ANGLE_RATE']
 
+    # dp - when user presses LKAS button on steering wheel
+    if self.cruise_setting == 1:
+      if cp.vl["SCM_BUTTONS"]["CRUISE_SETTING"] == 0:
+        if self.lkMode:
+          self.lkMode = False
+        else:
+          self.lkMode = True
+
     self.cruise_setting = cp.vl["SCM_BUTTONS"]['CRUISE_SETTING']
     self.cruise_buttons = cp.vl["SCM_BUTTONS"]['CRUISE_BUTTONS']
 
@@ -284,7 +305,7 @@ class CarState(CarStateBase):
 
     self.pedal_gas = cp.vl["POWERTRAIN_DATA"]['PEDAL_GAS']
     # crv doesn't include cruise control
-    if self.CP.carFingerprint in (CAR.CRV, CAR.CRV_EU, CAR.HRV, CAR.ODYSSEY, CAR.ACURA_RDX, CAR.RIDGELINE, CAR.PILOT_2019, CAR.ODYSSEY_CHN):
+    if self.CP.carFingerprint in (CAR.CRV, CAR.CRV_EU, CAR.HRV, CAR.ODYSSEY, CAR.ACURA_RDX, CAR.RIDGELINE, CAR.PILOT_2019, CAR.ODYSSEY_CHN, CAR.JADE):
       ret.gas = self.pedal_gas / 256.
     else:
       ret.gas = cp.vl["GAS_PEDAL_2"]['CAR_GAS'] / 256.
@@ -335,13 +356,19 @@ class CarState(CarStateBase):
     ret.cruiseState.available = bool(main_on)
     ret.cruiseState.nonAdaptive = self.cruise_mode != 0
 
+    # afa feature
+    self.hud_lead = cp.vl["ACC_HUD"]['HUD_LEAD']
+
     # Gets rid of Pedal Grinding noise when brake is pressed at slow speeds for some models
     if self.CP.carFingerprint in (CAR.PILOT, CAR.PILOT_2019, CAR.RIDGELINE):
       if ret.brake > 0.05:
         ret.brakePressed = True
 
     # TODO: discover the CAN msg that has the imperial unit bit for all other cars
-    self.is_metric = not cp.vl["HUD_SETTING"]['IMPERIAL_UNIT'] if self.CP.carFingerprint in (CAR.CIVIC) else False
+    if self.CP.carFingerprint in [CAR.JADE]:
+      self.is_metric = True
+    else:
+      self.is_metric = not cp.vl["HUD_SETTING"]['IMPERIAL_UNIT'] if self.CP.carFingerprint in (CAR.CIVIC) else False
 
     if self.CP.carFingerprint in HONDA_BOSCH:
       ret.stockAeb = bool(cp.vl["ACC_CONTROL"]["AEB_STATUS"] and cp.vl["ACC_CONTROL"]["ACCEL_COMMAND"] < -1e-5)
@@ -367,7 +394,8 @@ class CarState(CarStateBase):
   @staticmethod
   def get_can_parser(CP):
     signals, checks = get_can_signals(CP)
-    bus_pt = 1 if CP.carFingerprint in HONDA_BOSCH else 0
+    checks = []
+    bus_pt = 1 if CP.isPandaBlack and CP.carFingerprint in HONDA_BOSCH else 0
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, bus_pt)
 
   @staticmethod
@@ -393,7 +421,9 @@ class CarState(CarStateBase):
         ("BRAKE_COMMAND", 50),
       ]
 
-    return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, 2)
+    checks = []
+    bus_cam = 1 if CP.carFingerprint in HONDA_BOSCH and not CP.isPandaBlack else 2
+    return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, bus_cam)
 
   @staticmethod
   def get_body_can_parser(CP):
@@ -406,5 +436,6 @@ class CarState(CarStateBase):
         ("BSM_STATUS_RIGHT", 3),
       ]
       bus_body = 0 # B-CAN is forwarded to ACC-CAN radar side (CAN 0 on fake ethernet port)
+      checks = []
       return CANParser(DBC[CP.carFingerprint]['body'], signals, checks, bus_body)
     return None

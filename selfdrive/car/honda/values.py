@@ -55,6 +55,7 @@ class CAR:
   PILOT_2019 = "HONDA PILOT 2019"
   RIDGELINE = "HONDA RIDGELINE 2017"
   INSIGHT = "HONDA INSIGHT 2019"
+  JADE = "HONDA JADE 2017"
 
 # diag message that in some Nidec cars only appear with 1s freq if VIN query is performed
 DIAG_MSGS = {1600: 5, 1601: 8}
@@ -147,7 +148,10 @@ FINGERPRINTS = {
   # 2019 Insight
   CAR.INSIGHT: [{
     57: 3, 148: 8, 228: 5, 304: 8, 330: 8, 344: 8, 380: 8, 387: 8, 388: 8, 399: 7, 419: 8, 420: 8, 427: 3, 432: 7, 441: 5, 450: 8, 464: 8, 476: 8, 477: 8, 479: 8, 490: 8, 495: 8, 507: 1, 525: 8, 531: 8, 545: 6, 547: 6, 597: 8, 662: 4, 773: 7, 777: 8, 780: 8, 795: 8, 804: 8, 806: 8, 808: 8, 814: 4, 815: 8, 829: 5, 832: 3, 862: 8, 884: 8, 891: 8, 927: 8, 929: 8, 954: 2, 985: 3, 1029: 8, 1093: 4, 1115: 2, 1302: 8, 1361: 5, 1365: 5, 1600: 5, 1601: 8, 1652: 8, 2015: 3
-  }]
+  }],
+  CAR.JADE: [{
+    57: 3, 145: 8, 228: 5, 304: 8, 342: 6, 344: 8, 380: 8, 398: 3, 399: 7, 401: 8, 420: 8, 422: 8, 428: 8, 432: 7, 464: 8, 487: 4, 490: 8, 506: 8, 507: 1, 597: 8, 660: 8, 661: 4, 773: 7, 777: 8, 780: 8, 804: 8, 808: 8, 829: 5, 862: 8, 884: 7, 892: 8, 923: 2, 929: 4, 1057: 5, 1365: 5, 1424: 5, 1600: 5, 1601: 8
+  }],
 }
 
 # Don't use theses fingerprints for fingerprinting, they are still needed for ECU detection
@@ -845,6 +849,8 @@ FW_VERSIONS = {
       b'39990-TPA-G030\x00\x00',
       b'39990-TPG-A020\x00\x00',
       b'39990-TMA-H020\x00\x00',
+      b'39990-TMA,H020\x00\x00',
+      b'39990,TMA-H020\x00\x00',
     ],
     (Ecu.gateway, 0x18daeff1, None): [
       b'38897-TMA-H110\x00\x00',
@@ -1316,6 +1322,7 @@ DBC = {
   CAR.PILOT_2019: dbc_dict('honda_pilot_touring_2017_can_generated', 'acura_ilx_2016_nidec'),
   CAR.RIDGELINE: dbc_dict('honda_ridgeline_black_edition_2017_can_generated', 'acura_ilx_2016_nidec'),
   CAR.INSIGHT: dbc_dict('honda_insight_ex_2019_can_generated', None),
+  CAR.JADE: dbc_dict('honda_hrv_touring_2019_can_generated', 'acura_ilx_2016_nidec'),
 }
 
 STEER_THRESHOLD = {
@@ -1340,6 +1347,7 @@ STEER_THRESHOLD = {
   CAR.PILOT_2019: 1200,
   CAR.RIDGELINE: 1200,
   CAR.INSIGHT: 1200,
+  CAR.JADE: 1200,
 }
 
 SPEED_FACTOR = {
@@ -1364,6 +1372,13 @@ SPEED_FACTOR = {
   CAR.PILOT_2019: 1.,
   CAR.RIDGELINE: 1.,
   CAR.INSIGHT: 1.,
+  CAR.JADE: 1.025,
 }
 
 HONDA_BOSCH = set([CAR.ACCORD, CAR.ACCORD_15, CAR.ACCORDH, CAR.CIVIC_BOSCH, CAR.CIVIC_BOSCH_DIESEL, CAR.CRV_5G, CAR.CRV_HYBRID, CAR.INSIGHT, CAR.ACURA_RDX_3G])
+
+# msgs sent for steering controller by camera module on can 0.
+# those messages are mutually exclusive on CRV and non-CRV cars
+ECU_FINGERPRINT = {
+  Ecu.fwdCamera: [0xE4, 0x194],   # steer torque cmd
+}
