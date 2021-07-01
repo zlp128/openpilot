@@ -15,7 +15,6 @@ def dmonitoringd_thread(sm=None, pm=None):
     sm = messaging.SubMaster(['driverState', 'liveCalibration', 'carState', 'controlsState', 'modelV2'], poll=['driverState'])
 
   driver_status = DriverStatus(rhd=Params().get_bool("IsRHD"))
-  is_monitoring = False
 
   sm['liveCalibration'].calStatus = Calibration.INVALID
   sm['liveCalibration'].rpyCalib = [0, 0, 0]
@@ -41,7 +40,7 @@ def dmonitoringd_thread(sm=None, pm=None):
                         sm['carState'].gasPressed or \
                         sm['carState'].brakePressed
       if driver_engaged:
-        driver_status.update(Events(), True, sm['controlsState'].enabled, sm['carState'].standstill, is_monitoring)
+        driver_status.update(Events(), True, sm['controlsState'].enabled, sm['carState'].standstill)
       v_cruise_last = v_cruise
 
     if sm.updated['modelV2']:
@@ -55,17 +54,8 @@ def dmonitoringd_thread(sm=None, pm=None):
     if driver_status.terminal_alert_cnt >= MAX_TERMINAL_ALERTS or driver_status.terminal_time >= MAX_TERMINAL_DURATION:
       events.add(car.CarEvent.EventName.tooDistracted)
 
-    # clear driveMonitoring alerts
-    if not is_monitoring:
-      events = Events()
-      driver_status.awareness = 1.
-      driver_status.awareness_active = 1.
-      driver_status.awareness_passive = 1.
-      driver_status.terminal_alert_cnt = 0
-      driver_status.terminal_time = 0
-
     # Update events from driver state
-    driver_status.update(events, driver_engaged, sm['controlsState'].enabled, sm['carState'].standstill, is_monitoring)
+    driver_status.update(events, driver_engaged, sm['controlsState'].enabled, sm['carState'].standstill)
 
     # build driverMonitoringState packet
     dat = messaging.new_message('driverMonitoringState')
