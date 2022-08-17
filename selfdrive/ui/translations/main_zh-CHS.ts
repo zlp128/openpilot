@@ -74,6 +74,30 @@
     </message>
 </context>
 <context>
+    <name>C2NetworkPanel</name>
+    <message>
+        <location filename="../qt/offroad/settings.cc" line="374"/>
+        <source>Wi-Fi Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings.cc" line="374"/>
+        <location filename="../qt/offroad/settings.cc" line="378"/>
+        <source>OPEN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings.cc" line="378"/>
+        <source>Tethering Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings.cc" line="382"/>
+        <source>IP Address</source>
+        <translation type="unfinished">IP地址</translation>
+    </message>
+</context>
+<context>
     <name>ConfirmationDialog</name>
     <message>
         <location filename="../qt/widgets/input.cc" line="221"/>
@@ -85,6 +109,524 @@
         <location filename="../qt/widgets/input.cc" line="226"/>
         <source>Cancel</source>
         <translation>取消</translation>
+    </message>
+</context>
+<context>
+    <name>DPCarPanel</name>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="381"/>
+        <source>Override Speed When Below</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="381"/>
+        <source>Override feature will be enabled when set cruise speed is lower than this value.
+1 km/h = 0.62 mph.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="381"/>
+        <source> km/h</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="385"/>
+        <source>Turn On Cruise Speed Override</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="385"/>
+        <source>This feature will let you set your cruise speed below vehicle standard. (usually at 26~40 km/h)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="403"/>
+        <source>Toyota / Lexus</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="409"/>
+        <source>Enable SnG Mod</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="409"/>
+        <source>Enable this to fix stop and go (SnG) issue on some models.
+Reboot required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="415"/>
+        <source>Enable AM Physical Button Ctrl</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="415"/>
+        <source>Enable this to link Accel Mode (AM) control to the physical button (TSS2).
+ONLY WORK ON SOME OF TSS1 VEHICLES.
+Reboot required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="448"/>
+        <source>Mazda</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="450"/>
+        <source>Display Below Steer Speed Alert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="450"/>
+        <source>Enable this will show below steer speed alert.
+Thanks to @TheCrowd</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DPControlPanel</name>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="161"/>
+        <source>ALCA Delay</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="161"/>
+        <source>Once the vehicle meets all ALCA criteria, it will wait for the seconds set here before peforming lane change automatically.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="161"/>
+        <source> secs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="163"/>
+        <source>ALCA Min Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="163"/>
+        <source>ALCA minimum engage speed in mph.
+1 mph = 1.61 km/h.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="163"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="172"/>
+        <source> mph</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="172"/>
+        <source>LCA Min Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="172"/>
+        <source>LCA minimum engage speed in mph.
+1 mph = 1.61 km/h.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="183"/>
+        <source>Lateral Ctrl Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="183"/>
+        <source>1 = Lane Change Assist (LCA)
+2 = Auto Lane Change Assist (ALCA)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="223"/>
+        <source>Longitudinal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="225"/>
+        <source>Manually Control Accel Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="225"/>
+        <source>Enable this if you wish to adjust openpilot&apos;s acceleration control.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="228"/>
+        <source>Enable vision based turn control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="229"/>
+        <source>Use vision path predictions to estimate the appropriate speed to drive through turns ahead.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="283"/>
+        <source>Lateral</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="288"/>
+        <source>Use Lane Lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="288"/>
+        <source>Enable this if you wish to use lane lines mode.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="291"/>
+        <source>Use LQR Controller</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="291"/>
+        <source>Enable this if you wish to use LQR instead of PID or INDI controller.
+WORKS WELL ONLY ON SOME VEHICLES.
+More linear steering experience.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="296"/>
+        <source>Always On Lateral</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="296"/>
+        <source>Use at your own risk!
+1 = Stock Long
+2 = OP Long
+Run Panda Recovery if Panda is not detected after reboot.
+Reboot required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DPGeneralPanel</name>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="21"/>
+        <source>Auto Shutdown In</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="21"/>
+        <source>Adjust your shutdown waiting period.
+0 = shutdown immediately.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="21"/>
+        <source> mins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="25"/>
+        <source>Enable Auto Shutdown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="25"/>
+        <source>Enable this if you wish to shutdown your device automatically.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="48"/>
+        <source>Use Custom API Server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="48"/>
+        <source>Enable this if you wish to connect to a custom API server.
+Default to &quot;https://api.retropilot.org/&quot;, change &quot;dp_api_custom&quot; if you want to change API server URL.
+Reboot required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="75"/>
+        <source>Services</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="81"/>
+        <source>Enable On-Road Dashcam</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="81"/>
+        <source>Enable this if you wish to record screen, just like a dashcam.
+Reboot required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="86"/>
+        <source>Enable GPS Logger</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="86"/>
+        <source>This will store your track in /data/media/0/gpx_logs/.
+Reboot required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="88"/>
+        <source>Hardware - General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="95"/>
+        <source>Enable Hotspot On Boot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="95"/>
+        <source>Reboot required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="100"/>
+        <source>Miscellaneous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="103"/>
+        <source>Enable Jetson Support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="103"/>
+        <source>Enable this option if you intend to run dp on Nvidia Jetson.
+Reboot required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="105"/>
+        <source>Reboot recommended.
+Reboot?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="129"/>
+        <source>Flashing Panda Firmware</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="129"/>
+        <source>FLASH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="129"/>
+        <source>Tap the button to update your panda firmware.
+The device should reboot once if it finish updating.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="131"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="140"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="149"/>
+        <source>Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="138"/>
+        <source>Pandas Firmware Recovery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="138"/>
+        <source>RECOVER</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="138"/>
+        <source>Tap the button ONLY if your panda ran into issue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="147"/>
+        <source>Delete All Driving Log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="147"/>
+        <source>DELETE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="147"/>
+        <source>Tap the button to delete ALL your driving logs (including dashcam / gpx / driving logs).</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DPMapsPanel</name>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="509"/>
+        <source>Show Full Screen Nav.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="509"/>
+        <source>This will show navigation in full screen.
+Please tap green boarder if you wish to switch back drive view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="511"/>
+        <source>Search Destination using Google Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="511"/>
+        <source>This will allow you to search destination in google map api.
+You will need to apply your own google map api key.<byte value="x8"/>Enter your key detail in web interface once it&apos;s enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="515"/>
+        <source>Enable Nav.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="515"/>
+        <source>This will let use the build in Navigation.
+Use web interface to control it: *http://&lt;device_ip&gt;:8082*.
+You will need to apply your own mapbox token at https://www.mapbox.com/.
+Internet access from mobile phone (tethering) is required.
+Reboot required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="538"/>
+        <source>Enable Speed Limit Control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="539"/>
+        <source>Use speed limit signs information from map data and car interface to automatically adapt cruise speed to road limits.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="543"/>
+        <source>Enable Speed Limit Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="544"/>
+        <source>Set speed limit slightly higher than actual speed limit for a more natural drive.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="548"/>
+        <source>Enable Map Data Turn Control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="549"/>
+        <source>Use curvature info from map data to define speed limits to take turns ahead</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="553"/>
+        <source>Show debug UI elements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="554"/>
+        <source>Show UI elements that aid debugging.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="559"/>
+        <source>Enable MapD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="559"/>
+        <source>Use OSM to assist lateral/longitudinal control.
+Please note:
+1. This feature will works only when your car support OP longitudinal.
+2. MapD will contribute your route to OSM for future improvement automatically.
+3. You can add your own offset for mapd just follow the readme under /selfdrive/mapd.
+4. Not connecting to the internet for while might feel up device storage from all the gps traces. </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DPUIPanel</name>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="320"/>
+        <source>Display Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="320"/>
+        <source>0 = Default
+1 = Screen Off While Driving</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="322"/>
+        <source>Screen Brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="322"/>
+        <source>Adjust your screen brightness.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="322"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="324"/>
+        <source>AUTO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="324"/>
+        <source>Alert Volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="324"/>
+        <source>Adjust your alert volume.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="326"/>
+        <source>Quiet Drive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="326"/>
+        <source>Display alert and play important warning sound. Thanks @sunnyhaibin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="342"/>
+        <source>Display Side Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="342"/>
+        <source>Enable this to display steering angle / lead car distance / engine RPM.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="344"/>
+        <source>Display Top Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="344"/>
+        <source>Enable this to display time / system temp / battery level.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -108,152 +650,152 @@
 <context>
     <name>DevicePanel</name>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="100"/>
+        <location filename="../qt/offroad/settings.cc" line="151"/>
         <source>Dongle ID</source>
         <translation>设备ID（Dongle ID）</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="100"/>
+        <location filename="../qt/offroad/settings.cc" line="151"/>
         <source>N/A</source>
         <translation>N/A</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="101"/>
+        <location filename="../qt/offroad/settings.cc" line="152"/>
         <source>Serial</source>
         <translation>序列号</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="105"/>
+        <location filename="../qt/offroad/settings.cc" line="156"/>
         <source>Driver Camera</source>
         <translation>驾驶员摄像头</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="105"/>
+        <location filename="../qt/offroad/settings.cc" line="156"/>
         <source>PREVIEW</source>
         <translation>预览</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="106"/>
+        <location filename="../qt/offroad/settings.cc" line="157"/>
         <source>Preview the driver facing camera to ensure that driver monitoring has good visibility. (vehicle must be off)</source>
         <translation>打开并预览驾驶员摄像头，以确保驾驶员监控具有良好视野。仅熄火时可用。</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="110"/>
+        <location filename="../qt/offroad/settings.cc" line="162"/>
         <source>Reset Calibration</source>
         <translation>重置设备校准</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="110"/>
+        <location filename="../qt/offroad/settings.cc" line="162"/>
         <source>RESET</source>
         <translation>重置</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="113"/>
+        <location filename="../qt/offroad/settings.cc" line="165"/>
         <source>Are you sure you want to reset calibration?</source>
         <translation>您确定要重置设备校准吗？</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="120"/>
+        <location filename="../qt/offroad/settings.cc" line="172"/>
         <source>Review Training Guide</source>
         <translation>新手指南</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="120"/>
+        <location filename="../qt/offroad/settings.cc" line="172"/>
         <source>REVIEW</source>
         <translation>查看</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="120"/>
+        <location filename="../qt/offroad/settings.cc" line="172"/>
         <source>Review the rules, features, and limitations of openpilot</source>
         <translation>查看openpilot的使用规则，以及其功能和限制。</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="122"/>
+        <location filename="../qt/offroad/settings.cc" line="174"/>
         <source>Are you sure you want to review the training guide?</source>
         <translation>您确定要查看新手指南吗？</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="130"/>
+        <location filename="../qt/offroad/settings.cc" line="182"/>
         <source>Regulatory</source>
         <translation>监管信息</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="130"/>
+        <location filename="../qt/offroad/settings.cc" line="182"/>
         <source>VIEW</source>
         <translation>查看</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="138"/>
+        <location filename="../qt/offroad/settings.cc" line="190"/>
         <source>Change Language</source>
         <translation>切换语言</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="138"/>
+        <location filename="../qt/offroad/settings.cc" line="190"/>
         <source>CHANGE</source>
         <translation>切换</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="142"/>
+        <location filename="../qt/offroad/settings.cc" line="194"/>
         <source>Select a language</source>
         <translation>选择语言</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="162"/>
+        <location filename="../qt/offroad/settings.cc" line="214"/>
         <source>Reboot</source>
         <translation>重启</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="167"/>
+        <location filename="../qt/offroad/settings.cc" line="219"/>
         <source>Power Off</source>
         <translation>关机</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="187"/>
+        <location filename="../qt/offroad/settings.cc" line="239"/>
         <source>openpilot requires the device to be mounted within 4° left or right and within 5° up or 8° down. openpilot is continuously calibrating, resetting is rarely required.</source>
         <translation>openpilot要求设备安装的偏航角在左4°和右4°之间，俯仰角在上5°和下8°之间。一般来说，openpilot会持续更新校准，很少需要重置。</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="198"/>
+        <location filename="../qt/offroad/settings.cc" line="250"/>
         <source> Your device is pointed %1° %2 and %3° %4.</source>
         <translation>您的设备校准为%1° %2、%3° %4。</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="199"/>
+        <location filename="../qt/offroad/settings.cc" line="251"/>
         <source>down</source>
         <translation>朝下</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="199"/>
+        <location filename="../qt/offroad/settings.cc" line="251"/>
         <source>up</source>
         <translation>朝上</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="200"/>
+        <location filename="../qt/offroad/settings.cc" line="252"/>
         <source>left</source>
         <translation>朝左</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="200"/>
+        <location filename="../qt/offroad/settings.cc" line="252"/>
         <source>right</source>
         <translation>朝右</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="211"/>
+        <location filename="../qt/offroad/settings.cc" line="263"/>
         <source>Are you sure you want to reboot?</source>
         <translation>您确定要重新启动吗？</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="218"/>
+        <location filename="../qt/offroad/settings.cc" line="270"/>
         <source>Disengage to Reboot</source>
         <translation>取消openpilot以重新启动</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="224"/>
+        <location filename="../qt/offroad/settings.cc" line="276"/>
         <source>Are you sure you want to power off?</source>
         <translation>您确定要关机吗？</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="231"/>
+        <location filename="../qt/offroad/settings.cc" line="283"/>
         <source>Disengage to Power Off</source>
         <translation>取消openpilot以关机</translation>
     </message>
@@ -294,7 +836,7 @@
 <context>
     <name>DriverViewScene</name>
     <message>
-        <location filename="../qt/offroad/driverview.cc" line="55"/>
+        <location filename="../qt/offroad/driverview.cc" line="56"/>
         <source>camera starting</source>
         <translation>正在启动相机</translation>
     </message>
@@ -340,27 +882,27 @@
 <context>
     <name>MapETA</name>
     <message>
-        <location filename="../qt/maps/map.cc" line="621"/>
+        <location filename="../qt/maps/map.cc" line="632"/>
         <source>eta</source>
         <translation>埃塔</translation>
     </message>
     <message>
-        <location filename="../qt/maps/map.cc" line="631"/>
+        <location filename="../qt/maps/map.cc" line="642"/>
         <source>min</source>
         <translation>分钟</translation>
     </message>
     <message>
-        <location filename="../qt/maps/map.cc" line="635"/>
+        <location filename="../qt/maps/map.cc" line="646"/>
         <source>hr</source>
         <translation>小时</translation>
     </message>
     <message>
-        <location filename="../qt/maps/map.cc" line="655"/>
+        <location filename="../qt/maps/map.cc" line="666"/>
         <source>km</source>
         <translation>km</translation>
     </message>
     <message>
-        <location filename="../qt/maps/map.cc" line="658"/>
+        <location filename="../qt/maps/map.cc" line="669"/>
         <source>mi</source>
         <translation>mi</translation>
     </message>
@@ -368,22 +910,22 @@
 <context>
     <name>MapInstructions</name>
     <message>
-        <location filename="../qt/maps/map.cc" line="421"/>
+        <location filename="../qt/maps/map.cc" line="432"/>
         <source> km</source>
         <translation> km</translation>
     </message>
     <message>
-        <location filename="../qt/maps/map.cc" line="424"/>
+        <location filename="../qt/maps/map.cc" line="435"/>
         <source> m</source>
         <translation> m</translation>
     </message>
     <message>
-        <location filename="../qt/maps/map.cc" line="432"/>
+        <location filename="../qt/maps/map.cc" line="443"/>
         <source> mi</source>
         <translation> mi</translation>
     </message>
     <message>
-        <location filename="../qt/maps/map.cc" line="435"/>
+        <location filename="../qt/maps/map.cc" line="446"/>
         <source> ft</source>
         <translation> ft</translation>
     </message>
@@ -418,19 +960,19 @@ prime subscription. Sign up now: https://connect.comma.ai</source>
 立即注册：https://connect.comma.ai</translation>
     </message>
     <message>
-        <location filename="../qt/maps/map_settings.cc" line="164"/>
+        <location filename="../qt/maps/map_settings.cc" line="171"/>
         <source>No home
 location set</source>
         <translation>家：未设定</translation>
     </message>
     <message>
-        <location filename="../qt/maps/map_settings.cc" line="169"/>
+        <location filename="../qt/maps/map_settings.cc" line="176"/>
         <source>No work
 location set</source>
         <translation>工作：未设定</translation>
     </message>
     <message>
-        <location filename="../qt/maps/map_settings.cc" line="282"/>
+        <location filename="../qt/maps/map_settings.cc" line="291"/>
         <source>no recent destinations</source>
         <translation>无最近目的地</translation>
     </message>
@@ -488,48 +1030,88 @@ location set</source>
 <context>
     <name>NvgWindow</name>
     <message>
-        <location filename="../qt/onroad.cc" line="218"/>
+        <location filename="../qt/onroad.cc" line="289"/>
         <source>km/h</source>
         <translation>km/h</translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="218"/>
+        <location filename="../qt/onroad.cc" line="289"/>
         <source>mph</source>
         <translation>mph</translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="286"/>
-        <location filename="../qt/onroad.cc" line="289"/>
+        <location filename="../qt/onroad.cc" line="426"/>
+        <location filename="../qt/onroad.cc" line="429"/>
         <source>MAX</source>
         <translation>最高定速</translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="333"/>
-        <location filename="../qt/onroad.cc" line="336"/>
+        <location filename="../qt/onroad.cc" line="479"/>
+        <location filename="../qt/onroad.cc" line="482"/>
         <source>SPEED</source>
         <translation>SPEED</translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="339"/>
-        <location filename="../qt/onroad.cc" line="342"/>
+        <location filename="../qt/onroad.cc" line="485"/>
+        <location filename="../qt/onroad.cc" line="488"/>
         <source>LIMIT</source>
         <translation>LIMIT</translation>
+    </message>
+    <message>
+        <location filename="../qt/onroad.cc" line="951"/>
+        <source>REAL STEER</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/onroad.cc" line="959"/>
+        <source>RAM PER</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/onroad.cc" line="971"/>
+        <source>OFF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/onroad.cc" line="974"/>
+        <source>ENG RPM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/onroad.cc" line="1007"/>
+        <source>NOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/onroad.cc" line="1010"/>
+        <source>SPT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/onroad.cc" line="1013"/>
+        <source>ECO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/onroad.cc" line="1015"/>
+        <source>ACCEL</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OffroadHome</name>
     <message>
-        <location filename="../qt/home.cc" line="114"/>
+        <location filename="../qt/home.cc" line="115"/>
         <source>UPDATE</source>
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../qt/home.cc" line="205"/>
+        <location filename="../qt/home.cc" line="206"/>
         <source> ALERTS</source>
         <translation> 警报</translation>
     </message>
     <message>
-        <location filename="../qt/home.cc" line="205"/>
+        <location filename="../qt/home.cc" line="206"/>
         <source> ALERT</source>
         <translation> 警报</translation>
     </message>
@@ -537,22 +1119,22 @@ location set</source>
 <context>
     <name>PairingPopup</name>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="86"/>
+        <location filename="../qt/widgets/prime.cc" line="90"/>
         <source>Pair your device to your comma account</source>
         <translation>将您的设备与comma账号配对</translation>
     </message>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="97"/>
+        <location filename="../qt/widgets/prime.cc" line="101"/>
         <source>Go to https://connect.comma.ai on your phone</source>
         <translation>在手机上访问 https://connect.comma.ai</translation>
     </message>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="98"/>
+        <location filename="../qt/widgets/prime.cc" line="102"/>
         <source>Click &quot;add new device&quot; and scan the QR code on the right</source>
         <translation>点击“添加新设备”，扫描右侧二维码</translation>
     </message>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="99"/>
+        <location filename="../qt/widgets/prime.cc" line="103"/>
         <source>Bookmark connect.comma.ai to your home screen to use it like an app</source>
         <translation>将 connect.comma.ai 收藏到您的主屏幕，以便像应用程序一样使用它</translation>
     </message>
@@ -560,32 +1142,32 @@ location set</source>
 <context>
     <name>PrimeAdWidget</name>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="187"/>
+        <location filename="../qt/widgets/prime.cc" line="191"/>
         <source>Upgrade Now</source>
         <translation>现在升级</translation>
     </message>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="192"/>
+        <location filename="../qt/widgets/prime.cc" line="196"/>
         <source>Become a comma prime member at connect.comma.ai</source>
         <translation>打开connect.comma.ai以注册comma prime会员</translation>
     </message>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="199"/>
+        <location filename="../qt/widgets/prime.cc" line="203"/>
         <source>PRIME FEATURES:</source>
         <translation>comma prime特权：</translation>
     </message>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="204"/>
+        <location filename="../qt/widgets/prime.cc" line="208"/>
         <source>Remote access</source>
         <translation>远程访问</translation>
     </message>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="204"/>
+        <location filename="../qt/widgets/prime.cc" line="208"/>
         <source>1 year of storage</source>
         <translation>1年数据存储</translation>
     </message>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="204"/>
+        <location filename="../qt/widgets/prime.cc" line="208"/>
         <source>Developer perks</source>
         <translation>开发者福利</translation>
     </message>
@@ -593,22 +1175,22 @@ location set</source>
 <context>
     <name>PrimeUserWidget</name>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="126"/>
+        <location filename="../qt/widgets/prime.cc" line="130"/>
         <source>✓ SUBSCRIBED</source>
         <translation>✓ 已订阅</translation>
     </message>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="132"/>
+        <location filename="../qt/widgets/prime.cc" line="136"/>
         <source>comma prime</source>
         <translation>comma prime</translation>
     </message>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="138"/>
+        <location filename="../qt/widgets/prime.cc" line="142"/>
         <source>CONNECT.COMMA.AI</source>
         <translation>CONNECT.COMMA.AI</translation>
     </message>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="151"/>
+        <location filename="../qt/widgets/prime.cc" line="155"/>
         <source>COMMA POINTS</source>
         <translation>COMMA POINTS点数</translation>
     </message>
@@ -626,14 +1208,12 @@ location set</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="../qt/util.cc" line="21"/>
         <source>dashcam</source>
-        <translation>行车记录仪</translation>
+        <translation type="vanished">行车记录仪</translation>
     </message>
     <message>
-        <location filename="../qt/util.cc" line="21"/>
         <source>openpilot</source>
-        <translation>openpilot</translation>
+        <translation type="vanished">openpilot</translation>
     </message>
     <message numerus="yes">
         <location filename="../qt/util.cc" line="82"/>
@@ -716,35 +1296,64 @@ location set</source>
 <context>
     <name>SettingsWindow</name>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="332"/>
         <source>×</source>
-        <translation>×</translation>
+        <translation type="vanished">×</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="358"/>
+        <location filename="../qt/offroad/settings.cc" line="429"/>
+        <source>BACK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings.cc" line="462"/>
         <source>Device</source>
         <translation>设备</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="359"/>
-        <location filename="../qt/offroad/settings.cc" line="398"/>
+        <location filename="../qt/offroad/settings.cc" line="463"/>
+        <location filename="../qt/offroad/settings.cc" line="519"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="360"/>
+        <location filename="../qt/offroad/settings.cc" line="464"/>
         <source>Toggles</source>
         <translation>设定</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="361"/>
+        <location filename="../qt/offroad/settings.cc" line="465"/>
         <source>Software</source>
         <translation>软件</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="366"/>
+        <location filename="../qt/offroad/settings.cc" line="475"/>
         <source>Navigation</source>
         <translation>导航</translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings.cc" line="481"/>
+        <source>DP - General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings.cc" line="482"/>
+        <source>DP - Controls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings.cc" line="483"/>
+        <source>DP - UI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings.cc" line="484"/>
+        <source>DP - Cars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings.cc" line="487"/>
+        <source>DP - Maps</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -856,17 +1465,17 @@ location set</source>
 <context>
     <name>SetupWidget</name>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="233"/>
+        <location filename="../qt/widgets/prime.cc" line="237"/>
         <source>Finish Setup</source>
         <translation>完成设置</translation>
     </message>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="239"/>
+        <location filename="../qt/widgets/prime.cc" line="243"/>
         <source>Pair your device with comma connect (connect.comma.ai) and claim your comma prime offer.</source>
         <translation>将您的设备与comma connect （connect.comma.ai）配对并领取您的comma prime优惠。</translation>
     </message>
     <message>
-        <location filename="../qt/widgets/prime.cc" line="246"/>
+        <location filename="../qt/widgets/prime.cc" line="250"/>
         <source>Pair device</source>
         <translation>配对设备</translation>
     </message>
@@ -886,7 +1495,7 @@ location set</source>
     </message>
     <message>
         <location filename="../qt/sidebar.cc" line="69"/>
-        <location filename="../qt/sidebar.cc" line="82"/>
+        <location filename="../qt/sidebar.cc" line="85"/>
         <source>ONLINE</source>
         <translation>在线</translation>
     </message>
@@ -896,84 +1505,81 @@ location set</source>
         <translation>连接出错</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.cc" line="73"/>
         <location filename="../qt/sidebar.cc" line="76"/>
-        <location filename="../qt/sidebar.cc" line="78"/>
+        <location filename="../qt/sidebar.cc" line="79"/>
+        <location filename="../qt/sidebar.cc" line="81"/>
         <source>TEMP</source>
         <translation>设备温度</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.cc" line="73"/>
         <source>HIGH</source>
-        <translation>过热</translation>
+        <translation type="vanished">过热</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.cc" line="76"/>
         <source>GOOD</source>
-        <translation>良好</translation>
+        <translation type="vanished">良好</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.cc" line="78"/>
         <source>OK</source>
-        <translation>一般</translation>
+        <translation type="vanished">一般</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.cc" line="82"/>
+        <location filename="../qt/sidebar.cc" line="85"/>
         <source>VEHICLE</source>
         <translation>车辆连接</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.cc" line="84"/>
+        <location filename="../qt/sidebar.cc" line="87"/>
         <source>NO</source>
         <translation>无</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.cc" line="84"/>
+        <location filename="../qt/sidebar.cc" line="87"/>
         <source>PANDA</source>
         <translation>PANDA</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.cc" line="86"/>
+        <location filename="../qt/sidebar.cc" line="89"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.cc" line="86"/>
+        <location filename="../qt/sidebar.cc" line="89"/>
         <source>SEARCH</source>
         <translation>搜索中</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.h" line="37"/>
+        <location filename="../qt/sidebar.h" line="38"/>
         <source>--</source>
         <translation>--</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.h" line="38"/>
+        <location filename="../qt/sidebar.h" line="39"/>
         <source>Wi-Fi</source>
         <translation>Wi-Fi</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.h" line="39"/>
+        <location filename="../qt/sidebar.h" line="40"/>
         <source>ETH</source>
         <translation>以太网</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.h" line="40"/>
+        <location filename="../qt/sidebar.h" line="41"/>
         <source>2G</source>
         <translation>2G</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.h" line="41"/>
+        <location filename="../qt/sidebar.h" line="42"/>
         <source>3G</source>
         <translation>3G</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.h" line="42"/>
+        <location filename="../qt/sidebar.h" line="43"/>
         <source>LTE</source>
         <translation>LTE</translation>
     </message>
     <message>
-        <location filename="../qt/sidebar.h" line="43"/>
+        <location filename="../qt/sidebar.h" line="44"/>
         <source>5G</source>
         <translation>5G</translation>
     </message>
@@ -981,89 +1587,89 @@ location set</source>
 <context>
     <name>SoftwarePanel</name>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="236"/>
+        <location filename="../qt/offroad/settings.cc" line="288"/>
         <source>Git Branch</source>
         <translation>Git Branch</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="237"/>
+        <location filename="../qt/offroad/settings.cc" line="289"/>
         <source>Git Commit</source>
         <translation>Git Commit</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="238"/>
+        <location filename="../qt/offroad/settings.cc" line="290"/>
         <source>OS Version</source>
         <translation>系统版本</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="239"/>
+        <location filename="../qt/offroad/settings.cc" line="291"/>
         <source>Version</source>
         <translation>软件版本</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="240"/>
+        <location filename="../qt/offroad/settings.cc" line="292"/>
         <source>Last Update Check</source>
         <translation>上次检查更新</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="240"/>
+        <location filename="../qt/offroad/settings.cc" line="292"/>
         <source>The last time openpilot successfully checked for an update. The updater only runs while the car is off.</source>
         <translation>上一次成功检查更新的时间。更新程序仅在汽车熄火时运行。</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="241"/>
+        <location filename="../qt/offroad/settings.cc" line="293"/>
         <source>Check for Update</source>
         <translation>检查更新</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="246"/>
+        <location filename="../qt/offroad/settings.cc" line="298"/>
         <source>CHECKING</source>
         <translation>正在检查更新</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="253"/>
+        <location filename="../qt/offroad/settings.cc" line="305"/>
         <source>Switch Branch</source>
         <translation>切换分支</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="253"/>
+        <location filename="../qt/offroad/settings.cc" line="305"/>
         <source>ENTER</source>
         <translation>输入</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="253"/>
-        <location filename="../qt/offroad/settings.cc" line="255"/>
+        <location filename="../qt/offroad/settings.cc" line="305"/>
+        <location filename="../qt/offroad/settings.cc" line="307"/>
         <source>The new branch will be pulled the next time the updater runs.</source>
         <translation>分支将在更新服务下次启动时自动切换。</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="255"/>
+        <location filename="../qt/offroad/settings.cc" line="307"/>
         <source>Enter branch name</source>
         <translation>输入分支名称</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="266"/>
+        <location filename="../qt/offroad/settings.cc" line="318"/>
         <source>UNINSTALL</source>
         <translation>卸载</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="266"/>
+        <location filename="../qt/offroad/settings.cc" line="318"/>
         <source>Uninstall %1</source>
         <translation>卸载 %1</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="268"/>
+        <location filename="../qt/offroad/settings.cc" line="320"/>
         <source>Are you sure you want to uninstall?</source>
         <translation>您确定要卸载吗？</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="285"/>
+        <location filename="../qt/offroad/settings.cc" line="337"/>
         <source>failed to fetch update</source>
         <translation>获取更新失败</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="286"/>
-        <location filename="../qt/offroad/settings.cc" line="307"/>
+        <location filename="../qt/offroad/settings.cc" line="338"/>
+        <location filename="../qt/offroad/settings.cc" line="359"/>
         <source>CHECK</source>
         <translation>查看</translation>
     </message>
@@ -1151,82 +1757,92 @@ location set</source>
 <context>
     <name>TogglesPanel</name>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="34"/>
+        <location filename="../qt/offroad/settings.cc" line="79"/>
         <source>Enable openpilot</source>
         <translation>启用openpilot</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="35"/>
+        <location filename="../qt/offroad/settings.cc" line="80"/>
         <source>Use the openpilot system for adaptive cruise control and lane keep driver assistance. Your attention is required at all times to use this feature. Changing this setting takes effect when the car is powered off.</source>
         <translation>使用openpilot进行自适应巡航和车道保持辅助。使用此功能时您必须时刻保持注意力。该设置的更改在熄火时生效。</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="40"/>
+        <location filename="../qt/offroad/settings.cc" line="85"/>
         <source>Enable Lane Departure Warnings</source>
         <translation>启用车道偏离警告</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="41"/>
+        <location filename="../qt/offroad/settings.cc" line="86"/>
         <source>Receive alerts to steer back into the lane when your vehicle drifts over a detected lane line without a turn signal activated while driving over 31 mph (50 km/h).</source>
         <translation>车速超过31mph（50km/h）时，若检测到车辆越过车道线且未打转向灯，系统将发出警告以提醒您返回车道。</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="46"/>
+        <location filename="../qt/offroad/settings.cc" line="91"/>
+        <source>Enable Right-Hand Drive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings.cc" line="92"/>
+        <source>Allow openpilot to obey left-hand traffic conventions and perform driver monitoring on right driver seat.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings.cc" line="97"/>
         <source>Use Metric System</source>
         <translation>使用公制单位</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="47"/>
+        <location filename="../qt/offroad/settings.cc" line="98"/>
         <source>Display speed in km/h instead of mph.</source>
         <translation>显示车速时，以km/h代替mph。</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="52"/>
+        <location filename="../qt/offroad/settings.cc" line="103"/>
         <source>Record and Upload Driver Camera</source>
         <translation>录制并上传驾驶员摄像头</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="53"/>
+        <location filename="../qt/offroad/settings.cc" line="104"/>
         <source>Upload data from the driver facing camera and help improve the driver monitoring algorithm.</source>
         <translation>上传驾驶员摄像头的数据，帮助改进驾驶员监控算法。</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="58"/>
+        <location filename="../qt/offroad/settings.cc" line="109"/>
         <source>Disengage On Accelerator Pedal</source>
         <translation>踩油门时取消控制</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="59"/>
+        <location filename="../qt/offroad/settings.cc" line="110"/>
         <source>When enabled, pressing the accelerator pedal will disengage openpilot.</source>
         <translation>启用后，踩下油门踏板将取消openpilot。</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="65"/>
+        <location filename="../qt/offroad/settings.cc" line="116"/>
         <source>Show ETA in 24h format</source>
         <translation>以24小时格式显示预计到达时间</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="66"/>
+        <location filename="../qt/offroad/settings.cc" line="117"/>
         <source>Use 24h format instead of am/pm</source>
         <translation>使用24小时制代替am/pm</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="71"/>
+        <location filename="../qt/offroad/settings.cc" line="122"/>
         <source>Show Map on Left Side of UI</source>
         <translation>在介面左侧显示地图</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="72"/>
+        <location filename="../qt/offroad/settings.cc" line="123"/>
         <source>Show map on left side when in split screen view.</source>
         <translation>在分屏模式中，将地图置于屏幕左侧。</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="84"/>
+        <location filename="../qt/offroad/settings.cc" line="135"/>
         <source>openpilot Longitudinal Control</source>
         <translation>openpilot纵向控制</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="85"/>
+        <location filename="../qt/offroad/settings.cc" line="136"/>
         <source>openpilot will disable the car&apos;s radar and will take over control of gas and brakes. Warning: this disables AEB!</source>
         <translation>openpilot将禁用车辆的雷达并接管油门和刹车的控制。警告：AEB将被禁用！</translation>
     </message>

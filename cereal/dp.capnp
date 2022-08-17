@@ -25,4 +25,5 @@ struct DragonConf {
   dpUseLanelines @17 :Bool;
   dpMapd @18 :Bool;
   dpDashcamd @19 :Bool;
+  dpMazdaSteerAlert @20 :Bool;
 }

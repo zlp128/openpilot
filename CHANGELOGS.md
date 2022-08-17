@@ -4,6 +4,8 @@ dragonpilot [latest] - EON/C2 Release
 * NEW: Added back auto shutdown toggle.
 * NEW: Added back On-Road Dashcam toggle. (You should not replace this with your dashcam!!!)
 * NEW: Added back LQR tune toggle.
+* NEW: MAZDA - Ability to enable/disable below steer speed alert. (Thanks to @TheCrowd)
+* NEW: Included all vehicles.
 * TWEAK: Panda Recovery should kill boardd process first.
 * FIXED: Fixed stop working issue when mapd crashed.
 
@@ -41,9 +43,14 @@ dragonpilot 2022.07.12 - EON/C2 Release
 * Works on EON/C2 + white/grey/black panda (tested only on Toyotas).
 * Buggy!
 
-dragonpilot 2022.06.25
+dragonpilot [2022.08.07]
 ========================
 * Synced to openpilot master 2022.08.07 commits.
+* NEW: Added back auto shutdown toggle.
+* NEW: Added back LQR tune toggle.
+* NEW: MAZDA - Ability to enable/disable below steer speed alert. (Thanks to @TheCrowd)
+* TWEAKED: Panda Recovery should kill boardd process first.
+* FIXED: Fixed stop working issue when mapd crashed.
 
 dragonpilot 2022.07.27
 ========================
