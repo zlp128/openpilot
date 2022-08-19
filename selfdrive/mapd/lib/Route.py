@@ -86,9 +86,17 @@ class Route():
       b = np.arctan2(v[:, 0], v[:, 1])
 
       # - Find index of las_wr section and calculate deltas of bearings to the other sections.
-      last_wr_idx = way_relations.index(last_wr)
-      b_ref = b[last_wr_idx]
-      delta = b - b_ref
+      # dp - force re init if last_wr_idx return ValueError?
+      try:
+        last_wr_idx = way_relations.index(last_wr)
+        b_ref = b[last_wr_idx]
+        delta = b - b_ref
+      except ValueError:
+        self.way_collection_id = way_collection_id
+        self._ordered_way_relations = []
+        self._nodes_data = None
+        self._reset()
+        return
 
       # - Update the direction of the possible route continuation ways as starting from last_node_id.
       # Make sure to exclude any ways already included in the ordered list as to not modify direction when there

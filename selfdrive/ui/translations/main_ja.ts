@@ -168,6 +168,22 @@ Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="428"/>
+        <source>Honda</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="430"/>
+        <source>Enable EPS Mod Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="430"/>
+        <source>Enable this will increase steering, USE IT ONLY if you have a modded EPS firmware.
+Reboot required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qt/offroad/settings_dp.cc" line="448"/>
         <source>Mazda</source>
         <translation type="unfinished"></translation>
@@ -1631,23 +1647,23 @@ location set</source>
     <message>
         <location filename="../qt/offroad/settings.cc" line="305"/>
         <source>Switch Branch</source>
-        <translation type="unfinished"></translation>
+        <translation>ブランチの切り替え</translation>
     </message>
     <message>
         <location filename="../qt/offroad/settings.cc" line="305"/>
         <source>ENTER</source>
-        <translation type="unfinished"></translation>
+        <translation>切替</translation>
     </message>
     <message>
         <location filename="../qt/offroad/settings.cc" line="305"/>
         <location filename="../qt/offroad/settings.cc" line="307"/>
         <source>The new branch will be pulled the next time the updater runs.</source>
-        <translation type="unfinished"></translation>
+        <translation>updater を実行する時にブランチを切り替えます。</translation>
     </message>
     <message>
         <location filename="../qt/offroad/settings.cc" line="307"/>
         <source>Enter branch name</source>
-        <translation type="unfinished"></translation>
+        <translation>ブランチ名を入力</translation>
     </message>
     <message>
         <location filename="../qt/offroad/settings.cc" line="318"/>
@@ -1820,7 +1836,7 @@ location set</source>
     </message>
     <message>
         <location filename="../qt/offroad/settings.cc" line="116"/>
-        <source>Show ETA in 24h format</source>
+        <source>Show ETA in 24h Format</source>
         <translation>24時間表示</translation>
     </message>
     <message>

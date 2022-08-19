@@ -168,6 +168,22 @@ Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="428"/>
+        <source>Honda</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="430"/>
+        <source>Enable EPS Mod Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="430"/>
+        <source>Enable this will increase steering, USE IT ONLY if you have a modded EPS firmware.
+Reboot required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qt/offroad/settings_dp.cc" line="448"/>
         <source>Mazda</source>
         <translation type="unfinished"></translation>
@@ -1820,7 +1836,7 @@ location set</source>
     </message>
     <message>
         <location filename="../qt/offroad/settings.cc" line="116"/>
-        <source>Show ETA in 24h format</source>
+        <source>Show ETA in 24h Format</source>
         <translation>24시간 형식으로 도착예정시간 표시</translation>
     </message>
     <message>

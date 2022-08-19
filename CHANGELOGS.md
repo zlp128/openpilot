@@ -1,5 +1,11 @@
 dragonpilot [latest] - EON/C2 Release
 ========================
+* NEW: Synced to openpilot master 2022.08.15 commits.
+  * New driving model.
+* NEW: Added back honda eps mod toggle.
+
+dragonpilot 2022.08.17 - EON/C2 Release
+========================
 * NEW: Synced to openpilot master 2022.08.07 commits.
 * NEW: Added back auto shutdown toggle.
 * NEW: Added back On-Road Dashcam toggle. (You should not replace this with your dashcam!!!)
