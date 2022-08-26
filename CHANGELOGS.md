@@ -1,8 +1,10 @@
 dragonpilot [latest] - EON/C2 Release
 ========================
-* NEW: Synced to openpilot master 2022.08.15 commits.
+* NEW: Synced to openpilot master 2022.08.23 commits.
   * New driving model.
 * NEW: Added back honda eps mod toggle.
+* NEW: Added back camera offset toggle.
+* TWEAK: Resume logic to adapt ATL mode.
 
 dragonpilot 2022.08.17 - EON/C2 Release
 ========================

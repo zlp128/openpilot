@@ -62,7 +62,7 @@ procs = [
   PythonProcess("androidd", "system.hardware.eon.androidd", enabled=EON, offroad=True),
 
   # Experimental
-  PythonProcess("rawgpsd", "selfdrive.sensord.rawgps.rawgpsd", enabled=os.path.isfile("/persist/comma/use-quectel-rawgps")),
+  PythonProcess("rawgpsd", "selfdrive.sensord.rawgps.rawgpsd", enabled=(TICI and os.path.isfile("/persist/comma/use-quectel-rawgps"))),
 
   # dp
   PythonProcess("dmonitoringd", "selfdrive.dragonpilot.dmonitoringd", enabled=EON),

@@ -41,9 +41,10 @@ services = {
   "longitudinalPlan": (True, 20., 5),
   "procLog": (True, 0.5),
   "gpsLocationExternal": (True, 10., 10),
+  "gpsLocation": (True, 1., 1),
   "ubloxGnss": (True, 10.),
   "qcomGnss": (True, 2.),
-  "gnssMeasurements": (True, 10.),
+  "gnssMeasurements": (True, 10., 10),
   "clocks": (True, 1., 1),
   "ubloxRaw": (True, 20.),
   "liveLocationKalman": (True, 20., 5),
@@ -67,6 +68,7 @@ services = {
   "navRoute": (True, 0.),
   "navThumbnail": (True, 0.),
   "qRoadEncodeIdx": (False, 20.),
+  "userFlag": (True, 0., 1),
 
   # debug
   "testJoystick": (True, 0.),

@@ -38,6 +38,8 @@ struct InitData {
   passive @12 :Bool;
   params @17 :Map(Text, Data);
 
+  commands @19 :Map(Text, Data);
+
   enum DeviceType {
     unknown @0;
     neo @1;
@@ -410,6 +412,7 @@ struct PandaState @0xa7649e2575e4591e {
   heartbeatLost @22 :Bool;
   blockedCnt @24 :UInt32;
   interruptLoad @25 :Float32;
+  fanPower @28 :UInt8;
 
   enum FaultStatus {
     none @0;
@@ -1928,6 +1931,9 @@ struct EncodeData {
   unixTimestampNanos @3 :UInt64;
 }
 
+struct UserFlag {
+}
+
 struct Event {
   logMonoTime @0 :UInt64;  # nanoseconds
   valid @67 :Bool = true;
@@ -1995,6 +2001,9 @@ struct Event {
     navRoute @83 :NavRoute;
     navThumbnail @84: Thumbnail;
 
+    # user flags
+    userFlag @93 :UserFlag;
+
     # *********** debug ***********
     testJoystick @52 :Joystick;
     roadEncodeData @86 :EncodeData;
@@ -2002,8 +2011,8 @@ struct Event {
     wideRoadEncodeData @88 :EncodeData;
     qRoadEncodeData @89 :EncodeData;
 
-    dragonConf @93 :Dp.DragonConf;
-    liveMapData @94: LiveMapData;
+    dragonConf @94 :Dp.DragonConf;
+    liveMapData @95: LiveMapData;
 
     # *********** legacy + deprecated ***********
     model @9 :Legacy.ModelData; # TODO: rename modelV2 and mark this as deprecated

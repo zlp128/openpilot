@@ -26,4 +26,5 @@ struct DragonConf {
   dpMapd @18 :Bool;
   dpDashcamd @19 :Bool;
   dpMazdaSteerAlert @20 :Bool;
+  dpCameraOffset @21 :Int8;
 }
