@@ -1,5 +1,13 @@
 dragonpilot [latest] - EON/C2 Release
 ========================
+* NEW: Synced to openpilot master 2022.08.29 commits.
+  * Nuclear Grade driving model.
+* TWEAK: Used fused location service on mapd.
+* TWEAK: Used fused location service on gpxd.
+* NEW: Added back auto boot on C2.
+
+dragonpilot 2022.08.29 - EON/C2 Release
+========================
 * NEW: Synced to openpilot master 2022.08.23 commits.
   * New driving model.
 * NEW: Added back honda eps mod toggle.

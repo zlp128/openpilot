@@ -1720,7 +1720,7 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_8get(struct __pyx_obj_6co
 static PyObject *__pyx_pf_6common_10params_pyx_6Params_10get_bool(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key); /* proto */
 static PyObject *__pyx_pf_6common_10params_pyx_6Params_12put(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key, PyObject *__pyx_v_dat); /* proto */
 static PyObject *__pyx_pf_6common_10params_pyx_6Params_14put_bool(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key, bool __pyx_v_val); /* proto */
-static PyObject *__pyx_pf_6common_10params_pyx_6Params_16delete(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key); /* proto */
+static PyObject *__pyx_pf_6common_10params_pyx_6Params_16remove(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key); /* proto */
 static PyObject *__pyx_pf_6common_10params_pyx_6Params_18get_param_path(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key); /* proto */
 static PyObject *__pyx_pf_6common_10params_pyx_6Params_20__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_6common_10params_pyx_6Params_22__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
@@ -3114,7 +3114,7 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_14put_bool(struct __pyx_o
  *     with nogil:
  *       self.p.putBool(k, val)             # <<<<<<<<<<<<<<
  * 
- *   def delete(self, key):
+ *   def remove(self, key):
  */
         (void)(__pyx_v_self->p->putBool(__pyx_v_k, __pyx_v_val));
       }
@@ -3164,25 +3164,25 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_14put_bool(struct __pyx_o
 /* "common/params_pyx.pyx":93
  *       self.p.putBool(k, val)
  * 
- *   def delete(self, key):             # <<<<<<<<<<<<<<
+ *   def remove(self, key):             # <<<<<<<<<<<<<<
  *     cdef string k = self.check_key(key)
  *     with nogil:
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6common_10params_pyx_6Params_17delete(PyObject *__pyx_v_self, PyObject *__pyx_v_key); /*proto*/
-static PyObject *__pyx_pw_6common_10params_pyx_6Params_17delete(PyObject *__pyx_v_self, PyObject *__pyx_v_key) {
+static PyObject *__pyx_pw_6common_10params_pyx_6Params_17remove(PyObject *__pyx_v_self, PyObject *__pyx_v_key); /*proto*/
+static PyObject *__pyx_pw_6common_10params_pyx_6Params_17remove(PyObject *__pyx_v_self, PyObject *__pyx_v_key) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("delete (wrapper)", 0);
-  __pyx_r = __pyx_pf_6common_10params_pyx_6Params_16delete(((struct __pyx_obj_6common_10params_pyx_Params *)__pyx_v_self), ((PyObject *)__pyx_v_key));
+  __Pyx_RefNannySetupContext("remove (wrapper)", 0);
+  __pyx_r = __pyx_pf_6common_10params_pyx_6Params_16remove(((struct __pyx_obj_6common_10params_pyx_Params *)__pyx_v_self), ((PyObject *)__pyx_v_key));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6common_10params_pyx_6Params_16delete(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key) {
+static PyObject *__pyx_pf_6common_10params_pyx_6Params_16remove(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key) {
   std::string __pyx_v_k;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -3193,11 +3193,11 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_16delete(struct __pyx_obj
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("delete", 0);
+  __Pyx_RefNannySetupContext("remove", 0);
 
   /* "common/params_pyx.pyx":94
  * 
- *   def delete(self, key):
+ *   def remove(self, key):
  *     cdef string k = self.check_key(key)             # <<<<<<<<<<<<<<
  *     with nogil:
  *       self.p.remove(k)
@@ -3224,7 +3224,7 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_16delete(struct __pyx_obj
   __pyx_v_k = __pyx_t_4;
 
   /* "common/params_pyx.pyx":95
- *   def delete(self, key):
+ *   def remove(self, key):
  *     cdef string k = self.check_key(key)
  *     with nogil:             # <<<<<<<<<<<<<<
  *       self.p.remove(k)
@@ -3249,7 +3249,7 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_16delete(struct __pyx_obj
       }
 
       /* "common/params_pyx.pyx":95
- *   def delete(self, key):
+ *   def remove(self, key):
  *     cdef string k = self.check_key(key)
  *     with nogil:             # <<<<<<<<<<<<<<
  *       self.p.remove(k)
@@ -3270,7 +3270,7 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_16delete(struct __pyx_obj
   /* "common/params_pyx.pyx":93
  *       self.p.putBool(k, val)
  * 
- *   def delete(self, key):             # <<<<<<<<<<<<<<
+ *   def remove(self, key):             # <<<<<<<<<<<<<<
  *     cdef string k = self.check_key(key)
  *     with nogil:
  */
@@ -3282,7 +3282,7 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_16delete(struct __pyx_obj
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("common.params_pyx.Params.delete", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("common.params_pyx.Params.remove", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -6060,7 +6060,7 @@ static PyMethodDef __pyx_methods_6common_10params_pyx_Params[] = {
   {"get_bool", (PyCFunction)__pyx_pw_6common_10params_pyx_6Params_11get_bool, METH_O, 0},
   {"put", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6common_10params_pyx_6Params_13put, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6common_10params_pyx_6Params_12put},
   {"put_bool", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6common_10params_pyx_6Params_15put_bool, METH_VARARGS|METH_KEYWORDS, 0},
-  {"delete", (PyCFunction)__pyx_pw_6common_10params_pyx_6Params_17delete, METH_O, 0},
+  {"remove", (PyCFunction)__pyx_pw_6common_10params_pyx_6Params_17remove, METH_O, 0},
   {"get_param_path", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6common_10params_pyx_6Params_19get_param_path, METH_VARARGS|METH_KEYWORDS, 0},
   {"__reduce_cython__", (PyCFunction)__pyx_pw_6common_10params_pyx_6Params_21__reduce_cython__, METH_NOARGS, 0},
   {"__setstate_cython__", (PyCFunction)__pyx_pw_6common_10params_pyx_6Params_23__setstate_cython__, METH_O, 0},
