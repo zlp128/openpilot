@@ -31,7 +31,6 @@ DASHCAM_BIT_RATES = 4000000 # max is 4000000
 DASHCAM_MAX_SIZE_PER_FILE = DASHCAM_BIT_RATES/8*DASHCAM_DURATION # 4Mbps / 8 * 180 = 90MB per 180 seconds
 DASHCAM_FREESPACE_LIMIT = 15 # we start cleaning up footage when freespace is below 15%
 DASHCAM_KEPT_MIN_SIZE = DASHCAM_MAX_SIZE_PER_FILE * 240 # 12 hrs of video = 21GB
-DASHCAM_KEPT_MIN_CNT = 10 # keep at least 10 files, ~30 mins / 1GB
 
 class Dashcamd():
   def __init__(self):
@@ -40,7 +39,6 @@ class Dashcamd():
     self.dashcam_next_time = 0
     self.started = False
     self.free_space = 1.
-    self.first_run = True
 
   def run(self, started, free_space):
     self.free_space = free_space
@@ -50,9 +48,7 @@ class Dashcamd():
     self.make_folder()
     if self.dashcam_folder_exists:
       self.start()
-      if not self.first_run:
-        self.clean_up()
-      self.first_run = False
+      self.clean_up()
 
   def stop(self):
     os.system("killall -SIGINT screenrecord")
