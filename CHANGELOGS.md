@@ -6,6 +6,8 @@ dragonpilot [latest] - EON/C2 Release
 * TWEAK: Used fused location service on gpxd.
 * NEW: Added back auto boot on C2.
 * NEW: TOYOTA - Door auto lock/unlock. (Thanks to @AlexandreSato and @cydia2020)
+* NEW: Added Camera based Driver Monitor back. (This may overheat your device).
+* NEW: Added a toggle to turn on/off Camera based Driver Monitor.
 
 dragonpilot 2022.08.29 - EON/C2 Release
 ========================

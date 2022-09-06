@@ -1,1 +1,1 @@
-#define COMMA_VERSION "2022.09.01"
+#define COMMA_VERSION "2022.09.06"

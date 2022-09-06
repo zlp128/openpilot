@@ -15,7 +15,7 @@ from system.hardware import PC, TICI
 DT_CTRL = 0.01  # controlsd
 DT_MDL = 0.05  # model
 DT_TRML = 0.5  # thermald and manager
-DT_DMON = 0.05 # driver monitoring
+DT_DMON = 0.1 # driver monitoring
 
 
 class Priority:

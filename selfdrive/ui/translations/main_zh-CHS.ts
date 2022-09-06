@@ -114,109 +114,109 @@
 <context>
     <name>DPCarPanel</name>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="390"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="398"/>
         <source>Override Speed When Below</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="390"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="398"/>
         <source>Override feature will be enabled when set cruise speed is lower than this value.
 1 km/h = 0.62 mph.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="390"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="398"/>
         <source> km/h</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="394"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="402"/>
         <source>Turn On Cruise Speed Override</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="394"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="402"/>
         <source>This feature will let you set your cruise speed below vehicle standard. (usually at 26~40 km/h)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="412"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="420"/>
         <source>Toyota / Lexus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="418"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="426"/>
         <source>Enable SnG Mod</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="418"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="426"/>
         <source>Enable this to fix stop and go (SnG) issue on some models.
 Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="424"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="432"/>
         <source>Enable AM Physical Button Ctrl</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="424"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="432"/>
         <source>Enable this to link Accel Mode (AM) control to the physical button (TSS2).
 ONLY WORK ON SOME OF TSS1 VEHICLES.
 Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="437"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="445"/>
         <source>Enable Door Auto Lock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="437"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="445"/>
         <source>Enable this to lock doors when drive above 25 km/h.
 ONLY WORK ON SOME VEHICLES.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="439"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="447"/>
         <source>Enable Door Auto Unlock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="439"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="447"/>
         <source>Enable this to unlock doors when shift to gear P.
 ONLY WORK ON SOME VEHICLES.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="441"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="449"/>
         <source>Honda</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="443"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="451"/>
         <source>Enable EPS Mod Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="443"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="451"/>
         <source>Enable this will increase steering, USE IT ONLY if you have a modded EPS firmware.
 Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="461"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="469"/>
         <source>Mazda</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="463"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="471"/>
         <source>Display Below Steer Speed Alert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="463"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="471"/>
         <source>Enable this will show below steer speed alert.
 Thanks to @TheCrowd</source>
         <translation type="unfinished"></translation>
@@ -225,118 +225,118 @@ Thanks to @TheCrowd</source>
 <context>
     <name>DPControlPanel</name>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="170"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="178"/>
         <source>ALCA Delay</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="170"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="178"/>
         <source>Once the vehicle meets all ALCA criteria, it will wait for the seconds set here before peforming lane change automatically.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="170"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="178"/>
         <source> secs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="172"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="180"/>
         <source>ALCA Min Speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="172"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="180"/>
         <source>ALCA minimum engage speed in mph.
 1 mph = 1.61 km/h.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="172"/>
-        <location filename="../qt/offroad/settings_dp.cc" line="181"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="180"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="189"/>
         <source> mph</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="181"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="189"/>
         <source>LCA Min Speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="181"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="189"/>
         <source>LCA minimum engage speed in mph.
 1 mph = 1.61 km/h.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="192"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="200"/>
         <source>Lateral Ctrl Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="192"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="200"/>
         <source>1 = Lane Change Assist (LCA)
 2 = Auto Lane Change Assist (ALCA)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="232"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="240"/>
         <source>Longitudinal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="234"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="242"/>
         <source>Manually Control Accel Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="234"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="242"/>
         <source>Enable this if you wish to adjust openpilot&apos;s acceleration control.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="237"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="245"/>
         <source>Enable vision based turn control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="238"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="246"/>
         <source>Use vision path predictions to estimate the appropriate speed to drive through turns ahead.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="292"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="300"/>
         <source>Lateral</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="297"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="305"/>
         <source>Use Lane Lines</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="297"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="305"/>
         <source>Enable this if you wish to use lane lines mode.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="300"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="308"/>
         <source>Use LQR Controller</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="300"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="308"/>
         <source>Enable this if you wish to use LQR instead of PID or INDI controller.
 WORKS WELL ONLY ON SOME VEHICLES.
 More linear steering experience.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="305"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="313"/>
         <source>Always On Lateral</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="305"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="313"/>
         <source>Use at your own risk!
 1 = Stock Long
 2 = OP Long
@@ -345,12 +345,12 @@ Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="313"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="321"/>
         <source>Camera Offset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="313"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="321"/>
         <source>Adjust your camera position if your device is not mounted as per guidance.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -444,100 +444,115 @@ Reboot required.</source>
     </message>
     <message>
         <location filename="../qt/offroad/settings_dp.cc" line="103"/>
-        <source>Enable Jetson Support</source>
+        <source>Enable Driver Monitor (Front Cam)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qt/offroad/settings_dp.cc" line="103"/>
+        <source>Enable this option if you wish to use front camera for driver monitoring.
+On = Front Cam Monitor + Steering Monitor
+Off = Steering Monitor only.
+Enable this will increase device temp a lot, use at your own risk.
+Reboot Required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="111"/>
+        <source>Enable Jetson Support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/offroad/settings_dp.cc" line="111"/>
         <source>Enable this option if you intend to run dp on Nvidia Jetson.
 Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qt/offroad/settings_dp.cc" line="105"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="113"/>
         <source>Reboot recommended.
 Reboot?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="129"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="137"/>
         <source>Flashing Panda Firmware</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="129"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="137"/>
         <source>FLASH</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="129"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="137"/>
         <source>Tap the button to update your panda firmware.
 The device should reboot once if it finish updating.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="131"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="139"/>
         <source>Are you sure you want to flash the panda?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="158"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="166"/>
         <source>Are you sure delete all media?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="138"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="146"/>
         <source>Pandas Firmware Recovery</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="138"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="146"/>
         <source>RECOVER</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="138"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="146"/>
         <source>Tap the button ONLY if your panda ran into issue.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="140"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="148"/>
         <source>Are you sure you want to run recover panda script?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="147"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="155"/>
         <source>Reset dragonpilot conf</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="147"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="155"/>
         <source>RESET</source>
         <translation type="unfinished">重置</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="147"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="155"/>
         <source>Tap the button to reset all your dragonpilot congiration to default value.
 Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="149"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="157"/>
         <source>Are you sure you want to reset dp params?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="156"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="164"/>
         <source>Delete All Driving Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="156"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="164"/>
         <source>DELETE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="156"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="164"/>
         <source>Tap the button to delete ALL your driving logs (including dashcam / gpx / driving logs).</source>
         <translation type="unfinished"></translation>
     </message>
@@ -545,34 +560,34 @@ Reboot required.</source>
 <context>
     <name>DPMapsPanel</name>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="522"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="530"/>
         <source>Show Full Screen Nav.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="522"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="530"/>
         <source>This will show navigation in full screen.
 Please tap green boarder if you wish to switch back drive view.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="524"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="532"/>
         <source>Search Destination using Google Map</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="524"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="532"/>
         <source>This will allow you to search destination in google map api.
 You will need to apply your own google map api key.<byte value="x8"/>Enter your key detail in web interface once it&apos;s enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="528"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="536"/>
         <source>Enable Nav.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="528"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="536"/>
         <source>This will let use the build in Navigation.
 Use web interface to control it: *http://&lt;device_ip&gt;:8082*.
 You will need to apply your own mapbox token at https://www.mapbox.com/.
@@ -581,52 +596,52 @@ Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="551"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="559"/>
         <source>Enable Speed Limit Control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="552"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="560"/>
         <source>Use speed limit signs information from map data and car interface to automatically adapt cruise speed to road limits.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="556"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="564"/>
         <source>Enable Speed Limit Offset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="557"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="565"/>
         <source>Set speed limit slightly higher than actual speed limit for a more natural drive.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="561"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="569"/>
         <source>Enable Map Data Turn Control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="562"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="570"/>
         <source>Use curvature info from map data to define speed limits to take turns ahead</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="566"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="574"/>
         <source>Show debug UI elements</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="567"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="575"/>
         <source>Show UI elements that aid debugging.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="572"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="580"/>
         <source>Enable MapD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="572"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="580"/>
         <source>Use OSM to assist lateral/longitudinal control.
 Please note:
 1. This feature will works only when your car support OP longitudinal.
@@ -639,95 +654,95 @@ Please note:
 <context>
     <name>DPUIPanel</name>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="329"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="337"/>
         <source>Display Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="329"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="337"/>
         <source>0 = Default
 1 = Screen Off While Driving</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="331"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="339"/>
         <source>Screen Brightness</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="331"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="339"/>
         <source>Adjust your screen brightness.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="331"/>
-        <location filename="../qt/offroad/settings_dp.cc" line="333"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="339"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="341"/>
         <source>AUTO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="333"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="341"/>
         <source>Alert Volume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="333"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="341"/>
         <source>Adjust your alert volume.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="335"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="343"/>
         <source>Quiet Drive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="335"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="343"/>
         <source>Display alert and play important warning sound. Thanks @sunnyhaibin.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="337"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="345"/>
         <source>Display Speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="337"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="345"/>
         <source>Enable this to display your current speed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="345"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="353"/>
         <source>Display Event / Steer Icon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="345"/>
-        <location filename="../qt/offroad/settings_dp.cc" line="349"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="353"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="357"/>
         <source>Enable this to display the icon.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="349"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="357"/>
         <source>Display Driver Monitor Indicator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="351"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="359"/>
         <source>Display Side Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="351"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="359"/>
         <source>Enable this to display steering angle / lead car distance / engine RPM.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="353"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="361"/>
         <source>Display Top Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings_dp.cc" line="353"/>
+        <location filename="../qt/offroad/settings_dp.cc" line="361"/>
         <source>Enable this to display time / system temp / battery level.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1143,60 +1158,60 @@ location set</source>
         <translation>mph</translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="434"/>
-        <location filename="../qt/onroad.cc" line="437"/>
+        <location filename="../qt/onroad.cc" line="432"/>
+        <location filename="../qt/onroad.cc" line="435"/>
         <source>MAX</source>
         <translation>最高定速</translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="487"/>
-        <location filename="../qt/onroad.cc" line="490"/>
+        <location filename="../qt/onroad.cc" line="485"/>
+        <location filename="../qt/onroad.cc" line="488"/>
         <source>SPEED</source>
         <translation>SPEED</translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="493"/>
-        <location filename="../qt/onroad.cc" line="496"/>
+        <location filename="../qt/onroad.cc" line="491"/>
+        <location filename="../qt/onroad.cc" line="494"/>
         <source>LIMIT</source>
         <translation>LIMIT</translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="963"/>
+        <location filename="../qt/onroad.cc" line="959"/>
         <source>REAL STEER</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="971"/>
+        <location filename="../qt/onroad.cc" line="967"/>
         <source>RAM PER</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="983"/>
+        <location filename="../qt/onroad.cc" line="979"/>
         <source>OFF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="986"/>
+        <location filename="../qt/onroad.cc" line="982"/>
         <source>ENG RPM</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="1019"/>
+        <location filename="../qt/onroad.cc" line="1015"/>
         <source>NOR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="1022"/>
+        <location filename="../qt/onroad.cc" line="1018"/>
         <source>SPT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="1025"/>
+        <location filename="../qt/onroad.cc" line="1021"/>
         <source>ECO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/onroad.cc" line="1027"/>
+        <location filename="../qt/onroad.cc" line="1023"/>
         <source>ACCEL</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1204,17 +1219,17 @@ location set</source>
 <context>
     <name>OffroadHome</name>
     <message>
-        <location filename="../qt/home.cc" line="115"/>
+        <location filename="../qt/home.cc" line="113"/>
         <source>UPDATE</source>
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../qt/home.cc" line="206"/>
+        <location filename="../qt/home.cc" line="204"/>
         <source> ALERTS</source>
         <translation> 警报</translation>
     </message>
     <message>
-        <location filename="../qt/home.cc" line="206"/>
+        <location filename="../qt/home.cc" line="204"/>
         <source> ALERT</source>
         <translation> 警报</translation>
     </message>
@@ -1408,53 +1423,53 @@ location set</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="462"/>
+        <location filename="../qt/offroad/settings.cc" line="460"/>
         <source>Device</source>
         <translation>设备</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="463"/>
-        <location filename="../qt/offroad/settings.cc" line="519"/>
+        <location filename="../qt/offroad/settings.cc" line="461"/>
+        <location filename="../qt/offroad/settings.cc" line="517"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="464"/>
+        <location filename="../qt/offroad/settings.cc" line="462"/>
         <source>Toggles</source>
         <translation>设定</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="465"/>
+        <location filename="../qt/offroad/settings.cc" line="463"/>
         <source>Software</source>
         <translation>软件</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="475"/>
+        <location filename="../qt/offroad/settings.cc" line="473"/>
         <source>Navigation</source>
         <translation>导航</translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="481"/>
+        <location filename="../qt/offroad/settings.cc" line="479"/>
         <source>DP - General</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="482"/>
+        <location filename="../qt/offroad/settings.cc" line="480"/>
         <source>DP - Controls</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="483"/>
+        <location filename="../qt/offroad/settings.cc" line="481"/>
         <source>DP - UI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="484"/>
+        <location filename="../qt/offroad/settings.cc" line="482"/>
         <source>DP - Cars</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/offroad/settings.cc" line="487"/>
+        <location filename="../qt/offroad/settings.cc" line="485"/>
         <source>DP - Maps</source>
         <translation type="unfinished"></translation>
     </message>

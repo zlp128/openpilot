@@ -165,6 +165,7 @@ confs = [
   #
   # {'name': 'dp_no_offroad_fix', 'default': False, 'type': 'Bool', 'conf_type': ['param']},
   # {'name': 'dp_ftpd', 'default': False, 'type': 'Bool', 'conf_type': ['param']},
+  {'name': 'dp_dm', 'default': False, 'type': 'Bool', 'conf_type': ['param']},
 ]
 
 def get_definition(name):

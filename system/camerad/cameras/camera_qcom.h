@@ -110,7 +110,7 @@ typedef struct MultiCameraState {
   VisionBuf stats_bufs[FRAME_BUF_COUNT];
 
   CameraState road_cam;
-//  CameraState driver_cam;
+  CameraState driver_cam;
 
   SubMaster *sm;
   PubMaster *pm;

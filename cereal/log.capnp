@@ -1710,7 +1710,7 @@ struct DriverStateV2 {
   }
 }
 
-struct DriverStateDEPRECATED @0xb83c6cc593ed0a00 {
+struct DriverState @0xb83c6cc593ed0a00 {
   frameId @0 :UInt32;
   modelExecutionTime @14 :Float32;
   dspExecutionTime @16 :Float32;
@@ -2050,6 +2050,6 @@ struct Event {
     kalmanOdometryDEPRECATED @65 :Legacy.KalmanOdometry;
     uiLayoutStateDEPRECATED @57 :Legacy.UiLayoutState;
     pandaStateDEPRECATED @12 :PandaState;
-    driverStateDEPRECATED @59 :DriverStateDEPRECATED;
+    driverState @59 :DriverState;
   }
 }

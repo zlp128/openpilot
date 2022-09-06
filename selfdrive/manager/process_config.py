@@ -7,8 +7,10 @@ from selfdrive.manager.process import PythonProcess, NativeProcess, DaemonProces
 
 WEBCAM = os.getenv("USE_WEBCAM") is not None
 
+dp_dm = Params().get_bool('dp_dm')
+
 def driverview(started: bool, params: Params, CP: car.CarParams) -> bool:
-  return params.get_bool("IsDriverViewEnabled")  # type: ignore
+  return dp_dm and params.get_bool("IsDriverViewEnabled")  # type: ignore
 
 def notcar(started: bool, params: Params, CP: car.CarParams) -> bool:
   return CP.notCar  # type: ignore
@@ -19,7 +21,7 @@ def logging(started, params, CP: car.CarParams) -> bool:
 
 procs = [
   # due to qualcomm kernel bugs SIGKILLing camerad sometimes causes page table corruption
-  NativeProcess("camerad", "system/camerad", ["./camerad"], unkillable=True), #, callback=driverview),
+  NativeProcess("camerad", "system/camerad", ["./camerad"], unkillable=True, callback=driverview),
   NativeProcess("clocksd", "system/clocksd", ["./clocksd"]),
   # NativeProcess("logcatd", "system/logcatd", ["./logcatd"]),
   # NativeProcess("proclogd", "system/proclogd", ["./proclogd"]),
@@ -27,7 +29,7 @@ procs = [
   # PythonProcess("timezoned", "system.timezoned", enabled=not PC, offroad=True),
 
   DaemonProcess("manage_athenad", "selfdrive.athena.manage_athenad", "AthenadPid"),
-  # NativeProcess("dmonitoringmodeld", "selfdrive/modeld", ["./dmonitoringmodeld"], enabled=(not PC or WEBCAM), callback=driverview),
+  NativeProcess("dmonitoringmodeld", "selfdrive/modeld", ["./dmonitoringmodeld"], enabled=dp_dm, callback=driverview),
   # NativeProcess("encoderd", "selfdrive/loggerd", ["./encoderd"]),
   # NativeProcess("loggerd", "selfdrive/loggerd", ["./loggerd"], onroad=False, callback=logging),
   NativeProcess("modeld", "selfdrive/modeld", ["./modeld"]),
@@ -40,7 +42,7 @@ procs = [
   PythonProcess("calibrationd", "selfdrive.locationd.calibrationd"),
   PythonProcess("controlsd", "selfdrive.controls.controlsd"),
   # PythonProcess("deleter", "selfdrive.loggerd.deleter", offroad=True),
-  # PythonProcess("dmonitoringd", "selfdrive.monitoring.dmonitoringd", enabled=(not PC or WEBCAM), callback=driverview),
+  PythonProcess("dmonitoringd", "selfdrive.monitoring.dmonitoringd", enabled=dp_dm, callback=driverview),
   # PythonProcess("laikad", "selfdrive.locationd.laikad"),
   # PythonProcess("navd", "selfdrive.navd.navd"),
   PythonProcess("pandad", "selfdrive.boardd.pandad", offroad=True),
@@ -66,7 +68,7 @@ procs = [
   PythonProcess("rawgpsd", "selfdrive.sensord.rawgps.rawgpsd", enabled=(TICI and os.path.isfile("/persist/comma/use-quectel-rawgps"))),
 
   # dp
-  PythonProcess("dmonitoringd", "selfdrive.dragonpilot.dmonitoringd", enabled=EON),
+  PythonProcess("dpmonitoringd", "selfdrive.dragonpilot.dpmonitoringd", enabled=not dp_dm),
   PythonProcess("mapd", "selfdrive.mapd.mapd"),
   PythonProcess("systemd", "selfdrive.dragonpilot.systemd", offroad=True),
   PythonProcess("gpxd", "selfdrive.dragonpilot.gpxd"),
