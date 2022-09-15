@@ -44,7 +44,7 @@ procs = [
   # PythonProcess("deleter", "selfdrive.loggerd.deleter", offroad=True),
   PythonProcess("dmonitoringd", "selfdrive.monitoring.dmonitoringd", enabled=dp_dm, callback=driverview),
   # PythonProcess("laikad", "selfdrive.locationd.laikad"),
-  # PythonProcess("navd", "selfdrive.navd.navd"),
+  PythonProcess("navd", "selfdrive.navd.navd"),
   PythonProcess("pandad", "selfdrive.boardd.pandad", offroad=True),
   PythonProcess("paramsd", "selfdrive.locationd.paramsd"),
   PythonProcess("pigeond", "selfdrive.sensord.pigeond", enabled=TICI),
@@ -72,7 +72,7 @@ procs = [
   PythonProcess("mapd", "selfdrive.mapd.mapd"),
   PythonProcess("systemd", "selfdrive.dragonpilot.systemd", offroad=True),
   PythonProcess("gpxd", "selfdrive.dragonpilot.gpxd"),
-  #PythonProcess("otisserv", "selfdrive.dragonpilot.otisserv", offroad=True),
+  PythonProcess("otisserv", "selfdrive.dragonpilot.otisserv", offroad=True),
   # PythonProcess("loggerd", "selfdrive.dragonpilot.loggerd"),
 ]
 

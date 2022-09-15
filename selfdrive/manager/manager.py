@@ -41,21 +41,19 @@ def manager_init() -> None:
     ("CompletedTrainingVersion", "0"),
     ("DisengageOnAccelerator", "1"),
     ("HasAcceptedTerms", "0"),
+    ("LanguageSetting", "main_en"),
     ("OpenpilotEnabledToggle", "1"),
     ("ShowDebugUI", "0"),
     ("SpeedLimitControl", "0"),
     ("SpeedLimitPercOffset", "0"),
     ("TurnSpeedControl", "0"),
-    ("TurnVisionControl", "0"),
+    #("TurnVisionControl", "0"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))
 
   if params.get_bool("RecordFrontLock"):
     params.put_bool("RecordFront", True)
-
-  if not params.get_bool("DisableRadar_Allow"):
-    params.remove("DisableRadar")
 
   # set unset params
   for k, v in default_params:
@@ -136,7 +134,7 @@ def manager_thread() -> None:
   # dp
   dp_otisserv = params.get_bool('dp_otisserv')
   ignore += ['dmonitoringmodeld', 'dmonitoringd', 'dpmonitoringd'] if params.get_bool('dp_jetson') else []
-  ignore += ['otisserv'] if not dp_otisserv else []
+  ignore += ['otisserv', 'navd'] if not dp_otisserv else []
   dp_mapd = params.get_bool('dp_mapd')
   ignore += ['mapd'] if not dp_mapd else []
   ignore += ['gpxd'] if not dp_otisserv and not dp_mapd and not params.get_bool('dp_gpxd') else []

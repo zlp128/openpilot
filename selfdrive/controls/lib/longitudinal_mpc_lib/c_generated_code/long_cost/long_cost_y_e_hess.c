@@ -29,6 +29,7 @@ extern "C" {
 #define casadi_s1 CASADI_PREFIX(s1)
 #define casadi_s2 CASADI_PREFIX(s2)
 #define casadi_s3 CASADI_PREFIX(s3)
+#define casadi_s4 CASADI_PREFIX(s4)
 #define casadi_sq CASADI_PREFIX(sq)
 
 /* Symbol visibility in DLLs */
@@ -51,9 +52,10 @@ casadi_real casadi_sq(casadi_real x) { return x*x;}
 static const casadi_int casadi_s0[7] = {3, 1, 0, 3, 0, 1, 2};
 static const casadi_int casadi_s1[3] = {0, 0, 0};
 static const casadi_int casadi_s2[9] = {5, 1, 0, 5, 0, 1, 2, 3, 4};
-static const casadi_int casadi_s3[9] = {3, 3, 0, 1, 3, 3, 1, 0, 1};
+static const casadi_int casadi_s3[10] = {6, 1, 0, 6, 0, 1, 2, 3, 4, 5};
+static const casadi_int casadi_s4[9] = {3, 3, 0, 1, 3, 3, 1, 0, 1};
 
-/* long_cost_y_e_hess:(i0[3],i1[],i2[5],i3[5])->(o0[3x3,3nz]) */
+/* long_cost_y_e_hess:(i0[3],i1[],i2[5],i3[6])->(o0[3x3,3nz]) */
 static int casadi_f0(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem) {
   casadi_real a0, a1, a10, a2, a3, a4, a5, a6, a7, a8, a9;
   a0=arg[2]? arg[2][0] : 0;
@@ -166,14 +168,14 @@ CASADI_SYMBOL_EXPORT const casadi_int* long_cost_y_e_hess_sparsity_in(casadi_int
     case 0: return casadi_s0;
     case 1: return casadi_s1;
     case 2: return casadi_s2;
-    case 3: return casadi_s2;
+    case 3: return casadi_s3;
     default: return 0;
   }
 }
 
 CASADI_SYMBOL_EXPORT const casadi_int* long_cost_y_e_hess_sparsity_out(casadi_int i) {
   switch (i) {
-    case 0: return casadi_s3;
+    case 0: return casadi_s4;
     default: return 0;
   }
 }

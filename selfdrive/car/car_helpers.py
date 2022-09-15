@@ -91,7 +91,7 @@ def fingerprint(logcan, sendcan):
     fixed_fingerprint = car_selected
 
   if not fixed_fingerprint and not skip_fw_query:
-    # Vin query only reliably works thorugh OBDII
+    # Vin query only reliably works through OBDII
     bus = 1
 
     cached_params = Params().get("CarParamsCache")
@@ -213,11 +213,11 @@ def get_car(logcan, sendcan):
   x = threading.Thread(target=crash_log, args=(candidate,))
   x.start()
 
-  disable_radar = Params().get_bool("DisableRadar")
+  experimental_long = Params().get_bool("ExperimentalLongitudinalEnabled")
 
   try:
     CarInterface, CarController, CarState = interfaces[candidate]
-    CP = CarInterface.get_params(candidate, fingerprints, car_fw, disable_radar)
+    CP = CarInterface.get_params(candidate, fingerprints, car_fw, experimental_long)
     CP.carVin = vin
     CP.carFw = car_fw
     CP.fingerprintSource = source

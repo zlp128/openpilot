@@ -291,7 +291,6 @@ struct CanData {
 }
 
 struct DeviceState @0xa4d8b5af2aa492eb {
-  usbOnline @12 :Bool;
   networkType @22 :NetworkType;
   networkInfo @31 :NetworkInfo;
   networkStrength @24 :NetworkStrength;
@@ -309,10 +308,6 @@ struct DeviceState @0xa4d8b5af2aa492eb {
   cpuUsagePercent @34 :List(Int8);  # per-core cpu usage
 
   # power
-  batteryPercent @8 :Int16;
-  batteryCurrent @15 :Int32;
-  chargingError @17 :Bool;
-  chargingDisabled @18 :Bool;
   offroadPowerUsageUwh @23 :UInt32;
   carBatteryCapacityUwh @25 :UInt32;
   powerDrawW @40 :Float32;
@@ -389,6 +384,11 @@ struct DeviceState @0xa4d8b5af2aa492eb {
   batteryStatusDEPRECATED @9 :Text;
   batteryVoltageDEPRECATED @16 :Int32;
   batteryTempCDEPRECATED @29 :Float32;
+  batteryPercent @8 :Int16;
+  batteryCurrent @15 :Int32;
+  chargingError @17 :Bool;
+  chargingDisabled @18 :Bool;
+  usbOnline @12 :Bool;
 }
 
 struct PandaState @0xa7649e2575e4591e {
@@ -479,8 +479,8 @@ struct PeripheralState {
   voltage @1 :UInt32;
   current @2 :UInt32;
   fanSpeedRpm @3 :UInt16;
-  usbPowerMode @4 :UsbPowerMode;
 
+  usbPowerMode @4 :UsbPowerMode;
   enum UsbPowerMode @0xa8883583b32c9877 {
     none @0;
     client @1;
@@ -953,11 +953,11 @@ struct LongitudinalPlan @0xe00b5b3eba12876c {
 
 struct LateralPlan @0xe1e9318e2ae8b51e {
   modelMonoTime @31 :UInt64;
-  laneWidth @0 :Float32;
-  lProb @5 :Float32;
-  rProb @7 :Float32;
+  laneWidthDEPRECATED @0 :Float32;
+  lProbDEPRECATED @5 :Float32;
+  rProbDEPRECATED @7 :Float32;
   dPathPoints @20 :List(Float32);
-  dProb @21 :Float32;
+  dProbDEPRECATED @21 :Float32;
 
   #dp
   dPathWLinesX @32 :List(Float32);

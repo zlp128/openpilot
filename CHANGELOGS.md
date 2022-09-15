@@ -1,13 +1,14 @@
 dragonpilot [latest] - EON/C2 Release
 ========================
-* NEW: Synced to openpilot master 2022.08.29 commits.
-  * Nuclear Grade driving model.
-* TWEAK: Used fused location service on mapd.
-* TWEAK: Used fused location service on gpxd.
-* NEW: Added back auto boot on C2.
-* NEW: TOYOTA - Door auto lock/unlock. (Thanks to @AlexandreSato and @cydia2020)
-* NEW: Added Camera based Driver Monitor back. (This may overheat your device).
-* NEW: Added a toggle to turn on/off Camera based Driver Monitor.
+* Synced with openpilot master 2022.09.01 commits.
+  * e2e longitudinal toggle. (Extremely alpha feature)
+  * Deprecated SNPE lib and switched to tinygrad.
+* NEW: Added back nav support on EON/C2.
+* WARNING: DUE TO THE INTRODUCTION OF END TO END LONGITUDINAL FEATURE, FOLLOWING FEATURES HAS BEEN CHANGED:
+  * WIP: Dynamic Follow has been temporary removed for refactoring.
+  * WIP: Vision Turn Control has been temporary removed for refactoring.
+  * REMOVED: Camera offset has been removed permanently.
+  * EON/C2 WILL NO LONGER RECEIVE ANY DRIVING/DRIVER MONITORING MODEL UPDATES.
 
 dragonpilot 2022.08.29 - EON/C2 Release
 ========================
@@ -40,6 +41,37 @@ dragonpilot 2022.07.29 - EON/C2 Release
 
 dragonpilot 2022.07.20 - EON/C2 Release
 ========================
+* Synced with openpilot master 2022.09.09 commits.
+* ADDED: us-west coast can now use mapd without data. See toggle description for more detail.
+* READD: Temp check toggl e, max speed toggle and couple other UI toggles.
+* bug fix and improvement
+
+dragonpilot [2022.09.04]
+* Synced with openpilot master 2022.09.01 commits.
+* Refactor: Dynamic Follow has been removerd temporary. Needs a refactor. (wip)
+* ADDED: Auto Toyota door lock/unlock **only works on some car**
+* READDED: Camera offset toggle.
+* Improvement: gpxd now uses liveLocationKalman better performance.
+* bug fix and improvement.
+
+dragonpilot [2022.08.07]
+========================
+Synced to openpilot master 2022.08.07 commits.
+NEW: Added back auto shutdown toggle.
+NEW: Added back LQR tune toggle.
+NEW: MAZDA - Ability to enable/disable below steer speed alert. (Thanks to @TheCrowd)
+TWEAKED: Panda Recovery should kill boardd process first.
+FIXED: Fixed stop working issue when mapd crashed.
+
+dragonpilot 2022.07.27
+========================
+NEW: Synced to openpilot 2022.07.27 commits.
+NEW: Included Mazda vehicles.
+TWEAK: Only show road name bar when it's not empty.
+TWEAK: Enlarged lead car distance text.
+TWEAK: TOYOTA - Updated lowest speed override feature.
+FIXED: Fixed Panda Flash/Recovery buttons.
+FIXED: Included dp_patcher.py execution.
 * FIXED: Included correct camera/path offset values for EON/C2.
 * FIXED: Param bug in HKG. (Thanks to @sunnyhaibin).
 * FIXED: Included fan controller for UNO (C2).
