@@ -203,11 +203,13 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.indi.timeConstantV = [1.4]
       ret.lateralTuning.indi.actuatorEffectivenessBP = [0.]
       ret.lateralTuning.indi.actuatorEffectivenessV = [1.8]
-    elif candidate in (CAR.KIA_OPTIMA, CAR.KIA_OPTIMA_H):
+    elif candidate in (CAR.KIA_OPTIMA, CAR.KIA_OPTIMA_2019, CAR.KIA_OPTIMA_H):
       ret.mass = 3558. * CV.LB_TO_KG
       ret.wheelbase = 2.80
       ret.steerRatio = 13.75
       tire_stiffness_factor = 0.5
+      if candidate == CAR.KIA_OPTIMA:
+        ret.minSteerSpeed = 32 * CV.MPH_TO_MS
       CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
     elif candidate == CAR.KIA_STINGER:
       ret.lateralTuning.pid.kf = 0.00005
@@ -290,6 +292,8 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.16], [0.01]]
 
+    CarInterfaceBase.configure_dp_tune(candidate, ret.lateralTuning)
+
     # panda safety config
     if candidate in CANFD_CAR:
       ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.noOutput),
@@ -339,7 +343,6 @@ class CarInterface(CarInterfaceBase):
     if int(Params().get("dp_atl").decode('utf-8')) == 1:
       ret.openpilotLongitudinalControl = False
 
-    CarInterfaceBase.configure_lqr_tune(ret.lateralTuning)
     return ret
 
   @staticmethod

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import math
 import numpy as np
-from common.numpy_fast import interp
+from common.numpy_fast import clip, interp
 
 import cereal.messaging as messaging
 from common.conversions import Conversions as CV
@@ -10,11 +10,11 @@ from common.params import Params
 from common.realtime import DT_MDL
 from selfdrive.modeld.constants import T_IDXS
 from selfdrive.controls.lib.longcontrol import LongCtrlState
-from selfdrive.controls.lib.longitudinal_mpc_lib.long_mpc import LongitudinalMpc
+from selfdrive.controls.lib.longitudinal_mpc_lib.long_mpc import LongitudinalMpc, T_FOLLOW
 from selfdrive.controls.lib.longitudinal_mpc_lib.long_mpc import T_IDXS as T_IDXS_MPC
 from selfdrive.controls.lib.drive_helpers import V_CRUISE_MAX, CONTROL_N
 from system.swaglog import cloudlog
-#from selfdrive.controls.lib.vision_turn_controller import VisionTurnController
+from selfdrive.controls.lib.vision_turn_controller import VisionTurnController
 from selfdrive.controls.lib.speed_limit_controller import SpeedLimitController, SpeedLimitResolver
 from selfdrive.controls.lib.turn_speed_controller import TurnSpeedController
 from selfdrive.controls.lib.events import Events
@@ -22,8 +22,8 @@ from selfdrive.controls.lib.events import Events
 LON_MPC_STEP = 0.2  # first step is 0.2s
 AWARENESS_DECEL = -0.2  # car smoothly decel at .2m/s^2 when user is distracted
 A_CRUISE_MIN = -1.2
-A_CRUISE_MAX_VALS = [1.2, 1.2, 0.8, 0.6]
-A_CRUISE_MAX_BP = [0., 15., 25., 40.]
+A_CRUISE_MAX_VALS = [1.6, 1.2, 0.8, 0.6]
+A_CRUISE_MAX_BP = [0., 10.0, 25., 40.]
 
 # Lookup table for turns
 _A_TOTAL_MAX_V = [1.7, 3.2]
@@ -41,15 +41,20 @@ DP_ACCEL_NORMAL = 1
 DP_ACCEL_SPORT = 2
 
 # accel profile by @arne182 modified by cgw
-_DP_CRUISE_MIN_V = [-0.05, -0.1, -0.3, -0.4, -0.4, -0.23, -0.1]
+_DP_CRUISE_MIN_V = [-0.1, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
 _DP_CRUISE_MIN_V_ECO = [-0.1, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
-_DP_CRUISE_MIN_V_SPORT = [-0.1, -0.2, -0.4, -0.5, -0.5, -0.25, -0.1]
-_DP_CRUISE_MIN_BP = [0.0, 3.0, 5.0, 20.0, 33.3, 40.0, 55.0]
+_DP_CRUISE_MIN_V_SPORT = [-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
+_DP_CRUISE_MIN_BP = [0., 0.07, 6., 8., 11., 15., 20., 25., 30., 55.]
 
 _DP_CRUISE_MAX_V = [3.5, 1.7, 1.31, 0.95, 0.77, 0.67, 0.55, 0.47, 0.31, 0.13]
 _DP_CRUISE_MAX_V_ECO = [2.7, 1.4, 1.2, 0.7, 0.48, 0.35, 0.25, 0.15, 0.12, 0.06]
 _DP_CRUISE_MAX_V_SPORT = [3.5, 3.5, 2.5, 1.5, 2.0, 2.0, 2.0, 1.5, 1.0, 0.5]
 _DP_CRUISE_MAX_BP = [0., 3, 6., 8., 11., 15., 20., 25., 30., 55.]
+
+# count n times before we decide a lead is there or not
+_DP_E2E_LEAD_COUNT = 50
+# lead distance
+_DP_E2E_LEAD_DIST = 60
 
 def dp_calc_cruise_accel_limits(v_ego, dp_profile):
   if dp_profile == DP_ACCEL_ECO:
@@ -84,6 +89,12 @@ def limit_accel_in_turns(v_ego, angle_steers, a_target, CP):
 
 class LongitudinalPlanner:
   def __init__(self, CP, init_v=0.0, init_a=0.0):
+    # dp - conditional e2e
+    self.dp_e2e_has_lead = False
+    self.dp_e2e_lead_last = False
+    self.dp_e2e_lead_count = 0
+    self.dp_e2e_mode_last = 'acc'
+
     self.CP = CP
     self.params = Params()
     self.param_read_counter = 0
@@ -105,8 +116,10 @@ class LongitudinalPlanner:
     # dp
     self.dp_accel_profile_ctrl = False
     self.dp_accel_profile = DP_ACCEL_ECO
+    self.dp_following_profile_ctrl = False
+    self.dp_following_profile = 0
     self.cruise_source = 'cruise'
-    #self.vision_turn_controller = VisionTurnController(CP)
+    self.vision_turn_controller = VisionTurnController(CP)
     self.speed_limit_controller = SpeedLimitController()
     self.events = Events()
     self.turn_speed_controller = TurnSpeedController()
@@ -114,6 +127,45 @@ class LongitudinalPlanner:
   def read_param(self):
     e2e = self.params.get_bool('EndToEndLong') and self.CP.openpilotLongitudinalControl
     self.mpc.mode = 'blended' if e2e else 'acc'
+
+  # dp - conditional e2e
+  def conditional_e2e(self, standstill, within_speed_condition, e2e_lead, lead_rel_speed):
+    reset_state = False
+
+    # lead counter
+    # to avoid lead comes and go too quickly causing mode switching too fast
+    # we count _DP_E2E_LEAD_COUNT before we update lead existence.
+    if e2e_lead != self.dp_e2e_lead_last:
+      self.dp_e2e_lead_count = 0
+    else:
+      self.dp_e2e_lead_count += 1
+
+      # when lead status count > _DP_E2E_LEAD_COUNT, we update actual lead status
+      if self.dp_e2e_lead_count >= _DP_E2E_LEAD_COUNT:
+        self.dp_e2e_has_lead = e2e_lead
+
+    dp_e2e_mode = 'acc'
+    # standstill uses e2e, to prevent lead suddenly move away.
+    if standstill:
+      dp_e2e_mode = 'blended'
+    else:
+      # lead is driving below 30 km/h
+      if self.dp_e2e_has_lead:
+        if lead_rel_speed <= 8.3:
+          dp_e2e_mode = 'blended'
+      else:
+        # within speed condition and does not have a lead, use e2e
+        if within_speed_condition:
+          dp_e2e_mode = 'blended'
+
+    self.mpc.mode = dp_e2e_mode
+    if dp_e2e_mode != self.dp_e2e_mode_last:
+      reset_state = True
+
+    self.dp_e2e_lead_last = e2e_lead
+    self.dp_e2e_mode_last = dp_e2e_mode
+
+    return reset_state
 
   def parse_model(self, model_msg):
     if (len(model_msg.position.x) == 33 and
@@ -133,14 +185,45 @@ class LongitudinalPlanner:
       j = np.zeros(len(T_IDXS_MPC))
     return x, v, a, j
 
-  def update(self, sm):
-    if self.param_read_counter % 50 == 0:
-      self.read_param()
-    self.param_read_counter += 1
+  def get_df(self, v_ego):
+    desired_tf = T_FOLLOW
+    if self.dp_following_profile_ctrl and self.mpc.mode == 'acc':
+      if self.dp_following_profile == 0:
+        # At slow speeds more time, decrease time up to 60mph
+        # in kph ~= 0     20     40      50      70     80     90     150
+        x_vel = [0,      5.56,   11.11,  13.89,  19.4,  22.2,  25.0,  41.67]
+        y_dist = [1.06,   1.2,   1.34,    1.34,   1.2,  1.25,  1.25,   1.33]
+        desired_tf = np.interp(v_ego, x_vel, y_dist)
+      elif self.dp_following_profile == 1:
+        # in kph ~= 0     20     40      50      70      90     150
+        x_vel = [0,      5.56,   1.11,   13.89,  19.4,   25.0,  41.67]
+        y_dist = [1.3,   1.4,   1.45,    1.5,    1.5,    1.6,  1.8]
+        desired_tf = np.interp(v_ego, x_vel, y_dist)
+      elif self.dp_following_profile == 2:
+        # in kph ~= 0     20      40       50      90     150
+        x_vel = [0,      5.56,    11.11,   13.89,  25.0,  41.67]
+        y_dist = [1.4,   1.55,    1.75,    1.95,    2.2,   2.4]
+        desired_tf = np.interp(v_ego, x_vel, y_dist)
+    return desired_tf
 
+  def update(self, sm):
     # dp
     self.dp_accel_profile_ctrl = sm['dragonConf'].dpAccelProfileCtrl
     self.dp_accel_profile = sm['dragonConf'].dpAccelProfile
+    self.dp_following_profile_ctrl = sm['dragonConf'].dpFollowingProfileCtrl
+    self.dp_following_profile = sm['dragonConf'].dpFollowingProfile
+    dp_reset_state = False
+
+    if sm['dragonConf'].dpE2EConditional:
+      e2e_lead = sm['radarState'].leadOne.status and sm['radarState'].leadOne.dRel <= _DP_E2E_LEAD_DIST
+      within_speed_condition = sm['controlsState'].vCruise <= sm['dragonConf'].dpE2EConditionalAtSpeed
+      lead_rel_speed = sm['radarState'].leadOne.vRel + sm['carState'].vEgo
+      if self.conditional_e2e(sm['carState'].standstill, within_speed_condition, e2e_lead, lead_rel_speed):
+        dp_reset_state = True
+    else:
+      if self.param_read_counter % 50 == 0:
+        self.read_param()
+      self.param_read_counter += 1
 
     v_ego = sm['carState'].vEgo
     v_cruise_kph = sm['controlsState'].vCruise
@@ -156,9 +239,16 @@ class LongitudinalPlanner:
     # No change cost when user is controlling the speed, or when standstill
     prev_accel_constraint = not (reset_state or sm['carState'].standstill)
 
-    if reset_state:
+    if not self.dp_accel_profile_ctrl:
+      accel_limits = [A_CRUISE_MIN, get_max_accel(v_ego)]
+    else:
+      accel_limits = dp_calc_cruise_accel_limits(v_ego, self.dp_accel_profile)
+    accel_limits_turns = limit_accel_in_turns(v_ego, sm['carState'].steeringAngleDeg, accel_limits, self.CP)
+
+    if reset_state or dp_reset_state:
       self.v_desired_filter.x = v_ego
-      self.a_desired = 0.0
+      # Clip aEgo to cruise limits to prevent large accelerations when becoming active
+      self.a_desired = clip(sm['carState'].aEgo, accel_limits[0], accel_limits[1])
 
     # Prevent divergence, smooth in current v_ego
     self.v_desired_filter.x = max(0.0, self.v_desired_filter.update(v_ego))
@@ -167,11 +257,6 @@ class LongitudinalPlanner:
     self.cruise_source, a_min_sol, v_cruise_sol = self.cruise_solutions(not reset_state, self.v_desired_filter.x,
                                                                         self.a_desired, v_cruise, sm)
 
-    if not self.dp_accel_profile_ctrl:
-      accel_limits = [A_CRUISE_MIN, get_max_accel(v_ego)]
-    else:
-      accel_limits = dp_calc_cruise_accel_limits(v_ego, self.dp_accel_profile)
-    accel_limits_turns = limit_accel_in_turns(v_ego, sm['carState'].steeringAngleDeg, accel_limits, self.CP)
     if force_slow_decel:
       # if required so, force a smooth deceleration
       accel_limits_turns[1] = min(accel_limits_turns[1], AWARENESS_DECEL)
@@ -184,7 +269,7 @@ class LongitudinalPlanner:
     self.mpc.set_accel_limits(accel_limits_turns[0], accel_limits_turns[1])
     self.mpc.set_cur_state(self.v_desired_filter.x, self.a_desired)
     x, v, a, j = self.parse_model(sm['modelV2'])
-    self.mpc.update(sm['carState'], sm['radarState'], v_cruise_sol, x, v, a, j, prev_accel_constraint)
+    self.mpc.update(sm['carState'], sm['radarState'], v_cruise_sol, x, v, a, j, prev_accel_constraint, self.get_df(v_ego))
 
     self.v_desired_trajectory = np.interp(T_IDXS[:CONTROL_N], T_IDXS_MPC, self.mpc.v_solution)
     self.a_desired_trajectory = np.interp(T_IDXS[:CONTROL_N], T_IDXS_MPC, self.mpc.a_solution)
@@ -220,9 +305,8 @@ class LongitudinalPlanner:
 
     longitudinalPlan.solverExecutionTime = self.mpc.solve_time
 
-    #dp: mf modules
-    #longitudinalPlan.visionTurnControllerState = self.vision_turn_controller.state
-    #longitudinalPlan.visionTurnSpeed = float(self.vision_turn_controller.v_turn)
+    longitudinalPlan.visionTurnControllerState = self.vision_turn_controller.state
+    longitudinalPlan.visionTurnSpeed = float(self.vision_turn_controller.v_turn)
 
     longitudinalPlan.speedLimitControlState = self.speed_limit_controller.state
     longitudinalPlan.speedLimit = float(self.speed_limit_controller.speed_limit)
@@ -236,11 +320,13 @@ class LongitudinalPlanner:
     longitudinalPlan.distToTurn = float(self.turn_speed_controller.distance)
     longitudinalPlan.turnSign = int(self.turn_speed_controller.turn_sign)
 
+    longitudinalPlan.dpE2EIsBlended = self.mpc.mode == 'blended'
+
     pm.send('longitudinalPlan', plan_send)
 
   def cruise_solutions(self, enabled, v_ego, a_ego, v_cruise, sm):
     # Update controllers
-    #self.vision_turn_controller.update(enabled, v_ego, a_ego, v_cruise, sm)
+    self.vision_turn_controller.update(enabled, v_ego, a_ego, v_cruise, sm)
     self.events = Events()
     self.speed_limit_controller.update(enabled, v_ego, a_ego, sm, v_cruise, self.events)
     self.turn_speed_controller.update(enabled, v_ego, a_ego, sm)
@@ -249,9 +335,9 @@ class LongitudinalPlanner:
     a_solutions = {'cruise': float("inf")}
     v_solutions = {'cruise': v_cruise}
 
-    #if self.vision_turn_controller.is_active:
-    #  a_solutions['turn'] = self.vision_turn_controller.a_target
-    #  v_solutions['turn'] = self.vision_turn_controller.v_turn
+    if self.vision_turn_controller.is_active:
+      a_solutions['turn'] = self.vision_turn_controller.a_target
+      v_solutions['turn'] = self.vision_turn_controller.v_turn
 
     if self.speed_limit_controller.is_active:
       a_solutions['limit'] = self.speed_limit_controller.a_target

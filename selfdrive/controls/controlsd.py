@@ -110,7 +110,7 @@ class Controls:
         ignore += ['driverCameraState', 'driverMonitoringState']
       self.sm = messaging.SubMaster(['deviceState', 'pandaStates', 'peripheralState', 'modelV2', 'liveCalibration',
                                      'driverMonitoringState', 'longitudinalPlan', 'lateralPlan', 'liveLocationKalman',
-                                     'managerState', 'liveParameters', 'radarState', 'dragonConf'] + self.camera_packets + joystick_packet,
+                                     'managerState', 'liveParameters', 'radarState', 'liveTorqueParameters', 'dragonConf'] + self.camera_packets + joystick_packet,
                                     ignore_alive=ignore, ignore_avg_freq=['radarState', 'longitudinalPlan', 'dragonConf'])
 
     # dp
@@ -156,6 +156,11 @@ class Controls:
     put_nonblocking("CarParamsCache", cp_bytes)
     put_nonblocking("CarParamsPersistent", cp_bytes)
 
+    # cleanup old params
+    if not self.CP.experimentalLongitudinalAvailable:
+      params.remove("EndToEndLong")
+      params.remove("ExperimentalLongitudinalEnabled")
+
     self.CC = car.CarControl.new_message()
     self.CS_prev = car.CarState.new_message()
     self.AM = AlertManager()
@@ -165,7 +170,9 @@ class Controls:
     self.VM = VehicleModel(self.CP)
 
     self.LaC: LatControl
-    if params.get_bool("dp_lateral_lqr"):
+    if params.get_bool("dp_lateral_torque") and self.CP.lateralTuning.which() == 'torque':
+      self.LaC = LatControlTorque(self.CP, self.CI)
+    elif params.get_bool("dp_lateral_lqr") and self.CP.lateralTuning.which() == 'lqr':
       self.LaC = LatControlLQR(self.CP, self.CI)
     elif self.CP.steerControlType == car.CarParams.SteerControlType.angle:
       self.LaC = LatControlAngle(self.CP, self.CI)
@@ -230,7 +237,7 @@ class Controls:
         controls_state = log.ControlsState.from_bytes(controls_state)
         self.v_cruise_kph = controls_state.vCruise
 
-      if self.sm['pandaStates'][0].controlsAllowed:
+      if any(ps.controlsAllowed for ps in self.sm['pandaStates']):
         self.state = State.enabled
 
   def update_events(self, CS):
@@ -246,6 +253,10 @@ class Controls:
     # Don't add any more events if not initialized
     if not self.initialized:
       self.events.add(EventName.controlsInitializing)
+      return
+
+    # no more events while in dashcam mode
+    if self.read_only:
       return
 
     # Block resume if cruise never previously enabled
@@ -325,7 +336,7 @@ class Controls:
       else:
         safety_mismatch = pandaState.safetyModel not in IGNORED_SAFETY_MODES
 
-      if safety_mismatch or self.mismatch_counter >= 200:
+      if safety_mismatch or pandaState.safetyRxChecksInvalid or self.mismatch_counter >= 200:
         self.events.add(EventName.controlsMismatch)
 
       if log.PandaState.FaultType.relayMalfunction in pandaState.faults:
@@ -526,9 +537,9 @@ class Controls:
             self.soft_disable_timer = int(SOFT_DISABLE_TIME / DT_CTRL)
             self.current_alert_types.append(ET.SOFT_DISABLE)
 
-          elif self.events.any(ET.OVERRIDE):
+          elif self.events.any(ET.OVERRIDE_LATERAL) or self.events.any(ET.OVERRIDE_LONGITUDINAL):
             self.state = State.overriding
-            self.current_alert_types.append(ET.OVERRIDE)
+            self.current_alert_types += [ET.OVERRIDE_LATERAL, ET.OVERRIDE_LONGITUDINAL]
 
         # SOFT DISABLING
         elif self.state == State.softDisabling:
@@ -558,10 +569,10 @@ class Controls:
             self.state = State.softDisabling
             self.soft_disable_timer = int(SOFT_DISABLE_TIME / DT_CTRL)
             self.current_alert_types.append(ET.SOFT_DISABLE)
-          elif not self.events.any(ET.OVERRIDE):
+          elif not (self.events.any(ET.OVERRIDE_LATERAL) or self.events.any(ET.OVERRIDE_LONGITUDINAL)):
             self.state = State.enabled
           else:
-            self.current_alert_types.append(ET.OVERRIDE)
+            self.current_alert_types += [ET.OVERRIDE_LATERAL, ET.OVERRIDE_LONGITUDINAL]
 
     # DISABLED
     elif self.state == State.disabled:
@@ -572,7 +583,7 @@ class Controls:
         else:
           if self.events.any(ET.PRE_ENABLE):
             self.state = State.preEnabled
-          elif self.events.any(ET.OVERRIDE):
+          elif self.events.any(ET.OVERRIDE_LATERAL) or self.events.any(ET.OVERRIDE_LONGITUDINAL):
             self.state = State.overriding
           else:
             self.state = State.enabled
@@ -596,6 +607,12 @@ class Controls:
     sr = max(params.steerRatio, 0.1)
     self.VM.update_params(x, sr)
 
+    # Update Torque Params
+    if self.CP.lateralTuning.which() == 'torque':
+      torque_params = self.sm['liveTorqueParameters']
+      if self.sm.all_checks(['liveTorqueParameters']) and torque_params.useParams:
+        self.LaC.update_live_torque_params(torque_params.latAccelFactorFiltered, torque_params.latAccelOffsetFiltered, torque_params.frictionCoefficientFiltered)
+
     lat_plan = self.sm['lateralPlan']
     long_plan = self.sm['longitudinalPlan']
 
@@ -603,8 +620,8 @@ class Controls:
     CC.enabled = self.enabled
     # Check which actuators can be enabled
     CC.latActive = self.active and not CS.steerFaultTemporary and not CS.steerFaultPermanent and \
-                     CS.vEgo > self.CP.minSteerSpeed and not CS.standstill
-    CC.longActive = self.active and not self.events.any(ET.OVERRIDE) and self.CP.openpilotLongitudinalControl
+                   CS.vEgo > self.CP.minSteerSpeed and not CS.standstill
+    CC.longActive = self.active and not self.events.any(ET.OVERRIDE_LONGITUDINAL) and self.CP.openpilotLongitudinalControl
 
     if self.sm['dragonConf'].dpAtl == 2 and not CS.cruiseActualEnabled:
       CC.longActive = False
@@ -733,7 +750,7 @@ class Controls:
 
     recent_blinker = (self.sm.frame - self.last_blinker_frame) * DT_CTRL < 5.0  # 5s blinker cooldown
     ldw_allowed = self.is_ldw_enabled and CS.vEgo > LDW_MIN_SPEED and not recent_blinker \
-                    and not CC.latActive and self.sm['liveCalibration'].calStatus == Calibration.CALIBRATED
+                  and not CC.latActive and self.sm['liveCalibration'].calStatus == Calibration.CALIBRATED
 
     model_v2 = self.sm['modelV2']
     desire_prediction = model_v2.meta.desirePrediction

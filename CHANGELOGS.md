@@ -1,13 +1,27 @@
 dragonpilot [latest] - EON/C2 Release
 ========================
-* Synced with openpilot master 2022.09.01 commits.
+* Synced with openpilot master 2022.10.04 commits.
+  * Live Torque Tune (Only available to certain vehicle models with op long.)
+* NEW: TOYOTA - Added a TSS2 RAV4 Special PID Tune toggle.
+* NEW: TOYOTA - Added a PRIUS 2017 Special Torque Tune toggle.
+* NEW: TOYOTA - PRIUS_TSS2 (2020-2022) now uses torque as default and auto learns.
+* NEW: Added a toggle to force enable torque controller. (may not work on some vehicles)
+* NEW: Added a toggle to force enable live torque tune. (may not work on some vehicles)
+* NEW: Added Dyanmic End to End long.
+* NEW: VAG - Added auto resume fix toggle.
+* NEW: refactored dynamic follow. support all car with op long.
+* FIXED: Minor bug fixes and improvement.
+
+dragonpilot 2022.09.22 - EON/C2 Release
+========================
+* Synced with openpilot master 2022.09.17 commits.
   * e2e longitudinal toggle. (Extremely alpha feature)
   * Deprecated SNPE lib and switched to tinygrad.
 * NEW: Added back nav support on EON/C2.
 * WARNING: DUE TO THE INTRODUCTION OF END TO END LONGITUDINAL FEATURE, FOLLOWING FEATURES HAS BEEN CHANGED:
   * WIP: Dynamic Follow has been temporary removed for refactoring.
   * WIP: Vision Turn Control has been temporary removed for refactoring.
-  * REMOVED: Camera offset has been removed permanently.
+  * REMOVED: Camera offset has been removed permanently due to new e2e implementation.
   * EON/C2 WILL NO LONGER RECEIVE ANY DRIVING/DRIVER MONITORING MODEL UPDATES.
 
 dragonpilot 2022.08.29 - EON/C2 Release
@@ -39,7 +53,37 @@ dragonpilot 2022.07.29 - EON/C2 Release
 * FIXED: Fixed Panda Flash/Recovery buttons.
 * FIXED: Included dp_patcher.py execution.
 
-dragonpilot 2022.07.20 - EON/C2 Release
+dragonpilot [latest]
+=======================
+* Synced with openpilot master 2022.10.04 commits.
+* ADDED: Dynamic End to End long. For more detail read the setting description.
+* ADDED: Mpad now support's Stop Sign, Yield, Speed Bump, Sharp Curve. (For best experience map you area. https://www.openstreetmap.org/)
+* ADDED: Chevron can display either distance or speed.
+* ADDED: Toggles to force enabling torque control / torque tune for some vehicles
+* Improvement: Dynamic Follow, Toyota Longitudinal and Decel tune.
+* bug fix and improvement
+
+dragonpilot [2022.09.27]
+=======================
+* Synced with openpilot master 2022.09.27 commits.
+* ADDED: Always On Lateral toggle under dp-controls!
+* ADDED: Live torque fix pr#25868
+* ADDED: RAV4 and HIGHLANDER with sdsu can use follow distance button on the wheel.
+* bug fix and improvement
+
+dragonpilot [2022.09.19]
+========================
+* Synced with openpilot master 2022.09.19 commits.
+* READD: refactored dyanmaic follow. support all car with op long.
+* ADDED: PRIUS_TSS2 (2020-2022) now uses torque as default and auto learns.
+* ADDED: Added a TSS2 RAV4 Special PID Tune toggle.
+* ADDED: Added a PRIUS 2017 Special Torque Tune toggle.
+* ADDED: Toggle to turn on and off Torque controller.
+* ADDED: Toggle to turn on and off auto tune torque controller.
+* ADDED: Vision Turn Controller.
+* bug fix and improvement
+
+dragonpilot [2022.09.09]
 ========================
 * Synced with openpilot master 2022.09.09 commits.
 * ADDED: us-west coast can now use mapd without data. See toggle description for more detail.
@@ -47,6 +91,7 @@ dragonpilot 2022.07.20 - EON/C2 Release
 * bug fix and improvement
 
 dragonpilot [2022.09.04]
+========================
 * Synced with openpilot master 2022.09.01 commits.
 * Refactor: Dynamic Follow has been removerd temporary. Needs a refactor. (wip)
 * ADDED: Auto Toyota door lock/unlock **only works on some car**
@@ -72,6 +117,9 @@ TWEAK: Enlarged lead car distance text.
 TWEAK: TOYOTA - Updated lowest speed override feature.
 FIXED: Fixed Panda Flash/Recovery buttons.
 FIXED: Included dp_patcher.py execution.
+
+dragonpilot 2022.07.20 - EON/C2 Release
+========================
 * FIXED: Included correct camera/path offset values for EON/C2.
 * FIXED: Param bug in HKG. (Thanks to @sunnyhaibin).
 * FIXED: Included fan controller for UNO (C2).

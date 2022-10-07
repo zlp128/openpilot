@@ -7,9 +7,6 @@ from selfdrive.modeld.constants import T_IDXS
 
 LongCtrlState = car.CarControl.Actuators.LongControlState
 
-# As per ISO 15622:2018 for all speeds
-ACCEL_MIN_ISO = -3.5  # m/s^2
-ACCEL_MAX_ISO = 2.0  # m/s^2
 
 def long_control_state_trans(CP, active, long_control_state, v_ego, v_target,
                              v_target_1sec, brake_pressed, cruise_standstill):
@@ -50,10 +47,6 @@ def long_control_state_trans(CP, active, long_control_state, v_ego, v_target,
       elif started_condition:
         long_control_state = LongCtrlState.pid
 
-
-
-
-
   return long_control_state
 
 
@@ -92,6 +85,7 @@ class LongControl:
       v_target_1sec = interp(self.CP.longitudinalActuatorDelayUpperBound + t_since_plan + 1.0, T_IDXS[:CONTROL_N], speeds)
     else:
       v_target = 0.0
+      v_target_now = 0.0
       v_target_1sec = 0.0
       a_target = 0.0
 
@@ -131,7 +125,6 @@ class LongControl:
       output_accel = self.pid.update(error_deadzone, speed=CS.vEgo,
                                      feedforward=a_target,
                                      freeze_integrator=freeze_integrator)
-
 
     self.last_output_accel = clip(output_accel, accel_limits[0], accel_limits[1])
 

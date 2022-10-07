@@ -25,9 +25,8 @@
 #define CAMERA_ID_LGC920 6
 #define CAMERA_ID_LGC615 7
 #define CAMERA_ID_AR0231 8
-#define CAMERA_ID_IMX390 9
-#define CAMERA_ID_IMX477 10
-#define CAMERA_ID_MAX 11
+#define CAMERA_ID_OX03C10 9
+#define CAMERA_ID_MAX 10
 
 const int UI_BUF_COUNT = 4;
 const int YUV_BUFFER_COUNT = Hardware::EON() ? 100 : 40;
@@ -49,7 +48,6 @@ const bool env_disable_wide_road = getenv("DISABLE_WIDE_ROAD") != NULL;
 const bool env_disable_driver = getenv("DISABLE_DRIVER") != NULL;
 const bool env_debug_frames = getenv("DEBUG_FRAMES") != NULL;
 const bool env_log_raw_frames = getenv("LOG_RAW_FRAMES") != NULL;
-const bool env_ctrl_exp_from_params = getenv("CTRL_EXP_FROM_PARAMS") != NULL;
 
 typedef void (*release_cb)(void *cookie, int buf_idx);
 
@@ -94,7 +92,7 @@ typedef struct CameraExpInfo {
 } CameraExpInfo;
 
 struct MultiCameraState;
-struct CameraState;
+class CameraState;
 class Debayer;
 
 class CameraBuf {
@@ -103,13 +101,9 @@ private:
   CameraState *camera_state;
   Debayer *debayer = nullptr;
   std::unique_ptr<Rgb2Yuv> rgb2yuv;
-
   VisionStreamType rgb_type, yuv_type;
-
   int cur_buf_idx;
-
   SafeQueue<int> safe_queue;
-
   int frame_buf_count;
   release_cb release_callback;
 
@@ -135,7 +129,7 @@ public:
 
 typedef void (*process_thread_cb)(MultiCameraState *s, CameraState *c, int cnt);
 
-void fill_frame_data(cereal::FrameData::Builder &framed, const FrameMetadata &frame_data);
+void fill_frame_data(cereal::FrameData::Builder &framed, const FrameMetadata &frame_data, CameraState *c);
 kj::Array<uint8_t> get_frame_image(const CameraBuf *b);
 kj::Array<uint8_t> get_raw_frame_image(const CameraBuf *b);
 float set_exposure_target(const CameraBuf *b, int x_start, int x_end, int x_skip, int y_start, int y_end, int y_skip);

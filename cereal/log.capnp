@@ -138,6 +138,7 @@ struct FrameData {
   gain @15 :Float32; # This includes highConversionGain if enabled
   measuredGreyFraction @21 :Float32;
   targetGreyFraction @22 :Float32;
+  exposureValPercent @27 :Float32;
 
   # Focus
   lensPos @11 :Int32;
@@ -151,10 +152,7 @@ struct FrameData {
 
   transform @10 :List(Float32);
 
-  androidCaptureResult @9 :AndroidCaptureResult;
-
   image @6 :Data;
-  globalGainDEPRECATED @5 :Int32;
 
   temperaturesC @24 :List(Float32);
 
@@ -165,6 +163,15 @@ struct FrameData {
     front @3;
   }
 
+  sensor @26 :ImageSensor;
+  enum ImageSensor {
+    unknown @0;
+    ar0321 @1;
+    ox03c10 @2;
+  }
+
+  globalGainDEPRECATED @5 :Int32;
+  androidCaptureResultDEPRECATED @9 :AndroidCaptureResult;
   struct AndroidCaptureResult {
     sensitivity @0 :Int32;
     frameDuration @1 :Int64;
@@ -221,9 +228,9 @@ struct SensorEventData {
     fiber @2;
     velodyne @3;  # Velodyne IMU
     bno055 @4;    # Bosch accelerometer
-    lsm6ds3 @5;   # accelerometer (c2)
-    bmp280 @6;    # barometer (c2)
-    mmc3416x @7;  # magnetometer (c2)
+    lsm6ds3 @5;   # includes LSM6DS3 and LSM6DS3TR, TR = tape reel
+    bmp280 @6;    # barometer
+    mmc3416x @7;  # magnetometer
     bmx055 @8;
     rpr0521 @9;
     lsm6ds3trc @10;
@@ -393,26 +400,34 @@ struct DeviceState @0xa4d8b5af2aa492eb {
 
 struct PandaState @0xa7649e2575e4591e {
   ignitionLine @2 :Bool;
-  controlsAllowed @3 :Bool;
   gasInterceptorDetected @4 :Bool;
-  canSendErrs @7 :UInt32;
-  canFwdErrs @8 :UInt32;
-  canRxErrs @19 :UInt32;
+  rxBufferOverflow @7 :UInt32;
+  txBufferOverflow @8 :UInt32;
   gmlanSendErrs @9 :UInt32;
   pandaType @10 :PandaType;
   ignitionCan @13 :Bool;
-  safetyModel @14 :Car.CarParams.SafetyModel;
-  safetyParam @27 :UInt16;
-  alternativeExperience @23 :Int16;
   faultStatus @15 :FaultStatus;
   powerSaveEnabled @16 :Bool;
   uptime @17 :UInt32;
   faults @18 :List(FaultType);
   harnessStatus @21 :HarnessStatus;
   heartbeatLost @22 :Bool;
-  blockedCnt @24 :UInt32;
   interruptLoad @25 :Float32;
   fanPower @28 :UInt8;
+
+  # can health
+  canState0 @29 :PandaCanState;
+  canState1 @30 :PandaCanState;
+  canState2 @31 :PandaCanState;
+
+  # safety stuff
+  controlsAllowed @3 :Bool;
+  safetyRxInvalid @19 :UInt32;
+  safetyTxBlocked @24 :UInt32;
+  safetyModel @14 :Car.CarParams.SafetyModel;
+  safetyParam @27 :UInt16;
+  alternativeExperience @23 :Int16;
+  safetyRxChecksInvalid @32 :Bool;
 
   enum FaultStatus {
     none @0;
@@ -456,6 +471,7 @@ struct PandaState @0xa7649e2575e4591e {
     uno @5;
     dos @6;
     redPanda @7;
+    redPandaV2 @8;
   }
 
   enum HarnessStatus {
@@ -469,9 +485,43 @@ struct PandaState @0xa7649e2575e4591e {
   currentDEPRECATED @1 :UInt32;
   hasGpsDEPRECATED @6 :Bool;
   fanSpeedRpmDEPRECATED @11 :UInt16;
-  usbPowerModeDEPRECATED @12 :PeripheralState.UsbPowerMode;
+  usbPowerMode @12 :PeripheralState.UsbPowerMode;
   safetyParamDEPRECATED @20 :Int16;
   safetyParam2DEPRECATED @26 :UInt32;
+
+  struct PandaCanState {
+    busOff @0 :Bool;
+    busOffCnt @1 :UInt32;
+    errorWarning @2 :Bool;
+    errorPassive @3 :Bool;
+    lastError @4 :LecErrorCode;
+    lastStoredError @5 :LecErrorCode;
+    lastDataError @6 :LecErrorCode;
+    lastDataStoredError @7 :LecErrorCode;
+    receiveErrorCnt @8 :UInt8;
+    transmitErrorCnt @9 :UInt8;
+    totalErrorCnt @10 :UInt32;
+    totalTxLostCnt @11 :UInt32;
+    totalRxLostCnt @12 :UInt32;
+    totalTxCnt @13 :UInt32;
+    totalRxCnt @14 :UInt32;
+    totalFwdCnt @15 :UInt32;
+    canSpeed @16 :UInt16;
+    canDataSpeed @17 :UInt16;
+    canfdEnabled @18 :Bool;
+    brsEnabled @19 :Bool;
+
+    enum LecErrorCode {
+      noError @0;
+      stuffError @1;
+      formError @2;
+      ackError @3;
+      bit1Error @4;
+      bit0Error @5;
+      crcError @6;
+      noChange @7;
+    }
+  }
 }
 
 struct PeripheralState {
@@ -609,7 +659,7 @@ struct ControlsState @0x97ff69c53601abf1 {
     preEnabled @1;
     enabled @2;
     softDisabling @3;
-    overriding @4;
+    overriding @4;  # superset of overriding with steering or accelerator
   }
 
   enum AlertStatus {
@@ -888,6 +938,8 @@ struct LongitudinalPlan @0xe00b5b3eba12876c {
   turnSpeed @44 :Float32;
   turnSpeedControlState @45 :SpeedLimitControlState;
   turnSign @46 :Int16;
+
+  dpE2EIsBlended @49 :Bool;
 
   enum LongitudinalPlanSource {
     cruise @0;
@@ -1792,6 +1844,22 @@ struct LiveParametersData {
   roll @14 :Float32;
 }
 
+struct LiveTorqueParametersData {
+  liveValid @0 :Bool;
+  latAccelFactorRaw @1 :Float32;
+  latAccelOffsetRaw @2 :Float32;
+  frictionCoefficientRaw @3 :Float32;
+  latAccelFactorFiltered @4 :Float32;
+  latAccelOffsetFiltered @5 :Float32;
+  frictionCoefficientFiltered @6 :Float32;
+  totalBucketPoints @7 :Float32;
+  decay @8 :Float32;
+  maxResets @9 :Float32;
+  points @10 :List(List(Float32));
+  version @11 :Int32;
+  useParams @12 :Bool;
+}
+
 struct LiveMapDataDEPRECATED {
   speedLimitValid @0 :Bool;
   speedLimit @1 :Float32;
@@ -1950,7 +2018,13 @@ struct Event {
     gpsNMEA @3 :GPSNMEAData;
     can @5 :List(CanData);
     controlsState @7 :ControlsState;
-    sensorEvents @11 :List(SensorEventData);
+    gyroscope @99 :SensorEventData;
+    gyroscope2 @100 :SensorEventData;
+    accelerometer @98 :SensorEventData;
+    accelerometer2 @101 :SensorEventData;
+    magnetometer @95 :SensorEventData;
+    lightSensor @96 :SensorEventData;
+    temperatureSensor @97 :SensorEventData;
     pandaStates @81 :List(PandaState);
     peripheralState @80 :PeripheralState;
     radarState @13 :RadarState;
@@ -1968,6 +2042,7 @@ struct Event {
     gpsLocation @21 :GpsLocationData;
     gnssMeasurements @91 :GnssMeasurements;
     liveParameters @61 :LiveParametersData;
+    liveTorqueParameters @94 :LiveTorqueParametersData;
     cameraOdometry @63 :CameraOdometry;
     thumbnail @66: Thumbnail;
     carEvents @68: List(Car.CarEvent);
@@ -2011,8 +2086,8 @@ struct Event {
     wideRoadEncodeData @88 :EncodeData;
     qRoadEncodeData @89 :EncodeData;
 
-    dragonConf @94 :Dp.DragonConf;
-    liveMapData @95: LiveMapData;
+    dragonConf @102 :Dp.DragonConf;
+    liveMapData @103: LiveMapData;
 
     # *********** legacy + deprecated ***********
     model @9 :Legacy.ModelData; # TODO: rename modelV2 and mark this as deprecated
@@ -2051,5 +2126,6 @@ struct Event {
     uiLayoutStateDEPRECATED @57 :Legacy.UiLayoutState;
     pandaStateDEPRECATED @12 :PandaState;
     driverState @59 :DriverState;
+    sensorEvents @11 :List(SensorEventData);
   }
 }

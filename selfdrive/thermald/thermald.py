@@ -177,8 +177,8 @@ def thermald_thread(end_event, hw_queue):
     modem_temps=[],
   )
 
-  current_filter = FirstOrderFilter(0., CURRENT_TAU, DT_TRML)
-  temp_filter = FirstOrderFilter(0., TEMP_TAU, DT_TRML)
+  all_temp_filter = FirstOrderFilter(0., TEMP_TAU, DT_TRML)
+  offroad_temp_filter = FirstOrderFilter(0., TEMP_TAU, DT_TRML)
   should_start_prev = False
   in_car = False
   is_uno = False
@@ -250,26 +250,34 @@ def thermald_thread(end_event, hw_queue):
 
     msg.deviceState.screenBrightnessPercent = HARDWARE.get_screen_brightness()
     msg.deviceState.usbOnline = HARDWARE.get_usb_present()
-    current_filter.update(msg.deviceState.batteryCurrent / 1e6)
+    # current_filter.update(msg.deviceState.batteryCurrent / 1e6)
 
-    max_comp_temp = temp_filter.update(
-      max(max(msg.deviceState.cpuTempC), msg.deviceState.memoryTempC, max(msg.deviceState.gpuTempC))
-    )
+    # this one is only used for offroad
+    temp_sources = [
+      msg.deviceState.memoryTempC,
+      max(msg.deviceState.cpuTempC),
+      max(msg.deviceState.gpuTempC),
+    ]
+    offroad_comp_temp = offroad_temp_filter.update(max(temp_sources))
+
+    # this drives the thermal status while onroad
+    temp_sources.append(max(msg.deviceState.pmicTempC))
+    all_comp_temp = all_temp_filter.update(max(temp_sources))
 
     if fan_controller is not None:
-      msg.deviceState.fanSpeedPercentDesired = fan_controller.update(max_comp_temp, onroad_conditions["ignition"])
+      msg.deviceState.fanSpeedPercentDesired = fan_controller.update(all_comp_temp, onroad_conditions["ignition"])
 
     is_offroad_for_5_min = (started_ts is None) and ((not started_seen) or (off_ts is None) or (sec_since_boot() - off_ts > 60 * 5))
-    if is_offroad_for_5_min and max_comp_temp > OFFROAD_DANGER_TEMP:
+    if is_offroad_for_5_min and offroad_comp_temp > OFFROAD_DANGER_TEMP:
       # If device is offroad we want to cool down before going onroad
       # since going onroad increases load and can make temps go over 107
       thermal_status = ThermalStatus.danger
     else:
       current_band = THERMAL_BANDS[thermal_status]
       band_idx = list(THERMAL_BANDS.keys()).index(thermal_status)
-      if current_band.min_temp is not None and max_comp_temp < current_band.min_temp:
+      if current_band.min_temp is not None and all_comp_temp < current_band.min_temp:
         thermal_status = list(THERMAL_BANDS.keys())[band_idx - 1]
-      elif current_band.max_temp is not None and max_comp_temp > current_band.max_temp:
+      elif current_band.max_temp is not None and all_comp_temp > current_band.max_temp:
         thermal_status = list(THERMAL_BANDS.keys())[band_idx + 1]
 
     # **** starting logic ****
@@ -366,16 +374,13 @@ def thermald_thread(end_event, hw_queue):
     # Check if we need to auto shut down
     # we only enable it when it's been on-road once.
     if started_seen and dp_auto_shutdown and off_ts is not None and (sec_since_boot() - off_ts > dp_auto_shutdown_in):
-      msg.deviceState.chargingDisabled = True
-      # give a sec for panda to disable charging
-      time.sleep(1)
       params.put_bool("DoShutdown", True)
 
     if power_monitor.should_shutdown(peripheralState, onroad_conditions["ignition"], in_car, off_ts, started_seen):
       cloudlog.warning(f"shutting device down, offroad since {off_ts}")
       params.put_bool("DoShutdown", True)
 
-    msg.deviceState.chargingError = current_filter.x > 0. and msg.deviceState.batteryPercent < 90  # if current is positive, then battery is being discharged
+    # msg.deviceState.chargingError = current_filter.x > 0. and msg.deviceState.batteryPercent < 90  # if current is positive, then battery is being discharged
     msg.deviceState.started = started_ts is not None
     msg.deviceState.startedMonoTime = int(1e9*(started_ts or 0))
 

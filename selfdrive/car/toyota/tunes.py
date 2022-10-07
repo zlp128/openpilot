@@ -2,9 +2,8 @@
 from enum import Enum
 
 class LongTunes(Enum):
-  PEDAL = 0
-  TSS2 = 1
-  TSS = 2
+  TSS2 = 0
+  TSS = 1
 
 class LatTunes(Enum):
   INDI_PRIUS = 0
@@ -30,13 +29,16 @@ class LatTunes(Enum):
 ###### LONG ######
 def set_long_tune(tune, name):
   # Improved longitudinal tune
-  if name == LongTunes.TSS2 or name == LongTunes.PEDAL:
+  if name == LongTunes.TSS2:
     tune.deadzoneBP = [0., 8.05]
     tune.deadzoneV = [.0, .14]
     tune.kpBP = [0., 5., 20., 30.]
     tune.kpV = [1.3, 1.0, 0.7, 0.1]
-    tune.kiBP = [0., 0.07, 8, 13., 18., 20., 24., 25., 27., 33.]
-    tune.kiV = [.01, .1, .15, .21, .175, .18, .2, .01, .001, .0001]
+    #really smooth (make it toggleable)
+    #tune.kiBP = [0., 0.07, 5, 8, 11., 18., 20., 24., 33.]
+    #tune.kiV = [.001, .01, .1, .18, .21, .22, .23, .22, .001]
+    tune.kiBP = [0., 11., 17., 20., 24., 30., 33., 40.]
+    tune.kiV = [.001, .21, .22, .23, .22, .1, .001, .0001]
   # Default longitudinal tune
   elif name == LongTunes.TSS:
     tune.deadzoneBP = [0., 9.]
