@@ -21,7 +21,6 @@ class Service:
 services = {
   # service: (should_log, frequency, qlog decimation (optional))
   # note: the "EncodeIdx" packets will still be in the log
-  "sensorEvents": (True, 100., 100),
   "gyroscope": (True, 104., 104),
   "gyroscope2": (True, 100., 100),
   "accelerometer": (True, 104., 104),
@@ -80,6 +79,7 @@ services = {
   "userFlag": (True, 0., 1),
 
   # debug
+  "uiDebug": (True, 0., 1),
   "testJoystick": (True, 0.),
   "roadEncodeData": (False, 20.),
   "driverEncodeData": (False, 20.),
@@ -89,6 +89,7 @@ services = {
   # dp
   "dragonConf": (False, 1.),
   "liveMapData": (True, 0.),
+  "sensorEvents": (True, 100., 100),
 }
 service_list = {name: Service(new_port(idx), *vals) for  # type: ignore
                 idx, (name, vals) in enumerate(services.items())}

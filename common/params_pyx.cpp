@@ -1744,7 +1744,7 @@ static void __pyx_pf_6common_10params_pyx_6Params_2__dealloc__(struct __pyx_obj_
 static PyObject *__pyx_pf_6common_10params_pyx_6Params_4clear_all(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_tx_type); /* proto */
 static PyObject *__pyx_pf_6common_10params_pyx_6Params_6check_key(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key); /* proto */
 static PyObject *__pyx_pf_6common_10params_pyx_6Params_8get(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key, bool __pyx_v_block, PyObject *__pyx_v_encoding); /* proto */
-static PyObject *__pyx_pf_6common_10params_pyx_6Params_10get_bool(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key); /* proto */
+static PyObject *__pyx_pf_6common_10params_pyx_6Params_10get_bool(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key, bool __pyx_v_block); /* proto */
 static PyObject *__pyx_pf_6common_10params_pyx_6Params_12put(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key, PyObject *__pyx_v_dat); /* proto */
 static PyObject *__pyx_pf_6common_10params_pyx_6Params_14put_bool(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key, bool __pyx_v_val); /* proto */
 static PyObject *__pyx_pf_6common_10params_pyx_6Params_16remove(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key); /* proto */
@@ -2598,7 +2598,7 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_8get(struct __pyx_obj_6co
  * 
  *     return val if encoding is None else val.decode(encoding)             # <<<<<<<<<<<<<<
  * 
- *   def get_bool(self, key):
+ *   def get_bool(self, key, bool block=False):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_5 = (__pyx_v_encoding == Py_None);
@@ -2660,25 +2660,83 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_8get(struct __pyx_obj_6co
 /* "common/params_pyx.pyx":71
  *     return val if encoding is None else val.decode(encoding)
  * 
- *   def get_bool(self, key):             # <<<<<<<<<<<<<<
+ *   def get_bool(self, key, bool block=False):             # <<<<<<<<<<<<<<
  *     cdef string k = self.check_key(key)
  *     cdef bool r
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6common_10params_pyx_6Params_11get_bool(PyObject *__pyx_v_self, PyObject *__pyx_v_key); /*proto*/
-static PyObject *__pyx_pw_6common_10params_pyx_6Params_11get_bool(PyObject *__pyx_v_self, PyObject *__pyx_v_key) {
+static PyObject *__pyx_pw_6common_10params_pyx_6Params_11get_bool(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_6common_10params_pyx_6Params_11get_bool(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_key = 0;
+  bool __pyx_v_block;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("get_bool (wrapper)", 0);
-  __pyx_r = __pyx_pf_6common_10params_pyx_6Params_10get_bool(((struct __pyx_obj_6common_10params_pyx_Params *)__pyx_v_self), ((PyObject *)__pyx_v_key));
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_key,&__pyx_n_s_block,0};
+    PyObject* values[2] = {0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_key)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_block);
+          if (value) { values[1] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_bool") < 0)) __PYX_ERR(0, 71, __pyx_L3_error)
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_key = values[0];
+    if (values[1]) {
+      __pyx_v_block = __Pyx_PyObject_IsTrue(values[1]); if (unlikely((__pyx_v_block == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 71, __pyx_L3_error)
+    } else {
+      __pyx_v_block = ((bool)0);
+    }
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("get_bool", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 71, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("common.params_pyx.Params.get_bool", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_6common_10params_pyx_6Params_10get_bool(((struct __pyx_obj_6common_10params_pyx_Params *)__pyx_v_self), __pyx_v_key, __pyx_v_block);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6common_10params_pyx_6Params_10get_bool(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key) {
+static PyObject *__pyx_pf_6common_10params_pyx_6Params_10get_bool(struct __pyx_obj_6common_10params_pyx_Params *__pyx_v_self, PyObject *__pyx_v_key, bool __pyx_v_block) {
   std::string __pyx_v_k;
   bool __pyx_v_r;
   PyObject *__pyx_r = NULL;
@@ -2694,7 +2752,7 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_10get_bool(struct __pyx_o
 
   /* "common/params_pyx.pyx":72
  * 
- *   def get_bool(self, key):
+ *   def get_bool(self, key, bool block=False):
  *     cdef string k = self.check_key(key)             # <<<<<<<<<<<<<<
  *     cdef bool r
  *     with nogil:
@@ -2724,7 +2782,7 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_10get_bool(struct __pyx_o
  *     cdef string k = self.check_key(key)
  *     cdef bool r
  *     with nogil:             # <<<<<<<<<<<<<<
- *       r = self.p.getBool(k)
+ *       r = self.p.getBool(k, block)
  *     return r
  */
   {
@@ -2738,18 +2796,18 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_10get_bool(struct __pyx_o
         /* "common/params_pyx.pyx":75
  *     cdef bool r
  *     with nogil:
- *       r = self.p.getBool(k)             # <<<<<<<<<<<<<<
+ *       r = self.p.getBool(k, block)             # <<<<<<<<<<<<<<
  *     return r
  * 
  */
-        __pyx_v_r = __pyx_v_self->p->getBool(__pyx_v_k);
+        __pyx_v_r = __pyx_v_self->p->getBool(__pyx_v_k, __pyx_v_block);
       }
 
       /* "common/params_pyx.pyx":74
  *     cdef string k = self.check_key(key)
  *     cdef bool r
  *     with nogil:             # <<<<<<<<<<<<<<
- *       r = self.p.getBool(k)
+ *       r = self.p.getBool(k, block)
  *     return r
  */
       /*finally:*/ {
@@ -2766,7 +2824,7 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_10get_bool(struct __pyx_o
 
   /* "common/params_pyx.pyx":76
  *     with nogil:
- *       r = self.p.getBool(k)
+ *       r = self.p.getBool(k, block)
  *     return r             # <<<<<<<<<<<<<<
  * 
  *   def put(self, key, dat):
@@ -2781,7 +2839,7 @@ static PyObject *__pyx_pf_6common_10params_pyx_6Params_10get_bool(struct __pyx_o
   /* "common/params_pyx.pyx":71
  *     return val if encoding is None else val.decode(encoding)
  * 
- *   def get_bool(self, key):             # <<<<<<<<<<<<<<
+ *   def get_bool(self, key, bool block=False):             # <<<<<<<<<<<<<<
  *     cdef string k = self.check_key(key)
  *     cdef bool r
  */
@@ -6213,7 +6271,7 @@ static PyMethodDef __pyx_methods_6common_10params_pyx_Params[] = {
   {"clear_all", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6common_10params_pyx_6Params_5clear_all, METH_VARARGS|METH_KEYWORDS, 0},
   {"check_key", (PyCFunction)__pyx_pw_6common_10params_pyx_6Params_7check_key, METH_O, 0},
   {"get", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6common_10params_pyx_6Params_9get, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_bool", (PyCFunction)__pyx_pw_6common_10params_pyx_6Params_11get_bool, METH_O, 0},
+  {"get_bool", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6common_10params_pyx_6Params_11get_bool, METH_VARARGS|METH_KEYWORDS, 0},
   {"put", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6common_10params_pyx_6Params_13put, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6common_10params_pyx_6Params_12put},
   {"put_bool", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6common_10params_pyx_6Params_15put_bool, METH_VARARGS|METH_KEYWORDS, 0},
   {"remove", (PyCFunction)__pyx_pw_6common_10params_pyx_6Params_17remove, METH_O, 0},

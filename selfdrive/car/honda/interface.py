@@ -278,7 +278,8 @@ class CarInterface(CarInterfaceBase):
     else:
       raise ValueError(f"unsupported car {candidate}")
 
-    if int(Params().get("dp_atl").decode('utf-8')) == 1:
+    params = Params()
+    if int(params.get("dp_atl").decode('utf-8')) == 1:
       ret.openpilotLongitudinalControl = False
 
     # These cars use alternate user brake msg (0x1BE)
@@ -313,7 +314,8 @@ class CarInterface(CarInterfaceBase):
     ret.steerActuatorDelay = 0.1
     ret.steerLimitTimer = 0.8
 
-    if Params().get_bool('dp_honda_eps_mod'):
+    params.put("dp_lateral_steer_rate_cost", "0.5")
+    if params.get_bool('dp_honda_eps_mod'):
       if candidate == CAR.CIVIC:
         # tuned by a-tao
         ret.lateralParams.torqueBP, ret.lateralParams.torqueV = [[0, 4096, 8000], [0, 4096, 4096]]

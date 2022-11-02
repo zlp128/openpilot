@@ -1,15 +1,35 @@
-dragonpilot [latest] - EON/C2 Release
+dragonpilot [Latest] - EON/C2 Release
 ========================
-* Synced with openpilot master 2022.10.04 commits.
+* Synced with openpilot master 2022.10.26 commits.
+* COMMA: Torque controller used on all Toyota, Lexus, Hyundai, Kia, and Genesis models.
+* NEW: Mapd Database selector menu to use mapd offline located in software. When installing Database it will take some time. It is not stuck just be patience run `tmux a` for more info. DO NOT RESTART When database is being installed.
+  * Ability to use MapD without internet connection.
+* NEW: TOYOTA - Better TSS2 Long and DF tune. @cgw1968-5779
+* NEW: MAZDA - Toggle to bypass dashcam mode.
+* NEW: Added lanelines mode.
+  * Ability to adjust camera/path offset.
+* NEW: Lateral Planner option.
+  * Ability to select 0.8.13, 0.8.16 and the latest/current planner.
+* NEW: Offline OSM map database.
+* NEW: Turn and BSM indicator. (turn = blink green, turn + bsm = blink yellow, bsm = solid yellow)
+* TWEAK: Better Optimization for Vision Turn Controller with laneline mode.
+* FIXED: When going offroad, the screen does not turn off. (w/ CP or w/ Battery)
+* bug fix and improvement.
+
+
+dragonpilot 2022.10.17 - EON/C2 Release
+========================
+* Synced with openpilot master 2022.09.22 commits.
   * Live Torque Tune (Only available to certain vehicle models with op long.)
 * NEW: TOYOTA - Added a TSS2 RAV4 Special PID Tune toggle.
 * NEW: TOYOTA - Added a PRIUS 2017 Special Torque Tune toggle.
 * NEW: TOYOTA - PRIUS_TSS2 (2020-2022) now uses torque as default and auto learns.
 * NEW: Added a toggle to force enable torque controller. (may not work on some vehicles)
 * NEW: Added a toggle to force enable live torque tune. (may not work on some vehicles)
-* NEW: Added Dyanmic End to End long.
 * NEW: VAG - Added auto resume fix toggle.
 * NEW: refactored dynamic follow. support all car with op long.
+* NEW: New blinker and BSM indicators.
+* NEW: Lead Info is now displaying both speed and distance.
 * FIXED: Minor bug fixes and improvement.
 
 dragonpilot 2022.09.22 - EON/C2 Release
@@ -54,6 +74,27 @@ dragonpilot 2022.07.29 - EON/C2 Release
 * FIXED: Included dp_patcher.py execution.
 
 dragonpilot [latest]
+=======================
+* Synced with openpilot master 2022.10.26 commits.
+* COMMA: Torque controller used on all Toyota, Lexus, Hyundai, Kia, and Genesis models.
+* COMMA: New Model with much improved e2e long.
+* ADDED: Mapd Database selector menu to use mapd offline located in software. When installing Database it will take some time. It is not stuck just be patience run `tmux a` for more info. DO NOT RESTART When database is being installed.
+* ADDED: Better TSS2 Long and DF tune. @cgw1968-5779
+* ADDED: Toggle to bypass dashcam mode for Mazda.
+* Improvement: Dynamic End to End tune.
+* Improvement: Better Optimization for Vision Turn Controller with laneline mode.
+* bug fix and improvement
+
+dragonpilot [2022.10.18]
+=======================
+* Synced with openpilot master 2022.10.18 commits.
+* ADDED: Laneline toggle.
+* ADDED: Turn and BSM indicator. (turn = green, turn + bsm = yellow, bsm = red)
+* Improvement: Dynamic End to End tune.
+* bug fix and improvement
+
+
+dragonpilot [2022.10.04]
 =======================
 * Synced with openpilot master 2022.10.04 commits.
 * ADDED: Dynamic End to End long. For more detail read the setting description.

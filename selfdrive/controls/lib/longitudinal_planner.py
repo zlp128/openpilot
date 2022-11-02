@@ -41,10 +41,10 @@ DP_ACCEL_NORMAL = 1
 DP_ACCEL_SPORT = 2
 
 # accel profile by @arne182 modified by cgw
-_DP_CRUISE_MIN_V = [-0.1, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
-_DP_CRUISE_MIN_V_ECO = [-0.1, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
-_DP_CRUISE_MIN_V_SPORT = [-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
-_DP_CRUISE_MIN_BP = [0., 0.07, 6., 8., 11., 15., 20., 25., 30., 55.]
+_DP_CRUISE_MIN_V =       [-1.0, -1.0, -1.0,  -1.0,  -1.0,  -1.0,  -1.0, -1.0, -1.0, -1.0]
+_DP_CRUISE_MIN_V_ECO =   [-1.0, -1.0, -1.0,  -1.0,  -1.0,  -1.0,  -1.0, -1.0, -1.0, -1.0]
+_DP_CRUISE_MIN_V_SPORT = [-1.0, -1.0, -1.0,  -1.0,  -1.0,  -1.0,  -1.0, -1.0, -1.0, -1.0]
+_DP_CRUISE_MIN_BP =      [0.,   0.07, 6.,    8.,    11.,   15.,   20.,  25.,  30.,  55.]
 
 _DP_CRUISE_MAX_V = [3.5, 1.7, 1.31, 0.95, 0.77, 0.67, 0.55, 0.47, 0.31, 0.13]
 _DP_CRUISE_MAX_V_ECO = [2.7, 1.4, 1.2, 0.7, 0.48, 0.35, 0.25, 0.15, 0.12, 0.06]
@@ -54,7 +54,9 @@ _DP_CRUISE_MAX_BP = [0., 3, 6., 8., 11., 15., 20., 25., 30., 55.]
 # count n times before we decide a lead is there or not
 _DP_E2E_LEAD_COUNT = 50
 # lead distance
-_DP_E2E_LEAD_DIST = 60
+_DP_E2E_LEAD_DIST = 50
+
+_DP_E2E_SNG_COUNT = 250
 
 def dp_calc_cruise_accel_limits(v_ego, dp_profile):
   if dp_profile == DP_ACCEL_ECO:
@@ -94,6 +96,9 @@ class LongitudinalPlanner:
     self.dp_e2e_lead_last = False
     self.dp_e2e_lead_count = 0
     self.dp_e2e_mode_last = 'acc'
+    self.dp_e2e_sng = False
+    self.dp_e2e_sng_count = 0
+    self.dp_e2e_standstill_last = False
 
     self.CP = CP
     self.params = Params()
@@ -106,7 +111,6 @@ class LongitudinalPlanner:
 
     self.a_desired = init_a
     self.v_desired_filter = FirstOrderFilter(init_v, 2.0, DT_MDL)
-    self.t_uniform = np.arange(0.0, T_IDXS_MPC[-1] + 0.5, 0.5)
 
     self.v_desired_trajectory = np.zeros(CONTROL_N)
     self.a_desired_trajectory = np.zeros(CONTROL_N)
@@ -144,9 +148,20 @@ class LongitudinalPlanner:
       if self.dp_e2e_lead_count >= _DP_E2E_LEAD_COUNT:
         self.dp_e2e_has_lead = e2e_lead
 
+    if not standstill and self.dp_e2e_standstill_last:
+      self.dp_e2e_sng = True
+
+    if self.dp_e2e_sng:
+      self.dp_e2e_sng_count += 1
+      if self.dp_e2e_sng_count >= _DP_E2E_SNG_COUNT:
+        self.dp_e2e_sng = False
+        self.dp_e2e_sng = 0
+
     dp_e2e_mode = 'acc'
     # standstill uses e2e, to prevent lead suddenly move away.
     if standstill:
+      self.dp_e2e_sng = 0
+      self.dp_e2e_sng = False
       dp_e2e_mode = 'blended'
     else:
       # lead is driving below 30 km/h
@@ -164,20 +179,18 @@ class LongitudinalPlanner:
 
     self.dp_e2e_lead_last = e2e_lead
     self.dp_e2e_mode_last = dp_e2e_mode
+    self.dp_e2e_standstill_last = standstill
 
     return reset_state
 
   def parse_model(self, model_msg):
     if (len(model_msg.position.x) == 33 and
-       len(model_msg.velocity.x) == 33 and
-       len(model_msg.acceleration.x) == 33):
+      len(model_msg.velocity.x) == 33 and
+      len(model_msg.acceleration.x) == 33):
       x = np.interp(T_IDXS_MPC, T_IDXS, model_msg.position.x)
       v = np.interp(T_IDXS_MPC, T_IDXS, model_msg.velocity.x)
       a = np.interp(T_IDXS_MPC, T_IDXS, model_msg.acceleration.x)
-      # Uniform interp so gradient is less noisy
-      a_sparse = np.interp(self.t_uniform, T_IDXS, model_msg.acceleration.x)
-      j_sparse = np.gradient(a_sparse, self.t_uniform)
-      j = np.interp(T_IDXS_MPC, self.t_uniform, j_sparse)
+      j = np.zeros(len(T_IDXS_MPC))
     else:
       x = np.zeros(len(T_IDXS_MPC))
       v = np.zeros(len(T_IDXS_MPC))
@@ -192,21 +205,24 @@ class LongitudinalPlanner:
         # At slow speeds more time, decrease time up to 60mph
         # in kph ~= 0     20     40      50      70     80     90     150
         x_vel = [0,      5.56,   11.11,  13.89,  19.4,  22.2,  25.0,  41.67]
-        y_dist = [1.06,   1.2,   1.34,    1.34,   1.2,  1.25,  1.25,   1.33]
+        y_dist = [1.2,   1.3,   1.32,    1.32,   1.32,  1.32,  1.32,   1.35]
         desired_tf = np.interp(v_ego, x_vel, y_dist)
       elif self.dp_following_profile == 1:
         # in kph ~= 0     20     40      50      70      90     150
-        x_vel = [0,      5.56,   1.11,   13.89,  19.4,   25.0,  41.67]
-        y_dist = [1.3,   1.4,   1.45,    1.5,    1.5,    1.6,  1.8]
+        #x_vel = [0,      5.56,   11.11,   13.89,  19.4,   25.0,  41.67]
+        #y_dist = [1.3,   1.4,   1.45,    1.5,    1.5,    1.6,  1.8]
+        # in kph ~= 0     20     40      50      70      90     150
+        x_vel = [0,      5.56,   11.11,   13.89,  19.4,   25.0,  41.67]
+        y_dist = [1.2,   1.37,   1.45,    1.5,    1.5,    1.6,  1.8]
         desired_tf = np.interp(v_ego, x_vel, y_dist)
       elif self.dp_following_profile == 2:
         # in kph ~= 0     20      40       50      90     150
         x_vel = [0,      5.56,    11.11,   13.89,  25.0,  41.67]
-        y_dist = [1.4,   1.55,    1.75,    1.95,    2.2,   2.4]
+        y_dist = [1.2,   1.47,    1.75,    1.95,    2.2,   2.4]
         desired_tf = np.interp(v_ego, x_vel, y_dist)
     return desired_tf
 
-  def update(self, sm):
+  def update(self, sm, read=True):
     # dp
     self.dp_accel_profile_ctrl = sm['dragonConf'].dpAccelProfileCtrl
     self.dp_accel_profile = sm['dragonConf'].dpAccelProfile
@@ -221,7 +237,7 @@ class LongitudinalPlanner:
       if self.conditional_e2e(sm['carState'].standstill, within_speed_condition, e2e_lead, lead_rel_speed):
         dp_reset_state = True
     else:
-      if self.param_read_counter % 50 == 0:
+      if self.param_read_counter % 50 == 0 and read:
         self.read_param()
       self.param_read_counter += 1
 

@@ -82,4 +82,4 @@ build/
 
 !**/.gitkeep
 
-*.po~
+poetry.toml

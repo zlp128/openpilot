@@ -54,6 +54,12 @@ class CarState(CarStateBase):
     self.distance = 0
     self.dp_toyota_fp_btn_link = Params().get_bool('dp_toyota_fp_btn_link')
 
+    # zss
+    self.dp_toyota_zss = Params().get_bool('dp_toyota_zss')
+    self.dp_zss_compute = False
+    self.dp_zss_cruise_active_last = False
+    self.dp_zss_angle_offset = 0.
+
   def update(self, cp, cp_cam):
     ret = car.CarState.new_message()
 
@@ -101,6 +107,22 @@ class CarState(CarStateBase):
         ret.steeringAngleOffsetDeg = self.angle_offset.x
         ret.steeringAngleDeg = torque_sensor_angle_deg - self.angle_offset.x
 
+    # dp - toyota zss
+    if self.dp_toyota_zss:
+      zorro_steer = cp.vl["SECONDARY_STEER_ANGLE"]["ZORRO_STEER"]
+      # only compute zss offset when acc is active
+      if bool(cp.vl["PCM_CRUISE"]["CRUISE_ACTIVE"]) and not self.dp_zss_cruise_active_last:
+        self.dp_zss_compute = True # cruise was just activated, so allow offset to be recomputed
+      self.dp_zss_cruise_active_last = bool(cp.vl["PCM_CRUISE"]["CRUISE_ACTIVE"])
+
+      # compute zss offset
+      if self.dp_zss_compute:
+        if abs(ret.steeringAngleDeg) > 1e-3 and abs(zorro_steer) > 1e-3:
+          self.dp_toyota_zss = False
+          self.dp_zss_angle_offset = zorro_steer - ret.steeringAngleDeg
+      # apply offset
+      ret.steeringAngleDeg = zorro_steer - self.dp_zss_angle_offset
+
     ret.steeringRateDeg = cp.vl["STEER_ANGLE_SENSOR"]["STEER_RATE"]
 
     can_gear = int(cp.vl["GEAR_PACKET"]["GEAR"])
@@ -108,7 +130,7 @@ class CarState(CarStateBase):
 
     #dp: Thank you Arne (acceleration)
     if self.dp_toyota_ap_btn_link:
-      sport_on_sig = 'SPORT_ON_2' if self.CP.carFingerprint == CAR.RAV4_TSS2 else 'SPORT_ON'
+      sport_on_sig = 'SPORT_ON_2' if self.CP.carFingerprint in (CAR.RAV4_TSS2, CAR.LEXUS_ES_TSS2) else 'SPORT_ON'
       # check signal once
       if not self.dp_sig_check:
         self.dp_sig_check = True
@@ -374,7 +396,7 @@ class CarState(CarStateBase):
     if CP.carFingerprint in [CAR.RAV4H, CAR.HIGHLANDER]:
       signals.append(("FD_BUTTON", "SDSU", 0))
     #dp acceleration
-    if CP.carFingerprint == CAR.RAV4_TSS2:
+    if CP.carFingerprint in (CAR.RAV4_TSS2, CAR.LEXUS_ES_TSS2):
       signals.append(("SPORT_ON_2", "GEAR_PACKET"))
 
     if CP.carFingerprint in (CAR.ALPHARD_TSS2, CAR.ALPHARDH_TSS2, CAR.AVALON_TSS2, CAR.AVALONH_TSS2, CAR.CAMRY_TSS2, CAR.CAMRYH_TSS2, CAR.CHR_TSS2, CAR.COROLLA_TSS2, CAR.COROLLAH_TSS2, CAR.HIGHLANDER_TSS2, CAR.HIGHLANDERH_TSS2, CAR.PRIUS_TSS2, CAR.RAV4H_TSS2, CAR.MIRAI, CAR.LEXUS_ES_TSS2, CAR.LEXUS_ESH_TSS2, CAR.LEXUS_NX_TSS2, CAR.LEXUS_NXH_TSS2, CAR.LEXUS_RX_TSS2, CAR.LEXUS_RXH_TSS2, CAR.CHRH):
@@ -426,6 +448,11 @@ class CarState(CarStateBase):
       checks += [
         ("PRE_COLLISION", 33),
       ]
+
+    # dp - add zss signal check
+    if Params().get_bool('dp_toyota_zss'):
+      signals += [("ZORRO_STEER", "SECONDARY_STEER_ANGLE", 0)]
+      checks += [("SECONDARY_STEER_ANGLE", 0)]
 
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, 0)
 

@@ -510,6 +510,7 @@ struct PandaState @0xa7649e2575e4591e {
     canDataSpeed @17 :UInt16;
     canfdEnabled @18 :Bool;
     brsEnabled @19 :Bool;
+    canfdNonIso @20 :Bool;
 
     enum LecErrorCode {
       noError @0;
@@ -589,6 +590,7 @@ struct LiveCalibrationData {
   # the direction of travel vector in device frame
   rpyCalib @7 :List(Float32);
   rpyCalibSpread @8 :List(Float32);
+  wideFromDeviceEuler @10 :List(Float32);
 
   warpMatrixDEPRECATED @0 :List(Float32);
   warpMatrix2DEPRECATED @5 :List(Float32);
@@ -1228,6 +1230,7 @@ struct GnssMeasurements {
     # Different ultra-rapid files:
     nasaUltraRapid @1;
     glonassIacUltraRapid @2;
+    qcompoly @3;
   }
 }
 
@@ -1421,7 +1424,7 @@ struct QcomGnss @0xde94674b07ae51c1 {
     unknown3 @3;
     unknown4 @4;
     unknown5 @5;
-    unknown6 @6;
+    sbas @6;
   }
 
   enum SVObservationState @0xe81e829a0d6c83e9 {
@@ -1887,6 +1890,8 @@ struct CameraOdometry {
   rot @1 :List(Float32); # rad/s in device frame
   transStd @2 :List(Float32); # std m/s in device frame
   rotStd @3 :List(Float32); # std rad/s in device frame
+  wideFromDeviceEuler @6 :List(Float32);
+  wideFromDeviceEulerStd @7 :List(Float32);
 }
 
 struct LiveMapData {
@@ -1921,6 +1926,10 @@ struct Sentinel {
   }
   type @0 :SentinelType;
   signal @1 :Int32;
+}
+
+struct UIDebug {
+  drawTimeMillis @0 :Float32;
 }
 
 struct ManagerState {
@@ -2076,9 +2085,10 @@ struct Event {
     navRoute @83 :NavRoute;
     navThumbnail @84: Thumbnail;
 
-    # user flags
+    # UI services
     userFlag @93 :UserFlag;
-
+    uiDebug @102 :UIDebug;
+    # dp reserve 103,104
     # *********** debug ***********
     testJoystick @52 :Joystick;
     roadEncodeData @86 :EncodeData;
@@ -2086,8 +2096,8 @@ struct Event {
     wideRoadEncodeData @88 :EncodeData;
     qRoadEncodeData @89 :EncodeData;
 
-    dragonConf @102 :Dp.DragonConf;
-    liveMapData @103: LiveMapData;
+    dragonConf @103 :Dp.DragonConf;
+    liveMapData @104: LiveMapData;
 
     # *********** legacy + deprecated ***********
     model @9 :Legacy.ModelData; # TODO: rename modelV2 and mark this as deprecated
