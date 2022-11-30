@@ -166,6 +166,11 @@ function two_init {
     echo "Installing $MODULE..."
     tar -zxvf "$LIB_PATH/$MODULE.tar.gz" -C "$PY_LIB_DEST/"
   fi
+  # panda
+  if [ ! -f "$PY_LIB_DEST/spidev.cpython-38.so" ]; then
+    echo "Installing spidev.cpython-38.so..."
+    cp -f "$LIB_PATH/spidev.cpython-38.so" "$PY_LIB_DEST/"
+  fi
   mount -o remount,r /system
 
   # Check for NEOS update
@@ -216,7 +221,18 @@ function agnos_init {
     fi
     $DIR/system/hardware/tici/updater $AGNOS_PY $MANIFEST
   fi
-  ./custom_dep.py
+
+  #dp: change splash logo
+  if [ -f "/usr/comma/.dp_splash" ]; then
+      echo "DP splash exists."
+  else
+      echo "DP splash not deployed yet"
+      sudo mount -o rw,remount /
+      sudo cp /data/openpilot/selfdrive/dragonpilot/bg.jpg /usr/comma/bg.jpg
+      sudo touch /usr/comma/.dp_splash
+      sudo mount -o ro,remount /
+      sudo reboot
+  fi
 }
 
 function launch {

@@ -28,7 +28,7 @@ This is a service that broadcast dp config values to openpilot's messaging queue
 import cereal.messaging as messaging
 
 from common.dp_conf import confs, get_struct_name, to_struct_val
-from common.params import Params
+from common.params import Params, put_bool_nonblocking
 import os
 params = Params()
 from common.dp_helpers import get_last_modified, LAST_MODIFIED_TIMER_SYSTEMD
@@ -62,6 +62,7 @@ def confd_thread():
   dashcamd = Dashcamd()
   rk = Ratekeeper(HERTZ, print_delay_threshold=None)  # Keeps rate at 2 hz
   uploader_thread = None
+  dp_jetson = params.get_bool('dp_jetson')
 
   while True:
     if uploader_thread is None:
@@ -139,6 +140,8 @@ def confd_thread():
     ===================================================
     '''
     msg = update_custom_logic(msg)
+    if dp_jetson:
+      msg.dragonConf.dpUiFace = False
     '''
     ===================================================
     battery ctrl every 30 secs

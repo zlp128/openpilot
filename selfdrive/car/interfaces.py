@@ -15,6 +15,7 @@ from selfdrive.controls.lib.drive_helpers import V_CRUISE_MAX, apply_deadzone
 from selfdrive.controls.lib.events import Events
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from common.params import Params
+from selfdrive.car.lat_controller_helper import configure_pid_tune, configure_lqr_tune
 
 ButtonType = car.CarState.ButtonEvent.Type
 GearShifter = car.CarState.GearShifter
@@ -24,7 +25,7 @@ TorqueFromLateralAccelCallbackType = Callable[[float, car.CarParams.LateralTorqu
 MAX_CTRL_SPEED = (V_CRUISE_MAX + 4) * CV.KPH_TO_MS
 ACCEL_MAX = 2.0
 ACCEL_MIN = -3.5
-FRICTION_THRESHOLD = 0.2
+FRICTION_THRESHOLD = 0.3
 
 TORQUE_PARAMS_PATH = os.path.join(BASEDIR, 'selfdrive/car/torque_data/params.yaml')
 TORQUE_OVERRIDE_PATH = os.path.join(BASEDIR, 'selfdrive/car/torque_data/override.yaml')
@@ -162,19 +163,6 @@ class CarInterfaceBase(ABC):
     return ret
 
   @staticmethod
-  def configure_lqr_tune(tune):
-    tune.init('lqr')
-    tune.lqr.scale = 1500.0
-    tune.lqr.ki = 0.05
-
-    tune.lqr.a = [0., 1., -0.22619643, 1.21822268]
-    tune.lqr.b = [-1.92006585e-04, 3.95603032e-05]
-    tune.lqr.c = [1., 0.]
-    tune.lqr.k = [-110.73572306, 451.22718255]
-    tune.lqr.l = [0.3233671, 0.3185757]
-    tune.lqr.dcGain = 0.002237852961363602
-
-  @staticmethod
   def configure_torque_tune(candidate, tune, steering_angle_deadzone_deg=0.0, use_steering_angle=True):
     params = get_torque_params(candidate)
 
@@ -190,10 +178,19 @@ class CarInterfaceBase(ABC):
 
   @staticmethod
   def configure_dp_tune(candidate, tune, steering_angle_deadzone_deg=0.0, use_steering_angle=True):
-    params = Params()
-    if params.get_bool('dp_lateral_lqr'):
-      CarInterfaceBase.configure_lqr_tune(tune)
-    elif params.get_bool('dp_lateral_torque'):
+    try:
+      dp_lateral_tune = int(Params().get("dp_lateral_tune").decode('utf-8'))
+    except:
+      dp_lateral_tune = 0
+
+    # pid - car specific
+    if dp_lateral_tune == 1:
+      configure_pid_tune(candidate, tune)
+    # lqr - all uses RAV4 one
+    elif dp_lateral_tune == 2:
+      configure_lqr_tune(candidate, tune)
+    # torque - car specific as per lookup table
+    elif dp_lateral_tune == 3:
       CarInterfaceBase.configure_torque_tune(candidate, tune, steering_angle_deadzone_deg, use_steering_angle)
 
   @abstractmethod
@@ -277,8 +274,8 @@ class CarInterfaceBase(ABC):
       # Enable OP long on falling edge of enable buttons (defaults to accelCruise and decelCruise, overridable per-port)
       if not self.CP.pcmCruise and (b.type in enable_buttons and not b.pressed):
         events.add(EventName.buttonEnable)
-      # Disable on rising edge of cancel for both stock and OP long
-      if b.type == ButtonType.cancel and b.pressed:
+      # Disable on rising and falling edge of cancel for both stock and OP long
+      if b.type == ButtonType.cancel:
         events.add(EventName.buttonCancel)
 
     # Handle permanent and temporary steering faults

@@ -44,12 +44,12 @@ class PowerMonitoring:
     self.car_battery_capacity_uWh = max((CAR_BATTERY_CAPACITY_uWh / 10), int(car_battery_capacity_uWh))
 
   # Calculation tick
-  def calculate(self, peripheralState, ignition):
+  def calculate(self, voltage: Optional[int], ignition: bool):
     try:
       now = sec_since_boot()
 
       # If peripheralState is None, we're probably not in a car, so we don't care
-      if peripheralState is None or peripheralState.pandaType == log.PandaState.PandaType.unknown:
+      if voltage is None:
         with self.integration_lock:
           self.last_measurement_time = None
           self.next_pulsed_measurement_time = None
@@ -57,8 +57,8 @@ class PowerMonitoring:
         return
 
       # Low-pass battery voltage
-      self.car_voltage_instant_mV = peripheralState.voltage
-      self.car_voltage_mV = ((peripheralState.voltage * CAR_VOLTAGE_LOW_PASS_K) + (self.car_voltage_mV * (1 - CAR_VOLTAGE_LOW_PASS_K)))
+      self.car_voltage_instant_mV = voltage
+      self.car_voltage_mV = ((voltage * CAR_VOLTAGE_LOW_PASS_K) + (self.car_voltage_mV * (1 - CAR_VOLTAGE_LOW_PASS_K)))
       # statlog.gauge("car_voltage", self.car_voltage_mV / 1e3)
 
       # Cap the car battery power and save it in a param every 10-ish seconds
@@ -84,8 +84,6 @@ class PowerMonitoring:
           self.car_battery_capacity_uWh += (CAR_CHARGING_RATE_W * 1e6 * integration_time_h)
           self.last_measurement_time = now
       else:
-        # No ignition, we integrate the offroad power used by the device
-        is_uno = peripheralState.pandaType == log.PandaState.PandaType.uno
         # Get current power draw somehow
         current_power = HARDWARE.get_current_power_draw() # pylint: disable=assignment-from-none
         if current_power is not None:
@@ -121,7 +119,7 @@ class PowerMonitoring:
           self.next_pulsed_measurement_time = None
           return
 
-        elif self.next_pulsed_measurement_time is None and not is_uno:
+        elif self.next_pulsed_measurement_time is None:
           # On a charging EON with black panda, or drawing more than 400mA out of a white/grey one
           # Only way to get the power draw is to turn off charging for a few sec and check what the discharging rate is
           # We shouldn't do this very often, so make sure it has been some long-ish random time interval

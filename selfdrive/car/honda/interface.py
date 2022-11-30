@@ -52,6 +52,13 @@ class CarInterface(CarInterfaceBase):
 
       ret.pcmCruise = not ret.enableGasInterceptor
 
+    # dp - attempt to disable op long
+    params = Params()
+    if int(params.get("dp_atl").decode('utf-8')) == 1:
+      ret.openpilotLongitudinalControl = False
+      if candidate in HONDA_BOSCH:
+        ret.pcmCruise = not ret.openpilotLongitudinalControl
+
     if candidate == CAR.CRV_5G:
       ret.enableBsm = 0x12f8bfa7 in fingerprint[0]
 
@@ -221,23 +228,17 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.2], [0.06]]
       tire_stiffness_factor = 0.677
 
-    elif candidate == CAR.ODYSSEY:
-      ret.mass = 4471. * CV.LB_TO_KG + STD_CARGO_KG
+    elif candidate in (CAR.ODYSSEY, CAR.ODYSSEY_CHN):
+      ret.mass = 1900. + STD_CARGO_KG
       ret.wheelbase = 3.00
       ret.centerToFront = ret.wheelbase * 0.41
       ret.steerRatio = 14.35  # as spec
-      ret.lateralParams.torqueBP, ret.lateralParams.torqueV = [[0, 4096], [0, 4096]]  # TODO: determine if there is a dead zone at the top end
       tire_stiffness_factor = 0.82
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.28], [0.08]]
-
-    elif candidate == CAR.ODYSSEY_CHN:
-      ret.mass = 1849.2 + STD_CARGO_KG  # mean of 4 models in kg
-      ret.wheelbase = 2.90
-      ret.centerToFront = ret.wheelbase * 0.41  # from CAR.ODYSSEY
-      ret.steerRatio = 14.35
-      ret.lateralParams.torqueBP, ret.lateralParams.torqueV = [[0, 32767], [0, 32767]]  # TODO: determine if there is a dead zone at the top end
-      tire_stiffness_factor = 0.82
-      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.28], [0.08]]
+      if candidate == CAR.ODYSSEY_CHN:
+        ret.lateralParams.torqueBP, ret.lateralParams.torqueV = [[0, 32767], [0, 32767]]  # TODO: determine if there is a dead zone at the top end
+      else:
+        ret.lateralParams.torqueBP, ret.lateralParams.torqueV = [[0, 4096], [0, 4096]]  # TODO: determine if there is a dead zone at the top end
 
     elif candidate in (CAR.PILOT, CAR.PASSPORT):
       ret.mass = 4204. * CV.LB_TO_KG + STD_CARGO_KG  # average weight
@@ -277,10 +278,6 @@ class CarInterface(CarInterfaceBase):
 
     else:
       raise ValueError(f"unsupported car {candidate}")
-
-    params = Params()
-    if int(params.get("dp_atl").decode('utf-8')) == 1:
-      ret.openpilotLongitudinalControl = False
 
     # These cars use alternate user brake msg (0x1BE)
     if candidate in HONDA_BOSCH_ALT_BRAKE_SIGNAL:
@@ -344,6 +341,9 @@ class CarInterface(CarInterfaceBase):
   def _update(self, c):
     ret = self.CS.update(self.cp, self.cp_cam, self.cp_body)
     ret.cruiseState.enabled, ret.cruiseState.available = self.dp_atl_mode(ret)
+
+    #dp
+    ret.engineRPM = self.CS.engineRPM
 
     buttonEvents = []
 

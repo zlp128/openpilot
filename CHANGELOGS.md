@@ -1,5 +1,17 @@
 dragonpilot [Latest] - EON/C2 Release
 ========================
+* Synced with openpilot master 2022.11.25 commits.
+* TWEAK: Ability to disable build-in NAV completely. (reduced CPU/memory load)
+* NEW: Lateral Controller Selector
+  * Ability to select between DEFAULT / PID / LQR / Torque Controller.
+* NEW: Redesigned UI to match Comma's new UI/UX style.
+* NEW: Dynamic End-to-End can be turned on when lead car is going below x km/h. (Useful for stop and go traffic.)
+* NEW: Toggle to adapt Dynamic End-to-End to Following Dist. Mode.
+* NEW: Toggle to adapt Dynamic End-to-End to Accel Mode.
+* TWEAK: Bug fixes and improvement.
+
+dragonpilot 2022.11.09 - EON/C2 Release
+========================
 * Synced with openpilot master 2022.10.26 commits.
 * COMMA: Torque controller used on all Toyota, Lexus, Hyundai, Kia, and Genesis models.
 * NEW: Mapd Database selector menu to use mapd offline located in software. When installing Database it will take some time. It is not stuck just be patience run `tmux a` for more info. DO NOT RESTART When database is being installed.
@@ -74,6 +86,36 @@ dragonpilot 2022.07.29 - EON/C2 Release
 * FIXED: Included dp_patcher.py execution.
 
 dragonpilot [latest]
+=======================
+* Synced with openpilot master 2022.11.25 commits.
+* ADDED: Lateral Controller Selector.
+   - Ability to select between DEFAULT / PID / LQR / Torque Controller.
+* ADDED: Redesigned UI to match Comma's new UI/UX style.
+* ADDED: Dynamic End-to-End can be turned on when lead car is going below x km/h. (Useful for stop and go traffic.)
+* ADDED: Toggle to adapt Dynamic End-to-End to Following Dist. Mode.
+* ADDED: Toggle to adapt Dynamic End-to-End to Accel Mode.
+* bug fix and improvement.
+
+dragonpilot [2022.11.14]
+=======================
+* Synced with openpilot master 2022.11.14 commits.
+* COMMA: New Model.
+* COMMA: RAV4 TSS2 now uses PID.
+* REFACTORED: Turning off nav will free up some system resource. QR for nav has been move to home button / sidebar.
+* ADDED: 2 new toggle to turn on or off laneline / path and chevron.
+* ADDED: When reversing it will now show DM cam.
+
+dragonpilot [2022.11.01]
+=======================
+* Synced with openpilot master 2022.11.01 commits.
+* COMMA: New Model.
+* ADDED: Multi Lateral Planner: Ability to choose different Lateral Planner (0 = LATEST, 1 = 0.8.13, 2 = 0.8.16).
+* READD: Toyota Prius ZSS support.
+* Improvement: Better User experience for installing mapd database.
+* Improvement: Turning on Lane Line will automatically will use DLP (Dynamic Lane Profile).
+* bug fix and improvement
+
+dragonpilot [2022.10.26]
 =======================
 * Synced with openpilot master 2022.10.26 commits.
 * COMMA: Torque controller used on all Toyota, Lexus, Hyundai, Kia, and Genesis models.
