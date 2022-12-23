@@ -399,7 +399,7 @@ class Controls:
     if not self.sm['liveLocationKalman'].deviceStable:
       self.events.add(EventName.deviceFalling)
 
-    if not REPLAY:
+    if self.sm['dragonConf'].dpAtl == 0 and not REPLAY:
       # Check for mismatch between openpilot and car's PCM
       cruise_mismatch = CS.cruiseState.enabled and (not self.enabled or not self.CP.pcmCruise)
       self.cruise_mismatch_counter = self.cruise_mismatch_counter + 1 if cruise_mismatch else 0
@@ -560,6 +560,8 @@ class Controls:
 
     # DISABLED
     elif self.state == State.disabled:
+      if CS.cruiseState.available and not CS.cruiseActualEnabled and self.sm['dragonConf'].dpAtl > 0 and not self.events.any(ET.NO_ENTRY):
+        self.state = State.overriding
       if self.events.any(ET.ENABLE):
         if self.events.any(ET.NO_ENTRY):
           self.current_alert_types.append(ET.NO_ENTRY)

@@ -142,6 +142,7 @@ confs = [
   {'name': 'dp_e2e_conditional_at_speed_lead', 'default': 40, 'type': 'UInt8', 'min': 0, 'max': 80, 'depends': [{'name': 'dp_e2e_conditional', 'vals': [True]}], 'conf_type': ['param', 'struct']},
   {'name': 'dp_e2e_conditional_adapt_fp', 'default': False, 'type': 'Bool', 'depends': [{'name': 'dp_e2e_conditional', 'vals': [True]}], 'conf_type': ['param', 'struct']},
   {'name': 'dp_e2e_conditional_adapt_ap', 'default': False, 'type': 'Bool', 'depends': [{'name': 'dp_e2e_conditional', 'vals': [True]}], 'conf_type': ['param', 'struct']},
+  {'name': 'dp_e2e_conditional_voacc', 'default': False, 'type': 'Bool', 'depends': [{'name': 'dp_e2e_conditional', 'vals': [True]}], 'conf_type': ['param', 'struct']},
   # {'name': 'dp_toyota_no_min_acc_limit', 'default': False, 'type': 'Bool', 'conf_type': ['param']},
   # {'name': 'dp_toyota_ldw', 'default': True, 'type': 'Bool', 'conf_type': ['param', 'struct']},
   {'name': 'dp_toyota_zss', 'default': False, 'type': 'Bool', 'conf_type': ['param']},
