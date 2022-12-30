@@ -487,28 +487,6 @@ Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>when acc set speed below the setting and there is no lead car, e2e will be turned on automatically. 
-1 km/h = 0.62 mph</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> km/h</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>when lead car is going below the setting, e2e will be turned on automatically. 
-1 km/h = 0.62 mph</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>DE2E When Car Set Speed Below (w/o Lead):</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>DE2E When Lead Car Speed Below:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>DE2E Adapt Following Mode</source>
         <translation type="unfinished"></translation>
     </message>
@@ -522,6 +500,14 @@ Reboot required.</source>
     </message>
     <message>
         <source>Enable this if you wish to use accel mode in DE2E.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DE2E w/ VOACC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable this if your vehicles is in VOACC (e.g. Honda Bosch / VAG).</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -782,17 +768,6 @@ Please note:
 2. MapD will contribute your route to OSM for future improvement automatically.
 3. You can add your own offset for mapd just follow the readme under /selfdrive/mapd.
 4. Not connecting to the internet for while might feel up device storage from all the gps traces. </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use Mapd without data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You need minimum of 50 gb storage in /data/media/0/.
- Run df -h /data/media/0/ to see how much space you have available.
- Strongly recommend getting 1 TB ssd.
- If you decide not to upgrade you can delete all logs under dp-general </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1644,6 +1619,10 @@ trabalho definido</translation>
     <message>
         <source>5G</source>
         <translation>5G</translation>
+    </message>
+    <message>
+        <source>%1 m</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -3,7 +3,7 @@ from cereal import car
 from common.conversions import Conversions as CV
 from panda import Panda
 from selfdrive.car.toyota.values import Ecu, CAR, ToyotaFlags, TSS2_CAR, RADAR_ACC_CAR, NO_DSU_CAR, MIN_ACC_SPEED, EPS_SCALE, EV_HYBRID_CAR, UNSUPPORTED_DSU_CAR, CarControllerParams, NO_STOP_TIMER_CAR
-from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint, get_safety_config
+from selfdrive.car import STD_CARGO_KG, scale_tire_stiffness, get_safety_config
 from selfdrive.car.interfaces import CarInterfaceBase
 from common.params import Params
 
@@ -25,9 +25,7 @@ class CarInterface(CarInterfaceBase):
     return CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX
 
   @staticmethod
-  def get_params(candidate, fingerprint=gen_empty_fingerprint(), car_fw=[], experimental_long=False):  # pylint: disable=dangerous-default-value
-    ret = CarInterfaceBase.get_std_params(candidate, fingerprint)
-
+  def _get_params(ret, candidate, fingerprint, car_fw, experimental_long):
     ret.carName = "toyota"
     ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.toyota)]
     ret.safetyConfigs[0].safetyParam = EPS_SCALE[candidate]
@@ -52,12 +50,14 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 3045. * CV.LB_TO_KG + STD_CARGO_KG
       # Only give steer angle deadzone to for bad angle sensor prius
       if params.get_bool("dp_toyota_prius_bad_angle_tune"):
-        steering_angle_deadzone_deg = 1.0
+        steering_angle_deadzone_deg = 0.2
+        ret.steerActuatorDelay = 0.25
         CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning, steering_angle_deadzone_deg)
       else:
         for fw in car_fw:
           if fw.ecu == "eps" and not fw.fwVersion == b'8965B47060\x00\x00\x00\x00\x00\x00':
-            steering_angle_deadzone_deg = 1.0
+            steering_angle_deadzone_deg = 0.2
+            ret.steerActuatorDelay = 0.25
             CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning, steering_angle_deadzone_deg)
 
     elif candidate == CAR.PRIUS_V:
@@ -66,7 +66,6 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 17.4
       tire_stiffness_factor = 0.5533
       ret.mass = 3340. * CV.LB_TO_KG + STD_CARGO_KG
-      CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning, steering_angle_deadzone_deg)
 
     elif candidate in (CAR.RAV4, CAR.RAV4H):
       stop_and_go = True if (candidate in CAR.RAV4H) else False
@@ -207,10 +206,6 @@ class CarInterface(CarInterfaceBase):
 
     ret.centerToFront = ret.wheelbase * 0.44
 
-    # TODO: get actual value, for now starting with reasonable value for
-    # civic and scaling by mass and wheelbase
-    ret.rotationalInertia = scale_rot_inertia(ret.mass, ret.wheelbase)
-
     # TODO: start from empirically derived lateral slip stiffness for the civic and scale by
     # mass and CG position, so all cars will have approximately similar dyn behaviors
     ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront,
@@ -261,15 +256,19 @@ class CarInterface(CarInterfaceBase):
       #okay ish
       #tune.kiBP = [0., 11., 17., 20., 24., 30., 33., 40.]
       #tune.kiV = [.001, .21, .22, .23, .22, .1, .001, .0001]
-      tune.kiBP = [0.,   6.,  8.,  11., 30., 33., 40.]
-      tune.kiV = [.001, .07,  .15, .2,  .2,  .01, .0001]
+      tune.kiBP = [0.,  5.6,  11.1,  19.4,   30.,  33., 40.]
+      tune.kiV =  [.1, .127,  .185,  .185,   .15,  .09, .01]
       if candidate in TSS2_CAR:
-        ret.vEgoStopping = 0.2  # car is near 0.1 to 0.2 when car starts requesting stopping accel
-        ret.vEgoStarting = 0.2  # needs to be > or == vEgoStopping
-        ret.stopAccel = -2.0  # Toyota requests -0.4 when stopped
-        ret.stoppingDecelRate = 0.3  # reach stopping target smoothly - seems to take 0.5 seconds to go from 0 to -0.4
-        ret.longitudinalActuatorDelayLowerBound = 0.3
-        ret.longitudinalActuatorDelayUpperBound = 0.3
+        #ret.vEgoStopping = 0.3  # car is near 0.1 to 0.2 when car starts requesting stopping accel
+        ret.vEgoStarting = 0.6  # needs to be > or == vEgoStopping
+        #ret.stopAccel = -0.1  # Toyota requests -0.4 when stopped
+        ret.stoppingDecelRate = 0.009  # reach stopping target smoothly - seems to take 0.5 seconds to go from 0 to -0.4
+        #ret.longitudinalActuatorDelayLowerBound = 0.3
+        #ret.longitudinalActuatorDelayUpperBound = 0.3
+        ### stock ###
+        #ret.vEgoStopping = 0.25
+        #ret.vEgoStarting = 0.25
+        #ret.stoppingDecelRate = 0.3  # reach stopping target smoothly
     else:
       tune.kpBP = [0., 5., 35.]
       tune.kiBP = [0., 35.]

@@ -440,7 +440,7 @@ When on close will be dynamic but get closer in traffic. Normal is also dynamic 
     </message>
     <message>
         <source>DE2E When Lead Car Speed Below:</source>
-        <translation>切換至 E2E 當前車車速低於：</translation>
+        <translation type="vanished">切換至 E2E 當前車車速低於：</translation>
     </message>
     <message>
         <source>Dynamic End-to-end</source>
@@ -448,7 +448,7 @@ When on close will be dynamic but get closer in traffic. Normal is also dynamic 
     </message>
     <message>
         <source>Automatically Turn On and Off End-to-end longitudinal (extremely alpha), this will ignore the stock end-to-end settings</source>
-        <translation>自動開啟、關閉 E2E 縱向控制 (實驗功能)，這將會忽略 OP 本來的 E2E 設定。</translation>
+        <translation>自動開啟、關閉 E2E 縱向控制 (實驗功能)</translation>
     </message>
     <message>
         <source>Lateral</source>
@@ -528,7 +528,7 @@ Reboot required.</source>
     </message>
     <message>
         <source> km/h</source>
-        <translation> km/h</translation>
+        <translation type="vanished"> km/h</translation>
     </message>
     <message>
         <source>when lead car is going below the setting, e2e will be turned on automatically.
@@ -538,7 +538,7 @@ Reboot required.</source>
     </message>
     <message>
         <source>DE2E When Car Set Speed Below (w/o Lead):</source>
-        <translation>切換至 E2E 當定速低於 (無前車)：</translation>
+        <translation type="vanished">切換至 E2E 當定速低於 (無前車)：</translation>
     </message>
     <message>
         <source>E2E When Car Set Speed Below (w/o Lead):</source>
@@ -567,14 +567,22 @@ Reboot required.</source>
     <message>
         <source>when acc set speed below the setting and there is no lead car, e2e will be turned on automatically. 
 1 km/h = 0.62 mph</source>
-        <translation>當車子的定速低於設定值並且在沒有前車的情形下，系統會自動開啟 E2E 模式。
+        <translation type="vanished">當車子的定速低於設定值並且在沒有前車的情形下，系統會自動開啟 E2E 模式。
 1 km/h = 0.62 mph</translation>
     </message>
     <message>
         <source>when lead car is going below the setting, e2e will be turned on automatically. 
 1 km/h = 0.62 mph</source>
-        <translation>當前車車速於低於設定值時，系統將自動切換至 E2E 模式。
+        <translation type="vanished">當前車車速於低於設定值時，系統將自動切換至 E2E 模式。
 1 km/h = 0.62 mph</translation>
+    </message>
+    <message>
+        <source>DE2E w/ VOACC</source>
+        <translation>DE2E 用於 VOACC 下</translation>
+    </message>
+    <message>
+        <source>Enable this if your vehicles is in VOACC (e.g. Honda Bosch / VAG).</source>
+        <translation>如果您的車子使用的是 VOACC (例如：Honda Bosch / VAG/HKG)，可以開啟這個功能增進剎車效能。</translation>
     </message>
 </context>
 <context>
@@ -860,14 +868,14 @@ Please note:
     </message>
     <message>
         <source>Use Mapd without data.</source>
-        <translation>使用本地端 Mapd 圖資</translation>
+        <translation type="vanished">使用本地端 Mapd 圖資</translation>
     </message>
     <message>
         <source>You need minimum of 50 gb storage in /data/media/0/.
  Run df -h /data/media/0/ to see how much space you have available.
  Strongly recommend getting 1 TB ssd.
  If you decide not to upgrade you can delete all logs under dp-general </source>
-        <translation>您設備的 /data/media/0/ 將需要至少 50GB 的存儲空間。</translation>
+        <translation type="vanished">您設備的 /data/media/0/ 將需要至少 50GB 的存儲空間。</translation>
     </message>
 </context>
 <context>
@@ -1723,6 +1731,10 @@ location set</source>
     <message>
         <source>5G</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>%1 m</source>
+        <translation>%1 m</translation>
     </message>
 </context>
 <context>

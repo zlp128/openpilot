@@ -14,10 +14,10 @@ if [ -f /data/params/d/dp_atl ] && [ $ATL != "0" ]; then
 fi
 
 SSPOOF_ENABLED=0
-SSPOOF=`cat /data/params/d/dp_sspoof`
-if [ -f /data/params/d/dp_sspoof ] && [ $SSPOOF != "0" ]; then
-  SSPOOF_ENABLED=1
-fi
+#SSPOOF=`cat /data/params/d/dp_sspoof`
+#if [ -f /data/params/d/dp_sspoof ] && [ $SSPOOF != "0" ]; then
+#  SSPOOF_ENABLED=1
+#fi
 
 FW=$DEFAULT_FW_FN
 if [ "$ATL_ENABLED" = "1" ] && [ "$SSPOOF_ENABLED" = "1" ] && [ -f $TESTING_SSPOOF_FW_FN ]; then
