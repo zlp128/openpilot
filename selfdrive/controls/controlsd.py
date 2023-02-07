@@ -593,7 +593,9 @@ class Controls:
     CC.longActive = self.enabled and not self.events.any(ET.OVERRIDE_LONGITUDINAL) and self.CP.openpilotLongitudinalControl
 
     if self.sm['dragonConf'].dpAtl > 0:
-      if not CS.cruiseState.available:
+      if not self.sm['liveCalibration'].calStatus == Calibration.CALIBRATED:
+        pass
+      elif not CS.cruiseState.available:
         pass
         # CC.latActive = False
       elif CS.steerFaultTemporary:
