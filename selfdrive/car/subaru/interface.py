@@ -110,12 +110,10 @@ class CarInterface(CarInterfaceBase):
   def _update(self, c):
 
     ret = self.CS.update(self.cp, self.cp_cam, self.cp_body)
-    ret.cruiseState.enabled, ret.cruiseState.available = self.dp_atl_mode(ret)
 
     ret.events = self.create_common_events(ret).to_msg()
 
     events = self.create_common_events(ret)
-    events = self.dp_atl_warning(ret, events)
 
     ret.events = events.to_msg()
 

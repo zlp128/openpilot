@@ -53,10 +53,14 @@ class CarInterface(CarInterfaceBase):
 
     # dp - attempt to disable op long
     params = Params()
-    if int(params.get("dp_atl").decode('utf-8')) == 1:
-      ret.openpilotLongitudinalControl = False
-      if candidate in HONDA_BOSCH:
-        ret.pcmCruise = not ret.openpilotLongitudinalControl
+    dp_atl = int(params.get("dp_atl").decode('utf-8'))
+    if dp_atl > 0:
+      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_HONDA_ALKA
+      if dp_atl == 1:
+        ret.openpilotLongitudinalControl = False
+        # update pcmCruise again
+        if candidate in HONDA_BOSCH:
+          ret.pcmCruise = not ret.openpilotLongitudinalControl
 
     if candidate == CAR.CRV_5G:
       ret.enableBsm = 0x12f8bfa7 in fingerprint[0]
@@ -335,7 +339,6 @@ class CarInterface(CarInterfaceBase):
   # returns a car.CarState
   def _update(self, c):
     ret = self.CS.update(self.cp, self.cp_cam, self.cp_body)
-    ret.cruiseState.enabled, ret.cruiseState.available = self.dp_atl_mode(ret)
 
     #dp
     ret.engineRPM = self.CS.engineRPM
@@ -352,7 +355,6 @@ class CarInterface(CarInterfaceBase):
 
     # events
     events = self.create_common_events(ret, pcm_enable=False)
-    events = self.dp_atl_warning(ret, events)
     if self.CS.brake_error:
       events.add(EventName.brakeUnavailable)
 

@@ -74,7 +74,7 @@ class CarInterface(CarInterfaceBase):
       raise ValueError(f"Unsupported car: {candidate}")
 
     CarInterfaceBase.configure_dp_tune(candidate, ret.lateralTuning)
-    
+
     if ret.flags & ChryslerFlags.HIGHER_MIN_STEERING_SPEED:
       # TODO: allow these cars to steer down to 13 m/s if already engaged.
       ret.minSteerSpeed = 17.5  # m/s 17 on the way up, 13 on the way down once engaged.
@@ -86,11 +86,9 @@ class CarInterface(CarInterfaceBase):
 
   def _update(self, c):
     ret = self.CS.update(self.cp, self.cp_cam)
-    ret.cruiseState.enabled, ret.cruiseState.available = self.dp_atl_mode(ret)
 
     # events
     events = self.create_common_events(ret, extra_gears=[car.CarState.GearShifter.low])
-    events = self.dp_atl_warning(ret, events)
 
     # Low speed steer alert hysteresis logic
     if self.CP.minSteerSpeed > 0. and ret.vEgo < (self.CP.minSteerSpeed + 0.5):

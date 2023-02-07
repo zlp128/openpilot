@@ -136,7 +136,14 @@ class CAR:
   SKODA_OCTAVIA_MK3 = "SKODA OCTAVIA 3RD GEN"       # Chassis NE, Mk3 Skoda Octavia and variants
 
 
+# CARs based on the PQ35/PQ46/NMS platforms and using PQ-style CAN messaging (default is MQB)
 PQ_CARS = {CAR.PASSAT_NMS, CAR.SHARAN_MK2}
+
+# CARs that benefit from continuous Resume spam at a stop, effectively upgrading stock FtS to SnG
+# Appears to be MQB-A0s and the Transporter family
+# TODO: try to determine this from ABS firmware instead
+STANDING_RESUME_SPAM_CARS = {CAR.POLO_MK6, CAR.TCROSS_MK1, CAR.TROC_MK1, CAR.SKODA_KAMIQ_MK1,
+                             CAR.SKODA_SCALA_MK1, CAR.TRANSPORTER_T61}
 
 
 DBC: Dict[str, Dict[str, str]] = defaultdict(lambda: dbc_dict("vw_mqb_2010", None))

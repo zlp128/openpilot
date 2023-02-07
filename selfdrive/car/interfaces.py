@@ -267,12 +267,12 @@ class CarInterfaceBase(ABC):
       events.add(EventName.doorOpen)
     if cs_out.seatbeltUnlatched:
       events.add(EventName.seatbeltNotLatched)
-    if self.dragonconf.dpAtl != 1 and cs_out.gearShifter != GearShifter.drive and (extra_gears is None or
+    if cs_out.gearShifter != GearShifter.drive and (extra_gears is None or
        cs_out.gearShifter not in extra_gears):
       events.add(EventName.wrongGear)
     if cs_out.gearShifter == GearShifter.reverse:
       events.add(EventName.reverseGear)
-    if self.dragonconf.dpAtl == 0 and not cs_out.cruiseState.available:
+    if not cs_out.cruiseState.available:
       events.add(EventName.wrongCarMode)
     if cs_out.espDisabled:
       events.add(EventName.espDisabled)
@@ -282,13 +282,13 @@ class CarInterfaceBase(ABC):
       events.add(EventName.stockAeb)
     if self.dragonconf.dpSpeedCheck and cs_out.vEgo > MAX_CTRL_SPEED:
       events.add(EventName.speedTooHigh)
-    if self.dragonconf.dpAtl != 1 and cs_out.cruiseState.nonAdaptive:
+    if cs_out.cruiseState.nonAdaptive:
       events.add(EventName.wrongCruiseMode)
-    if self.dragonconf.dpAtl != 1 and cs_out.brakeHoldActive and self.CP.openpilotLongitudinalControl:
+    if cs_out.brakeHoldActive and self.CP.openpilotLongitudinalControl:
       events.add(EventName.brakeHold)
-    if self.dragonconf.dpAtl != 1 and cs_out.parkingBrake:
+    if cs_out.parkingBrake:
       events.add(EventName.parkBrake)
-    if self.dragonconf.dpAtl != 1 and cs_out.accFaulted:
+    if cs_out.accFaulted:
       events.add(EventName.accFaulted)
     if cs_out.steeringPressed:
       events.add(EventName.steerOverride)
@@ -325,29 +325,6 @@ class CarInterfaceBase(ABC):
         events.add(EventName.pcmDisable)
 
     return events
-
-  def dp_atl_warning(self, ret, events):
-    if self.dragonconf.dpAtl > 0:
-      if self.dp_last_cruise_actual_enabled and not ret.cruiseActualEnabled:
-        events.add(EventName.communityFeatureDisallowedDEPRECATED)
-      elif ret.cruiseState.enabled != ret.cruiseActualEnabled:
-        events.add(EventName.gasPressedOverride)
-      self.dp_last_cruise_actual_enabled = ret.cruiseActualEnabled
-    return events
-
-  def dp_atl_mode(self, ret):
-    enable = ret.cruiseState.enabled
-    available = ret.cruiseState.available
-    if self.dragonconf.dpAtl > 0 and available:
-      enable = True
-      if ret.gearShifter in [car.CarState.GearShifter.reverse, car.CarState.GearShifter.park]:
-        enable = False
-        available = False
-      if ret.seatbeltUnlatched or ret.doorOpen:
-        enable = False
-        available = False
-    return enable, available
-
 
 class RadarInterfaceBase(ABC):
   def __init__(self, CP):

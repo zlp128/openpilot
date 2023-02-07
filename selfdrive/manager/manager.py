@@ -141,7 +141,7 @@ def manager_thread() -> None:
   dp_mapd = params.get_bool('dp_mapd')
   ignore += ['mapd'] if not dp_mapd else []
   ignore += ['gpxd'] if not dp_otisserv and not dp_mapd and not params.get_bool('dp_gpxd') else []
-  ignore += ['uploader'] if not params.get_bool('dp_api_custom') and (int(params.get('dp_atl', encoding='utf8')) > 0 or params.get_bool('dp_jetson')) else []
+  ignore += ['uploader'] if not params.get_bool('dp_api_custom') and params.get_bool('dp_jetson') else []
 
   if params.get("DongleId", encoding='utf8') in (None, UNREGISTERED_DONGLE_ID):
     ignore += ["manage_athenad", "uploader"]

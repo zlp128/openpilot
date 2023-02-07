@@ -222,7 +222,7 @@ def handle_agnos_update() -> None:
   set_offroad_alert("Offroad_NeosUpdate", False)
 
 
-def handle_neos_update(wait_helper: WaitTimeHelper) -> None:
+def handle_neos_update() -> None:
   from system.hardware.eon.neos import download_neos_update
 
   cur_neos = HARDWARE.get_os_version()

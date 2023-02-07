@@ -4,6 +4,7 @@ from common.conversions import Conversions as CV
 from selfdrive.car import STD_CARGO_KG, get_safety_config
 from selfdrive.car.interfaces import CarInterfaceBase
 from selfdrive.car.volkswagen.values import CAR, PQ_CARS, CANBUS, NetworkLocation, TransmissionType, GearShifter
+from common.params import Params
 
 ButtonType = car.CarState.ButtonEvent.Type
 EventName = car.CarEvent.EventName
@@ -80,8 +81,14 @@ class CarInterface(CarInterfaceBase):
 
     # Global longitudinal tuning defaults, can be overridden per-vehicle
 
+    dp_atl = int(Params().get("dp_atl").decode('utf-8'))
+    if dp_atl > 0:
+      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_VOLKSWAGEN_ALKA
+      if dp_atl == 1:
+        ret.openpilotLongitudinalControl = False
+
     ret.experimentalLongitudinalAvailable = ret.networkLocation == NetworkLocation.gateway or use_off_car_defaults
-    if experimental_long:
+    if experimental_long and dp_atl != 1:
       # Proof-of-concept, prep for E2E only. No radar points available. Panda ALLOW_DEBUG firmware required.
       ret.openpilotLongitudinalControl = True
       ret.safetyConfigs[0].safetyParam |= Panda.FLAG_VOLKSWAGEN_LONG_CONTROL
@@ -218,12 +225,10 @@ class CarInterface(CarInterfaceBase):
   # returns a car.CarState
   def _update(self, c):
     ret = self.CS.update(self.cp, self.cp_cam, self.cp_ext, self.CP.transmissionType)
-    ret.cruiseState.enabled, ret.cruiseState.available = self.dp_atl_mode(ret)
 
     events = self.create_common_events(ret, extra_gears=[GearShifter.eco, GearShifter.sport, GearShifter.manumatic],
                                        pcm_enable=not self.CS.CP.openpilotLongitudinalControl,
                                        enable_buttons=(ButtonType.setCruise, ButtonType.resumeCruise))
-    events = self.dp_atl_warning(ret, events)
 
     # Low speed steer alert hysteresis logic
     if self.CP.minSteerSpeed > 0. and ret.vEgo < (self.CP.minSteerSpeed + 1.):

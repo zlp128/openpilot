@@ -227,7 +227,15 @@ class CarInterface(CarInterfaceBase):
       ret.longitudinalTuning.kpV = [0.5]
       ret.longitudinalTuning.kiV = [0.0]
       ret.experimentalLongitudinalAvailable = candidate not in (LEGACY_SAFETY_MODE_CAR | CAMERA_SCC_CAR)
-    ret.openpilotLongitudinalControl = experimental_long and ret.experimentalLongitudinalAvailable
+
+    params = Params()
+    dp_atl = int(params.get("dp_atl").decode('utf-8'))
+    if dp_atl > 0:
+      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_HYUNDAI_ALKA
+      if dp_atl == 1:
+        ret.openpilotLongitudinalControl = False
+
+    ret.openpilotLongitudinalControl = experimental_long and ret.experimentalLongitudinalAvailable and dp_atl != 1
     ret.pcmCruise = not ret.openpilotLongitudinalControl
 
     ret.stoppingControl = True
@@ -285,9 +293,6 @@ class CarInterface(CarInterfaceBase):
     # mass and CG position, so all cars will have approximately similar dyn behaviors
     ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront,
                                                                          tire_stiffness_factor=tire_stiffness_factor)
-    params = Params()
-    if int(params.get("dp_atl").decode('utf-8')) == 1:
-      ret.openpilotLongitudinalControl = False
     params.put("dp_lateral_steer_rate_cost", "0.5")
     return ret
 
@@ -305,7 +310,6 @@ class CarInterface(CarInterfaceBase):
 
   def _update(self, c):
     ret = self.CS.update(self.cp, self.cp_cam)
-    ret.cruiseState.enabled, ret.cruiseState.available = self.dp_atl_mode(ret)
 
     if self.CS.CP.openpilotLongitudinalControl and self.CS.cruise_buttons[-1] != self.CS.prev_cruise_buttons:
       buttonEvents = [create_button_event(self.CS.cruise_buttons[-1], self.CS.prev_cruise_buttons, BUTTONS_DICT)]
@@ -320,7 +324,6 @@ class CarInterface(CarInterfaceBase):
     # Main button also can trigger an engagement on these cars
     allow_enable = any(btn in ENABLE_BUTTONS for btn in self.CS.cruise_buttons) or any(self.CS.main_buttons)
     events = self.create_common_events(ret, pcm_enable=self.CS.CP.pcmCruise, allow_enable=allow_enable)
-    events = self.dp_atl_warning(ret, events)
 
     # low speed steer alert hysteresis logic (only for cars with steer cut off above 10 m/s)
     if ret.vEgo < (self.CP.minSteerSpeed + 2.) and self.CP.minSteerSpeed > 10.:

@@ -8,6 +8,10 @@ dragonpilot [Latest] - EON/C2 Release
 * NEW: Dynamic End-to-End can be turned on when lead car is going below x km/h. (Useful for stop and go traffic.)
 * NEW: Toggle to adapt Dynamic End-to-End to Following Dist. Mode.
 * NEW: Toggle to adapt Dynamic End-to-End to Accel Mode.
+* NEW: Always On Lateral v2 (For Toyota/VAG/HKG/Honda).
+* NEW: VAG - vw-spam-resume (Thanks to @jyoung8607)
+* FIXED: Bugs in updated.
+* FIXED: Issue in C2 fan control.
 * TWEAK: Bug fixes and improvement.
 
 dragonpilot 2022.11.09 - EON/C2 Release

@@ -206,7 +206,6 @@ class CarInterface(CarInterfaceBase):
   # returns a car.CarState
   def _update(self, c):
     ret = self.CS.update(self.cp, self.cp_cam, self.cp_loopback)
-    ret.cruiseState.enabled, ret.cruiseState.available = self.dp_atl_mode(ret)
 
     if self.CS.cruise_buttons != self.CS.prev_cruise_buttons and self.CS.prev_cruise_buttons != CruiseButtons.INIT:
       buttonEvents = [create_button_event(self.CS.cruise_buttons, self.CS.prev_cruise_buttons, BUTTONS_DICT, CruiseButtons.UNPRESS)]
@@ -220,7 +219,6 @@ class CarInterface(CarInterfaceBase):
     events = self.create_common_events(ret, extra_gears=[GearShifter.sport, GearShifter.low,
                                                          GearShifter.eco, GearShifter.manumatic],
                                        pcm_enable=self.CP.pcmCruise, enable_buttons=(ButtonType.decelCruise,))
-    events = self.dp_atl_warning(ret, events)
     if not self.CP.pcmCruise:
       if any(b.type == ButtonType.accelCruise and b.pressed for b in ret.buttonEvents):
         events.add(EventName.buttonEnable)

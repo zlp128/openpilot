@@ -5,7 +5,7 @@ from common.conversions import Conversions as CV
 from common.realtime import DT_CTRL
 from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.volkswagen import mqbcan, pqcan
-from selfdrive.car.volkswagen.values import CANBUS, PQ_CARS, CarControllerParams
+from selfdrive.car.volkswagen.values import CANBUS, PQ_CARS, CarControllerParams, STANDING_RESUME_SPAM_CARS
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 LongCtrlState = car.CarControl.Actuators.LongControlState
@@ -85,7 +85,7 @@ class CarController:
       hud_alert = 0
       if hud_control.visualAlert in (VisualAlert.steerRequired, VisualAlert.ldw):
         hud_alert = self.CCP.LDW_MESSAGES["laneAssistTakeOver"]
-      can_sends.append(self.CCS.create_lka_hud_control(self.packer_pt, CANBUS.pt, CS.ldw_stock_values, CC.enabled,
+      can_sends.append(self.CCS.create_lka_hud_control(self.packer_pt, CANBUS.pt, CS.ldw_stock_values, CC.latActive,
                                                        CS.out.steeringPressed, hud_alert, hud_control))
 
     if self.frame % self.CCP.ACC_HUD_STEP == 0 and self.CP.openpilotLongitudinalControl:
@@ -99,11 +99,17 @@ class CarController:
 
     # **** Stock ACC Button Controls **************************************** #
 
-    gra_send_ready = self.CP.pcmCruise and CS.gra_stock_values["COUNTER"] != self.gra_acc_counter_last
-    if gra_send_ready and (CC.cruiseControl.cancel or CC.cruiseControl.resume):
-      counter = (CS.gra_stock_values["COUNTER"] + 1) % 16
-      can_sends.append(self.CCS.create_acc_buttons_control(self.packer_pt, ext_bus, CS.gra_stock_values, counter,
-                                                           cancel=CC.cruiseControl.cancel, resume=CC.cruiseControl.resume))
+    if self.CP.pcmCruise and CS.gra_stock_values["COUNTER"] != self.gra_acc_counter_last:  # send just after stock
+      standing_resume_spam = CS.out.cruiseState.standstill and self.CP.carFingerprint in STANDING_RESUME_SPAM_CARS
+      spam_window = self.frame % 50 < 25  # 0.25 second gap between virtual button presses
+
+      press_cancel = CC.cruiseControl.cancel
+      press_resume = CC.cruiseControl.resume or (standing_resume_spam and spam_window)
+
+      if press_cancel or press_resume:
+        counter = (CS.gra_stock_values["COUNTER"] + 1) % 16
+        can_sends.append(self.CCS.create_acc_buttons_control(self.packer_pt, ext_bus, CS.gra_stock_values, counter,
+                                                             cancel=press_cancel, resume=press_resume))
 
     new_actuators = actuators.copy()
     new_actuators.steer = self.apply_steer_last / self.CCP.STEER_MAX

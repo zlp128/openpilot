@@ -195,7 +195,7 @@ class NormalPermanentAlert(Alert):
 
 
 class StartupAlert(Alert):
-  def __init__(self, alert_text_1: str, alert_text_2: str = _("Happy Holiday / New Years! Safe Travel, cya in 2023"), alert_status=AlertStatus.normal):
+  def __init__(self, alert_text_1: str, alert_text_2: str = _("Always keep hands on wheel and eyes on road"), alert_status=AlertStatus.normal):
     super().__init__(alert_text_1, alert_text_2,
                      alert_status, AlertSize.mid,
                      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 10.),
@@ -449,7 +449,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, AlertCallbackType]]] = {
   },
 
   EventName.steerTempUnavailableSilent: {
-    ET.WARNING: Alert(
+    ET.PERMANENT: Alert(
       _("Steering Temporarily Unavailable"),
       "",
       AlertStatus.userPrompt, AlertSize.small,
@@ -525,7 +525,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, AlertCallbackType]]] = {
   },
 
   EventName.preLaneChangeLeft: {
-    ET.WARNING: Alert(
+    ET.PERMANENT: Alert(
       _("Steer Left to Start Lane Change Once Safe"),
       "",
       AlertStatus.normal, AlertSize.small,
@@ -533,7 +533,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, AlertCallbackType]]] = {
   },
 
   EventName.preLaneChangeRight: {
-    ET.WARNING: Alert(
+    ET.PERMANENT: Alert(
       _("Steer Right to Start Lane Change Once Safe"),
       "",
       AlertStatus.normal, AlertSize.small,
@@ -541,7 +541,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, AlertCallbackType]]] = {
   },
 
   EventName.laneChangeBlocked: {
-    ET.WARNING: Alert(
+    ET.PERMANENT: Alert(
       _("Car Detected in Blindspot"),
       "",
       AlertStatus.userPrompt, AlertSize.small,
@@ -549,7 +549,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, AlertCallbackType]]] = {
   },
 
   EventName.laneChange: {
-    ET.WARNING: Alert(
+    ET.PERMANENT: Alert(
       _("Changing Lanes"),
       "",
       AlertStatus.normal, AlertSize.small,
@@ -557,7 +557,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, AlertCallbackType]]] = {
   },
 
   EventName.steerSaturated: {
-    ET.WARNING: Alert(
+    ET.PERMANENT: Alert(
       _("Take Control"),
       _("Turn Exceeds Steering Limit"),
       AlertStatus.userPrompt, AlertSize.mid,
@@ -680,6 +680,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, AlertCallbackType]]] = {
   },
 
   EventName.steerTempUnavailable: {
+    ET.PERMANENT: soft_disable_alert(_("Steering Temporarily Unavailable")),
     ET.SOFT_DISABLE: soft_disable_alert(_("Steering Temporarily Unavailable")),
     ET.NO_ENTRY: NoEntryAlert(_("Steering Temporarily Unavailable")),
   },

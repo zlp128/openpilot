@@ -121,8 +121,6 @@ class Controls:
 
     # set alternative experiences from parameters
     self.disengage_on_accelerator = self.params.get_bool("DisengageOnAccelerator")
-    if self.sm['dragonConf'].dpAtl > 0:
-      self.disengage_on_accelerator = False
     self.CP.alternativeExperience = 0
     if not self.disengage_on_accelerator:
       self.CP.alternativeExperience |= ALTERNATIVE_EXPERIENCE.DISABLE_DISENGAGE_ON_GAS
@@ -258,13 +256,13 @@ class Controls:
 
     # Block resume if cruise never previously enabled
     resume_pressed = any(be.type in (ButtonType.accelCruise, ButtonType.resumeCruise) for be in CS.buttonEvents)
-    if self.sm['dragonConf'].dpAtl == 0 and not self.CP.pcmCruise and not self.v_cruise_helper.v_cruise_initialized and resume_pressed:
+    if not self.CP.pcmCruise and not self.v_cruise_helper.v_cruise_initialized and resume_pressed:
       self.events.add(EventName.resumeBlocked)
 
     # Disable on rising edge of accelerator or brake. Also disable on brake when speed > 0
-    if self.sm['dragonConf'].dpAtl == 0 and ((CS.gasPressed and not self.CS_prev.gasPressed and self.disengage_on_accelerator) or \
+    if (CS.gasPressed and not self.CS_prev.gasPressed and self.disengage_on_accelerator) or \
       (CS.brakePressed and (not self.CS_prev.brakePressed or not CS.standstill)) or \
-      (CS.regenBraking and (not self.CS_prev.regenBraking or not CS.standstill))):
+      (CS.regenBraking and (not self.CS_prev.regenBraking or not CS.standstill)):
       self.events.add(EventName.pedalPressed)
 
     if CS.brakePressed and CS.standstill:
@@ -402,7 +400,7 @@ class Controls:
     if not self.sm['liveLocationKalman'].deviceStable:
       self.events.add(EventName.deviceFalling)
 
-    if self.sm['dragonConf'].dpAtl == 0 and not REPLAY:
+    if not REPLAY:
       # Check for mismatch between openpilot and car's PCM
       cruise_mismatch = CS.cruiseState.enabled and (not self.enabled or not self.CP.pcmCruise)
       self.cruise_mismatch_counter = self.cruise_mismatch_counter + 1 if cruise_mismatch else 0
@@ -549,8 +547,6 @@ class Controls:
 
     # DISABLED
     elif self.state == State.disabled:
-      if CS.cruiseState.available and not CS.cruiseActualEnabled and self.sm['dragonConf'].dpAtl > 0 and not self.events.any(ET.NO_ENTRY):
-        self.state = State.overriding
       if self.events.any(ET.ENABLE):
         if self.events.any(ET.NO_ENTRY):
           self.current_alert_types.append(ET.NO_ENTRY)
@@ -596,8 +592,23 @@ class Controls:
                    CS.vEgo > self.CP.minSteerSpeed and not CS.standstill
     CC.longActive = self.enabled and not self.events.any(ET.OVERRIDE_LONGITUDINAL) and self.CP.openpilotLongitudinalControl
 
-    if self.sm['dragonConf'].dpAtl == 2 and not CS.cruiseActualEnabled:
-      CC.longActive = False
+    if self.sm['dragonConf'].dpAtl > 0:
+      if not CS.cruiseState.available:
+        pass
+        # CC.latActive = False
+      elif CS.steerFaultTemporary:
+        pass
+        # CC.latActive = False
+      elif CS.steerFaultPermanent:
+        pass
+        # CC.latActive = False
+      elif CS.standstill:
+        pass
+        # CC.latActive = False
+      elif CS.gearShifter == car.CarState.GearShifter.reverse:
+        pass
+      else:
+        CC.latActive = True
 
     actuators = CC.actuators
     actuators.longControlState = self.LoC.long_control_state
@@ -701,12 +712,9 @@ class Controls:
     if self.joystick_mode and self.sm.rcv_frame['testJoystick'] > 0 and self.sm['testJoystick'].buttons[0]:
       CC.cruiseControl.cancel = True
 
-    if self.dp_vag_resume_fix or self.sm['dragonConf'].dpAtl == 1:
-      CC.cruiseControl.resume = CS.cruiseActualEnabled and CS.cruiseState.standstill
-    else:
-      speeds = self.sm['longitudinalPlan'].speeds
-      if len(speeds):
-        CC.cruiseControl.resume = self.enabled and CS.cruiseState.standstill and speeds[-1] > 0.1
+    speeds = self.sm['longitudinalPlan'].speeds
+    if len(speeds):
+      CC.cruiseControl.resume = self.enabled and CS.cruiseState.standstill and speeds[-1] > 0.1
 
     hudControl = CC.hudControl
     hudControl.setSpeed = float(self.v_cruise_helper.v_cruise_cluster_kph * CV.KPH_TO_MS)

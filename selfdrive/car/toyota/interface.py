@@ -222,11 +222,15 @@ class CarInterface(CarInterfaceBase):
     ret.openpilotLongitudinalControl = smartDsu or ret.enableDsu or candidate in (TSS2_CAR - RADAR_ACC_CAR)
     ret.autoResumeSng = ret.openpilotLongitudinalControl and candidate in NO_STOP_TIMER_CAR
 
-    if int(params.get("dp_atl").decode('utf-8')) == 1:
-      ret.openpilotLongitudinalControl = False
+    dp_atl = int(Params().get("dp_atl").decode('utf-8'))
+    if dp_atl > 0:
+      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_TOYOTA_ALKA
 
-    if smartDsu and int(params.get("dp_atl").decode('utf-8')) == 2:
-      ret.openpilotLongitudinalControl = True
+      if dp_atl == 1:
+        ret.openpilotLongitudinalControl = False
+
+      if smartDsu and dp_atl == 2:
+        ret.openpilotLongitudinalControl = True
 
     if candidate == CAR.CHR_TSS2:
       ret.enableBsm = True
@@ -281,9 +285,6 @@ class CarInterface(CarInterfaceBase):
   def _update(self, c):
     ret = self.CS.update(self.cp, self.cp_cam)
 
-    # dp
-    ret.cruiseState.enabled, ret.cruiseState.available = self.dp_atl_mode(ret)
-
     # low speed re-write
     if self.dragonconf.dpToyotaCruiseOverride:
       if self.dragonconf.dpToyotaCruiseOverrideSpeed != self.dp_override_speed_last:
@@ -299,7 +300,6 @@ class CarInterface(CarInterfaceBase):
 
     # events
     events = self.create_common_events(ret)
-    events = self.dp_atl_warning(ret, events)
 
     if self.CP.openpilotLongitudinalControl:
       if ret.cruiseState.standstill and not ret.brakePressed and not self.CP.enableGasInterceptor:
