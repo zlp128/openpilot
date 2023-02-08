@@ -114,10 +114,6 @@ class Controls:
       self.CI, self.CP = CI, CI.CP
 
     self.joystick_mode = self.params.get_bool("JoystickDebugMode") or (self.CP.notCar and sm is None)
-    # dp
-    self.sm['dragonConf'].dpAtl = int(self.params.get('dp_atl', encoding='utf8'))
-    self.dp_temp_check = self.params.get_bool('dp_temp_check')
-    self.dp_vag_resume_fix = self.params.get_bool('dp_vag_resume_fix')
 
     # set alternative experiences from parameters
     self.disengage_on_accelerator = self.params.get_bool("DisengageOnAccelerator")
@@ -127,6 +123,12 @@ class Controls:
 
     if self.CP.dashcamOnly and self.params.get_bool("DashcamOverride"):
       self.CP.dashcamOnly = False
+
+    # dp
+    self.sm['dragonConf'].dpAtl = int(self.params.get('dp_atl', encoding='utf8'))
+    if self.sm['dragonConf'].dpAtl:
+      self.CP.alternativeExperience |= ALTERNATIVE_EXPERIENCE.ALKA
+    self.dp_temp_check = self.params.get_bool('dp_temp_check')
 
     # read params
     self.is_metric = self.params.get_bool("IsMetric")
@@ -597,16 +599,12 @@ class Controls:
         pass
       elif not CS.cruiseState.available:
         pass
-        # CC.latActive = False
       elif CS.steerFaultTemporary:
         pass
-        # CC.latActive = False
       elif CS.steerFaultPermanent:
         pass
-        # CC.latActive = False
       elif CS.standstill:
         pass
-        # CC.latActive = False
       elif CS.gearShifter == car.CarState.GearShifter.reverse:
         pass
       else:

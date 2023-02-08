@@ -53,14 +53,11 @@ class CarInterface(CarInterfaceBase):
 
     # dp - attempt to disable op long
     params = Params()
-    dp_atl = int(params.get("dp_atl").decode('utf-8'))
-    if dp_atl > 0:
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_HONDA_ALKA
-      if dp_atl == 1:
-        ret.openpilotLongitudinalControl = False
-        # update pcmCruise again
-        if candidate in HONDA_BOSCH:
-          ret.pcmCruise = not ret.openpilotLongitudinalControl
+    if int(params.get("dp_atl").decode('utf-8')) == 1:
+      ret.openpilotLongitudinalControl = False
+      # update pcmCruise again
+      if candidate in HONDA_BOSCH:
+        ret.pcmCruise = True
 
     if candidate == CAR.CRV_5G:
       ret.enableBsm = 0x12f8bfa7 in fingerprint[0]

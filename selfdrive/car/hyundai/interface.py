@@ -229,6 +229,9 @@ class CarInterface(CarInterfaceBase):
       ret.experimentalLongitudinalAvailable = candidate not in (LEGACY_SAFETY_MODE_CAR | CAMERA_SCC_CAR)
 
     ret.openpilotLongitudinalControl = experimental_long and ret.experimentalLongitudinalAvailable
+    params = Params()
+    if int(params.get("dp_atl").decode('utf-8')) == 1:
+      ret.openpilotLongitudinalControl = False
     ret.pcmCruise = not ret.openpilotLongitudinalControl
 
     ret.stoppingControl = True
@@ -268,15 +271,6 @@ class CarInterface(CarInterfaceBase):
 
       if candidate in CAMERA_SCC_CAR:
         ret.safetyConfigs[0].safetyParam |= Panda.FLAG_HYUNDAI_CAMERA_SCC
-
-    params = Params()
-    dp_atl = int(params.get("dp_atl").decode('utf-8'))
-    if dp_atl > 0:
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_HYUNDAI_ALKA
-      if dp_atl == 1:
-        ret.openpilotLongitudinalControl = False
-        # update pcmCruise again
-        ret.pcmCruise = not ret.openpilotLongitudinalControl
 
     if ret.openpilotLongitudinalControl:
       ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_HYUNDAI_LONG

@@ -222,15 +222,8 @@ class CarInterface(CarInterfaceBase):
     ret.openpilotLongitudinalControl = smartDsu or ret.enableDsu or candidate in (TSS2_CAR - RADAR_ACC_CAR)
     ret.autoResumeSng = ret.openpilotLongitudinalControl and candidate in NO_STOP_TIMER_CAR
 
-    dp_atl = int(Params().get("dp_atl").decode('utf-8'))
-    if dp_atl > 0:
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_TOYOTA_ALKA
-
-      if dp_atl == 1:
-        ret.openpilotLongitudinalControl = False
-
-      if smartDsu and dp_atl == 2:
-        ret.openpilotLongitudinalControl = True
+    if int(Params().get("dp_atl").decode('utf-8')) == 1:
+      ret.openpilotLongitudinalControl = False
 
     if candidate == CAR.CHR_TSS2:
       ret.enableBsm = True

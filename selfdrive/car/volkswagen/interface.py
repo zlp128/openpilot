@@ -82,10 +82,8 @@ class CarInterface(CarInterfaceBase):
     # Global longitudinal tuning defaults, can be overridden per-vehicle
 
     dp_atl = int(Params().get("dp_atl").decode('utf-8'))
-    if dp_atl > 0:
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_VOLKSWAGEN_ALKA
-      if dp_atl == 1:
-        ret.openpilotLongitudinalControl = False
+    if dp_atl == 1:
+      ret.openpilotLongitudinalControl = False
 
     ret.experimentalLongitudinalAvailable = ret.networkLocation == NetworkLocation.gateway or use_off_car_defaults
     if experimental_long and dp_atl != 1:
