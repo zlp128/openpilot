@@ -94,10 +94,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>RAM PER</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>OFF</source>
         <translation type="unfinished"></translation>
     </message>
@@ -135,6 +131,10 @@
     </message>
     <message>
         <source>ACCEL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lat Ctrl</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -274,19 +274,6 @@ Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Volkswagen</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enable VAG Resume Fix</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enable this if your car does not auto resume (stop and go).
-Reboot required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Mazda</source>
         <translation type="unfinished"></translation>
     </message>
@@ -307,13 +294,18 @@ Thanks to @TheCrowd</source>
         <source>Enable this to bypass dashcam mode.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Enable Reverse ACC Set speed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enabling this will reverse set acc short press +5 jump, Long press +1 Jump.
+Reboot Required.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DPControlPanel</name>
-    <message>
-        <source>ALCA Delay</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Once the vehicle meets all ALCA criteria, it will wait for the seconds set here before performing lane change automatically.</source>
         <translation type="unfinished"></translation>
@@ -323,20 +315,12 @@ Thanks to @TheCrowd</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ALCA Min Speed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>ALCA minimum engage speed in mph.
 1 mph = 1.61 km/h.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source> mph</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>LCA Min Speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -354,15 +338,7 @@ Thanks to @TheCrowd</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Camera Offset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Adjust your camera position if your device is not mounted as per guidance.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Driving Path Offset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -487,15 +463,7 @@ Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>DE2E Adapt Following Mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Enable this if you wish to use following dist. mode in DE2E.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>DE2E Adapt Accel Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -503,20 +471,85 @@ Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Enable this if your vehicles is in VOACC (e.g. Honda Bosch / VAG).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ALC RoadEdge Detection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enabling this will prevent lane change when you are too close to road edge.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ALCA Delay</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ALCA Min Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LCA Min Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Camera Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Driving Path Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DE2E Adapt Following Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DE2E Adapt Accel Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>DE2E w/ VOACC</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Enable this if your vehicles is in VOACC (e.g. Honda Bosch / VAG).</source>
+        <source>When Set Speed Above:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>when acc SET speed above the setting, it will switch to alternative controller. 
+1 km/h = 0.62 mph</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> km/h</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alternative Controller</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+1 = PID
+2 = LQR
+3 = Torque
+Your Vehicle may not support all the options, YMMV.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Alternative Controller</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This feature will let you use alternative lateral controller at higher set speed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DPGeneralPanel</name>
-    <message>
-        <source>Auto Shutdown In</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Adjust your shutdown waiting period.
 0 = shutdown immediately.</source>
@@ -663,6 +696,10 @@ Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Auto Shutdown In</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enable Driver Monitor (Front Cam)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -750,14 +787,6 @@ Reboot required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Show debug UI elements</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show UI elements that aid debugging.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Enable MapD</source>
         <translation type="unfinished"></translation>
     </message>
@@ -768,6 +797,38 @@ Please note:
 2. MapD will contribute your route to OSM for future improvement automatically.
 3. You can add your own offset for mapd just follow the readme under /selfdrive/mapd.
 4. Not connecting to the internet for while might feel up device storage from all the gps traces. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OpenStreetMap Database Update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CHECK</source>
+        <translation type="unfinished">查看</translation>
+    </message>
+    <message>
+        <source>&quot;OpenStreetMap Database Update&quot;
+Your device will reboot and perform a database update based on the region you have selected.
+Reboot now?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OpenStreetMap Database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SELECT</source>
+        <translation type="unfinished">选择</translation>
+    </message>
+    <message>
+        <source>Select your location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&quot;OpenStreetMap Database&quot;
+Restart your device to start downloading the selected database. Dragonpilot will only start downloading the database on reboot.
+Reboot now?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -795,14 +856,6 @@ Please note:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Alert Volume</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Adjust your alert volume.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Quiet Drive</source>
         <translation type="unfinished"></translation>
     </message>
@@ -816,10 +869,6 @@ Please note:
     </message>
     <message>
         <source>Enable this to display your current speed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Display Event / Steer Icon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -852,6 +901,22 @@ Please note:
     </message>
     <message>
         <source>Display detected lead objects&apos; speed and distance.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display Driver Camera</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display Driver Camera when reversing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rainbow Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>for all the tesla fanboy&apos;s.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1080,18 +1145,6 @@ Please note:
     <message>
         <source>Installing...</source>
         <translation>正在安装……</translation>
-    </message>
-    <message>
-        <source>Receiving objects: </source>
-        <translation>正在接收： </translation>
-    </message>
-    <message>
-        <source>Resolving deltas: </source>
-        <translation>正在处理： </translation>
-    </message>
-    <message>
-        <source>Updating files: </source>
-        <translation>正在更新文件： </translation>
     </message>
 </context>
 <context>
@@ -1355,16 +1408,8 @@ location set</source>
         <translation>您确定要重置您的设备吗？</translation>
     </message>
     <message>
-        <source>Resetting device...</source>
-        <translation>正在重置设备……</translation>
-    </message>
-    <message>
         <source>System Reset</source>
         <translation>恢复出厂设置</translation>
-    </message>
-    <message>
-        <source>System reset triggered. Press confirm to erase all content and settings. Press cancel to resume boot.</source>
-        <translation>已触发系统重置：确认以删除所有内容和设置。取消以正常启动设备。</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -1379,8 +1424,17 @@ location set</source>
         <translation>确认</translation>
     </message>
     <message>
-        <source>Unable to mount data partition. Press confirm to reset your device.</source>
-        <translation>无法挂载数据分区。 确认以重置您的设备。</translation>
+        <source>Unable to mount data partition. Partition may be corrupted. Press confirm to erase and reset your device.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press confirm to erase all content and settings. Press cancel to resume boot.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resetting device...
+This may take up to a minute.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1477,18 +1531,6 @@ location set</source>
         <translation>等待网络连接</translation>
     </message>
     <message>
-        <source>Choose Software to Install</source>
-        <translation>选择要安装的软件</translation>
-    </message>
-    <message>
-        <source>Dashcam</source>
-        <translation>Dashcam（行车记录仪）</translation>
-    </message>
-    <message>
-        <source>Custom Software</source>
-        <translation>自定义软件</translation>
-    </message>
-    <message>
         <source>Enter URL</source>
         <translation>输入网址</translation>
     </message>
@@ -1515,6 +1557,14 @@ location set</source>
     <message>
         <source>Start over</source>
         <translation>重来</translation>
+    </message>
+    <message>
+        <source>No custom software found at this URL.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Something went wrong. Reboot the device.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1647,7 +1697,7 @@ location set</source>
     </message>
     <message>
         <source>SELECT</source>
-        <translation>选择</translation>
+        <translation type="vanished">选择</translation>
     </message>
     <message>
         <source>Select a branch</source>
@@ -1672,30 +1722,6 @@ location set</source>
     <message>
         <source>Uninstall</source>
         <translation>卸载</translation>
-    </message>
-    <message>
-        <source>OpenStreetMap Database Update</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&quot;OpenStreetMap Database Update&quot;
-Your device will reboot and perform a database update based on the region you have selected.
-Reboot now?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OpenStreetMap Database</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select your location</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&quot;OpenStreetMap Database&quot;
-Restart your device to start downloading the selected database. Dragonpilot will only start downloading the database on reboot.
-Reboot now?</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1838,14 +1864,6 @@ Reboot now?</source>
         <translation>针对此车辆，openpilot默认使用车辆自带的ACC，而非openpilot的纵向控制。启用此选项将切换到openpilot纵向控制。当使用试验性的openpilot纵向控制时，建议同时启用试验模式。</translation>
     </message>
     <message>
-        <source>Experimental mode is currently unavailable on this car, since the car&apos;s stock ACC is used for longitudinal control.</source>
-        <translation>由于此车辆使用自带的ACC纵向控制，当前无法使用试验模式。</translation>
-    </message>
-    <message>
-        <source>Enable experimental longitudinal control to allow experimental mode.</source>
-        <translation>启用试验性的纵向控制，以便允许使用试验模式。</translation>
-    </message>
-    <message>
         <source>openpilot defaults to driving in &lt;b&gt;chill mode&lt;/b&gt;. Experimental mode enables &lt;b&gt;alpha-level features&lt;/b&gt; that aren&apos;t ready for chill mode. Experimental features are listed below:</source>
         <translation>openpilot 默认 &lt;b&gt;轻松模式&lt;/b&gt;驾驶车辆。试验模式启用一些轻松模式之外的 &lt;b&gt;试验性功能&lt;/b&gt;。试验性功能包括：</translation>
     </message>
@@ -1864,6 +1882,22 @@ Reboot now?</source>
     <message>
         <source>The driving visualization will transition to the road-facing wide-angle camera at low speeds to better show some turns. The Experimental mode logo will also be shown in the top right corner.</source>
         <translation>当低速行驶时，驾驶视角将切换到前向广角摄像头，便于更完整地显示转向路径。右上角将显示试验模式图标。</translation>
+    </message>
+    <message>
+        <source>Experimental mode is currently unavailable on this car since the car&apos;s stock ACC is used for longitudinal control.</source>
+        <translation>由于此车辆使用自带的ACC纵向控制，当前无法使用试验模式。</translation>
+    </message>
+    <message>
+        <source>openpilot longitudinal control may come in a future update.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An experimental version of openpilot longitudinal control can be tested, along with Experimental mode, on non-release branches.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable experimental longitudinal control to allow Experimental mode.</source>
+        <translation>启用试验性的纵向控制，以便允许使用试验模式。</translation>
     </message>
     <message>
         <source>Enable Right-Hand Drive</source>

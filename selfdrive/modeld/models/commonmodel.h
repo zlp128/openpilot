@@ -20,6 +20,7 @@
 const bool send_raw_pred = getenv("SEND_RAW_PRED") != NULL;
 
 void softmax(const float* input, float* output, size_t len);
+float softplus(float input);
 float sigmoid(float input);
 
 template<class T, size_t size>

@@ -18,7 +18,7 @@ from common.params import Params
 from common.realtime import DT_TRML, sec_since_boot
 from selfdrive.controls.lib.alertmanager import set_offroad_alert
 from system.hardware import HARDWARE, TICI, AGNOS, EON
-from selfdrive.loggerd.config import get_available_percent
+from system.loggerd.config import get_available_percent
 # from selfdrive.statsd import statlog
 from system.swaglog import cloudlog
 from selfdrive.thermald.power_monitoring import PowerMonitoring
@@ -192,9 +192,6 @@ def thermald_thread(end_event, hw_queue):
 
   fan_controller = None
 
-  dp_auto_shutdown = params.get_bool("dp_auto_shutdown")
-  dp_auto_shutdown_in = int(params.get("dp_auto_shutdown_in", encoding='utf8')) * 60
-
   while not end_event.is_set():
     sm.update(PANDA_STATES_TIMEOUT)
 
@@ -361,7 +358,7 @@ def thermald_thread(end_event, hw_queue):
     # Offroad power monitoring
     voltage = None if peripheralState is None or peripheralState.pandaType == log.PandaState.PandaType.unknown else peripheralState.voltage
     power_monitor.calculate(voltage, onroad_conditions["ignition"])
-    msg.deviceState.offroadPowerUsageUwh = power_monitor.get_power_used()
+    msg.deviceState.offroadPowerUsageUwh = max(0, power_monitor.get_power_used())
     msg.deviceState.carBatteryCapacityUwh = max(0, power_monitor.get_car_battery_capacity())
     current_power_draw = HARDWARE.get_current_power_draw()
     # statlog.sample("power_draw", current_power_draw)
@@ -372,13 +369,9 @@ def thermald_thread(end_event, hw_queue):
     msg.deviceState.somPowerDrawW = som_power_draw
 
     # Check if we need to disable charging (handled by boardd)
-    msg.deviceState.chargingDisabled = power_monitor.should_disable_charging(onroad_conditions["ignition"], in_car, off_ts)
+    msg.deviceState.chargingDisabled = power_monitor.should_disable_charging(onroad_conditions["ignition"], in_car, off_ts, started_seen)
 
-    # Check if we need to auto shut down
-    # we only enable it when it's been on-road once.
-    if started_seen and dp_auto_shutdown and off_ts is not None and (sec_since_boot() - off_ts > dp_auto_shutdown_in):
-      params.put_bool("DoShutdown", True)
-
+    # Check if we need to shut down
     if power_monitor.should_shutdown(peripheralState, onroad_conditions["ignition"], in_car, off_ts, started_seen):
       cloudlog.warning(f"shutting device down, offroad since {off_ts}")
       params.put_bool("DoShutdown", True)
@@ -414,7 +407,7 @@ def thermald_thread(end_event, hw_queue):
     #   statlog.gauge(f"nvme_temperature{i}", temp)
     # for i, temp in enumerate(last_hw_state.modem_temps):
     #   statlog.gauge(f"modem_temperature{i}", temp)
-    # statlog.gauge("fan_speed_percent_desired", msg.deviceState.fanSpeedPercentDesired)
+    # statlog.gauge("fan_speed_percent_desired", msg.deviceState.fanSpeeZercentDesired)
     # statlog.gauge("screen_brightness_percent", msg.deviceState.screenBrightnessPercent)
 
     # report to server once every 10 minutes

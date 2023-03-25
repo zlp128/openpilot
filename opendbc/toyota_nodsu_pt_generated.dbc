@@ -41,6 +41,12 @@ BO_ 767 SDSU: 8 XXX
 CM_ "BO_ SDSU: The sDSU is a modified DSU for use in TSS1 Toyotas. Learn more: https://github.com/wocsor/panda/tree/smart_dsu";
 CM_ SG_ 767 FD_BUTTON "The follow distance button signal as forwarded by the sdsu";
 
+BO_ 1880 DEBUG: 8 XXX
+ SG_ BLINDSPOTSIDE : 7|8@0+ (1,0) [0|255] "" XXX
+ SG_ BLINDSPOT : 38|1@0+ (1,0) [0|15] "" XXX
+ SG_ BLINDSPOTD1 : 47|8@0+ (1,0) [0|255] "" XXX
+ SG_ BLINDSPOTD2 : 55|8@0+ (1,0) [0|255] "" XXX
+
 
 CM_ "Imported file _toyota_2017.dbc starts here";
 VERSION ""
@@ -106,7 +112,7 @@ BO_ 180 SPEED: 8 XXX
  SG_ CHECKSUM : 63|8@0+ (1,0) [0|255] "" XXX
 
 BO_ 295 GEAR_PACKET_HYBRID: 8 XXX
- SG_ CAR_MOVEMENT : 39|8@0- (1,0) [0|255] "" XXX
+ SG_ CAR_MOVEMENT : 25|10@0- (1,0) [0|255] "" XXX
  SG_ COUNTER : 55|8@0+ (1,0) [0|255] "" XXX
  SG_ CHECKSUM : 63|8@0+ (1,0) [0|255] "" XXX
  SG_ GEAR : 47|4@0+ (1,0) [0|15] "" XXX
@@ -381,8 +387,7 @@ BO_ 1552 BODY_CONTROL_STATE_2: 8 XXX
 
 BO_ 1553 UI_SETTING: 8 XXX
  SG_ UNITS : 26|2@0+ (1,0) [0|3] "" XXX
- SG_ ODOMETER : 43|20@0+ (1,0) [0|1048575] "" XXX
-
+ SG_ ODOMETER : 39|32@0+ (1,0) [0|1048575] "" XXX
 BO_ 1556 BLINKERS_STATE: 8 XXX
  SG_ TURN_SIGNALS : 29|2@0+ (1,0) [0|3] "" XXX
  SG_ HAZARD_LIGHT : 27|1@0+ (1,0) [0|1] "" XXX

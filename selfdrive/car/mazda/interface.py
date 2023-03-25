@@ -15,7 +15,7 @@ class CarInterface(CarInterfaceBase):
   def _get_params(ret, candidate, fingerprint, car_fw, experimental_long):
     ret.carName = "mazda"
     ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.mazda)]
-    ret.radarOffCan = True
+    ret.radarUnavailable = True
 
     ret.dashcamOnly = candidate not in (CAR.CX5_2022, CAR.CX9_2021) and not Params().get_bool('dp_mazda_dashcam_bypass')
 
@@ -45,7 +45,8 @@ class CarInterface(CarInterfaceBase):
     if candidate not in (CAR.CX5_2022, ):
       ret.minSteerSpeed = LKAS_LIMITS.DISABLE_SPEED * CV.KPH_TO_MS
 
-    CarInterfaceBase.configure_dp_tune(candidate, ret.lateralTuning)
+    CarInterfaceBase.dp_lat_tune_collection(candidate, ret.latTuneCollection)
+    CarInterfaceBase.configure_dp_tune(ret.lateralTuning, ret.latTuneCollection)
 
     ret.centerToFront = ret.wheelbase * 0.41
 
@@ -72,5 +73,5 @@ class CarInterface(CarInterfaceBase):
 
     return ret
 
-  def apply(self, c):
-    return self.CC.update(c, self.CS)
+  def apply(self, c, now_nanos):
+    return self.CC.update(c, self.CS, now_nanos)

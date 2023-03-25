@@ -44,9 +44,6 @@ selfdrive/mapd/default_speeds_by_region.json
 system/proclogd/proclogd
 selfdrive/ui/_ui
 selfdrive/test/longitudinal_maneuvers/out
-selfdrive/visiond/visiond
-selfdrive/sensord/_gpsd
-selfdrive/sensord/_sensord
 system/camerad/camerad
 system/camerad/test/ae_gray_test
 selfdrive/modeld/_modeld
@@ -64,7 +61,7 @@ panda_jungle
 provisioning
 
 .coverage*
-coverage.xml
+coverage.xmlcar
 htmlcov
 pandaextra
 
@@ -85,3 +82,7 @@ build/
 
 poetry.toml
 selfdrive/ui/_ui_nonav
+*events.po~
+selfdrive/loggerd/bootlog
+selfdrive/loggerd/loggerd
+selfdrive/proclogd/proclogd

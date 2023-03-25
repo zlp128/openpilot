@@ -1,95 +1,34 @@
-dragonpilot [Latest] - EON/C2 Release
-========================
+dragonpilot [2023.2.15]
+=======================
 * Synced with openpilot master 2022.12.14 commits.
-* TWEAK: Ability to disable build-in NAV completely. (reduced CPU/memory load)
-* NEW: Lateral Controller Selector
-  * Ability to select between DEFAULT / PID / LQR / Torque Controller.
-* NEW: Redesigned UI to match Comma's new UI/UX style.
-* NEW: Dynamic End-to-End can be turned on when lead car is going below x km/h. (Useful for stop and go traffic.)
-* NEW: Toggle to adapt Dynamic End-to-End to Following Dist. Mode.
-* NEW: Toggle to adapt Dynamic End-to-End to Accel Mode.
+* Comma 0.9.1 release
+  * New driving model
+    * 30% improved height estimation resulting in better driving performance for tall cars
+  * UI updates
+    * Adjust alert volume using ambient noise level
+    * Driver monitoring icon shows driver's head pose
 * NEW: Always On Lateral v2 (For Toyota/VAG/HKG/Honda).
-* NEW: VAG - vw-spam-resume (Thanks to @jyoung8607)
-* FIXED: Bugs in updated.
-* FIXED: Issue in C2 fan control.
-* TWEAK: Bug fixes and improvement.
+* NEW: Block ALC if it's close to the road edges.
+* NEW: Rinbow path toggle. (This effect is purely cosmetic)
+* IMPROVEMENT: Better TSS2 Long and DF tune. @cgw1968-5779
+* Bug fixes and improvement.
 
-dragonpilot 2022.11.09 - EON/C2 Release
-========================
-* Synced with openpilot master 2022.10.26 commits.
-* COMMA: Torque controller used on all Toyota, Lexus, Hyundai, Kia, and Genesis models.
-* NEW: Mapd Database selector menu to use mapd offline located in software. When installing Database it will take some time. It is not stuck just be patience run `tmux a` for more info. DO NOT RESTART When database is being installed.
-  * Ability to use MapD without internet connection.
-* NEW: TOYOTA - Better TSS2 Long and DF tune. @cgw1968-5779
-* NEW: MAZDA - Toggle to bypass dashcam mode.
-* NEW: Added lanelines mode.
-  * Ability to adjust camera/path offset.
-* NEW: Lateral Planner option.
-  * Ability to select 0.8.13, 0.8.16 and the latest/current planner.
-* NEW: Offline OSM map database.
-* NEW: Turn and BSM indicator. (turn = blink green, turn + bsm = blink yellow, bsm = solid yellow)
-* TWEAK: Better Optimization for Vision Turn Controller with laneline mode.
-* FIXED: When going offroad, the screen does not turn off. (w/ CP or w/ Battery)
-* bug fix and improvement.
+dragonpilot [2023.1.10]
+=======================
+* Synced with openpilot master 2023.1.3 commits.
+* IMPROVEMENT: Dynamic end to end refactored. It will automatically turn on and off for red light for smoother u/x. Now Supports (honda and vw that cab take advantage of VOACC).
+* IMPROVEMENT: Better TSS2 Long and DF tune. @cgw1968-5779
+* ADDED: support for Chevrolet Trailblazer 2022 (Thanks @TurboCE)
+* ADDED: support for Honda odyssey hybrid 2022 China (Thanks @lijunhao731)
+* ADDED: GPS accuracy on the sidebar.
+* Bug fixes and improvement.
 
+HOTFIX:
+=======================
+* Allow Experimental Mode in release branch. (@Stupefacient)
+* Happy Holiday / New Years! Safe Travel, cya in 2023!
 
-dragonpilot 2022.10.17 - EON/C2 Release
-========================
-* Synced with openpilot master 2022.09.22 commits.
-  * Live Torque Tune (Only available to certain vehicle models with op long.)
-* NEW: TOYOTA - Added a TSS2 RAV4 Special PID Tune toggle.
-* NEW: TOYOTA - Added a PRIUS 2017 Special Torque Tune toggle.
-* NEW: TOYOTA - PRIUS_TSS2 (2020-2022) now uses torque as default and auto learns.
-* NEW: Added a toggle to force enable torque controller. (may not work on some vehicles)
-* NEW: Added a toggle to force enable live torque tune. (may not work on some vehicles)
-* NEW: VAG - Added auto resume fix toggle.
-* NEW: refactored dynamic follow. support all car with op long.
-* NEW: New blinker and BSM indicators.
-* NEW: Lead Info is now displaying both speed and distance.
-* FIXED: Minor bug fixes and improvement.
-
-dragonpilot 2022.09.22 - EON/C2 Release
-========================
-* Synced with openpilot master 2022.09.17 commits.
-  * e2e longitudinal toggle. (Extremely alpha feature)
-  * Deprecated SNPE lib and switched to tinygrad.
-* NEW: Added back nav support on EON/C2.
-* WARNING: DUE TO THE INTRODUCTION OF END TO END LONGITUDINAL FEATURE, FOLLOWING FEATURES HAS BEEN CHANGED:
-  * WIP: Dynamic Follow has been temporary removed for refactoring.
-  * WIP: Vision Turn Control has been temporary removed for refactoring.
-  * REMOVED: Camera offset has been removed permanently due to new e2e implementation.
-  * EON/C2 WILL NO LONGER RECEIVE ANY DRIVING/DRIVER MONITORING MODEL UPDATES.
-
-dragonpilot 2022.08.29 - EON/C2 Release
-========================
-* NEW: Synced to openpilot master 2022.08.23 commits.
-  * New driving model.
-* NEW: Added back honda eps mod toggle.
-* NEW: Added back camera offset toggle.
-* TWEAK: Resume logic to adapt ATL mode.
-
-dragonpilot 2022.08.17 - EON/C2 Release
-========================
-* NEW: Synced to openpilot master 2022.08.07 commits.
-* NEW: Added back auto shutdown toggle.
-* NEW: Added back On-Road Dashcam toggle. (You should not replace this with your dashcam!!!)
-* NEW: Added back LQR tune toggle.
-* NEW: MAZDA - Ability to enable/disable below steer speed alert. (Thanks to @TheCrowd)
-* NEW: Included all vehicles.
-* TWEAK: Panda Recovery should kill boardd process first.
-* FIXED: Fixed stop working issue when mapd crashed.
-
-dragonpilot 2022.07.29 - EON/C2 Release
-========================
-* NEW: Synced to openpilot 2022.07.27 commits.
-* NEW: Included Mazda vehicles.
-* TWEAK: Only show road name bar when it's not empty.
-* TWEAK: Enlarged lead car distance text.
-* TWEAK: TOYOTA - Updated lowest speed override feature.
-* FIXED: Fixed Panda Flash/Recovery buttons.
-* FIXED: Included dp_patcher.py execution.
-
-dragonpilot [latest]
+dragonpilot 2022.12.13
 =======================
 * Synced with openpilot master 2022.12.13 commits.
 * COMMA: New model, Toyota users can now configure SWAY settings.
@@ -216,30 +155,6 @@ TWEAK: Enlarged lead car distance text.
 TWEAK: TOYOTA - Updated lowest speed override feature.
 FIXED: Fixed Panda Flash/Recovery buttons.
 FIXED: Included dp_patcher.py execution.
-
-dragonpilot 2022.07.20 - EON/C2 Release
-========================
-* FIXED: Included correct camera/path offset values for EON/C2.
-* FIXED: Param bug in HKG. (Thanks to @sunnyhaibin).
-* FIXED: Included fan controller for UNO (C2).
-* TWEAK: Auto set a decent date/time to prevent onroad incorrect date/time detection.
-* TWEAK: Removed sounds unavailable warning.
-* TWEAK: Removed unused loggers.
-* TWEAK: Disabled IR controls completely.
-
-dragonpilot 2022.07.14 - EON/C2 Release
-========================
-* FIXED: DM bug.
-* FIXED: white / grey panda support.
-* FIXED: Removed No GPS signal warning.
-
-dragonpilot 2022.07.12 - EON/C2 Release
-========================
-* Synced up with dragonpilot 2022.06.25 C3 release
-* Running on latest AI model.
-* Steering monitor only.
-* Works on EON/C2 + white/grey/black panda (tested only on Toyotas).
-* Buggy!
 
 dragonpilot [2022.08.07]
 ========================

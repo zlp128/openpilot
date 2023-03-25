@@ -47,14 +47,16 @@ class DesireHelper:
     self.dp_lc_min_mph = LANE_CHANGE_SPEED_MIN
     self.dp_lc_auto_min_mph = LANE_CHANGE_SPEED_MIN + 10
     self.dp_lc_auto_delay = 3 # secs
+    self.dp_lateral_road_edge_detected = False
 
-  def update(self, carstate, lateral_active, lane_change_prob, dragonconf):
+  def update(self, carstate, lateral_active, lane_change_prob, dragonconf, md):
     # dp - sync with dragonConf
     self.dp_lateral_mode = dragonconf.dpLateralMode
     self.dp_lc_min_mph = dragonconf.dpLcMinMph * CV.MPH_TO_MS
     self.dp_lc_auto_min_mph = dragonconf.dpLcAutoMinMph * CV.MPH_TO_MS
     self.dp_lc_auto_min_mph = self.dp_lc_min_mph if self.dp_lc_auto_min_mph < self.dp_lc_min_mph else self.dp_lc_auto_min_mph
     self.dp_lc_auto_delay = dragonconf.dpLcAutoDelay
+    self.dp_lateral_road_edge_detected = dragonconf.dpLateralRoadEdgeDetected
 
     v_ego = carstate.vEgo
     one_blinker = carstate.leftBlinker != carstate.rightBlinker
@@ -94,9 +96,19 @@ class DesireHelper:
         blindspot_detected = ((carstate.leftBlindspot and self.lane_change_direction == LaneChangeDirection.left) or
                               (carstate.rightBlindspot and self.lane_change_direction == LaneChangeDirection.right))
 
+        #dp
+        if self.dp_lateral_road_edge_detected:
+          left_road_edge = -md.roadEdges[0].y[0]
+          right_road_edge = md.roadEdges[1].y[0]
+
+          road_edge_detected = (((left_road_edge < 3.5) and self.lane_change_direction == LaneChangeDirection.left) or
+                                ((right_road_edge < 3.5) and self.lane_change_direction == LaneChangeDirection.right))
+        else:
+          road_edge_detected = False
+
         if not one_blinker or below_lane_change_speed:
           self.lane_change_state = LaneChangeState.off
-        elif torque_applied and not blindspot_detected:
+        elif torque_applied and not blindspot_detected and not road_edge_detected:
           self.lane_change_state = LaneChangeState.laneChangeStarting
 
       # LaneChangeState.laneChangeStarting

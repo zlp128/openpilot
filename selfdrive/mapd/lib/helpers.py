@@ -5,7 +5,7 @@ import email.utils as eut
 import time
 
 from common.params import Params
-from selfdrive.hardware import TICI
+from system.hardware import TICI
 
 OSM_LOCAL_PATH = "/data/media/0/osm"
 OSM_DB_STAMP_FILE = OSM_LOCAL_PATH + "/db_stamp"

@@ -12,7 +12,7 @@ class CarInterface(CarInterfaceBase):
   @staticmethod
   def _get_params(ret, candidate, fingerprint, car_fw, experimental_long):
     ret.carName = "subaru"
-    ret.radarOffCan = True
+    ret.radarUnavailable = True
     ret.dashcamOnly = candidate in PREGLOBAL_CARS
     ret.autoResumeSng = False
 
@@ -102,7 +102,8 @@ class CarInterface(CarInterfaceBase):
     else:
       raise ValueError(f"unknown car: {candidate}")
 
-    CarInterfaceBase.configure_dp_tune(candidate, ret.lateralTuning)
+    CarInterfaceBase.dp_lat_tune_collection(candidate, ret.latTuneCollection)
+    CarInterfaceBase.configure_dp_tune(ret.lateralTuning, ret.latTuneCollection)
     Params().put("dp_lateral_steer_rate_cost", "0.7")
     return ret
 
@@ -113,11 +114,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.events = self.create_common_events(ret).to_msg()
 
-    events = self.create_common_events(ret)
-
-    ret.events = events.to_msg()
-
     return ret
 
-  def apply(self, c):
-    return self.CC.update(c, self.CS)
+  def apply(self, c, now_nanos):
+    return self.CC.update(c, self.CS, now_nanos)

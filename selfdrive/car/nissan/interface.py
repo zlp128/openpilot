@@ -19,7 +19,7 @@ class CarInterface(CarInterfaceBase):
     ret.steerRatio = 17
 
     ret.steerControlType = car.CarParams.SteerControlType.angle
-    ret.radarOffCan = True
+    ret.radarUnavailable = True
 
     if candidate in (CAR.ROGUE, CAR.XTRAIL):
       ret.mass = 1610 + STD_CARGO_KG
@@ -36,7 +36,8 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.824
       ret.centerToFront = ret.wheelbase * 0.44
 
-    CarInterfaceBase.configure_dp_tune(candidate, ret.lateralTuning)
+    CarInterfaceBase.dp_lat_tune_collection(candidate, ret.latTuneCollection)
+    CarInterfaceBase.configure_dp_tune(ret.lateralTuning, ret.latTuneCollection)
 
     return ret
 
@@ -58,5 +59,5 @@ class CarInterface(CarInterfaceBase):
 
     return ret
 
-  def apply(self, c):
-    return self.CC.update(c, self.CS)
+  def apply(self, c, now_nanos):
+    return self.CC.update(c, self.CS, now_nanos)

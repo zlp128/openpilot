@@ -405,6 +405,22 @@ void lat_acados_create_5_set_nlp_in(lat_solver_capsule* capsule, const int N, do
         time_steps[13] = 0.263671875;
         time_steps[14] = 0.283203125;
         time_steps[15] = 0.302734375;
+        time_steps[16] = 0.322265625;
+        time_steps[17] = 0.341796875;
+        time_steps[18] = 0.361328125;
+        time_steps[19] = 0.380859375;
+        time_steps[20] = 0.400390625;
+        time_steps[21] = 0.419921875;
+        time_steps[22] = 0.439453125;
+        time_steps[23] = 0.458984375;
+        time_steps[24] = 0.478515625;
+        time_steps[25] = 0.498046875;
+        time_steps[26] = 0.517578125;
+        time_steps[27] = 0.537109375;
+        time_steps[28] = 0.556640625;
+        time_steps[29] = 0.576171875;
+        time_steps[30] = 0.595703125;
+        time_steps[31] = 0.615234375;
         lat_acados_update_time_steps(capsule, N, time_steps);
         free(time_steps);
     }

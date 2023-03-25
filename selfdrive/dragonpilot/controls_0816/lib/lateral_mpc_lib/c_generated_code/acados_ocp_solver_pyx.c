@@ -923,7 +923,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "pyextra/acados_template/acados_ocp_solver_pyx.pyx",
+  "third_party/acados/acados_template/acados_ocp_solver_pyx.pyx",
   "stringsource",
   "__init__.pxd",
   "type.pxd",

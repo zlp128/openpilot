@@ -22,6 +22,8 @@ class CarInterface(CarInterfaceBase):
   def get_pid_accel_limits(CP, current_speed, cruise_speed):
     if CP.carFingerprint in HONDA_BOSCH:
       return CarControllerParams.BOSCH_ACCEL_MIN, CarControllerParams.BOSCH_ACCEL_MAX
+    elif CP.enableGasInterceptor:
+      return CarControllerParams.NIDEC_ACCEL_MIN, CarControllerParams.NIDEC_ACCEL_MAX
     else:
       # NIDECs don't allow acceleration near cruise_speed,
       # so limit limits of pid to prevent windup
@@ -35,7 +37,7 @@ class CarInterface(CarInterfaceBase):
 
     if candidate in HONDA_BOSCH:
       ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.hondaBosch)]
-      ret.radarOffCan = True
+      ret.radarUnavailable = True
 
       if candidate not in HONDA_BOSCH_RADARLESS:
         # Disable the radar and let openpilot control longitudinal
@@ -228,23 +230,23 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.2], [0.06]]
       tire_stiffness_factor = 0.677
 
-    elif candidate in (CAR.ODYSSEY, CAR.ODYSSEY_CHN):
+    elif candidate in (CAR.ODYSSEY, CAR.ODYSSEY_CHN, CAR.ODYSSEY_HYBRID):
       ret.mass = 1900. + STD_CARGO_KG
       ret.wheelbase = 3.00
       ret.centerToFront = ret.wheelbase * 0.41
       ret.steerRatio = 14.35  # as spec
       tire_stiffness_factor = 0.82
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.28], [0.08]]
-      if candidate == CAR.ODYSSEY_CHN:
+      if candidate in (CAR.ODYSSEY_CHN, CAR.ODYSSEY_HYBRID):
         ret.lateralParams.torqueBP, ret.lateralParams.torqueV = [[0, 32767], [0, 32767]]  # TODO: determine if there is a dead zone at the top end
       else:
         ret.lateralParams.torqueBP, ret.lateralParams.torqueV = [[0, 4096], [0, 4096]]  # TODO: determine if there is a dead zone at the top end
 
-    elif candidate in (CAR.PILOT, CAR.PASSPORT):
-      ret.mass = 4204. * CV.LB_TO_KG + STD_CARGO_KG  # average weight
-      ret.wheelbase = 2.82
+    elif candidate == CAR.PILOT:
+      ret.mass = 4278. * CV.LB_TO_KG + STD_CARGO_KG  # average weight
+      ret.wheelbase = 2.86
       ret.centerToFront = ret.wheelbase * 0.428
-      ret.steerRatio = 17.25  # as spec
+      ret.steerRatio = 16.0  # as spec
       ret.lateralParams.torqueBP, ret.lateralParams.torqueV = [[0, 4096], [0, 4096]]  # TODO: determine if there is a dead zone at the top end
       tire_stiffness_factor = 0.444
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.38], [0.11]]
@@ -296,7 +298,7 @@ class CarInterface(CarInterfaceBase):
     # min speed to enable ACC. if car can do stop and go, then set enabling speed
     # to a negative value, so it won't matter. Otherwise, add 0.5 mph margin to not
     # conflict with PCM acc
-    stop_and_go = candidate in (HONDA_BOSCH | {CAR.CIVIC}) or ret.enableGasInterceptor
+    stop_and_go = candidate in (HONDA_BOSCH | {CAR.CIVIC, CAR.ODYSSEY_HYBRID}) or ret.enableGasInterceptor
     ret.minEnableSpeed = -1. if stop_and_go else 25.5 * CV.MPH_TO_MS
 
     # TODO: start from empirically derived lateral slip stiffness for the civic and scale by
@@ -324,8 +326,9 @@ class CarInterface(CarInterfaceBase):
         ret.lateralParams.torqueBP, ret.lateralParams.torqueV = [[0x0, 0xB5, 0x161, 0x2D6, 0x4C0, 0x70D, 0xC42, 0x1058, 0x2C00], [0x0, 0x160, 0x1F0, 0x2E0, 0x378, 0x4A0, 0x5F0, 0x804, 0xF00]]
         ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.21], [0.07]] #still needs to finish tuning for the new car
         ret.lateralTuning.pid.kf = 0.00004
-    else:
-      CarInterfaceBase.configure_dp_tune(candidate, ret.lateralTuning)
+
+    CarInterfaceBase.dp_lat_tune_collection(candidate, ret.latTuneCollection)
+    CarInterfaceBase.configure_dp_tune(ret.lateralTuning, ret.latTuneCollection)
     return ret
 
   @staticmethod
@@ -379,5 +382,5 @@ class CarInterface(CarInterfaceBase):
 
   # pass in a car.CarControl
   # to be called @ 100hz
-  def apply(self, c):
-    return self.CC.update(c, self.CS, self.dragonconf)
+  def apply(self, c, now_nanos):
+    return self.CC.update(c, self.CS, now_nanos, self.dragonconf)

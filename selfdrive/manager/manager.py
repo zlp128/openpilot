@@ -20,7 +20,7 @@ from selfdrive.manager.process_config import managed_processes
 from selfdrive.athena.registration import register, UNREGISTERED_DONGLE_ID
 from system.swaglog import cloudlog, add_file_handler
 from system.version import is_dirty, get_commit, get_version, get_origin, get_short_branch, \
-                              terms_version, training_version, is_tested_branch
+                              terms_version, training_version, is_tested_branch, is_release_branch
 from common.dp_conf import init_params_vals
 
 
@@ -32,19 +32,19 @@ def manager_init() -> None:
   set_time(cloudlog)
 
   # save boot log
-  #subprocess.call("./bootlog", cwd=os.path.join(BASEDIR, "selfdrive/loggerd"))
+  # subprocess.call("./bootlog", cwd=os.path.join(BASEDIR, "system/loggerd"))
 
   params = Params()
   params.clear_all(ParamKeyType.CLEAR_ON_MANAGER_START)
 
   default_params: List[Tuple[str, Union[str, bytes]]] = [
     ("CompletedTrainingVersion", "0"),
-    ("DisengageOnAccelerator", "1"),
+    ("DisengageOnAccelerator", "0"),
     ("GsmMetered", "1"),
     ("HasAcceptedTerms", "0"),
     ("LanguageSetting", "main_en"),
     ("OpenpilotEnabledToggle", "1"),
-    ("ShowDebugUI", "0"),
+    # ("ShowDebugUI", "0"),
     ("SpeedLimitControl", "0"),
     ("SpeedLimitPercOffset", "0"),
     ("TurnSpeedControl", "0"),
@@ -87,6 +87,7 @@ def manager_init() -> None:
   params.put("GitBranch", get_short_branch(default=""))
   params.put("GitRemote", get_origin(default=""))
   params.put_bool("IsTestedBranch", is_tested_branch())
+  params.put_bool("IsReleaseBranch", is_release_branch())
 
   # set dongle id
   reg_res = register(show_spinner=True)
@@ -135,13 +136,15 @@ def manager_thread() -> None:
   # dp
   dp_nav = params.get_bool('dp_nav')
   dp_otisserv = dp_nav and params.get_bool('dp_otisserv')
-  ignore += ['dmonitoringmodeld', 'dmonitoringd', 'dpmonitoringd'] if params.get_bool('dp_jetson') else []
-  ignore += ['navd'] if not dp_nav else []
+  dp_jetson = params.get_bool('dp_jetson')
+  ignore += ['dmonitoringmodeld', 'dmonitoringd', 'dpmonitoringd'] if dp_jetson else []
+  ignore += ['navd', 'mapsd'] if not dp_nav else []
   ignore += ['otisserv'] if not dp_nav or not dp_otisserv else []
   dp_mapd = params.get_bool('dp_mapd')
   ignore += ['mapd'] if not dp_mapd else []
   ignore += ['gpxd'] if not dp_otisserv and not dp_mapd and not params.get_bool('dp_gpxd') else []
-  ignore += ['uploader'] if not params.get_bool('dp_api_custom') and params.get_bool('dp_jetson') else []
+  ignore += ['uploader'] if not params.get_bool('dp_api_custom') and dp_jetson else []
+  ignore += ['logcatd', 'proclogd', 'loggerd', 'logmessaged', 'encoderd', '']
 
   if params.get("DongleId", encoding='utf8') in (None, UNREGISTERED_DONGLE_ID):
     ignore += ["manage_athenad", "uploader"]

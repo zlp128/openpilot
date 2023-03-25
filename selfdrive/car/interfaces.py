@@ -94,13 +94,14 @@ class CarInterfaceBase(ABC):
     return ACCEL_MIN, ACCEL_MAX
 
   @classmethod
-  def get_params(cls, candidate: str, fingerprint: Optional[Dict[int, Dict[int, int]]] = None, car_fw: Optional[List[car.CarParams.CarFw]] = None, experimental_long: bool = False):
-    if fingerprint is None:
-      fingerprint = gen_empty_fingerprint()
+  def get_non_essential_params(cls, candidate: str):
+    """
+    Parameters essential to controlling the car may be incomplete or wrong without FW versions or fingerprints.
+    """
+    return cls.get_params(candidate, gen_empty_fingerprint(), list(), False)
 
-    if car_fw is None:
-      car_fw = list()
-
+  @classmethod
+  def get_params(cls, candidate: str, fingerprint: Dict[int, Dict[int, int]], car_fw: List[car.CarParams.CarFw], experimental_long: bool):
     ret = CarInterfaceBase.get_std_params(candidate)
     ret = cls._get_params(ret, candidate, fingerprint, car_fw, experimental_long)
 
@@ -201,21 +202,45 @@ class CarInterfaceBase(ABC):
     tune.torque.steeringAngleDeadzoneDeg = steering_angle_deadzone_deg
 
   @staticmethod
-  def configure_dp_tune(candidate, tune, steering_angle_deadzone_deg=0.0, use_steering_angle=True):
+  def configure_dp_tune(stock, collection):
     try:
       dp_lateral_tune = int(Params().get("dp_lateral_tune").decode('utf-8'))
     except:
       dp_lateral_tune = 0
 
-    # pid - car specific
-    if dp_lateral_tune == 1:
-      configure_pid_tune(candidate, tune)
-    # lqr - all uses RAV4 one
-    elif dp_lateral_tune == 2:
-      configure_lqr_tune(candidate, tune)
-    # torque - car specific as per lookup table
-    elif dp_lateral_tune == 3:
-      CarInterfaceBase.configure_torque_tune(candidate, tune, steering_angle_deadzone_deg, use_steering_angle)
+    stock_tune = 0
+    if stock.which() == 'pid':
+      stock_tune = 1
+      collection.pid = stock.pid
+    elif stock.which() == 'lqr':
+      stock_tune = 2
+      collection.lqr = stock.lqr
+    elif stock.which() == 'torque':
+      stock_tune = 3
+      collection.torque = stock.torque
+    elif stock.which() == 'indi':
+      stock_tune = 4
+
+    if dp_lateral_tune > 0 and dp_lateral_tune != stock_tune:
+      if dp_lateral_tune == 1 and collection.pid is not None:
+        stock.pid = collection.pid
+      elif dp_lateral_tune == 2 and collection.lqr is not None:
+        stock.lqr = collection.lqr
+      elif dp_lateral_tune == 3 and collection.torque is not None:
+        stock.torque = collection.torque
+
+  @staticmethod
+  def dp_lat_tune_collection(candidate, collection, steering_angle_deadzone_deg=0.0, use_steering_angle=True):
+    for i in range(1, 4):
+      # pid - car specific
+      if i == 1:
+        configure_pid_tune(candidate, collection)
+      # lqr - all uses RAV4 one
+      elif i == 2:
+        configure_lqr_tune(candidate, collection)
+      # torque - car specific as per lookup table
+      elif i == 3:
+        CarInterfaceBase.configure_torque_tune(candidate, collection, steering_angle_deadzone_deg, use_steering_angle)
 
   @abstractmethod
   def _update(self, c: car.CarControl) -> car.CarState:
@@ -256,7 +281,7 @@ class CarInterfaceBase(ABC):
     return reader
 
   @abstractmethod
-  def apply(self, c: car.CarControl) -> Tuple[car.CarControl.Actuators, List[bytes]]:
+  def apply(self, c: car.CarControl, now_nanos: int) -> Tuple[car.CarControl.Actuators, List[bytes]]:
     pass
 
   def create_common_events(self, cs_out, extra_gears=None, pcm_enable=True, allow_enable=True,
@@ -325,6 +350,7 @@ class CarInterfaceBase(ABC):
         events.add(EventName.pcmDisable)
 
     return events
+
 
 class RadarInterfaceBase(ABC):
   def __init__(self, CP):
@@ -423,15 +449,15 @@ class CarStateBase(ABC):
       return GearShifter.unknown
 
     d: Dict[str, car.CarState.GearShifter] = {
-        'P': GearShifter.park, 'PARK': GearShifter.park,
-        'R': GearShifter.reverse, 'REVERSE': GearShifter.reverse,
-        'N': GearShifter.neutral, 'NEUTRAL': GearShifter.neutral,
-        'E': GearShifter.eco, 'ECO': GearShifter.eco,
-        'T': GearShifter.manumatic, 'MANUAL': GearShifter.manumatic,
-        'D': GearShifter.drive, 'DRIVE': GearShifter.drive,
-        'S': GearShifter.sport, 'SPORT': GearShifter.sport,
-        'L': GearShifter.low, 'LOW': GearShifter.low,
-        'B': GearShifter.brake, 'BRAKE': GearShifter.brake,
+      'P': GearShifter.park, 'PARK': GearShifter.park,
+      'R': GearShifter.reverse, 'REVERSE': GearShifter.reverse,
+      'N': GearShifter.neutral, 'NEUTRAL': GearShifter.neutral,
+      'E': GearShifter.eco, 'ECO': GearShifter.eco,
+      'T': GearShifter.manumatic, 'MANUAL': GearShifter.manumatic,
+      'D': GearShifter.drive, 'DRIVE': GearShifter.drive,
+      'S': GearShifter.sport, 'SPORT': GearShifter.sport,
+      'L': GearShifter.low, 'LOW': GearShifter.low,
+      'B': GearShifter.brake, 'BRAKE': GearShifter.brake,
     }
     return d.get(gear.upper(), GearShifter.unknown)
 

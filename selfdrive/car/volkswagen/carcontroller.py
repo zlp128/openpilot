@@ -3,7 +3,7 @@ from opendbc.can.packer import CANPacker
 from common.numpy_fast import clip
 from common.conversions import Conversions as CV
 from common.realtime import DT_CTRL
-from selfdrive.car import apply_std_steer_torque_limits
+from selfdrive.car import apply_driver_steer_torque_limits
 from selfdrive.car.volkswagen import mqbcan, pqcan
 from selfdrive.car.volkswagen.values import CANBUS, PQ_CARS, CarControllerParams, STANDING_RESUME_SPAM_CARS
 
@@ -24,14 +24,14 @@ class CarController:
     self.hcaSameTorqueCount = 0
     self.hcaEnabledFrameCount = 0
 
-  def update(self, CC, CS, ext_bus):
+  def update(self, CC, CS, ext_bus, now_nanos):
     actuators = CC.actuators
     hud_control = CC.hudControl
     can_sends = []
 
     # **** Steering Controls ************************************************ #
 
-    if self.frame % self.CCP.HCA_STEP == 0:
+    if self.frame % self.CCP.STEER_STEP == 0:
       # Logic to avoid HCA state 4 "refused":
       #   * Don't steer unless HCA is in state 3 "ready" or 5 "active"
       #   * Don't steer at standstill
@@ -44,20 +44,20 @@ class CarController:
 
       if CC.latActive:
         new_steer = int(round(actuators.steer * self.CCP.STEER_MAX))
-        apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque, self.CCP)
+        apply_steer = apply_driver_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque, self.CCP)
         if apply_steer == 0:
           hcaEnabled = False
           self.hcaEnabledFrameCount = 0
         else:
           self.hcaEnabledFrameCount += 1
-          if self.hcaEnabledFrameCount >= 118 * (100 / self.CCP.HCA_STEP):  # 118s
+          if self.hcaEnabledFrameCount >= 118 * (100 / self.CCP.STEER_STEP):  # 118s
             hcaEnabled = False
             self.hcaEnabledFrameCount = 0
           else:
             hcaEnabled = True
             if self.apply_steer_last == apply_steer:
               self.hcaSameTorqueCount += 1
-              if self.hcaSameTorqueCount > 1.9 * (100 / self.CCP.HCA_STEP):  # 1.9s
+              if self.hcaSameTorqueCount > 1.9 * (100 / self.CCP.STEER_STEP):  # 1.9s
                 apply_steer -= (1, -1)[apply_steer < 0]
                 self.hcaSameTorqueCount = 0
             else:

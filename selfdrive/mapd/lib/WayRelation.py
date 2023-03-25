@@ -174,10 +174,8 @@ def speed_limit_value_for_highway_type(areas, tags):
       if rule_valid:
         max_speed = rule['speed']
         break #stop searching region
-  except KeyError as e:
-    print(e)
-  except TypeError as e:
-    print(f"TypeError: {e} object is not iterable.")
+  except Exception:
+    return None
   if max_speed is None:
     return 0
   v = re.match(r'^\s*([0-9]{1,3})\s*?(mph)?\s*$', str(max_speed))

@@ -3,7 +3,7 @@ from cereal import log
 from common.filter_simple import FirstOrderFilter
 from common.numpy_fast import interp
 from common.realtime import DT_MDL
-from selfdrive.hardware import TICI, EON
+from system.hardware import TICI, EON
 from system.swaglog import cloudlog
 
 

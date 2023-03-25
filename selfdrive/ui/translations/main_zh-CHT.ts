@@ -95,7 +95,7 @@
     </message>
     <message>
         <source>RAM PER</source>
-        <translation>記憶體 %</translation>
+        <translation type="vanished">記憶體 %</translation>
     </message>
     <message>
         <source>OFF</source>
@@ -136,6 +136,10 @@
     <message>
         <source>ACCEL</source>
         <translation>加速模式</translation>
+    </message>
+    <message>
+        <source>Lat Ctrl</source>
+        <translation>橫向控制器</translation>
     </message>
 </context>
 <context>
@@ -285,17 +289,13 @@ Reboot required.</source>
 需重新啟動。</translation>
     </message>
     <message>
-        <source>Volkswagen</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Enable VAG Resume Fix</source>
-        <translation>啟用 VAG RES 修正</translation>
+        <translation type="vanished">啟用 VAG RES 修正</translation>
     </message>
     <message>
         <source>Enable this if your car does not auto resume (stop and go).
 Reboot required.</source>
-        <translation>如果您的車子無法自動跟車，請開啟這個功能。
+        <translation type="vanished">如果您的車子無法自動跟車，請開啟這個功能。
 需重新啟動。</translation>
     </message>
     <message>
@@ -318,6 +318,19 @@ Thanks to @TheCrowd</source>
     <message>
         <source>Enable this to bypass dashcam mode.</source>
         <translation>啟用這個選項來繞過行車記錄模式。</translation>
+    </message>
+    <message>
+        <source>Enable Reverse ACC Set speed.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Enabling this will reverse set acc short press +5 jump, Long press +1 Jump.
+Reboot Required.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Use Alternative Controller</source>
+        <translation type="vanished">使用替代控制器</translation>
     </message>
 </context>
 <context>
@@ -528,7 +541,7 @@ Reboot required.</source>
     </message>
     <message>
         <source> km/h</source>
-        <translation type="vanished"> km/h</translation>
+        <translation> km/h</translation>
     </message>
     <message>
         <source>when lead car is going below the setting, e2e will be turned on automatically.
@@ -554,7 +567,7 @@ Reboot required.</source>
     </message>
     <message>
         <source>Enable this if you wish to use following dist. mode in DE2E.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>DE2E Adapt Accel Mode</source>
@@ -562,27 +575,75 @@ Reboot required.</source>
     </message>
     <message>
         <source>Enable this if you wish to use accel mode in DE2E.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <source>when acc set speed below the setting and there is no lead car, e2e will be turned on automatically. 
-1 km/h = 0.62 mph</source>
-        <translation type="vanished">當車子的定速低於設定值並且在沒有前車的情形下，系統會自動開啟 E2E 模式。
-1 km/h = 0.62 mph</translation>
-    </message>
-    <message>
-        <source>when lead car is going below the setting, e2e will be turned on automatically. 
-1 km/h = 0.62 mph</source>
-        <translation type="vanished">當前車車速於低於設定值時，系統將自動切換至 E2E 模式。
-1 km/h = 0.62 mph</translation>
+        <source>Enable this if your vehicles is in VOACC (e.g. Honda Bosch / VAG).</source>
+        <translation>如果您的車子使用的是 VOACC (例如：Honda Bosch / VAG/HKG)，可以開啟這個功能增進剎車效能。</translation>
     </message>
     <message>
         <source>DE2E w/ VOACC</source>
         <translation>DE2E 用於 VOACC 下</translation>
     </message>
     <message>
-        <source>Enable this if your vehicles is in VOACC (e.g. Honda Bosch / VAG).</source>
-        <translation>如果您的車子使用的是 VOACC (例如：Honda Bosch / VAG/HKG)，可以開啟這個功能增進剎車效能。</translation>
+        <source>      Camera Offset</source>
+        <translation type="vanished">      相機偏移</translation>
+    </message>
+    <message>
+        <source>      Driving Path Offset</source>
+        <translation type="vanished">      駕駛路徑偏移</translation>
+    </message>
+    <message>
+        <source>   When Set Speed Above:</source>
+        <translation type="vanished">   當定速高於：</translation>
+    </message>
+    <message>
+        <source>when acc SET speed above the setting, it will switch to alternative controller. 
+1 km/h = 0.62 mph</source>
+        <translation>當定速高於設定的速度時，將會啟用替代的控制器</translation>
+    </message>
+    <message>
+        <source>   Alternative Controller</source>
+        <translation type="vanished">   替代控制器</translation>
+    </message>
+    <message>
+        <source>
+1 = PID
+2 = LQR
+3 = Torque
+Your Vehicle may not support all the options, YMMV.</source>
+        <translation>1 = PID
+2 = LQR
+3 = Torque
+你的車型可能無法適用所有的選項。</translation>
+    </message>
+    <message>
+        <source>   Use Lanelines</source>
+        <translation type="vanished">   使用線道</translation>
+    </message>
+    <message>
+        <source>This feature will let you use alternative lateral controller at higher set speed.</source>
+        <translation>這個功能讓你在較高的定速下使用替代控制器</translation>
+    </message>
+    <message>
+        <source>Use Alternative Controller</source>
+        <translation>使用替代控制器</translation>
+    </message>
+    <message>
+        <source>ALC RoadEdge Detection</source>
+        <translation>換道路緣檢測</translation>
+    </message>
+    <message>
+        <source>Enabling this will prevent lane change when you are too close to road edge.</source>
+        <translation>啟用此選項可以防止當您靠近道路邊緣時進行車道變換。</translation>
+    </message>
+    <message>
+        <source>When Set Speed Above:</source>
+        <translation>當定速高於：</translation>
+    </message>
+    <message>
+        <source>Alternative Controller</source>
+        <translation>替代控制器</translation>
     </message>
 </context>
 <context>
@@ -594,11 +655,12 @@ Reboot required.</source>
     <message>
         <source>Adjust your shutdown waiting period.
 0 = shutdown immediately.</source>
-        <translation>調整自動關機時間。0 = 馬上關機</translation>
+        <translation>調整自動關機時間。
+0 = 馬上關機</translation>
     </message>
     <message>
         <source> mins</source>
-        <translation>分鐘</translation>
+        <translation> 分鐘</translation>
     </message>
     <message>
         <source>Enable Auto Shutdown</source>
@@ -842,11 +904,11 @@ Reboot required.</source>
     </message>
     <message>
         <source>Show debug UI elements</source>
-        <translation>顯示除錯用圖示</translation>
+        <translation type="vanished">顯示除錯用圖示</translation>
     </message>
     <message>
         <source>Show UI elements that aid debugging.</source>
-        <translation>於右上方顯示除錯用訊息</translation>
+        <translation type="vanished">於右上方顯示除錯用訊息</translation>
     </message>
     <message>
         <source>Enable MapD</source>
@@ -877,6 +939,42 @@ Please note:
  If you decide not to upgrade you can delete all logs under dp-general </source>
         <translation type="vanished">您設備的 /data/media/0/ 將需要至少 50GB 的存儲空間。</translation>
     </message>
+    <message>
+        <source>OpenStreetMap Database Update</source>
+        <translation>OpenStreetMap 數據庫更新</translation>
+    </message>
+    <message>
+        <source>CHECK</source>
+        <translation>檢查</translation>
+    </message>
+    <message>
+        <source>&quot;OpenStreetMap Database Update&quot;
+Your device will reboot and perform a database update based on the region you have selected.
+Reboot now?</source>
+        <translation>&quot;OpenStreetMap 數據庫更新&quot;
+您的設備將會重新啟動，並基於您選擇的區域執行一次數據庫更新。
+現在重新啟動嗎？</translation>
+    </message>
+    <message>
+        <source>OpenStreetMap Database</source>
+        <translation>OpenStreetMap 數據庫</translation>
+    </message>
+    <message>
+        <source>SELECT</source>
+        <translation>選取</translation>
+    </message>
+    <message>
+        <source>Select your location</source>
+        <translation>請選擇您的位置</translation>
+    </message>
+    <message>
+        <source>&quot;OpenStreetMap Database&quot;
+Restart your device to start downloading the selected database. Dragonpilot will only start downloading the database on reboot.
+Reboot now?</source>
+        <translation>&quot;OpenStreetMap 數據庫&quot;
+請重新啟動您的設備以開始下載選定的數據庫。Dragonpilot 只會在重新啟動後開始下載數據庫。
+現在重新啟動嗎？</translation>
+    </message>
 </context>
 <context>
     <name>DPUIPanel</name>
@@ -904,11 +1002,11 @@ Please note:
     </message>
     <message>
         <source>Alert Volume</source>
-        <translation>提示音量</translation>
+        <translation type="vanished">提示音量</translation>
     </message>
     <message>
         <source>Adjust your alert volume.</source>
-        <translation>調整設備的提示音量。</translation>
+        <translation type="vanished">調整設備的提示音量。</translation>
     </message>
     <message>
         <source>Quiet Drive</source>
@@ -928,7 +1026,7 @@ Please note:
     </message>
     <message>
         <source>Display Event / Steer Icon</source>
-        <translation>顯示事件圖示</translation>
+        <translation type="vanished">顯示事件圖示</translation>
     </message>
     <message>
         <source>Enable this to display the icon.</source>
@@ -964,11 +1062,19 @@ Please note:
     </message>
     <message>
         <source>Display Driver Camera</source>
-        <translation type="vanished">倒車顯示駕駛監控畫面</translation>
+        <translation>倒車顯示駕駛監控畫面</translation>
     </message>
     <message>
         <source>Display Driver Camera when reversing.</source>
-        <translation type="vanished">倒車顯示駕駛監控畫面</translation>
+        <translation>倒車顯示駕駛監控畫面</translation>
+    </message>
+    <message>
+        <source>Rainbow Path</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>for all the tesla fanboy&apos;s.</source>
+        <translation></translation>
     </message>
     <message>
         <source>LAUNCH</source>
@@ -1196,18 +1302,6 @@ Please note:
     <message>
         <source>Installing...</source>
         <translation>安裝中…</translation>
-    </message>
-    <message>
-        <source>Receiving objects: </source>
-        <translation>接收對象： </translation>
-    </message>
-    <message>
-        <source>Resolving deltas: </source>
-        <translation>分析差異： </translation>
-    </message>
-    <message>
-        <source>Updating files: </source>
-        <translation>更新檔案： </translation>
     </message>
 </context>
 <context>
@@ -1473,16 +1567,8 @@ location set</source>
         <translation>您確定要重置你的設備嗎？</translation>
     </message>
     <message>
-        <source>Resetting device...</source>
-        <translation>重置設備中…</translation>
-    </message>
-    <message>
         <source>System Reset</source>
         <translation>系統重置</translation>
-    </message>
-    <message>
-        <source>System reset triggered. Press confirm to erase all content and settings. Press cancel to resume boot.</source>
-        <translation>系統重置已觸發。請按確認刪除所有內容和設置。按取消恢復啟動。</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -1497,8 +1583,18 @@ location set</source>
         <translation>確認</translation>
     </message>
     <message>
-        <source>Unable to mount data partition. Press confirm to reset your device.</source>
-        <translation>無法掛載數據分區。請按確認重置您的設備。</translation>
+        <source>Unable to mount data partition. Partition may be corrupted. Press confirm to erase and reset your device.</source>
+        <translation>無法掛載數據分區。分區可能已損壞。請按確認以清除並重置您的設備。</translation>
+    </message>
+    <message>
+        <source>Press confirm to erase all content and settings. Press cancel to resume boot.</source>
+        <translation>按確認以清除所有內容和設置。按取消以繼續啟動。</translation>
+    </message>
+    <message>
+        <source>Resetting device...
+This may take up to a minute.</source>
+        <translation>正在重置設備...
+這可能需要一分鐘的時間。</translation>
     </message>
 </context>
 <context>
@@ -1595,18 +1691,6 @@ location set</source>
         <translation>連接至網路中</translation>
     </message>
     <message>
-        <source>Choose Software to Install</source>
-        <translation>選擇要安裝的軟體</translation>
-    </message>
-    <message>
-        <source>Dashcam</source>
-        <translation>行車記錄器</translation>
-    </message>
-    <message>
-        <source>Custom Software</source>
-        <translation>定制的軟體</translation>
-    </message>
-    <message>
         <source>Enter URL</source>
         <translation>輸入網址</translation>
     </message>
@@ -1633,6 +1717,14 @@ location set</source>
     <message>
         <source>Start over</source>
         <translation>重新開始</translation>
+    </message>
+    <message>
+        <source>No custom software found at this URL.</source>
+        <translation>在此 URL 上未找到自定義軟件。</translation>
+    </message>
+    <message>
+        <source>Something went wrong. Reboot the device.</source>
+        <translation>出現了問題。請重新啟動設備。</translation>
     </message>
 </context>
 <context>
@@ -1765,7 +1857,7 @@ location set</source>
     </message>
     <message>
         <source>SELECT</source>
-        <translation>選取</translation>
+        <translation type="vanished">選取</translation>
     </message>
     <message>
         <source>Select a branch</source>
@@ -1790,30 +1882,6 @@ location set</source>
     <message>
         <source>Uninstall</source>
         <translation>解除安裝</translation>
-    </message>
-    <message>
-        <source>OpenStreetMap Database Update</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>&quot;OpenStreetMap Database Update&quot;
-Your device will reboot and perform a database update based on the region you have selected.
-Reboot now?</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>OpenStreetMap Database</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Select your location</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>&quot;OpenStreetMap Database&quot;
-Restart your device to start downloading the selected database. Dragonpilot will only start downloading the database on reboot.
-Reboot now?</source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -1956,14 +2024,6 @@ Reboot now?</source>
         <translation>在本車輛中，openpilot預設將使用原車內建的ACC系統，而非openpilot縱向控制。開啟此開關來啟用openpilot縱向控制，使用此選項時建議一併啟用實驗模式。</translation>
     </message>
     <message>
-        <source>Experimental mode is currently unavailable on this car, since the car&apos;s stock ACC is used for longitudinal control.</source>
-        <translation>因車輛使用內建ACC系統，無法在本車輛上啟動實驗模式。</translation>
-    </message>
-    <message>
-        <source>Enable experimental longitudinal control to allow experimental mode.</source>
-        <translation>啟用實驗性縱向控制以使用實驗模式。</translation>
-    </message>
-    <message>
         <source>openpilot defaults to driving in &lt;b&gt;chill mode&lt;/b&gt;. Experimental mode enables &lt;b&gt;alpha-level features&lt;/b&gt; that aren&apos;t ready for chill mode. Experimental features are listed below:</source>
         <translation>openpilot 預設以 &lt;b&gt;輕鬆模式&lt;/b&gt; 駕駛。    實驗模式啟用了尚未準備好進入輕鬆模式的 &lt;b&gt;alpha 級功能&lt;/b&gt;。實驗功能如下：</translation>
     </message>
@@ -1990,6 +2050,22 @@ Reboot now?</source>
     <message>
         <source>Allow openpilot to obey left-hand traffic conventions and perform driver monitoring on right driver seat.</source>
         <translation>openpilot 將對右側駕駛進行監控 (但仍遵守靠左駕的交通慣例)。</translation>
+    </message>
+    <message>
+        <source>Experimental mode is currently unavailable on this car since the car&apos;s stock ACC is used for longitudinal control.</source>
+        <translation>因車輛使用內建ACC系統，無法在本車輛上啟動實驗模式。</translation>
+    </message>
+    <message>
+        <source>openpilot longitudinal control may come in a future update.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>An experimental version of openpilot longitudinal control can be tested, along with Experimental mode, on non-release branches.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Enable experimental longitudinal control to allow Experimental mode.</source>
+        <translation>啟用實驗性縱向控制以使用實驗模式。</translation>
     </message>
 </context>
 <context>

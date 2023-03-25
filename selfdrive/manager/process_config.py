@@ -19,6 +19,11 @@ def logging(started, params, CP: car.CarParams) -> bool:
   run = (not CP.notCar) or not params.get_bool("DisableLogging")
   return started and run
 
+def ublox(started, params, CP: car.CarParams) -> bool:
+  use_ublox = True #os.path.exists('/dev/ttyHS0') and not os.path.exists('/persist/comma/use-quectel-gps')
+  params.put_bool("UbloxAvailable", use_ublox)
+  return started and use_ublox
+
 procs = [
   # due to qualcomm kernel bugs SIGKILLing camerad sometimes causes page table corruption
   NativeProcess("camerad", "system/camerad", ["./camerad"], unkillable=True, callback=driverview),
@@ -30,35 +35,35 @@ procs = [
   # PythonProcess("timezoned", "system.timezoned", enabled=not PC, offroad=True),
 
   DaemonProcess("manage_athenad", "selfdrive.athena.manage_athenad", "AthenadPid"),
-  NativeProcess("dmonitoringmodeld", "selfdrive/modeld", ["./dmonitoringmodeld"], enabled=dp_dm, callback=driverview),
-  # NativeProcess("encoderd", "selfdrive/loggerd", ["./encoderd"]),
-  # NativeProcess("loggerd", "selfdrive/loggerd", ["./loggerd"], onroad=False, callback=logging),
+  # NativeProcess("dmonitoringmodeld", "selfdrive/modeld", ["./dmonitoringmodeld"], enabled=(not PC or WEBCAM), callback=driverview),
+  # NativeProcess("encoderd", "system/loggerd", ["./encoderd"]),
+  # NativeProcess("loggerd", "system/loggerd", ["./loggerd"], onroad=False, callback=logging),
   NativeProcess("modeld", "selfdrive/modeld", ["./modeld"]),
-  NativeProcess("mapsd", "selfdrive/navd", ["./map_renderer"], enabled=False),
+  # NativeProcess("mapsd", "selfdrive/navd", ["./map_renderer"], enabled=False),
   # NativeProcess("navmodeld", "selfdrive/modeld", ["./navmodeld"], enabled=False),
-  NativeProcess("sensord", "selfdrive/sensord", ["./sensord"], enabled=not PC, offroad=EON, sigkill=EON),
-  NativeProcess("ubloxd", "selfdrive/locationd", ["./ubloxd"], enabled=(not PC or WEBCAM)),
-  NativeProcess("ui", "selfdrive/ui", ["./ui"], offroad=True, watchdog_max_dt=(5 if (TICI or EON) else None)),
+  # NativeProcess("sensord", "system/sensord", ["./sensord"], enabled=not PC),
+  NativeProcess("ui", "selfdrive/ui", ["./ui"], offroad=True, watchdog_max_dt=(5 if not PC else None)),
   NativeProcess("soundd", "selfdrive/ui/soundd", ["./soundd"], offroad=True),
   NativeProcess("locationd", "selfdrive/locationd", ["./locationd"]),
   NativeProcess("boardd", "selfdrive/boardd", ["./boardd"], enabled=False),
   PythonProcess("calibrationd", "selfdrive.locationd.calibrationd"),
   PythonProcess("torqued", "selfdrive.locationd.torqued"),
   PythonProcess("controlsd", "selfdrive.controls.controlsd"),
-  # PythonProcess("deleter", "selfdrive.loggerd.deleter", offroad=True),
-  PythonProcess("dmonitoringd", "selfdrive.monitoring.dmonitoringd", enabled=(not PC or WEBCAM), callback=driverview),
+  # PythonProcess("deleter", "system.loggerd.deleter", offroad=True),
+  # PythonProcess("dmonitoringd", "selfdrive.monitoring.dmonitoringd", enabled=(not PC or WEBCAM), callback=driverview),
   # PythonProcess("laikad", "selfdrive.locationd.laikad"),
-  # PythonProcess("rawgpsd", "selfdrive.sensord.rawgps.rawgpsd", enabled=TICI),
+  # PythonProcess("rawgpsd", "system.sensord.rawgps.rawgpsd", enabled=TICI),
   PythonProcess("navd", "selfdrive.navd.navd"),
   PythonProcess("pandad", "selfdrive.boardd.pandad", offroad=True),
   PythonProcess("paramsd", "selfdrive.locationd.paramsd"),
-  PythonProcess("pigeond", "selfdrive.sensord.pigeond", enabled=TICI),
+  # NativeProcess("ubloxd", "system/ubloxd", ["./ubloxd"], enabled=TICI, onroad=False, callback=ublox),
+  # PythonProcess("pigeond", "system.sensord.pigeond", enabled=TICI, onroad=False, callback=ublox),
   PythonProcess("plannerd", "selfdrive.controls.plannerd"),
   PythonProcess("radard", "selfdrive.controls.radard"),
   PythonProcess("thermald", "selfdrive.thermald.thermald", offroad=True),
   # PythonProcess("tombstoned", "selfdrive.tombstoned", enabled=not PC, offroad=True),
   PythonProcess("updated", "selfdrive.updated", enabled=not PC, onroad=False, offroad=True),
-  # PythonProcess("uploader", "selfdrive.loggerd.uploader", offroad=True),
+  # PythonProcess("uploader", "system.loggerd.uploader", offroad=True),
   # PythonProcess("statsd", "selfdrive.statsd", offroad=True),
 
   # NativeProcess("bridge", "cereal/messaging", ["./bridge"], onroad=False, callback=notcar),
@@ -70,12 +75,21 @@ procs = [
   PythonProcess("androidd", "system.hardware.eon.androidd", enabled=EON, offroad=True),
 
   # dp
+  NativeProcess("dmonitoringmodeld", "selfdrive/modeld", ["./dmonitoringmodeld"], enabled=dp_dm, callback=driverview),
+  PythonProcess("dmonitoringd", "selfdrive.monitoring.dmonitoringd", enabled=dp_dm, callback=driverview),
   PythonProcess("dpmonitoringd", "selfdrive.dragonpilot.dpmonitoringd", enabled=not dp_dm),
   PythonProcess("mapd", "selfdrive.mapd.mapd"),
   PythonProcess("systemd", "selfdrive.dragonpilot.systemd", offroad=True),
   PythonProcess("gpxd", "selfdrive.dragonpilot.gpxd"),
   PythonProcess("otisserv", "selfdrive.dragonpilot.otisserv", offroad=True),
-  # PythonProcess("loggerd", "selfdrive.dragonpilot.loggerd"),
+  NativeProcess("sensord", "system/sensord", ["./sensord"], enabled=not PC, offroad=True, sigkill=EON),
+  NativeProcess("ubloxd", "system/ubloxd", ["./ubloxd"], onroad=False, callback=ublox),
+  # NativeProcess("logcatd", "selfdrive/logcatd", ["./logcatd"]),
+  # NativeProcess("proclogd", "selfdrive/proclogd", ["./proclogd"]),
+  # PythonProcess("loggerd", "selfdrive/loggerd", ["./loggerd"]),
+  # PythonProcess("deleter", "selfdrive.loggerd.deleter", offroad=True),
+  # PythonProcess("uploader", "selfdrive.loggerd.uploader", offroad=True),
+  # PythonProcess("logmessaged", "system.logmessaged", offroad=True),
 ]
 
 managed_processes = {p.name: p for p in procs}
