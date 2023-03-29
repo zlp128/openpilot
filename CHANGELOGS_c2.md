@@ -1,16 +1,20 @@
 dragonpilot [Latest] - EON/C2 Release
 ========================
-* Synced with openpilot master 2023.03.08 commits.
+* Synced with openpilot master 2023.03.26 commits.
 * DP Highlight
-  * Refactored cameraview widget.
-  * Updated VisionIPC to match current version.
-  * Rainbow mode. (fancy lol)
-  * Different color when Always On Lateral is enabled.
-  * IMPROVEMENT: Better TSS2 Long and DF tune. @cgw1968-5779
+  * NEW: Rainbow mode. (fancy lol)
+  * NEW: Local Trip counter.
   * NEW: Alternative Lateral Controller
     * Ability to switch to another lateral controller when SET speed is higher than configure speed.
     * E.g. Use Torque + Laneless when belows 80kph and use PID + Laneline when above.
-  * DM reverted back to 0.8.13 model and algorithm.
+  * TWEAK: **10s Lat MPC is removed due to poor performance on EON/C2**
+  * TWEAK: Refactored cameraview widget.
+  * TWEAK: Different color when Always On Lateral is enabled.
+  * TWEAK: Better TSS2 Long and DF tune. @cgw1968-5779
+  * TWEAK: e2e Lateral will display lanelines in white.
+  * TWEAK: Updated VisionIPC to match current version.
+  * TWEAK: DM reverted to 0.8.13 model and algorithm.
+  * FIXED: Fixed Reverse message not showing issue.
 
 dragonpilot 2023.02.08 - EON/C2 Release
 ========================

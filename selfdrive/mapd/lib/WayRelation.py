@@ -146,6 +146,8 @@ def conditional_speed_limit_for_osm_tag_limit_string(limit_string):
 def speed_limit_value_for_highway_type(areas, tags):
   max_speed = None
   try:
+    geocode_country = ''
+    geocode_region = ''
     for area in areas:
       if area.tags.get('admin_level', '') == "2":
         if area.tags.get('ISO3166-1:alpha2', '') != '':

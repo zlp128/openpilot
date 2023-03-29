@@ -913,9 +913,9 @@ EVENTS: Dict[int, Dict[str, Union[Alert, AlertCallbackType]]] = {
     ET.PERMANENT: Alert(
       _("Reverse\nGear"),
       "",
-      AlertStatus.normal, AlertSize.none,
+      AlertStatus.normal, AlertSize.full,
       Priority.LOWEST, VisualAlert.none, AudibleAlert.none, .2, creation_delay=0.5),
-    # ET.USER_DISABLE: ImmediateDisableAlert(_("Reverse Gear")),
+    ET.USER_DISABLE: ImmediateDisableAlert(_("Reverse Gear")),
     ET.NO_ENTRY: NoEntryAlert(_("Reverse Gear")),
   },
 

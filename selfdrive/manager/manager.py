@@ -13,7 +13,7 @@ from common.basedir import BASEDIR
 from common.params import Params, ParamKeyType
 from common.text_window import TextWindow
 from selfdrive.boardd.set_time import set_time
-from system.hardware import HARDWARE, PC
+from system.hardware import HARDWARE, PC, TICI
 from selfdrive.manager.helpers import unblock_stdout
 from selfdrive.manager.process import ensure_running
 from selfdrive.manager.process_config import managed_processes
@@ -32,7 +32,8 @@ def manager_init() -> None:
   set_time(cloudlog)
 
   # save boot log
-  # subprocess.call("./bootlog", cwd=os.path.join(BASEDIR, "system/loggerd"))
+  # if not Params().get_bool('dp_jetson'):
+    # subprocess.call("./bootlog", cwd=os.path.join(BASEDIR, "system/loggerd"))
 
   params = Params()
   params.clear_all(ParamKeyType.CLEAR_ON_MANAGER_START)
@@ -134,6 +135,9 @@ def manager_thread() -> None:
   ignore: List[str] = []
 
   # dp
+  if TICI:
+    params.put_bool('dp_dm', True)
+    params.put_bool('dp_jetson', False)
   dp_nav = params.get_bool('dp_nav')
   dp_otisserv = dp_nav and params.get_bool('dp_otisserv')
   dp_jetson = params.get_bool('dp_jetson')
@@ -178,7 +182,7 @@ def manager_thread() -> None:
     for param in ("DoUninstall", "DoShutdown", "DoReboot"):
       if params.get_bool(param):
         shutdown = True
-        params.put("LastManagerExitReason", param)
+        params.put("LastManagerExitReason", f"{param} {datetime.datetime.now()}")
         cloudlog.warning(f"Shutting down manager - {param} set")
 
     if shutdown:

@@ -136,6 +136,9 @@ class Controls:
     self.dp_lateral_alt_v_cruise_kph = 0
     self.dp_lateral_alt_v_cruise_kph_prev = 0
     self.dp_lateral_alt_active = False
+    self.local_trip_min_total = float(self.params.get("local_trip_min_total", encoding='utf8'))
+    self.local_trip_meter_total = float(self.params.get("local_trip_meter_total", encoding='utf8'))
+    self.local_trip_count_added = False
 
     # read params
     self.is_metric = self.params.get_bool("IsMetric")
@@ -544,6 +547,16 @@ class Controls:
       self.mismatch_counter += 1
 
     self.distance_traveled += CS.vEgo * DT_CTRL
+    # dp - local trip log
+    self.local_trip_meter_total += CS.vEgo * DT_CTRL
+    if not self.local_trip_count_added:
+      if self.distance_traveled > 0:
+        put_nonblocking("local_trip_count_total", str(float(self.params.get("local_trip_count_total").decode('utf-8')) + 1))
+        self.local_trip_count_added = True
+    # every 30 secs
+    if self.local_trip_count_added and self.sm.frame % int(30. / DT_CTRL) == 0:
+      put_nonblocking("local_trip_meter_total", str(round(self.local_trip_meter_total, 2)))
+      put_nonblocking("local_trip_min_total", str(self.local_trip_min_total + 0.5))
 
     return CS
 

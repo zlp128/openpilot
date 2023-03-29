@@ -23,6 +23,7 @@ def publish_ui_plan(sm, pm, lateral_planner, longitudinal_planner):
   ui_send = messaging.new_message('uiPlan')
   ui_send.valid = sm.all_checks(service_list=['carState', 'controlsState', 'modelV2'])
   uiPlan = ui_send.uiPlan
+  uiPlan.frameId = sm['modelV2'].frameId
   uiPlan.position.x = np.interp(plan_odo, model_odo, lateral_planner.lat_mpc.x_sol[:,0]).tolist()
   uiPlan.position.y = np.interp(plan_odo, model_odo, lateral_planner.lat_mpc.x_sol[:,1]).tolist()
   uiPlan.position.z = np.interp(plan_odo, model_odo, lateral_planner.path_xyz[:,2]).tolist()
@@ -66,8 +67,8 @@ def plannerd_thread(sm=None, pm=None):
       lateral_planner.publish(sm, pm)
       longitudinal_planner.update(sm)
       longitudinal_planner.publish(sm, pm)
-      if lat_version == 0:
-        publish_ui_plan(sm, pm, lateral_planner, longitudinal_planner)
+      # if lat_version == 0:
+      #   publish_ui_plan(sm, pm, lateral_planner, longitudinal_planner)
 
 def main(sm=None, pm=None):
   plannerd_thread(sm, pm)
