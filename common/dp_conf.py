@@ -201,6 +201,7 @@ confs = [
   {'name': 'local_trip_count_total', 'default': 0.0, 'type': 'Float32', 'conf_type': ['param']},
   {'name': 'local_trip_meter_total', 'default': 0.0, 'type': 'Float32', 'conf_type': ['param']},
   {'name': 'local_trip_min_total', 'default': 0.0, 'type': 'Float32', 'conf_type': ['param']},
+  {'name': 'dp_lateral_lc_manual', 'default': False, 'type': 'Bool', 'conf_type': ['param', 'struct']},
 ]
 
 def get_definition(name):

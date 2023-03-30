@@ -980,4 +980,13 @@ EVENTS: Dict[int, Dict[str, Union[Alert, AlertCallbackType]]] = {
       Priority.MID, VisualAlert.none,
       AudibleAlert.disengage, .2),
   },
+
+  # dp - use for manual lane change
+  EventName.manualSteeringRequiredBlinkersOn: {
+    ET.PERMANENT: Alert(
+      _("STEERING REQUIRED: Blinkers ON"),
+      "",
+      AlertStatus.normal, AlertSize.small,
+      Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, alert_rate=0.25),
+  },
 }

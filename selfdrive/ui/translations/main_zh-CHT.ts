@@ -567,7 +567,7 @@ Reboot required.</source>
     </message>
     <message>
         <source>Enable this if you wish to use following dist. mode in DE2E.</source>
-        <translation></translation>
+        <translation>如果您想 DE2E 配合跟車距離控制，請啟用此選項。</translation>
     </message>
     <message>
         <source>DE2E Adapt Accel Mode</source>
@@ -575,7 +575,7 @@ Reboot required.</source>
     </message>
     <message>
         <source>Enable this if you wish to use accel mode in DE2E.</source>
-        <translation></translation>
+        <translation>如果您想 DE2E 配合加速模式控制，請啟用此選項。</translation>
     </message>
     <message>
         <source>Enable this if your vehicles is in VOACC (e.g. Honda Bosch / VAG).</source>

@@ -698,7 +698,18 @@ class Controls:
 
     if CS.leftBlinker or CS.rightBlinker:
       self.last_blinker_frame = self.sm.frame
-
+      # dp - manual lane change
+      if self.sm['dragonConf'].dpLateralLcManual:
+        speed = CS.vEgo * CV.MS_TO_MPH
+        if self.sm['dragonConf'].dpLateralMode == 1 and speed >= self.sm['dragonConf'].dpLcMinMph:
+          pass
+        # we use "or" here in case dpLcAutoMinMph is smaller than dpLcMinMph
+        elif self.sm['dragonConf'].dpLateralMode == 2 and (speed >= self.sm['dragonConf'].dpLcMinMph or speed >= self.sm['dragonConf'].dpLcAutoMinMph):
+          pass
+        else:
+          if CC.latActive:
+            self.events.add(EventName.manualSteeringRequiredBlinkersOn)
+          CC.latActive = False
     # State specific actions
 
     if not CC.latActive:
