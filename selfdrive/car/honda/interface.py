@@ -61,7 +61,7 @@ class CarInterface(CarInterfaceBase):
       if candidate in HONDA_BOSCH:
         ret.pcmCruise = True
 
-    if candidate == CAR.CRV_5G:
+    if candidate in (CAR.CRV_5G, CAR.CRV_HYBRID_BSM):
       ret.enableBsm = 0x12f8bfa7 in fingerprint[0]
 
     # Detect Bosch cars with new HUD msgs
@@ -173,7 +173,7 @@ class CarInterface(CarInterfaceBase):
       tire_stiffness_factor = 0.677
       ret.wheelSpeedFactor = 1.025
 
-    elif candidate == CAR.CRV_HYBRID:
+    elif candidate in (CAR.CRV_HYBRID, CAR.CRV_HYBRID_BSM):
       ret.mass = 1667. + STD_CARGO_KG  # mean of 4 models in kg
       ret.wheelbase = 2.66
       ret.centerToFront = ret.wheelbase * 0.41
@@ -322,7 +322,7 @@ class CarInterface(CarInterfaceBase):
       elif candidate == CAR.CRV_5G:
         ret.lateralParams.torqueBP, ret.lateralParams.torqueV = [[0, 2560, 10000], [0, 2560, 3840]] #tuned by Titanminer (8000)
         ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.21], [0.07]]
-      elif candidate == CAR.CRV_HYBRID:
+      elif candidate in (CAR.CRV_HYBRID, CAR.CRV_HYBRID_BSM):
         ret.lateralParams.torqueBP, ret.lateralParams.torqueV = [[0x0, 0xB5, 0x161, 0x2D6, 0x4C0, 0x70D, 0xC42, 0x1058, 0x2C00], [0x0, 0x160, 0x1F0, 0x2E0, 0x378, 0x4A0, 0x5F0, 0x804, 0xF00]]
         ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.21], [0.07]] #still needs to finish tuning for the new car
         ret.lateralTuning.pid.kf = 0.00004

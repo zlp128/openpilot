@@ -550,7 +550,7 @@ class Controls:
     # dp - local trip log
     self.local_trip_meter_total += CS.vEgo * DT_CTRL
     if not self.local_trip_count_added:
-      if self.distance_traveled > 0:
+      if self.local_trip_meter_total > 0:
         put_nonblocking("local_trip_count_total", str(float(self.params.get("local_trip_count_total").decode('utf-8')) + 1))
         self.local_trip_count_added = True
     # every 30 secs

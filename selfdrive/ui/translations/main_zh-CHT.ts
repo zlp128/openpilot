@@ -95,7 +95,7 @@
     </message>
     <message>
         <source>RAM PER</source>
-        <translation>記憶體 %</translation>
+        <translation type="vanished">記憶體 %</translation>
     </message>
     <message>
         <source>OFF</source>
@@ -139,14 +139,14 @@
     </message>
     <message>
         <source>Lat Ctrl</source>
-        <translation>橫向控制器</translation>
+        <translation>橫向控制</translation>
     </message>
 </context>
 <context>
     <name>C2NetworkPanel</name>
     <message>
         <source>Wi-Fi Settings</source>
-        <translation>無線網路設定</translation>
+        <translation>Wi-Fi 設定</translation>
     </message>
     <message>
         <source>OPEN</source>
@@ -321,16 +321,13 @@ Thanks to @TheCrowd</source>
     </message>
     <message>
         <source>Enable Reverse ACC Set speed.</source>
-        <translation></translation>
+        <translation>反轉 ACC 定速加減值</translation>
     </message>
     <message>
         <source>Enabling this will reverse set acc short press +5 jump, Long press +1 Jump.
 Reboot Required.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Use Alternative Controller</source>
-        <translation type="vanished">使用替代控制器</translation>
+        <translation>啟用此功能將反轉 ACC 定速加減值：短按為 +5 ，長按為+1 。
+需要重新啟動。</translation>
     </message>
 </context>
 <context>
@@ -461,7 +458,7 @@ When on close will be dynamic but get closer in traffic. Normal is also dynamic 
     </message>
     <message>
         <source>Automatically Turn On and Off End-to-end longitudinal (extremely alpha), this will ignore the stock end-to-end settings</source>
-        <translation>自動開啟、關閉 E2E 縱向控制 (實驗功能)</translation>
+        <translation>自動開啟、關閉 E2E 縱向控制 (實驗功能)，這將會忽略 OP 本來的 E2E 設定。</translation>
     </message>
     <message>
         <source>Lateral</source>
@@ -527,14 +524,7 @@ More linear steering experience.</source>
         <translation>啟用最高允許控車速度檢查</translation>
     </message>
     <message>
-        <source>Use at your own risk! Your drive will not upload but you can find them under /data/media/0/fakedata you will not be ban but we just don&apos;t upload since comma does not use data from fork but it will be stored locally.
-1 = Stock Long
-2 = OP Long
-Reboot required.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>when acc set speed below the setting and there is no lead car, e2e will be turned on automatically.
+        <source>when acc set speed below the setting and there is no lead car, e2e will be turned on automatically. 
 1 km/h = 0.62 mph</source>
         <translation type="vanished">當車子的定速低於設定值並且在沒有前車的情形下，系統會自動開啟 E2E 模式。
 1 km/h = 0.62 mph</translation>
@@ -544,7 +534,7 @@ Reboot required.</source>
         <translation> km/h</translation>
     </message>
     <message>
-        <source>when lead car is going below the setting, e2e will be turned on automatically.
+        <source>when lead car is going below the setting, e2e will be turned on automatically. 
 1 km/h = 0.62 mph</source>
         <translation type="vanished">當前車車速於低於設定值時，系統將自動切換至 E2E 模式。
 1 km/h = 0.62 mph</translation>
@@ -582,29 +572,30 @@ Reboot required.</source>
         <translation>如果您的車子使用的是 VOACC (例如：Honda Bosch / VAG/HKG)，可以開啟這個功能增進剎車效能。</translation>
     </message>
     <message>
+        <source>ALC RoadEdge Detection</source>
+        <translation>換道路緣檢測</translation>
+    </message>
+    <message>
+        <source>Enabling this will prevent lane change when you are too close to road edge.</source>
+        <translation>啟用此選項可以防止當您靠近道路邊緣時進行車道變換。</translation>
+    </message>
+    <message>
         <source>DE2E w/ VOACC</source>
         <translation>DE2E 用於 VOACC 下</translation>
     </message>
     <message>
-        <source>      Camera Offset</source>
-        <translation type="vanished">      相機偏移</translation>
+        <source>When Set Speed Above:</source>
+        <translation>當定速高於：</translation>
     </message>
     <message>
-        <source>      Driving Path Offset</source>
-        <translation type="vanished">      駕駛路徑偏移</translation>
-    </message>
-    <message>
-        <source>   When Set Speed Above:</source>
-        <translation type="vanished">   當定速高於：</translation>
-    </message>
-    <message>
-        <source>when acc SET speed above the setting, it will switch to alternative controller.
+        <source>when acc SET speed above the setting, it will switch to alternative controller. 
 1 km/h = 0.62 mph</source>
-        <translation>當定速高於設定的速度時，將會啟用替代的控制器</translation>
+        <translation>當定速高於設定的速度時，將會啟用替代的控制器
+1 km/h = 0.62 mph</translation>
     </message>
     <message>
-        <source>   Alternative Controller</source>
-        <translation type="vanished">   替代控制器</translation>
+        <source>Alternative Controller</source>
+        <translation>替代控制器</translation>
     </message>
     <message>
         <source>
@@ -618,32 +609,35 @@ Your Vehicle may not support all the options, YMMV.</source>
 你的車型可能無法適用所有的選項。</translation>
     </message>
     <message>
-        <source>   Use Lanelines</source>
-        <translation type="vanished">   使用線道</translation>
+        <source>Use Alternative Controller</source>
+        <translation>使用替代控制器</translation>
     </message>
     <message>
         <source>This feature will let you use alternative lateral controller at higher set speed.</source>
         <translation>這個功能讓你在較高的定速下使用替代控制器</translation>
     </message>
     <message>
-        <source>Use Alternative Controller</source>
-        <translation>使用替代控制器</translation>
+        <source>Use at your own risk!
+1 = Stock Long
+2 = OP Long
+Reboot required.</source>
+        <translation>自行承擔風險！
+1 = 使用原廠縱向控制
+2 = 使用 OP 縱向控制
+需要重新啟動。</translation>
     </message>
     <message>
-        <source>ALC RoadEdge Detection</source>
-        <translation>換道路緣檢測</translation>
+        <source>Manual Lane Change</source>
+        <translation>手動換道</translation>
     </message>
     <message>
-        <source>Enabling this will prevent lane change when you are too close to road edge.</source>
-        <translation>啟用此選項可以防止當您靠近道路邊緣時進行車道變換。</translation>
-    </message>
-    <message>
-        <source>When Set Speed Above:</source>
-        <translation>當定速高於：</translation>
-    </message>
-    <message>
-        <source>Alternative Controller</source>
-        <translation>替代控制器</translation>
+        <source>Enabling this will allow lane change manually when blinker is on.
+NOTES: Once LCA/ALCA is enabled, those settings will override manual lane change.
+e.g. If you have this option on and LCA at 20km/hr, ALCA at 40km/hr, speed below 20km/hr will be manual lane change.<byte value="x8"/> If you disable LCA/ALCA and have this option on, manual lane change will apply to ALL SPEED.</source>
+        <translation>啟用此功能將允許在開啟方向燈時進行手動變換車道。
+注意：啟用 LCA/ALCA 後，這些設置將覆蓋手動變換車道。
+例如，如果您啟用此選項並將 LCA 設置為 20 公里/小時，將 ALCA 設置為 40 公里/小時，速度低於 20 公里/小時時將進行手動變換車道。
+如果您禁用 LCA/ALCA 並啟用此選項，手動變換車道將套用於所有速度。</translation>
     </message>
 </context>
 <context>
@@ -655,12 +649,11 @@ Your Vehicle may not support all the options, YMMV.</source>
     <message>
         <source>Adjust your shutdown waiting period.
 0 = shutdown immediately.</source>
-        <translation>調整自動關機時間。
-0 = 馬上關機</translation>
+        <translation>調整自動關機時間。0 = 馬上關機</translation>
     </message>
     <message>
         <source> mins</source>
-        <translation> 分鐘</translation>
+        <translation>分鐘</translation>
     </message>
     <message>
         <source>Enable Auto Shutdown</source>
@@ -859,7 +852,11 @@ Use web interface to control it: *http://&lt;device_ip&gt;:8082*.
 You will need to apply your own mapbox token at https://www.mapbox.com/.
 Internet access from mobile phone (tethering) is required.
 Reboot required.</source>
-        <translation></translation>
+        <translation>這將讓您使用自己的訪問密鑰來使用導航功能。
+使用 Web 介面來控制它：http://&lt;device_ip&gt;:8082。
+您需要在 https://www.mapbox.com/ 上申請自己的 Mapbox token。
+需要使用手機（共用網路）上網。
+需要重新啟動。</translation>
     </message>
     <message>
         <source>Reboot recommended.
@@ -941,7 +938,7 @@ Please note:
     </message>
     <message>
         <source>OpenStreetMap Database Update</source>
-        <translation>OpenStreetMap 數據庫更新</translation>
+        <translation>OpenStreetMap 資料庫更新</translation>
     </message>
     <message>
         <source>CHECK</source>
@@ -951,13 +948,13 @@ Please note:
         <source>&quot;OpenStreetMap Database Update&quot;
 Your device will reboot and perform a database update based on the region you have selected.
 Reboot now?</source>
-        <translation>&quot;OpenStreetMap 數據庫更新&quot;
-您的設備將會重新啟動，並基於您選擇的區域執行一次數據庫更新。
+        <translation>&quot;OpenStreetMap 資料庫更新&quot;
+您的設備將重新啟動，並根據您選擇的區域進行資料庫更新。
 現在重新啟動嗎？</translation>
     </message>
     <message>
         <source>OpenStreetMap Database</source>
-        <translation>OpenStreetMap 數據庫</translation>
+        <translation>OpenStreetMap 資料庫</translation>
     </message>
     <message>
         <source>SELECT</source>
@@ -965,14 +962,15 @@ Reboot now?</source>
     </message>
     <message>
         <source>Select your location</source>
-        <translation>請選擇您的位置</translation>
+        <translation>選擇您的地區</translation>
     </message>
     <message>
         <source>&quot;OpenStreetMap Database&quot;
 Restart your device to start downloading the selected database. Dragonpilot will only start downloading the database on reboot.
 Reboot now?</source>
-        <translation>&quot;OpenStreetMap 數據庫&quot;
-請重新啟動您的設備以開始下載選定的數據庫。Dragonpilot 只會在重新啟動後開始下載數據庫。
+        <translation>&quot;OpenStreetMap 資料庫&quot;
+重新啟動您的設備以開始下載所選的資料庫。
+dragonpilot 只會在重新啟動時開始下載資料庫。
 現在重新啟動嗎？</translation>
     </message>
 </context>
@@ -1070,23 +1068,23 @@ Reboot now?</source>
     </message>
     <message>
         <source>Rainbow Path</source>
-        <translation></translation>
+        <translation>顯示彩虹路徑</translation>
     </message>
     <message>
         <source>for all the tesla fanboy&apos;s.</source>
-        <translation></translation>
+        <translation>給所有的 Tesla 粉絲。</translation>
+    </message>
+    <message>
+        <source>Volume</source>
+        <translation>音量</translation>
     </message>
     <message>
         <source>LAUNCH</source>
-        <translation>啟動</translation>
+        <translation>開啟</translation>
     </message>
     <message>
         <source>Date/Time</source>
         <translation>日期/時間</translation>
-    </message>
-    <message>
-        <source>Volume</source>
-        <translation>提示音量</translation>
     </message>
 </context>
 <context>
@@ -1281,7 +1279,7 @@ Reboot now?</source>
     </message>
     <message>
         <source>EXPERIMENTAL MODE / DE2E ON </source>
-        <translation>實驗模式 / DE2E ON </translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2043,14 +2041,6 @@ This may take up to a minute.</source>
         <translation>低速行駛時，將會切換成路側廣角鏡頭，以完整顯示轉彎路徑，右上角將出現實驗模式圖案。</translation>
     </message>
     <message>
-        <source>Enable Right-Hand Drive</source>
-        <translation>啟用右駕模式</translation>
-    </message>
-    <message>
-        <source>Allow openpilot to obey left-hand traffic conventions and perform driver monitoring on right driver seat.</source>
-        <translation>openpilot 將對右側駕駛進行監控 (但仍遵守靠左駕的交通慣例)。</translation>
-    </message>
-    <message>
         <source>Experimental mode is currently unavailable on this car since the car&apos;s stock ACC is used for longitudinal control.</source>
         <translation>因車輛使用內建ACC系統，無法在本車輛上啟動實驗模式。</translation>
     </message>
@@ -2065,6 +2055,14 @@ This may take up to a minute.</source>
     <message>
         <source>Enable experimental longitudinal control to allow Experimental mode.</source>
         <translation>啟用實驗性縱向控制以使用實驗模式。</translation>
+    </message>
+    <message>
+        <source>Enable Right-Hand Drive</source>
+        <translation>啟用右駕模式</translation>
+    </message>
+    <message>
+        <source>Allow openpilot to obey left-hand traffic conventions and perform driver monitoring on right driver seat.</source>
+        <translation>允許 openpilot 遵循左駕的交通規則並在右駕上進行駕駛員監控。</translation>
     </message>
 </context>
 <context>

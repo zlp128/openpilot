@@ -456,13 +456,6 @@ More linear steering experience.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Use at your own risk! Your drive will not upload but you can find them under /data/media/0/fakedata you will not be ban but we just don&apos;t upload since comma does not use data from fork but it will be stored locally.
-1 = Stock Long
-2 = OP Long
-Reboot required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Enable this if you wish to use following dist. mode in DE2E.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -545,6 +538,23 @@ Your Vehicle may not support all the options, YMMV.</source>
     </message>
     <message>
         <source>This feature will let you use alternative lateral controller at higher set speed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use at your own risk!
+1 = Stock Long
+2 = OP Long
+Reboot required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manual Lane Change</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enabling this will allow lane change manually when blinker is on.
+NOTES: Once LCA/ALCA is enabled, those settings will override manual lane change.
+e.g. If you have this option on and LCA at 20km/hr, ALCA at 40km/hr, speed below 20km/hr will be manual lane change.<byte value="x8"/> If you disable LCA/ALCA and have this option on, manual lane change will apply to ALL SPEED.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

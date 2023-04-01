@@ -2,13 +2,15 @@
 import argparse
 import json
 import os
+
+local_gen = False
 try:
   from common.basedir import BASEDIR
+except Exception:
+  BASEDIR = ""
+  local_gen = True
 
-  UI_DIR = os.path.join(BASEDIR, "selfdrive", "ui")
-except ModuleNotFoundError:
-  UI_DIR = os.path.join("", "selfdrive", "ui")
-
+UI_DIR = os.path.join(BASEDIR, "selfdrive", "ui")
 TRANSLATIONS_DIR = os.path.join(UI_DIR, "translations")
 LANGUAGES_FILE = os.path.join(TRANSLATIONS_DIR, "languages.json")
 
@@ -22,7 +24,7 @@ def update_translations(vanish=False, plural_only=None, translations_dir=TRANSLA
 
   for file in translation_files.values():
     tr_file = os.path.join(translations_dir, f"{file}.ts")
-    args = f"lupdate -locations none -recursive {UI_DIR} -ts {tr_file} -I {BASEDIR}"
+    args = f"lupdate -locations none -recursive {UI_DIR} -ts {tr_file}" + (f"-I {BASEDIR}" if BASEDIR != "" else "")
     if vanish:
       args += " -no-obsolete"
     if file in plural_only:

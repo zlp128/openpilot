@@ -16,7 +16,9 @@ dragonpilot [Latest] - EON/C2 Release
   * TWEAK: e2e Lateral will display lanelines in white.
   * TWEAK: Updated VisionIPC to match current version.
   * TWEAK: DM reverted to 0.8.13 model and algorithm.
+  * TWEAK: E2E Initial speed matches ACC initial speed. (105 -> 40)
   * FIXED: Fixed Reverse message not showing issue.
+  * FIXED: Honda ALKA not working. @loveloveses
 
 dragonpilot 2023.02.08 - EON/C2 Release
 ========================

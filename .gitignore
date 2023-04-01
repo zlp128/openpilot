@@ -82,7 +82,7 @@ build/
 
 poetry.toml
 selfdrive/ui/_ui_nonav
-*events.po~
+*.po~
 selfdrive/loggerd/bootlog
 selfdrive/loggerd/loggerd
 selfdrive/proclogd/proclogd

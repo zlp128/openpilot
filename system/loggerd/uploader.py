@@ -77,7 +77,7 @@ class Uploader():
     self.immediate_priority = {"qlog": 0, "qlog.bz2": 0, "qcamera.ts": 1}
 
     # dp
-    self.dp_upload_ignored = Params().get_bool('dp_upload_ignored')
+    self.update_onced = False
 
   def get_upload_sort(self, name):
     if name in self.immediate_priority:
@@ -202,9 +202,9 @@ class Uploader():
         self.last_time = time.monotonic() - start_time
         self.last_speed = (sz / 1e6) / self.last_time
         success = True
-        if not self.dp_upload_ignored and stat.status_code == 412:
-          self.dp_upload_ignored = True
-          Params().put_bool('dp_upload_ignored', True)
+        if not self.update_onced and stat.status_code != 412:
+          Params().put_bool('dp_upload_ignored', False)
+          self.update_onced = True
         cloudlog.event("upload_success" if stat.status_code != 412 else "upload_ignored", key=key, fn=fn, sz=sz, network_type=network_type, metered=metered)
       else:
         success = False
