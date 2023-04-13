@@ -62,12 +62,14 @@ class VCruiseHelper:
     self.v_cruise_kph_last = 0
     self.button_timers = {ButtonType.decelCruise: 0, ButtonType.accelCruise: 0}
     self.button_change_states = {btn: {"standstill": False, "enabled": False} for btn in self.button_timers}
+    self.dp_override_v_cruise_kph = V_CRUISE_UNSET
+    self.dp_override_cruise_speed_last = V_CRUISE_UNSET
 
   @property
   def v_cruise_initialized(self):
     return self.v_cruise_kph != V_CRUISE_UNSET
 
-  def update_v_cruise(self, CS, enabled, is_metric):
+  def update_v_cruise(self, CS, enabled, is_metric, dp_override_speed):
     self.v_cruise_kph_last = self.v_cruise_kph
 
     if CS.cruiseState.available:
@@ -77,11 +79,28 @@ class VCruiseHelper:
         self.v_cruise_cluster_kph = self.v_cruise_kph
         self.update_button_timers(CS, enabled)
       else:
-        self.v_cruise_kph = CS.cruiseState.speed * CV.MS_TO_KPH
-        self.v_cruise_cluster_kph = CS.cruiseState.speedCluster * CV.MS_TO_KPH
-    else:
-      self.v_cruise_kph = V_CRUISE_UNSET
-      self.v_cruise_cluster_kph = V_CRUISE_UNSET
+        if dp_override_speed:
+          # when set speed changed, reset override_speed to unset
+          if CS.cruiseState.speed != self.dp_override_cruise_speed_last:
+            self.dp_override_v_cruise_kph = V_CRUISE_UNSET
+
+            # when override_speed is unset, use current speed as set speed
+            if CS.cruiseState.speed * CV.MS_TO_KPH < dp_override_speed:
+              self.dp_override_v_cruise_kph = clip(CS.vEgo * CV.MS_TO_KPH, V_CRUISE_MIN, V_CRUISE_MAX)
+
+          # when we have an override_speed, use it
+          if self.dp_override_v_cruise_kph != V_CRUISE_UNSET:
+            self.v_cruise_kph = self.dp_override_v_cruise_kph
+            self.v_cruise_cluster_kph = self.dp_override_v_cruise_kph
+          else:
+            self.v_cruise_kph = CS.cruiseState.speed * CV.MS_TO_KPH
+            self.v_cruise_cluster_kph = CS.cruiseState.speedCluster * CV.MS_TO_KPH
+
+          self.dp_override_cruise_speed_last = CS.cruiseState.speed
+        else:
+          self.dp_override_v_cruise_kph = V_CRUISE_UNSET
+          self.v_cruise_kph = V_CRUISE_UNSET
+          self.v_cruise_cluster_kph = V_CRUISE_UNSET
 
   def _update_v_cruise_non_pcm(self, CS, enabled, is_metric):
     # handle button presses. TODO: this should be in state_control, but a decelCruise press
@@ -157,7 +176,6 @@ class VCruiseHelper:
       self.v_cruise_kph = int(round(clip(CS.vEgo * CV.MS_TO_KPH, initial, V_CRUISE_MAX)))
 
     self.v_cruise_cluster_kph = self.v_cruise_kph
-
 
 def apply_deadzone(error, deadzone):
   if error > deadzone:
