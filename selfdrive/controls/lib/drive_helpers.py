@@ -92,15 +92,18 @@ class VCruiseHelper:
           if self.dp_override_v_cruise_kph != V_CRUISE_UNSET:
             self.v_cruise_kph = self.dp_override_v_cruise_kph
             self.v_cruise_cluster_kph = self.dp_override_v_cruise_kph
-          else:
-            self.v_cruise_kph = CS.cruiseState.speed * CV.MS_TO_KPH
-            self.v_cruise_cluster_kph = CS.cruiseState.speedCluster * CV.MS_TO_KPH
 
-          self.dp_override_cruise_speed_last = CS.cruiseState.speed
         else:
           self.dp_override_v_cruise_kph = V_CRUISE_UNSET
-          self.v_cruise_kph = V_CRUISE_UNSET
-          self.v_cruise_cluster_kph = V_CRUISE_UNSET
+          self.v_cruise_kph = CS.cruiseState.speed * CV.MS_TO_KPH
+          self.v_cruise_cluster_kph = CS.cruiseState.speedCluster * CV.MS_TO_KPH
+
+        self.dp_override_cruise_speed_last = CS.cruiseState.speed
+
+    else:
+      self.dp_override_v_cruise_kph = V_CRUISE_UNSET
+      self.v_cruise_kph = V_CRUISE_UNSET
+      self.v_cruise_cluster_kph = V_CRUISE_UNSET
 
   def _update_v_cruise_non_pcm(self, CS, enabled, is_metric):
     # handle button presses. TODO: this should be in state_control, but a decelCruise press
