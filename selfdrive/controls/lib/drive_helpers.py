@@ -64,6 +64,7 @@ class VCruiseHelper:
     self.button_change_states = {btn: {"standstill": False, "enabled": False} for btn in self.button_timers}
     self.dp_override_v_cruise_kph = V_CRUISE_UNSET
     self.dp_override_cruise_speed_last = V_CRUISE_UNSET
+    self.dp_override_enabled_last = False
 
   @property
   def v_cruise_initialized(self):
@@ -80,25 +81,22 @@ class VCruiseHelper:
         self.update_button_timers(CS, enabled)
       else:
         if dp_override_speed:
-          # when set speed changed, reset override_speed to unset
-          if CS.cruiseState.speed != self.dp_override_cruise_speed_last:
-            self.dp_override_v_cruise_kph = V_CRUISE_UNSET
-
-            # when override_speed is unset, use current speed as set speed
+          if enabled and not self.dp_override_enabled_last:
             if CS.cruiseState.speed * CV.MS_TO_KPH < dp_override_speed:
               self.dp_override_v_cruise_kph = clip(CS.vEgo * CV.MS_TO_KPH, V_CRUISE_MIN, V_CRUISE_MAX)
+            else:
+              self.dp_override_v_cruise_kph = V_CRUISE_UNSET
 
-          # when we have an override_speed, use it
-          if self.dp_override_v_cruise_kph != V_CRUISE_UNSET:
-            self.v_cruise_kph = self.dp_override_v_cruise_kph
-            self.v_cruise_cluster_kph = self.dp_override_v_cruise_kph
-
+        # when we have an override_speed, use it
+        if self.dp_override_v_cruise_kph != V_CRUISE_UNSET:
+          self.v_cruise_kph = self.dp_override_v_cruise_kph
+          self.v_cruise_cluster_kph = self.dp_override_v_cruise_kph
         else:
-          self.dp_override_v_cruise_kph = V_CRUISE_UNSET
           self.v_cruise_kph = CS.cruiseState.speed * CV.MS_TO_KPH
           self.v_cruise_cluster_kph = CS.cruiseState.speedCluster * CV.MS_TO_KPH
 
         self.dp_override_cruise_speed_last = CS.cruiseState.speed
+        self.dp_override_enabled_last = enabled
 
     else:
       self.dp_override_v_cruise_kph = V_CRUISE_UNSET
